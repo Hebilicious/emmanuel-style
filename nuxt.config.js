@@ -14,6 +14,9 @@ export default {
      ** See https://nuxtjs.org/api/configuration-head
      */
     head: {
+        htmlAttrs: {
+            lang: "en"
+        },
         title: process.env.npm_package_name || "",
         meta: [
             { charset: "utf-8" },
@@ -63,5 +66,11 @@ export default {
      ** Build configuration
      ** See https://nuxtjs.org/api/configuration-build/
      */
-    build: {}
+    build: {
+        postcss: {
+            plugins: {
+                "postcss-nested": {}
+            }
+        }
+    }
 }
