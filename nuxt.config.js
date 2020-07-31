@@ -57,7 +57,8 @@ export default {
         "@nuxtjs/stylelint-module",
         // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
         "@nuxtjs/tailwindcss",
-        "@aceforth/nuxt-optimized-images"
+        "@aceforth/nuxt-optimized-images",
+        "@nuxtjs/pwa"
     ],
     /*
      ** Nuxt.js modules
@@ -84,5 +85,12 @@ export default {
     optimizedImages: {
         optimizeImages: true,
         optimizeImagesInDev: true
+    },
+    pwa: {
+        manifest: {
+            name: "Emmanuel",
+            lang: "en",
+            orientation: "portrait"
+        }
     }
 }

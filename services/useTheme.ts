@@ -27,7 +27,7 @@ const navcolorMap = new Map([
     ["paper", "#fef1e0"],
     ["light", "#fdfaf5"],
     ["dark", "#1b1c31"],
-    ["pink", "#f4bed8"]
+    ["pink", "#b2f2e4"]
 ])
 export const useTheme = () => {
     const selectTheme = (themeName = "pink") => {
