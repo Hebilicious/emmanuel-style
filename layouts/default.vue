@@ -18,7 +18,7 @@ a {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-@media screen and (orientation: landscape) {
+@screen mLandscape {
     html {
         transform: rotate(-90deg);
         transform-origin: left top;

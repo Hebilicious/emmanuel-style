@@ -93,8 +93,8 @@ export default defineComponent({
 <style lang="postcss">
 .MainContainer {
     /* Force landscape hack */
-    @media screen and (orientation: landscape) {
-        height: 100vw;
+    @screen mLandscape {
+        height: 100vmax !important;
     }
 
     height: 100vh;
@@ -145,6 +145,9 @@ export default defineComponent({
 
     .Heading {
         @apply pt-24;
+        @screen mLandscape {
+            @apply pt-8;
+        }
 
         img {
             height: 5rem;
@@ -176,7 +179,7 @@ export default defineComponent({
 }
 
 .Icons {
-    width: 50%;
+    width: 50vmin;
     display: flex;
     justify-content: space-between;
 }
