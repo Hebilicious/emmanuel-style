@@ -7,9 +7,9 @@
                         <div class="Content">
                             <div class="Heading">
                                 <picture>
-                                    <!-- <source :srcSet="require('~/assets/Profile.png?webp')" type="image/webp" /> -->
-                                    <!-- <source :srcSet="require('~/assets/Profile.png?inline')" /> -->
-                                    <img alt="profilePicture" :src="require('~/assets/Profile.png?inline')" />
+                                    <source :srcSet="require('~/assets/Profile.png?webp')" type="image/webp" />
+                                    <source :srcSet="require('~/assets/Profile.png')" type="image/png" />
+                                    <img alt="profilePicture" :src="require('~/assets/Profile.png')" />
                                 </picture>
                             </div>
                             <div class="Name">
