@@ -6,7 +6,11 @@
                     <div class="ContentWrapper">
                         <div class="Content">
                             <div class="Heading">
-                                <img alt="profilePicture" src="~/assets/Profile.png?webp" />
+                                <picture>
+                                    <!-- <source :srcSet="require('~/assets/Profile.png?webp')" type="image/webp" /> -->
+                                    <!-- <source :srcSet="require('~/assets/Profile.png?inline')" /> -->
+                                    <img alt="profilePicture" :src="require('~/assets/Profile.png?inline')" />
+                                </picture>
                             </div>
                             <div class="Name">
                                 <h2>Emmanuel LD</h2>
