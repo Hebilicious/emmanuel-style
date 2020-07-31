@@ -1,12 +1,13 @@
 <template>
-    <a target="_blank" :href="`https://${url}`" rel="noopener noreferrer">
+    <a target="_blank" :href="`https://${url}`" :aria-label="label" rel="noopener noreferrer">
         <slot></slot>
     </a>
 </template>
 <script lang="ts">
 export default {
     props: {
-        url: { type: String, required: true }
+        url: { type: String, required: true },
+        label: { type: String, required: true }
     }
 }
 </script>

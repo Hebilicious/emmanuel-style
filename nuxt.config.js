@@ -27,7 +27,11 @@ export default {
                 content: process.env.npm_package_description || ""
             }
         ],
-        link: [{ rel: "icon", type: "image/x-icon", href: "/favicon.ico" }]
+        link: [
+            { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Dosis&display=swap" },
+            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Aclonica&display=swap" }
+        ]
     },
     /*
      ** Global CSS
@@ -52,12 +56,13 @@ export default {
         // Doc: https://github.com/nuxt-community/stylelint-module
         "@nuxtjs/stylelint-module",
         // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
-        "@nuxtjs/tailwindcss"
+        "@nuxtjs/tailwindcss",
+        "@aceforth/nuxt-optimized-images"
     ],
     /*
      ** Nuxt.js modules
      */
-    modules: ["@nuxt/http"],
+    // modules: ["@nuxt/http"],
 
     http: {
         // proxyHeaders: false
@@ -69,8 +74,15 @@ export default {
     build: {
         postcss: {
             plugins: {
-                "postcss-nested": {}
-            }
+                "postcss-nested": {},
+                "postcss-100vh-fix": {},
+                "postcss-viewport-height-correction": {}
+            },
+            preset: { stage: 0, autoprefixer: { grid: true, flexbox: true } }
         }
+    },
+    optimizedImages: {
+        optimizeImages: true,
+        optimizeImagesInDev: true
     }
 }

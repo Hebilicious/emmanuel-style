@@ -1,25 +1,25 @@
 <template>
-    <div :class="['Root', currentTheme]">
+    <div v-show="isReady" ref="rootRef" :class="['Root', currentTheme]">
         <div class="MainContainer">
             <div class="Landing">
                 <div class="Top">
                     <div class="ContentWrapper">
                         <div class="Content">
                             <div class="Heading">
-                                <img src="~/assets/Profile.png" />
+                                <img alt="profilePicture" src="~/assets/Profile.png?webp" />
                             </div>
                             <div class="Name">
                                 <h2>Emmanuel LD</h2>
                             </div>
                             <div class="Logos">
                                 <div class="Icons">
-                                    <ExternalLink url="twitter.com/its_hebilicious">
+                                    <ExternalLink label="twitter" url="twitter.com/its_hebilicious">
                                         <Twitter :icon-height="iconHeight" />
                                     </ExternalLink>
-                                    <ExternalLink url="github.com/Hebilicious">
+                                    <ExternalLink label="github" url="github.com/Hebilicious">
                                         <Github :icon-height="iconHeight" />
                                     </ExternalLink>
-                                    <ExternalLink url="www.linkedin.com/in/emmanuel-donnet">
+                                    <ExternalLink label="linkedIn" url="www.linkedin.com/in/emmanuel-donnet">
                                         <LinkedIn :icon-height="iconHeight" />
                                     </ExternalLink>
                                 </div>
@@ -33,9 +33,9 @@
                                 </div>
                             </div>
                             <div class="SubText">
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perferendis ullam obcaecati,
-                                dolore, non tempora veritatis unde debitis nisi laboriosam facilis, vero inventore nam
-                                illum id nulla hic. Laborum, nesciunt tempore?
+                                The noblest pleasure is the joy of understanding.
+                                <br />
+                                - DaVinci
                             </div>
                         </div>
                         <div class="SideName">
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                     <div class="Separation">
-                        <div>Head to my blog</div>
+                        <div>This is my landing page.</div>
                         <div class="FakeLine"></div>
                     </div>
                 </div>
@@ -62,21 +62,38 @@
 
 <script lang="ts">
 import { useTheme } from "@/services/useTheme"
-import { defineComponent } from "nuxt-composition-api"
+import { defineComponent, watch, ref, onBeforeMount } from "nuxt-composition-api"
+
 export default defineComponent({
     name: "Index",
     setup() {
-        const { currentTheme, themesList, selectTheme } = useTheme()
-        return { currentTheme, themesList, selectTheme, iconHeight: "1.5rem" }
+        // @ts-ignore5
+        const rootRef = ref<HTMLElement>(null)
+        const isReady = ref(false)
+        const { currentTheme, themesList, selectTheme, setNavbarColor } = useTheme()
+        // Change the color for chrome
+        watch(currentTheme, () => {
+            if (rootRef.value === null) return
+            const color = getComputedStyle(rootRef.value).getPropertyValue("--navbarColor")
+            setNavbarColor(color)
+        })
+        onBeforeMount(() => {
+            const saved = window.localStorage.getItem("theme")
+            const { themeName, color } = saved ? JSON.parse(saved) : { themeName: "dark", color: "#1b1c31" }
+            selectTheme(themeName)
+            setNavbarColor(color)
+            isReady.value = true
+        })
+        // dirty set default theme color
+        return { currentTheme, themesList, selectTheme, rootRef, isReady, iconHeight: "1.5rem" }
     }
 })
 </script>
 
 <style lang="postcss">
 :root {
-    /* colors */
-    ---black: #000;
-    --white: #fff;
+    --black: #000000;
+    --white: #ffffff;
     --darkTheme: #1b1c31;
     --grey: #c6c6c6;
     --beige: #fdfaf5;
@@ -93,31 +110,47 @@ export default defineComponent({
 
 .PinkTheme {
     --primaryBackground: linear-gradient(28deg, #fef1e0 0%, #f4bed8 50%, #b2f2e4 100%);
+    --navbarColor: var(--lightPink);
     --primaryText: var(--black);
     --colorAccent: var(--black);
+    --secondaryAccent: var(--grey);
+    --activeBorder: var(--lightGreen);
 }
 
 .PaperTheme {
     --primaryBackground: var(--darkBeige);
+    --navbarColor: var(--primaryBackground);
     --primaryText: var(--black);
     --colorAccent: var(--grey);
+    --secondaryAccent: var(--grey);
+    --activeBorder: var(--darkTheme);
 }
 
 .LightTheme {
     --primaryBackground: var(--beige);
+    --navbarColor: var(--primaryBackground);
     --primaryText: var(--black);
     --colorAccent: var(--grey);
+    --secondaryAccent: var(--grey);
+    --activeBorder: var(--darkTheme);
 }
 
 .DarkTheme {
     --primaryBackground: var(--darkTheme);
+    --navbarColor: var(--primaryBackground);
     --primaryText: var(--white);
     --colorAccent: var(--darkPink);
+    --secondaryAccent: var(--grey);
+    --activeBorder: var(--lightGreen);
 }
 
 .MainContainer {
-    @apply h-screen;
+    /* @apply h-screen; */
 
+    /* min-height: -webkit-fill-available; */
+
+    height: 100vh;
+    position: relative;
     background: var(--primaryBackground);
     color: var(--primaryText);
     width: 100vw;
@@ -125,7 +158,13 @@ export default defineComponent({
 }
 
 .Landing {
-    @apply h-full flex flex-col justify-between;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    display: flex;
+    display: -webkit-flex; /* NEW - Safari 6.1+. iOS 7.1+, BB10 */
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .Top {
@@ -133,7 +172,7 @@ export default defineComponent({
 }
 
 .ContentWrapper {
-    @apply pl-8 pr-8 pb-5;
+    @apply pl-8 pr-6 pb-5;
 
     display: grid;
     grid-template-columns: 1fr 2rem;
@@ -148,6 +187,8 @@ export default defineComponent({
 
         transform: rotate(180deg);
         writing-mode: vertical-rl;
+        font-family: Aclonica, sans-serif;
+        text-transform: uppercase;
     }
 }
 
@@ -163,6 +204,7 @@ export default defineComponent({
             width: auto;
             border-radius: 100%;
             object-fit: contain;
+            box-shadow: -10px 15px 30px 0 rgba(0, 0, 0, 0.13);
         }
     }
     .Name {
@@ -170,12 +212,17 @@ export default defineComponent({
     }
 }
 
+.SubText {
+    @apply text-sm italic;
+}
+
 .Separation {
-    @apply pl-8;
+    @apply pl-8 text-xs;
 
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 1rem;
+    width: 100vw;
     .FakeLine {
         background: linear-gradient(var(--colorAccent), var(--colorAccent)) no-repeat center/100% 1px;
     }
@@ -184,5 +231,16 @@ export default defineComponent({
     width: 50%;
     display: flex;
     justify-content: space-between;
+}
+.ThemeSwitcher {
+    @apply pl-8 pb-6;
+
+    width: 70%;
+    display: grid;
+
+    /* gap: 0.5rem; */
+
+    grid-auto-flow: column;
+    place-items: center;
 }
 </style>
