@@ -3,9 +3,9 @@ import { ref } from "nuxt-composition-api"
 const currentTheme = ref("")
 
 const themesList = new Map([
-    ["paper", "PaperTheme"],
     ["light", "LightTheme"],
     ["dark", "DarkTheme"],
+    ["paper", "PaperTheme"],
     ["pink", "PinkTheme"]
 ])
 
@@ -29,6 +29,7 @@ const navcolorMap = new Map([
     ["dark", "#1b1c31"],
     ["pink", "#b2f2e4"]
 ])
+
 export const useTheme = () => {
     const selectTheme = (themeName = "pink") => {
         const theme = themesList.get(themeName)

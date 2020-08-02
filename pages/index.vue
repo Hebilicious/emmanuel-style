@@ -1,5 +1,5 @@
 <template>
-    <div v-show="isReady" ref="rootRef" :class="['Root', currentTheme]">
+    <div v-show="isReady" id="rootId" ref="rootRef" :class="['Root', currentTheme]">
         <div class="MainContainer">
             <div class="Landing">
                 <div class="Top">
@@ -42,12 +42,15 @@
                                 - DaVinci
                             </div>
                         </div>
-                        <div class="SideName">
-                            <h1>Emmanuel</h1>
+                        <div :class="SideName">
+                            <h1>
+                                <span>E</span><span>m</span><span>m</span><span>a</span><span>n</span><span>u</span
+                                ><span>e</span><span>l</span>
+                            </h1>
                         </div>
                     </div>
                     <div class="Separation">
-                        <div>This is my landing page.</div>
+                        <div></div>
                         <div class="FakeLine"></div>
                     </div>
                 </div>
@@ -66,21 +69,26 @@
 
 <script lang="ts">
 import { useTheme } from "@/services/useTheme"
-import { defineComponent, watch, ref, onBeforeMount } from "nuxt-composition-api"
+import { defineComponent, watch, ref, onBeforeMount, computed } from "nuxt-composition-api"
 
 export default defineComponent({
     name: "Index",
     setup() {
-        // @ts-ignore5
+        // @ts-ignore
         const rootRef = ref<HTMLElement>(null)
         const isReady = ref(false)
         const { currentTheme, themesList, selectTheme, setNavbarColor } = useTheme()
-        // Change the color for chrome
+        // Change the color of mobile navbar
         watch(currentTheme, () => {
             if (rootRef.value === null) return
             const color = getComputedStyle(rootRef.value).getPropertyValue("--navbarColor")
             setNavbarColor(color)
         })
+        // Rainbow text
+        const SideName = computed(() => {
+            return { SideName: true, PaperSideName: currentTheme.value === "PaperTheme" }
+        })
+
         onBeforeMount(() => {
             const saved = window.localStorage.getItem("theme")
             const { themeName, color } = saved ? JSON.parse(saved) : { themeName: "dark", color: "#1b1c31" }
@@ -89,7 +97,7 @@ export default defineComponent({
             isReady.value = true
         })
         // dirty set default theme color
-        return { currentTheme, themesList, selectTheme, rootRef, isReady, iconHeight: "1.5rem" }
+        return { currentTheme, themesList, selectTheme, rootRef, isReady, SideName, iconHeight: "1.5rem" }
     }
 })
 </script>
@@ -101,25 +109,27 @@ export default defineComponent({
         height: 100vmax !important;
     }
 
-    height: 100vh;
     position: relative;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
     background: var(--primaryBackground);
     color: var(--primaryText);
-    width: 100vw;
-    transition: background 0.5s ease;
+    transition: background 1s ease;
 }
 
 .Landing {
-    height: 100%;
-    min-height: 100%;
-    position: absolute;
+    height: auto;
+    width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
 .Top {
-    height: 60%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .ContentWrapper {
@@ -132,6 +142,7 @@ export default defineComponent({
 .SideName {
     display: grid;
     place-items: center;
+    transition: color 0.5s ease-in-out;
 
     h1 {
         @apply text-4xl;
@@ -140,6 +151,40 @@ export default defineComponent({
         writing-mode: vertical-rl;
         font-family: Aclonica, sans-serif;
         text-transform: uppercase;
+        color: var(--giantText);
+    }
+
+    &.PaperSideName {
+        h1 {
+            span {
+                color: black;
+                transition: color 0.5s ease-in-out;
+                &:nth-child(1) {
+                    color: var(--ultraMarine);
+                }
+                &:nth-child(2) {
+                    color: var(--lightBlue);
+                }
+                &:nth-child(3) {
+                    color: var(--lightGreen);
+                }
+                &:nth-child(4) {
+                    color: var(--darkBeige);
+                }
+                &:nth-child(5) {
+                    color: var(--golden);
+                }
+                &:nth-child(6) {
+                    color: var(--lightPink);
+                }
+                &:nth-child(7) {
+                    color: var(--vividPink);
+                }
+                &:nth-child(8) {
+                    color: var(--green);
+                }
+            }
+        }
     }
 }
 
@@ -171,14 +216,14 @@ export default defineComponent({
 }
 
 .Separation {
-    @apply pl-8 text-xs;
+    --height: 3px;
 
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-    width: 100vw;
+    width: 100%;
+    height: var(--height);
+    grid-template-columns: 60% auto;
     .FakeLine {
-        background: linear-gradient(var(--colorAccent), var(--colorAccent)) no-repeat center/100% 1px;
+        background: var(--activeBorder) no-repeat center/100% var(--height);
     }
 }
 

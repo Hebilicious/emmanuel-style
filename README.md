@@ -64,3 +64,9 @@ const meta = [
     { property: "og:description", content: "Vue sample site showing off Twitter and Facebook Cards." }
 ]
 ```
+
+Safari specific things :
+
+-   bug with vh and 100% childrens
+-   doesn't support webp images
+-   doesn't support flex gap

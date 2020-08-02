@@ -15,7 +15,7 @@ export default defineComponent({
         const classes = computed(() => {
             const selfTheme = themesList.get(name.value)
             const isActive = currentTheme.value === selfTheme
-            return { Selector: true, isActive, ...{ ...(selfTheme && { [selfTheme]: true }) } }
+            return { Selector: true, isActive, ...(selfTheme && { [selfTheme]: true }) }
         })
 
         const format = (n: string) => `${n[0].toUpperCase()}${n.slice(1)}`
@@ -33,9 +33,10 @@ button {
     border-radius: 100%;
     width: var(--size);
     height: var(--size);
+    transition: border-color 1s ease;
     &.isActive {
         border: 4px solid var(--activeBorder);
-        color: red;
+        filter: drop-shadow(0 0 4px var(--activeBorder));
     }
 }
 </style>

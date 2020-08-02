@@ -7,6 +7,7 @@
 html,
 body {
     font-family: "Dosis", sans-serif;
+    font-size: 18px;
     height: 100%;
 }
 
@@ -52,25 +53,26 @@ a {
     --primaryBackground: linear-gradient(28deg, #fef1e0 0%, #f4bed8 50%, #b2f2e4 100%);
     --navbarColor: var(--indigo);
     --primaryText: var(--black);
+    --giantText: var(--beige);
     --colorAccent: var(--black);
     --secondaryAccent: var(--grey);
     --activeBorder: var(--lightGreen);
 }
 
 .PaperTheme {
-    --primaryBackground: var(--darkBeige);
+    --primaryBackground: var(--beige);
     --navbarColor: var(--primaryBackground);
     --primaryText: var(--black);
     --colorAccent: var(--grey);
     --secondaryAccent: var(--grey);
-    --activeBorder: var(--darkTheme);
+    --activeBorder: var(--lightPink);
 }
 
 .LightTheme {
-    --primaryBackground: var(--beige);
-    --navbarColor: var(--beige);
+    --primaryBackground: var(--white);
+    --navbarColor: var(--white);
     --primaryText: var(--black);
-    --colorAccent: var(--grey);
+    --colorAccent: var(--darkTheme);
     --secondaryAccent: var(--grey);
     --activeBorder: var(--darkTheme);
 }
