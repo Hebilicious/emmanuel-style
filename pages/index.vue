@@ -1,8 +1,8 @@
 <template>
     <div v-show="isReady" id="rootId" ref="rootRef" :class="['Root', currentTheme]">
-        <div class="MainContainer">
-            <div class="Landing">
-                <div class="Top">
+        <div class="Top">
+            <div class="PageContainer">
+                <div class="Landing">
                     <div class="ContentWrapper">
                         <div class="Content">
                             <div class="Heading">
@@ -54,16 +54,17 @@
                         <div class="FakeLine"></div>
                     </div>
                 </div>
-
-                <div class="Bottom">
-                    <div class="ThemeSwitcher">
-                        <ThemeButton v-for="theme in themesList" :key="theme[0]" :theme="theme" />
-                    </div>
-                    <div class="Initials"></div>
-                </div>
+            </div>
+            <!-- <div class="PageContainer"></div> -->
+            <!-- <div class="PageContainer"></div> -->
+            <!-- <div class="PageContainer"></div> -->
+            <!-- <div class="PageContainer"></div> -->
+        </div>
+        <div class="Bottom">
+            <div class="ThemeSwitcher">
+                <ThemeButton v-for="theme in themesList" :key="theme[0]" :theme="theme" />
             </div>
         </div>
-        <!-- <div class="MainContainer"></div> -->
     </div>
 </template>
 
@@ -103,50 +104,76 @@ export default defineComponent({
 </script>
 
 <style lang="postcss">
-.MainContainer {
+.Root {
     /* Force landscape hack */
     @screen mLandscape {
         height: 100vmax !important;
     }
 
+    display: grid;
+    grid-template-rows: 1fr 5rem;
     position: relative;
     height: 100vh;
-    width: 100vw;
-    display: flex;
+    width: 100%;
+    max-width: 100%;
     background: var(--primaryBackground);
     color: var(--primaryText);
     transition: background 1s ease;
+
+    .Top {
+        @apply grid h-auto overflow-y-auto;
+
+        scrollbar-width: thin;
+        scrollbar-color: var(--activeBorder) transparent;
+        &::-webkit-scrollbar {
+            width: 12px;
+        }
+        &::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        &::-webkit-scrollbar-thumb {
+            background-color: var(--activeBorder);
+            border-radius: 20px;
+            border: 3px solid transparent;
+        }
+    }
+
+    .Bottom {
+        @apply grid pl-8;
+
+        align-items: center;
+    }
+}
+
+.PageContainer {
+    display: grid;
+    position: relative;
+    min-height: calc(100vh - 5rem);
+    width: 100%;
+    max-width: 100%;
 }
 
 .Landing {
-    height: auto;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.Top {
-    display: flex;
-    flex-direction: column;
-    position: relative;
+    @apply grid gap-2 h-auto;
 }
 
 .ContentWrapper {
-    @apply pl-8 pr-6 pb-5;
+    @apply grid pl-8;
 
-    display: grid;
     grid-template-columns: 1fr 2rem;
 }
 
 .SideName {
     display: grid;
     place-items: center;
+    position: relative;
+    overflow: hidden;
     transition: color 0.5s ease-in-out;
 
     h1 {
         @apply text-4xl;
 
+        position: absolute;
         transform: rotate(180deg);
         writing-mode: vertical-rl;
         font-family: Aclonica, sans-serif;
@@ -189,26 +216,26 @@ export default defineComponent({
 }
 
 .Content {
+    @apply grid gap-4 pt-24;
+    @screen mLandscape {
+        @apply pt-8;
+    }
+}
+
+.Heading {
     display: grid;
-    gap: 1rem;
-
-    .Heading {
-        @apply pt-24;
-        @screen mLandscape {
-            @apply pt-8;
-        }
-
-        img {
-            height: 5rem;
-            width: auto;
-            border-radius: 100%;
-            object-fit: contain;
-            box-shadow: -10px 15px 30px 0 rgba(0, 0, 0, 0.13);
-        }
+    align-items: center;
+    img {
+        height: 5rem;
+        width: auto;
+        border-radius: 100%;
+        object-fit: contain;
+        box-shadow: -10px 15px 30px 0 rgba(0, 0, 0, 0.13);
     }
-    .Name {
-        @apply text-3xl font-bold;
-    }
+}
+
+.Name {
+    @apply text-3xl font-bold;
 }
 
 .SubText {
@@ -219,26 +246,24 @@ export default defineComponent({
     --height: 3px;
 
     display: grid;
-    width: 100%;
-    height: var(--height);
     grid-template-columns: 60% auto;
+    height: var(--height);
+    width: 100%;
     .FakeLine {
         background: var(--activeBorder) no-repeat center/100% var(--height);
     }
 }
 
 .Icons {
+    @apply flex justify-between;
+
     width: 50vmin;
-    display: flex;
-    justify-content: space-between;
 }
 
 .ThemeSwitcher {
-    @apply pl-8 pb-6;
+    @apply grid grid-flow-col;
 
     width: 70vmin;
-    display: grid;
-    grid-auto-flow: column;
     place-items: center;
 }
 </style>

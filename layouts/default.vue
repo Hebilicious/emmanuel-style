@@ -1,9 +1,7 @@
 <template>
-    <div>
-        <Nuxt />
-    </div>
+    <Nuxt />
 </template>
-<style>
+<style lang="postcss">
 html,
 body {
     font-family: "Dosis", sans-serif;
@@ -19,6 +17,7 @@ a {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+/* Force landscape hack */
 @screen mLandscape {
     html {
         transform: rotate(-90deg);
