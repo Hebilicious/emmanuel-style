@@ -1,5 +1,7 @@
 # emmanuel-style
 
+Emmanuel's landing page.
+
 ## Build Setup
 
 ```bash

@@ -28,9 +28,9 @@ export default {
             }
         ],
         link: [
-            { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Dosis&display=swap" },
-            { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Aclonica&display=swap" }
+            // { rel: "icon", type: "image/x-icon", href: "/favicon.ico" }
+            // { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Dosis&display=swap" },
+            // { rel: "stylesheet", href: "https://fonts.googleapis.com/css2?family=Aclonica&display=swap" }
         ]
     },
     /*
@@ -58,7 +58,14 @@ export default {
         // Doc: https://github.com/nuxt-community/nuxt-tailwindcss
         "@nuxtjs/tailwindcss",
         "@aceforth/nuxt-optimized-images",
-        "@nuxtjs/pwa"
+        [
+            "@nuxtjs/pwa",
+            {
+                workbox: {
+                    clientsClaim: false
+                }
+            }
+        ]
     ],
     /*
      ** Nuxt.js modules
@@ -87,6 +94,11 @@ export default {
         optimizeImagesInDev: true
     },
     pwa: {
+        meta: {
+            title: "Emmanuel Style",
+            author: "Emmanuel",
+            favicon: true
+        },
         manifest: {
             name: "Emmanuel",
             lang: "en",

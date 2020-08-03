@@ -7,9 +7,15 @@
                         <div class="Content">
                             <div class="Heading">
                                 <picture>
-                                    <source :srcSet="require('~/assets/Profile.png?webp')" type="image/webp" />
-                                    <source :srcSet="require('~/assets/Profile.png')" type="image/png" />
-                                    <img alt="profilePicture" :src="require('~/assets/Profile.png')" />
+                                    <source
+                                        :srcSet="require('~/assets/Profile.png?format=webp&size=100')"
+                                        type="image/webp"
+                                    />
+                                    <source
+                                        :srcSet="require('~/assets/Profile.png?resize&size=100')"
+                                        type="image/png"
+                                    />
+                                    <img alt="profilePicture" :src="require('~/assets/Profile.png?resize&size=100')" />
                                 </picture>
                             </div>
                             <div class="Name">

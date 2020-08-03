@@ -55,6 +55,8 @@
         "postcss-nested": "^4.2.3",
         "postcss-viewport-height-correction": "^2.0.2",
         "prettier": "^2.0.5",
+        "responsive-loader": "^2.0.0",
+        "sharp": "^0.25.4",
         "stylelint": "^13.6.1",
         "stylelint-config-prettier": "^8.0.2",
         "stylelint-config-standard": "^20.0.0",
