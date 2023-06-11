@@ -3,7 +3,13 @@ import type { Theme } from "~/composables/useTheme"
 defineOptions({ name: "Index" })
 
 const iconHeight = "1.5rem"
+const isReady = ref(false)
+
 const { mode, themesList, rootRef } = useTheme()
+
+onMounted(() => {
+    isReady.value = true
+})
 
 // Rainbow text
 const SideName = computed(() => {
@@ -12,7 +18,7 @@ const SideName = computed(() => {
 </script>
 <template>
     <div>
-        <div id="rootId" ref="rootRef" class="Root">
+        <div v-show="isReady" id="rootId" ref="rootRef" class="Root">
             <div class="Top">
                 <div class="PageContainer">
                     <div class="Landing">
@@ -38,14 +44,10 @@ const SideName = computed(() => {
                                     </div>
                                 </div>
                                 <div class="MainText">
-                                    <div>I live in London.</div>
-                                    <div>I do computer things.</div>
+                                    <div>Digital Nomad.</div>
+                                    <div>Computer things.</div>
                                 </div>
-                                <div class="SubText">
-                                    The noblest pleasure is the joy of understanding.
-                                    <br />
-                                    - DaVinci
-                                </div>
+                                <Quotes />
                             </div>
                             <div :class="SideName">
                                 <h1>
