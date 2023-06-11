@@ -19,6 +19,20 @@ export default defineNuxtConfig({
         //     author: "Emmanuel",
         //     favicon: true
         // },
+        registerType: "autoUpdate",
+        workbox: {
+            navigateFallback: "/",
+            globPatterns: ["**/*.{js,css,html,png,svg,ico}"]
+        },
+        client: {
+            installPrompt: true
+        },
+        devOptions: {
+            enabled: true,
+            suppressWarnings: true,
+            navigateFallbackAllowlist: [/^\/$/],
+            type: "module"
+        },
         manifest: {
             name: "Emmanuel",
             lang: "en",
