@@ -1,0 +1,18 @@
+{
+    "$schema": "./node_modules/wrangler/config-schema.json",
+    "name": "emmanuel-style",
+    "compatibility_date": "2025-10-24",
+    "preview_urls": true,
+    "routes": [
+        {
+            "pattern": "emmanuel.style",
+            "custom_domain": true
+        }
+    ],
+    "assets": {
+        "directory": "./dist"
+    },
+    "observability": {
+        "enabled": true
+    }
+}

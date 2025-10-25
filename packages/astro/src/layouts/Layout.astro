@@ -16,14 +16,45 @@ const { title } = Astro.props
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#ffffff" />
     <title>{title}</title>
     <meta name="description" content="Emmanuel's landing page." />
-    <Font cssVariable="--font-dosis" />
-    <Font cssVariable="--font-aclonica" />
+
+    <!-- Fonts handled by Astro experimental fonts API -->
+    <Font cssVariable="--font-dosis" preload />
+    <Font cssVariable="--font-aclonica" preload />
+    <Font cssVariable="--font-monaspace" preload />
+
+    <script is:inline>
+    ;(function () {
+	const STORAGE_KEY = "vueuse-color-scheme"
+	const DEFAULT_THEME = "dark"
+	const themeMap = {
+		light: "LightTheme",
+		dark: "DarkTheme",
+		paper: "PaperTheme",
+		pink: "PinkTheme"
+	}
+
+	try {
+		const preferedTheme = window.matchMedia(
+			"(prefers-color-scheme: dark)"
+		).matches
+			? "dark"
+			: "light"
+		const savedTheme =
+			localStorage.getItem(STORAGE_KEY) || preferedTheme || DEFAULT_THEME
+		const themeClass = themeMap[savedTheme] || themeMap[DEFAULT_THEME]
+		document.documentElement.classList.add(themeClass)
+	} catch (e) {
+		document.documentElement.classList.add(themeMap[DEFAULT_THEME])
+	}
+})()
+    </script>
+
     {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
   </head>
   <body>

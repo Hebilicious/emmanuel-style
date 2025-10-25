@@ -38,7 +38,7 @@ const classes = computed(() => {
 }
 
 .SideName h1 {
-  font-size: 2.25rem;
+  font-size: var(--typography_fluid-content-2xl);
   position: absolute;
   transform: rotate(180deg);
   writing-mode: vertical-rl;

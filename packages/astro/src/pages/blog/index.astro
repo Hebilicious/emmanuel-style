@@ -1,0 +1,158 @@
+---
+import { getCollection } from "astro:content"
+import Layout from "../../layouts/Layout.astro"
+
+const blogEntries = await getCollection("blog", ({ data }) => {
+	return data.draft !== true
+})
+
+const sortedEntries = blogEntries.sort(
+	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+)
+
+const formatDate = (date: Date) => {
+	return new Intl.DateTimeFormat("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric"
+	}).format(date)
+}
+---
+
+<Layout title="Blog - Emmanuel">
+  <div class="BlogPage">
+    <div class="BlogContainer">
+      <header class="BlogHeader">
+        <h1>Blog</h1>
+        <a href="/" class="BackLink">← Back to Home</a>
+      </header>
+
+      <div class="BlogList">
+        {
+          sortedEntries.map((entry) => (
+            <article class="BlogCard">
+              <a href={`/blog/${entry.slug}`} class="BlogCardLink">
+                <h2>{entry.data.title}</h2>
+                <time datetime={entry.data.publishDate.toISOString()}>
+                  {formatDate(entry.data.publishDate)}
+                </time>
+                <p class="Description">{entry.data.description}</p>
+                {
+                  entry.data.tags && entry.data.tags.length > 0 && (
+                    <div class="Tags">
+                      {
+                        entry.data.tags.map((tag) => (
+                          <span class="Tag">{tag}</span>
+                        ))
+                      }
+                    </div>
+                  )
+                }
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<style lang="postcss">
+.BlogPage {
+  min-height: 100dvh;
+  background: var(--primaryBackground);
+  color: var(--primaryText);
+  padding: 2rem;
+  transition: background 1s ease;
+}
+
+.BlogContainer {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.BlogHeader {
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--activeBorder);
+
+  h1 {
+    font-size: var(--typography_fluid-content-4xl);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    font-family:
+      var(--font-dosis),
+      "Dosis",
+      sans-serif;
+  }
+}
+
+.BackLink {
+  color: var(--primaryText);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.BlogList {
+  display: grid;
+  gap: 2rem;
+}
+
+.BlogCard {
+  padding: 1.5rem;
+  border: 1px solid var(--activeBorder);
+  border-radius: 8px;
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.BlogCardLink {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+
+  h2 {
+    font-size: var(--typography_fluid-content-xl);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--primaryText);
+  }
+
+  time {
+    display: block;
+    font-size: var(--typography_fluid-content-s);
+    opacity: 0.7;
+    margin-bottom: 1rem;
+  }
+}
+
+.Description {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+.Tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.Tag {
+  font-size: var(--typography_fluid-content-xs);
+  padding: 0.25rem 0.75rem;
+  background: var(--tagBackground);
+  color: var(--tagText);
+  border-radius: 12px;
+  font-weight: 500;
+}
+</style>

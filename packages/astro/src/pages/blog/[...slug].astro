@@ -1,0 +1,256 @@
+---
+import { getCollection } from "astro:content"
+import Layout from "../../layouts/Layout.astro"
+
+export async function getStaticPaths() {
+	const blogEntries = await getCollection("blog", ({ data }) => {
+		return data.draft !== true
+	})
+	return blogEntries.map((entry) => ({
+		params: { slug: entry.slug },
+		props: { entry }
+	}))
+}
+
+const { entry } = Astro.props
+const { Content } = await entry.render()
+
+const formatDate = (date: Date) => {
+	return new Intl.DateTimeFormat("en-US", {
+		year: "numeric",
+		month: "long",
+		day: "numeric"
+	}).format(date)
+}
+---
+
+<Layout title={`${entry.data.title} - Emmanuel`}>
+  <div class="BlogPost">
+    <div class="BlogPostContainer">
+      <header class="BlogPostHeader">
+        <a href="/blog" class="BackLink">← Back to Blog</a>
+        <h1>{entry.data.title}</h1>
+        <div class="Meta">
+          <time datetime={entry.data.publishDate.toISOString()}>
+            {formatDate(entry.data.publishDate)}
+          </time>
+          {
+            entry.data.tags && entry.data.tags.length > 0 && (
+              <div class="Tags">
+                {entry.data.tags.map((tag) => <span class="Tag">{tag}</span>)}
+              </div>
+            )
+          }
+        </div>
+      </header>
+
+      <article class="BlogPostContent">
+        <Content />
+      </article>
+    </div>
+  </div>
+</Layout>
+
+<style lang="postcss" is:global>
+.BlogPost {
+  min-height: 100dvh;
+  background: var(--primaryBackground);
+  color: var(--primaryText);
+  padding: 2rem;
+  transition: background 1s ease;
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+  }
+}
+
+.BlogPostContainer {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.BlogPostHeader {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 2px solid var(--activeBorder);
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+  }
+
+  h1 {
+    font-size: var(--typography_fluid-content-4xl);
+    font-weight: 700;
+    margin: 1rem 0 1.5rem;
+    line-height: 1.2;
+    font-family:
+      var(--font-dosis),
+      "Dosis",
+      sans-serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+.BackLink {
+  color: var(--primaryText);
+  text-decoration: none;
+  opacity: 0.7;
+  transition: opacity 0.3s;
+  font-size: var(--typography_fluid-content-s);
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.Meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  time {
+    font-size: var(--typography_fluid-content-s);
+    opacity: 0.7;
+  }
+}
+
+.Tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.Tag {
+  font-size: var(--typography_fluid-content-xs);
+  padding: 0.25rem 0.75rem;
+  background: var(--tagBackground);
+  color: var(--tagText);
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.BlogPostContent {
+  font-size: var(--typography_fluid-content-m);
+  line-height: 1.8;
+  font-family:
+    var(--font-monaspace),
+    monospace;
+  font-weight: 400;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+h2 {
+  font-size: var(--typography_fluid-content-3xl);
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+  color: var(--primaryText);
+  font-family:
+    var(--font-dosis),
+    "Dosis",
+    sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  scroll-margin-top: 2rem;
+}
+
+h3 {
+  font-size: var(--typography_fluid-content-2xl);
+  font-weight: 700;
+  margin: 2rem 0 1rem;
+  color: var(--primaryText);
+  font-family:
+    var(--font-dosis),
+    "Dosis",
+    sans-serif;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  scroll-margin-top: 2rem;
+}
+
+.heading-link {
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+
+  &:hover::before {
+    content: "#";
+    position: absolute;
+    left: -1.25em;
+    color: var(--activeBorder);
+    font-weight: 400;
+    opacity: 0.8;
+  }
+}
+
+p {
+  margin-bottom: 1.5rem;
+}
+
+strong {
+  font-weight: 700;
+  color: var(--primaryText);
+}
+
+em {
+  font-style: italic;
+}
+
+blockquote {
+  margin: 2rem 0;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid var(--activeBorder);
+  background: rgba(128, 128, 128, 0.1);
+  font-style: italic;
+
+  @media (max-width: 768px) {
+    margin: 1.5rem 0;
+    padding: 0.75rem 1rem;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+ul,
+ol {
+  margin: 1.5rem 0;
+  padding-left: 2rem;
+
+  @media (max-width: 768px) {
+    padding-left: 1.5rem;
+  }
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+code {
+  background: rgba(128, 128, 128, 0.2);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family:
+    var(--font-monaspace),
+    "Monaspace Argon",
+    monospace;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--primaryText);
+  text-decoration: underline;
+  opacity: 0.9;
+  transition: opacity 0.3s;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+</style>

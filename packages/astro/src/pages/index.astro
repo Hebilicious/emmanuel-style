@@ -51,6 +51,9 @@ const iconHeight = "1.5rem"
                 <div>Digital Nomad.</div>
                 <div>Computer things.</div>
               </div>
+              <div class="BlogLink">
+                <a href="/blog">Library →</a>
+              </div>
               <Quotes client:load />
             </div>
             <SideName client:load />
@@ -74,7 +77,7 @@ const iconHeight = "1.5rem"
   </div>
 </Layout>
 
-<style is:global>
+<style is:global lang="postcss">
 .Root {
   display: grid;
   grid-template-rows: 1fr 5rem;
@@ -159,12 +162,12 @@ const iconHeight = "1.5rem"
 }
 
 .Name {
-  font-size: 1.875rem; /* text-3xl = 30px at base 16px, but we use 18px base */
+  font-size: var(--typography_fluid-content-2xl);
   line-height: 2.25rem;
   font-weight: 700;
 
   h2 {
-    font-size: 1.875rem; /* Override to match Nuxt's text-3xl which is 30px */
+    font-size: var(--typography_fluid-content-2xl);
     line-height: 2.25rem;
   }
 }
@@ -174,7 +177,7 @@ const iconHeight = "1.5rem"
 }
 
 .SubText {
-  font-size: 0.875rem; /* text-sm */
+  font-size: var(--typography_fluid-content-s);
   font-style: italic;
 }
 
@@ -194,6 +197,23 @@ const iconHeight = "1.5rem"
   display: flex;
   justify-content: space-between;
   width: 50vmin;
+}
+
+.BlogLink {
+  margin-top: 0.5rem;
+
+  a {
+    color: var(--primaryText);
+    text-decoration: none;
+    font-size: var(--typography_fluid-content-m);
+    opacity: 0.8;
+    transition: opacity 0.3s;
+
+    &:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+  }
 }
 
 .ThemeSwitcher {

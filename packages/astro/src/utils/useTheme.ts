@@ -1,7 +1,9 @@
 import { useColorMode } from "@vueuse/core"
-import { onMounted, ref, watch } from "vue"
+import { ref, watch } from "vue"
 
 export type Theme = "pink" | "dark" | "paper" | "light"
+
+export const DEFAULT_THEME: Theme = "dark"
 
 export const themesList = new Map<Theme, string>([
 	["light", "LightTheme"],
@@ -9,6 +11,13 @@ export const themesList = new Map<Theme, string>([
 	["paper", "PaperTheme"],
 	["pink", "PinkTheme"]
 ])
+
+export const themeMap: Record<string, string> = {
+	light: "LightTheme",
+	dark: "DarkTheme",
+	paper: "PaperTheme",
+	pink: "PinkTheme"
+}
 
 const isClient = () => typeof document !== "undefined"
 
@@ -27,35 +36,47 @@ const setNavbarColor = (color: string) => {
 	upsertMetaNav({ color, name: "apple-mobile-web-app-status-bar-style" }) // ios
 }
 
+/**
+ * Apply theme class to document element and update navbar color
+ * This only handles switching themes after initial load
+ */
 const applyTheme = (theme: Theme) => {
 	if (!isClient()) return
 
-	// Apply theme class to body
-	document.body.className = "" // Clear existing theme classes
+	// Remove all theme classes and add the new one
+	const themeClasses = Array.from(themesList.values())
+	document.documentElement.classList.remove(...themeClasses)
+
 	const themeClass = themesList.get(theme)
 	if (themeClass) {
-		document.body.classList.add(themeClass)
+		document.documentElement.classList.add(themeClass)
 	}
 
-	// Set navbar color
-	const color = getComputedStyle(document.body).getPropertyValue("--navbarColor")
+	// Update navbar color
+	const color = getComputedStyle(document.documentElement).getPropertyValue("--navbarColor")
 	setNavbarColor(color)
 }
 
+/**
+ * Composable for theme switching in Vue components
+ * Note: Initial theme is applied by the inline script in Layout.astro
+ * This composable only handles user-initiated theme changes
+ */
 export const useTheme = () => {
 	const rootRef = ref<HTMLElement | null>(null)
 	const mode = useColorMode<Theme>({
 		modes: Object.fromEntries(themesList) as Partial<Record<Theme, string>>,
-		initialValue: "pink"
+		initialValue: DEFAULT_THEME
 	})
 
-	const selectTheme = (themeName: Theme = "pink") => {
+	const selectTheme = (themeName: Theme = DEFAULT_THEME) => {
 		mode.value = themeName
 	}
 
-	watch(mode, () => applyTheme(mode.value as Theme), { immediate: true })
-
-	onMounted(() => applyTheme(mode.value as Theme))
+	// Only watch for changes, don't apply on mount (already done by inline script)
+	watch(mode, (newTheme) => {
+		applyTheme(newTheme as Theme)
+	})
 
 	return { mode, themesList, selectTheme, setNavbarColor, rootRef }
 }
