@@ -1,3 +1,9 @@
 {
-    "workbench.colorCustomizations": {}
+	"editor.defaultFormatter": "dprint.dprint",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.fixAll.biome": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
+	"dprint.path": "./node_modules/.bin/dprint"
 }

@@ -1,0 +1,36 @@
+{
+	"name": "nuxt-app",
+	"private": true,
+	"scripts": {
+		"build": "NITRO_PRESET=cloudflare_pages nuxt build",
+		"dev": "nuxt dev",
+		"generate": "nuxt generate",
+		"pwa:assets": "pwa-assets-generator --preset minimal public/icon.png",
+		"preview": "wrangler pages dev dist/",
+		"np": "nuxt prepare",
+		"test": "vitest"
+	},
+	"devDependencies": {
+		"@nuxt/devtools": "catalog:nuxt",
+		"@nuxt/image": "catalog:nuxt",
+		"@types/node": "catalog:nuxt",
+		"@unocss/nuxt": "catalog:nuxt",
+		"@unocss/transformer-directives": "catalog:nuxt",
+		"@vite-pwa/assets-generator": "catalog:nuxt",
+		"@vite-pwa/nuxt": "catalog:nuxt",
+		"@vue/test-utils": "catalog:nuxt",
+		"@vueuse/nuxt": "catalog:nuxt",
+		"jsdom": "catalog:nuxt",
+		"nuxt": "catalog:nuxt",
+		"postcss": "catalog:nuxt",
+		"postcss-100vh-fix": "catalog:nuxt",
+		"postcss-nested": "catalog:nuxt",
+		"postcss-viewport-height-correction": "catalog:nuxt",
+		"vitest": "catalog:nuxt",
+		"wrangler": "catalog:nuxt"
+	},
+	"dependencies": {
+		"@unocss/reset": "catalog:nuxt",
+		"@vueuse/core": "catalog:nuxt"
+	}
+}

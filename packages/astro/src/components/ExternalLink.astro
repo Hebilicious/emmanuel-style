@@ -1,0 +1,23 @@
+---
+interface Props {
+	url: string
+	label: string
+}
+
+const { url, label } = Astro.props
+---
+
+<a
+  target="_blank"
+  href={`https://${url}`}
+  aria-label={label}
+  rel="noopener noreferrer">
+  <slot />
+</a>
+
+<style>
+a:hover {
+  transform: scale(1.2);
+  transition: all 0.1s ease-out;
+}
+</style>

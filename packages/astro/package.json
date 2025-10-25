@@ -1,0 +1,21 @@
+{
+	"name": "astro-app",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/vue": "catalog:astro",
+		"@vite-pwa/astro": "catalog:astro",
+		"@vueuse/core": "catalog:astro",
+		"astro": "catalog:astro",
+		"vue": "catalog:astro"
+	},
+	"devDependencies": {
+		"lightningcss": "^1.30.2"
+	}
+}

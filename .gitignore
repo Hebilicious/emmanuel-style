@@ -22,3 +22,10 @@ logs
 !.env.example
 
 old
+
+.astro
+.playwright-mcp
+
+# moon
+.moon/cache
+.moon/docker

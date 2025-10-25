@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=./cache/schemas/tasks.json
+
+taskOptions:
+  runInCI: false
+tasks:
+  format:
+    command: dprint check
+    options:
+      runInCI: true
+  format-fix:
+    command: dprint fmt --allow-no-files
+  test:
+    options:
+      runInCI: true
+  build:
+    options:
+      runInCI: true
+  lint:
+    command: biome check --formatter-enabled=false
+    options:
+      runInCI: true
+  lint-fix:
+    command: biome check --formatter-enabled=false --write
+    options:
+      runInCI: true

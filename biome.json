@@ -1,0 +1,71 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"root": true,
+	"files": {
+		"includes": [
+			"**/*.tsx",
+			"**/*.jsx",
+			"**/*.ts",
+			"**/*.vue",
+			"**/*.astro",
+			"!**/worker-configuration.d.ts",
+			"settings.json"
+		]
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"linter": {
+		"rules": {
+			"correctness": {
+				"noUnusedImports": {
+					"level": "warn",
+					"fix": "safe"
+				}
+			},
+			"style": {
+				"useConst": {
+					"level": "warn",
+					"fix": "safe"
+				},
+				"useNumberNamespace": {
+					"level": "warn",
+					"fix": "safe"
+				}
+			}
+		}
+	},
+	"overrides": [
+		{
+			"includes": [
+				"**/*.svelte",
+				"**/*.astro",
+				"**/*.vue"
+			],
+			"linter": {
+				"rules": {
+					"style": {
+						"useConst": "off",
+						"useImportType": "off"
+					},
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		}
+	]
+}

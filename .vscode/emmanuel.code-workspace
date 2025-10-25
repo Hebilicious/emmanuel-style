@@ -1,0 +1,29 @@
+{
+    "folders": [
+        {
+            "name": "🏘️ Nuxt",
+            "path": "../packages/nuxt",
+        },
+        {
+            "name": "🏘️ Astro",
+            "path": "../packages/astro",
+        },
+        {
+            "path": "..",
+            "name": "#root"
+        },
+    ],
+    "settings": {
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "oxc.enable": false,
+        "biome.enabled": true
+    },
+    "extensions": {
+        "recommendations": [
+            "dprint.dprint",
+            "biomejs.biome",
+            "moonrepo.moon-console"
+        ]
+    }
+}

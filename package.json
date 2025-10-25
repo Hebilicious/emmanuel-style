@@ -1,37 +1,16 @@
 {
-    "name": "nuxt-app",
-    "private": true,
-    "scripts": {
-        "build": "NITRO_PRESET=cloudflare_pages nuxt build",
-        "dev": "nuxt dev",
-        "generate": "nuxt generate",
-        "pwa:assets": "pwa-assets-generator --preset minimal public/icon.png",
-        "preview": "wrangler pages dev dist/",
-        "postinstall": "nuxt prepare",
-        "test": "vitest"
-    },
-    "devDependencies": {
-        "@nuxt/devtools": "latest",
-        "@nuxt/image": "1.0.0-rc.1",
-        "@types/node": "^18",
-        "@unocss/nuxt": "^0.53.1",
-        "@unocss/transformer-directives": "^0.53.1",
-        "@vite-pwa/assets-generator": "^0.0.2",
-        "@vite-pwa/nuxt": "^0.1.0",
-        "@vue/test-utils": "^2.3.2",
-        "@vueuse/nuxt": "^10.1.2",
-        "jsdom": "^22.1.0",
-        "nuxt": "^3.5.2",
-        "postcss": "^8.4.24",
-        "postcss-100vh-fix": "^1.0.2",
-        "postcss-custom-media": "^9.1.4",
-        "postcss-nested": "^6.0.1",
-        "postcss-viewport-height-correction": "^1.1.1",
-        "vitest": "^0.32.0",
-        "wrangler": "^3.1.0"
-    },
-    "dependencies": {
-        "@unocss/reset": "^0.53.1",
-        "@vueuse/core": "^10.1.2"
-    }
+	"name": "emmanuel-style",
+	"private": true,
+	"type": "module",
+	"devDependencies": {
+		"@biomejs/biome": "^2.2.4",
+		"@moonrepo/cli": "^1.40.2",
+		"dprint": "^0.47.2",
+		"lefthook": "^1.12.2",
+		"typescript": "^5.6.2"
+	},
+	"engines": {
+		"node": "24.5.0"
+	},
+	"packageManager": "pnpm@10.16.1"
 }
