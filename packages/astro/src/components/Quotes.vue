@@ -49,7 +49,7 @@ const quotes = [
 		author: "Loth d'Orcanie"
 	},
 	{
-		quote: "In the midst of chaos, there is also opportunity",
+		quote: "In the midst of chaos, there is also opportunity.",
 		author: "Sun Tzu"
 	},
 	{

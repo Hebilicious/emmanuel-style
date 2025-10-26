@@ -100,10 +100,6 @@ const formatDate = (date: Date) => {
   opacity: 0.7;
   transition: opacity 0.3s;
   font-size: var(--typography_fluid-content-s);
-
-  &:hover {
-    opacity: 1;
-  }
 }
 
 .Meta {
@@ -251,6 +247,18 @@ a {
 
   &:hover {
     opacity: 1;
+  }
+}
+
+.sr-only {
+  display: none;
+}
+
+section.footnotes {
+  border-top: 2px solid black;
+  font-size: var(--typography_fluid-content-s);
+  ol {
+    padding: 0;
   }
 }
 </style>

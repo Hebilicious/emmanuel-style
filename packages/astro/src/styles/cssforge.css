@@ -2,6 +2,7 @@
 :root {
 /*____ Colors ____*/
 /* Palette */
+/* basic */
 --palette-basic-black: oklch(0% 0 0);
 --palette-basic-white: oklch(100% 0 0);
 --palette-basic-darkTheme: oklch(23.653% 0.04014 280.77419);
@@ -17,46 +18,10 @@
 --palette-basic-indigo: oklch(91.427% 0.06709 179.69384);
 --palette-basic-lightGreen: oklch(83.364% 0.07008 198.16877);
 --palette-basic-green: oklch(80.407% 0.10327 177.24406);
-/*  Gradients  */
---gradients-pink-primary: linear-gradient(28deg, var(--palette-basic-darkBeige) 0%, var(--palette-basic-lightPink) 50%, var(--palette-basic-indigo) 100%);
-/* Theme: all */
+/* Gradients */
 /* pink */
---theme-all-pink-primaryBackground: var(--gradients-pink-primary);
---theme-all-pink-navbarColor: var(--palette-basic-indigo);
---theme-all-pink-primaryText: var(--palette-basic-black);
---theme-all-pink-giantText: var(--palette-basic-beige);
---theme-all-pink-colorAccent: var(--palette-basic-black);
---theme-all-pink-secondaryAccent: var(--palette-basic-grey);
---theme-all-pink-activeBorder: var(--palette-basic-lightGreen);
---theme-all-pink-tagBackground: oklch(45% 0.15 180);
---theme-all-pink-tagText: oklch(95% 0.02 180);
-/* paper */
---theme-all-paper-primaryBackground: var(--palette-basic-beige);
---theme-all-paper-navbarColor: var(--palette-basic-beige);
---theme-all-paper-primaryText: var(--palette-basic-black);
---theme-all-paper-colorAccent: var(--palette-basic-grey);
---theme-all-paper-secondaryAccent: var(--palette-basic-grey);
---theme-all-paper-activeBorder: var(--palette-basic-lightPink);
---theme-all-paper-tagBackground: oklch(40% 0.12 320);
---theme-all-paper-tagText: oklch(98% 0.01 320);
-/* light */
---theme-all-light-primaryBackground: var(--palette-basic-white);
---theme-all-light-navbarColor: var(--palette-basic-white);
---theme-all-light-primaryText: var(--palette-basic-black);
---theme-all-light-colorAccent: var(--palette-basic-darkTheme);
---theme-all-light-secondaryAccent: var(--palette-basic-grey);
---theme-all-light-activeBorder: var(--palette-basic-darkTheme);
---theme-all-light-tagBackground: oklch(35% 0.08 260);
---theme-all-light-tagText: oklch(98% 0.01 260);
-/* dark */
---theme-all-dark-primaryBackground: var(--palette-basic-darkTheme);
---theme-all-dark-navbarColor: var(--palette-basic-darkTheme);
---theme-all-dark-primaryText: var(--palette-basic-white);
---theme-all-dark-colorAccent: var(--palette-basic-darkPink);
---theme-all-dark-secondaryAccent: var(--palette-basic-grey);
---theme-all-dark-activeBorder: var(--palette-basic-lightGreen);
---theme-all-dark-tagBackground: oklch(65% 0.15 170);
---theme-all-dark-tagText: oklch(20% 0.05 170);
+--gradients-pink-primary: linear-gradient(28deg, var(--palette-basic-darkBeige) 0%, var(--palette-basic-lightPink) 50%, var(--palette-basic-indigo) 100%);
+/* Themes */
 /*____ Typography ____*/
 --typography_fluid-content-4xl: clamp(2.4883rem, 2.2183rem + 1.3499vw, 3.4332rem);
 --typography_fluid-content-3xl: clamp(2.0736rem, 1.8813rem + 0.9614vw, 2.7466rem);
@@ -66,4 +31,53 @@
 --typography_fluid-content-m: clamp(1rem, 0.9643rem + 0.1786vw, 1.125rem);
 --typography_fluid-content-s: clamp(0.8333rem, 0.8143rem + 0.0952vw, 0.9rem);
 --typography_fluid-content-xs: clamp(0.6944rem, 0.6871rem + 0.0365vw, 0.72rem);
+}
+/* Theme: dark */
+.DarkTheme {
+  /* colors */
+  --primaryBackground: var(--palette-basic-darkTheme);
+  --navbarColor: var(--palette-basic-darkTheme);
+  --primaryText: var(--palette-basic-white);
+  --colorAccent: var(--palette-basic-darkPink);
+  --secondaryAccent: var(--palette-basic-grey);
+  --activeBorder: var(--palette-basic-lightGreen);
+  --tagBackground: oklch(65% 0.15 170);
+  --tagText: oklch(20% 0.05 170);
+}
+/* Theme: light */
+.LightTheme {
+  /* colors */
+  --primaryBackground: var(--palette-basic-white);
+  --navbarColor: var(--palette-basic-white);
+  --primaryText: var(--palette-basic-black);
+  --colorAccent: var(--palette-basic-darkTheme);
+  --secondaryAccent: var(--palette-basic-grey);
+  --activeBorder: var(--palette-basic-darkTheme);
+  --tagBackground: oklch(35% 0.08 260);
+  --tagText: oklch(98% 0.01 260);
+}
+/* Theme: paper */
+.PaperTheme {
+  /* colors */
+  --primaryBackground: var(--palette-basic-beige);
+  --navbarColor: var(--palette-basic-beige);
+  --primaryText: var(--palette-basic-black);
+  --colorAccent: var(--palette-basic-grey);
+  --secondaryAccent: var(--palette-basic-grey);
+  --activeBorder: var(--palette-basic-lightPink);
+  --tagBackground: oklch(40% 0.12 320);
+  --tagText: oklch(98% 0.01 320);
+}
+/* Theme: pink */
+.PinkTheme {
+  /* colors */
+  --primaryBackground: var(--gradients-pink-primary);
+  --navbarColor: var(--palette-basic-indigo);
+  --primaryText: var(--palette-basic-black);
+  --giantText: var(--palette-basic-beige);
+  --colorAccent: var(--palette-basic-black);
+  --secondaryAccent: var(--palette-basic-grey);
+  --activeBorder: var(--palette-basic-lightGreen);
+  --tagBackground: oklch(45% 0.15 180);
+  --tagText: oklch(95% 0.02 180);
 }

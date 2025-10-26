@@ -18,6 +18,7 @@ const classes = computed(() => {
 <template>
   <button
     :class="classes"
+    type="button"
     aria-label="themeColorButton"
     @click="selectTheme(name)">
   </button>

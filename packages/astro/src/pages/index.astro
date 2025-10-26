@@ -48,8 +48,9 @@ const iconHeight = "1.5rem"
                 </div>
               </div>
               <div class="MainText">
-                <div>Digital Nomad.</div>
-                <div>Computer things.</div>
+                <div>Digital Citizen</div>
+                <div>International Empire</div>
+                <div>Earth Republic</div>
               </div>
               <div class="BlogLink">
                 <a href="/blog">Library →</a>
@@ -127,25 +128,21 @@ const iconHeight = "1.5rem"
 
 .Landing {
   display: grid;
-  gap: 0.5rem; /* gap-2 */
+  gap: 0.5rem;
   height: auto;
 }
 
 .ContentWrapper {
   display: grid;
-  padding-left: 2rem; /* pl-8 */
+  padding-left: 2rem;
   grid-template-columns: 1fr 2rem;
 }
 
 .Content {
   display: grid;
-  gap: 1rem; /* gap-4 */
-  padding-top: 6rem; /* pt-24 */
-
-  /* Media query for landscape */
-  @media (min-aspect-ratio: 1/1) and (min-width: 768px) {
-    padding-top: 2rem;
-  }
+  gap: 2rem;
+  padding-top: 3rem;
+  grid-template-rows: repeat(5, auto) 6rem;
 }
 
 .Heading {

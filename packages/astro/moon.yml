@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=../../.moon/cache/schemas/project.json
+
+tasks:
+  preview:
+    command: astro preview
+    preset: server
+    deps:
+      - build
+  deploy:
+    command: wrangler deploy
+    deps:
+      - build
+  deploy-preview:
+    command: wrangler versions upload
+    deps:
+      - build

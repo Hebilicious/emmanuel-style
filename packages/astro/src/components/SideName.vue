@@ -28,54 +28,60 @@ const classes = computed(() => {
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="postcss">
 .SideName {
   display: grid;
   place-items: center;
   position: relative;
   overflow: hidden;
   transition: color 0.5s ease-in-out;
-}
 
-.SideName h1 {
-  font-size: var(--typography_fluid-content-2xl);
-  position: absolute;
-  transform: rotate(180deg);
-  writing-mode: vertical-rl;
-  font-family:
-    var(--font-aclonica),
-    Aclonica,
-    sans-serif;
-  text-transform: uppercase;
-  color: var(--giantText);
-}
+  h1 {
+    font-size: var(--typography_fluid-content-2xl);
+    position: absolute;
+    transform: rotate(180deg);
+    writing-mode: vertical-rl;
+    font-family:
+      var(--font-aclonica),
+      Aclonica,
+      sans-serif;
+    text-transform: uppercase;
+    color: var(--giantText);
 
-.SideName.PaperSideName h1 span {
-  color: black;
-  transition: color 0.5s ease-in-out;
-}
-.SideName.PaperSideName h1 span:nth-child(1) {
-  color: var(--ultraMarine);
-}
-.SideName.PaperSideName h1 span:nth-child(2) {
-  color: var(--lightBlue);
-}
-.SideName.PaperSideName h1 span:nth-child(3) {
-  color: var(--lightGreen);
-}
-.SideName.PaperSideName h1 span:nth-child(4) {
-  color: var(--darkBeige);
-}
-.SideName.PaperSideName h1 span:nth-child(5) {
-  color: var(--golden);
-}
-.SideName.PaperSideName h1 span:nth-child(6) {
-  color: var(--lightPink);
-}
-.SideName.PaperSideName h1 span:nth-child(7) {
-  color: var(--vividPink);
-}
-.SideName.PaperSideName h1 span:nth-child(8) {
-  color: var(--green);
+    span {
+      transition: color 0.5s ease-in-out;
+    }
+  }
+
+  &.PaperSideName {
+    span {
+      color: black;
+
+      &:nth-child(1) {
+        color: var(--palette-basic-ultraMarine);
+      }
+      &:nth-child(2) {
+        color: var(--palette-basic-lightBlue);
+      }
+      &:nth-child(3) {
+        color: var(--palette-basic-lightGreen);
+      }
+      &:nth-child(4) {
+        color: var(--palette-basic-darkBeige);
+      }
+      &:nth-child(5) {
+        color: var(--palette-basic-golden);
+      }
+      &:nth-child(6) {
+        color: var(--palette-basic-lightPink);
+      }
+      &:nth-child(7) {
+        color: var(--palette-basic-vividPink);
+      }
+      &:nth-child(8) {
+        color: var(--palette-basic-green);
+      }
+    }
+  }
 }
 </style>

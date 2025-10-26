@@ -3,11 +3,14 @@ packages:
 
 catalogs:
   astro:
+    "@hebilicious/cssforge": "jsr:^0.4.1"
     "astro": "^5.15.1"
     "@astrojs/vue": "^5.1.1"
     "@vite-pwa/astro": "^1.1.1"
     "@vueuse/core": "^14.0.0"
     "vue": "^3.5.22"
+    "rehype-autolink-headings": "^7.1.0"
+    "rehype-slug": "^6.0.0"
   nuxt:
     "@nuxt/devtools": "latest"
     "@nuxt/image": "1.0.0-rc.1"

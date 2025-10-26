@@ -9,6 +9,7 @@
 			"**/*.vue",
 			"**/*.astro",
 			"!**/worker-configuration.d.ts",
+			"!**/.cssforge/*",
 			"settings.json"
 		]
 	},
@@ -18,7 +19,9 @@
 		"useIgnoreFile": true
 	},
 	"formatter": {
-		"enabled": true
+		"enabled": true,
+		"lineEnding": "auto",
+		"lineWidth": 100
 	},
 	"assist": {
 		"actions": {
@@ -45,6 +48,26 @@
 					"fix": "safe"
 				}
 			}
+		}
+	},
+	"html": {
+		"experimentalFullSupportEnabled": false
+	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		},
+		"formatter": {}
+	},
+	"javascript": {
+		"formatter": {
+			"semicolons": "asNeeded",
+			"trailingCommas": "none"
+		}
+	},
+	"json": {
+		"formatter": {
+			"trailingCommas": "none"
 		}
 	},
 	"overrides": [

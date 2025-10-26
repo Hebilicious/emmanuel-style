@@ -1,271 +1,271 @@
 {
   "palette": {
-    "value": {
-      "basic": {
-        "black": {
-          "key": "--palette-basic-black",
-          "value": "oklch(0% 0 0)",
-          "variable": "--palette-basic-black: oklch(0% 0 0);"
-        },
-        "white": {
-          "key": "--palette-basic-white",
-          "value": "oklch(100% 0 0)",
-          "variable": "--palette-basic-white: oklch(100% 0 0);"
-        },
-        "darkTheme": {
-          "key": "--palette-basic-darkTheme",
-          "value": "oklch(23.653% 0.04014 280.77419)",
-          "variable": "--palette-basic-darkTheme: oklch(23.653% 0.04014 280.77419);"
-        },
-        "grey": {
-          "key": "--palette-basic-grey",
-          "value": "oklch(82.656% 0 0)",
-          "variable": "--palette-basic-grey: oklch(82.656% 0 0);"
-        },
-        "beige": {
-          "key": "--palette-basic-beige",
-          "value": "oklch(98.602% 0.00735 80.72128)",
-          "variable": "--palette-basic-beige: oklch(98.602% 0.00735 80.72128);"
-        },
-        "darkBeige": {
-          "key": "--palette-basic-darkBeige",
-          "value": "oklch(96.385% 0.02649 74.76356)",
-          "variable": "--palette-basic-darkBeige: oklch(96.385% 0.02649 74.76356);"
-        },
-        "golden": {
-          "key": "--palette-basic-golden",
-          "value": "oklch(93.478% 0.05182 73.69061)",
-          "variable": "--palette-basic-golden: oklch(93.478% 0.05182 73.69061);"
-        },
-        "lightPink": {
-          "key": "--palette-basic-lightPink",
-          "value": "oklch(85.717% 0.0701 348.17828)",
-          "variable": "--palette-basic-lightPink: oklch(85.717% 0.0701 348.17828);"
-        },
-        "vividPink": {
-          "key": "--palette-basic-vividPink",
-          "value": "oklch(78.774% 0.16073 342.86255)",
-          "variable": "--palette-basic-vividPink: oklch(78.774% 0.16073 342.86255);"
-        },
-        "darkPink": {
-          "key": "--palette-basic-darkPink",
-          "value": "oklch(73.647% 0.16933 6.15278)",
-          "variable": "--palette-basic-darkPink: oklch(73.647% 0.16933 6.15278);"
-        },
-        "ultraMarine": {
-          "key": "--palette-basic-ultraMarine",
-          "value": "oklch(66.819% 0.17496 275.22226)",
-          "variable": "--palette-basic-ultraMarine: oklch(66.819% 0.17496 275.22226);"
-        },
-        "lightBlue": {
-          "key": "--palette-basic-lightBlue",
-          "value": "oklch(75.721% 0.14894 232.30146)",
-          "variable": "--palette-basic-lightBlue: oklch(75.721% 0.14894 232.30146);"
-        },
-        "indigo": {
-          "key": "--palette-basic-indigo",
-          "value": "oklch(91.427% 0.06709 179.69384)",
-          "variable": "--palette-basic-indigo: oklch(91.427% 0.06709 179.69384);"
-        },
-        "lightGreen": {
-          "key": "--palette-basic-lightGreen",
-          "value": "oklch(83.364% 0.07008 198.16877)",
-          "variable": "--palette-basic-lightGreen: oklch(83.364% 0.07008 198.16877);"
-        },
-        "green": {
-          "key": "--palette-basic-green",
-          "value": "oklch(80.407% 0.10327 177.24406)",
-          "variable": "--palette-basic-green: oklch(80.407% 0.10327 177.24406);"
-        }
+    "basic": {
+      "black": {
+        "key": "--palette-basic-black",
+        "value": "oklch(0% 0 0)",
+        "variable": "--palette-basic-black: oklch(0% 0 0);"
+      },
+      "white": {
+        "key": "--palette-basic-white",
+        "value": "oklch(100% 0 0)",
+        "variable": "--palette-basic-white: oklch(100% 0 0);"
+      },
+      "darkTheme": {
+        "key": "--palette-basic-darkTheme",
+        "value": "oklch(23.653% 0.04014 280.77419)",
+        "variable": "--palette-basic-darkTheme: oklch(23.653% 0.04014 280.77419);"
+      },
+      "grey": {
+        "key": "--palette-basic-grey",
+        "value": "oklch(82.656% 0 0)",
+        "variable": "--palette-basic-grey: oklch(82.656% 0 0);"
+      },
+      "beige": {
+        "key": "--palette-basic-beige",
+        "value": "oklch(98.602% 0.00735 80.72128)",
+        "variable": "--palette-basic-beige: oklch(98.602% 0.00735 80.72128);"
+      },
+      "darkBeige": {
+        "key": "--palette-basic-darkBeige",
+        "value": "oklch(96.385% 0.02649 74.76356)",
+        "variable": "--palette-basic-darkBeige: oklch(96.385% 0.02649 74.76356);"
+      },
+      "golden": {
+        "key": "--palette-basic-golden",
+        "value": "oklch(93.478% 0.05182 73.69061)",
+        "variable": "--palette-basic-golden: oklch(93.478% 0.05182 73.69061);"
+      },
+      "lightPink": {
+        "key": "--palette-basic-lightPink",
+        "value": "oklch(85.717% 0.0701 348.17828)",
+        "variable": "--palette-basic-lightPink: oklch(85.717% 0.0701 348.17828);"
+      },
+      "vividPink": {
+        "key": "--palette-basic-vividPink",
+        "value": "oklch(78.774% 0.16073 342.86255)",
+        "variable": "--palette-basic-vividPink: oklch(78.774% 0.16073 342.86255);"
+      },
+      "darkPink": {
+        "key": "--palette-basic-darkPink",
+        "value": "oklch(73.647% 0.16933 6.15278)",
+        "variable": "--palette-basic-darkPink: oklch(73.647% 0.16933 6.15278);"
+      },
+      "ultraMarine": {
+        "key": "--palette-basic-ultraMarine",
+        "value": "oklch(66.819% 0.17496 275.22226)",
+        "variable": "--palette-basic-ultraMarine: oklch(66.819% 0.17496 275.22226);"
+      },
+      "lightBlue": {
+        "key": "--palette-basic-lightBlue",
+        "value": "oklch(75.721% 0.14894 232.30146)",
+        "variable": "--palette-basic-lightBlue: oklch(75.721% 0.14894 232.30146);"
+      },
+      "indigo": {
+        "key": "--palette-basic-indigo",
+        "value": "oklch(91.427% 0.06709 179.69384)",
+        "variable": "--palette-basic-indigo: oklch(91.427% 0.06709 179.69384);"
+      },
+      "lightGreen": {
+        "key": "--palette-basic-lightGreen",
+        "value": "oklch(83.364% 0.07008 198.16877)",
+        "variable": "--palette-basic-lightGreen: oklch(83.364% 0.07008 198.16877);"
+      },
+      "green": {
+        "key": "--palette-basic-green",
+        "value": "oklch(80.407% 0.10327 177.24406)",
+        "variable": "--palette-basic-green: oklch(80.407% 0.10327 177.24406);"
       }
     }
   },
   "gradients": {
-    "value": {
-      "pink": {
-        "primary": {
-          "variable": "--gradients-pink-primary: linear-gradient(28deg, var(--palette-basic-darkBeige) 0%, var(--palette-basic-lightPink) 50%, var(--palette-basic-indigo) 100%);",
-          "key": "--gradients-pink-primary",
-          "value": "linear-gradient(28deg, var(--palette-basic-darkBeige) 0%, var(--palette-basic-lightPink) 50%, var(--palette-basic-indigo) 100%)"
-        }
+    "pink": {
+      "primary": {
+        "variable": "--gradients-pink-primary: linear-gradient(28deg, var(--palette-basic-darkBeige) 0%, var(--palette-basic-lightPink) 50%, var(--palette-basic-indigo) 100%);",
+        "key": "--gradients-pink-primary",
+        "value": "linear-gradient(28deg, var(--palette-basic-darkBeige) 0%, var(--palette-basic-lightPink) 50%, var(--palette-basic-indigo) 100%)"
       }
     }
   },
   "theme": {
-    "value": {
-      "all": {
-        "pink": {
-          "primaryBackground": {
-            "key": "--theme-all-pink-primaryBackground",
-            "value": "var(--gradients-pink-primary)",
-            "variable": "--theme-all-pink-primaryBackground: var(--gradients-pink-primary);"
-          },
-          "navbarColor": {
-            "key": "--theme-all-pink-navbarColor",
-            "value": "var(--palette-basic-indigo)",
-            "variable": "--theme-all-pink-navbarColor: var(--palette-basic-indigo);"
-          },
-          "primaryText": {
-            "key": "--theme-all-pink-primaryText",
-            "value": "var(--palette-basic-black)",
-            "variable": "--theme-all-pink-primaryText: var(--palette-basic-black);"
-          },
-          "giantText": {
-            "key": "--theme-all-pink-giantText",
-            "value": "var(--palette-basic-beige)",
-            "variable": "--theme-all-pink-giantText: var(--palette-basic-beige);"
-          },
-          "colorAccent": {
-            "key": "--theme-all-pink-colorAccent",
-            "value": "var(--palette-basic-black)",
-            "variable": "--theme-all-pink-colorAccent: var(--palette-basic-black);"
-          },
-          "secondaryAccent": {
-            "key": "--theme-all-pink-secondaryAccent",
-            "value": "var(--palette-basic-grey)",
-            "variable": "--theme-all-pink-secondaryAccent: var(--palette-basic-grey);"
-          },
-          "activeBorder": {
-            "key": "--theme-all-pink-activeBorder",
-            "value": "var(--palette-basic-lightGreen)",
-            "variable": "--theme-all-pink-activeBorder: var(--palette-basic-lightGreen);"
-          },
-          "tagBackground": {
-            "key": "--theme-all-pink-tagBackground",
-            "value": "oklch(45% 0.15 180)",
-            "variable": "--theme-all-pink-tagBackground: oklch(45% 0.15 180);"
-          },
-          "tagText": {
-            "key": "--theme-all-pink-tagText",
-            "value": "oklch(95% 0.02 180)",
-            "variable": "--theme-all-pink-tagText: oklch(95% 0.02 180);"
-          }
+    "dark": {
+      "colors": {
+        "primaryBackground": {
+          "key": "--primaryBackground",
+          "value": "var(--palette-basic-darkTheme)",
+          "variable": "--primaryBackground: var(--palette-basic-darkTheme);"
         },
-        "paper": {
-          "primaryBackground": {
-            "key": "--theme-all-paper-primaryBackground",
-            "value": "var(--palette-basic-beige)",
-            "variable": "--theme-all-paper-primaryBackground: var(--palette-basic-beige);"
-          },
-          "navbarColor": {
-            "key": "--theme-all-paper-navbarColor",
-            "value": "var(--palette-basic-beige)",
-            "variable": "--theme-all-paper-navbarColor: var(--palette-basic-beige);"
-          },
-          "primaryText": {
-            "key": "--theme-all-paper-primaryText",
-            "value": "var(--palette-basic-black)",
-            "variable": "--theme-all-paper-primaryText: var(--palette-basic-black);"
-          },
-          "colorAccent": {
-            "key": "--theme-all-paper-colorAccent",
-            "value": "var(--palette-basic-grey)",
-            "variable": "--theme-all-paper-colorAccent: var(--palette-basic-grey);"
-          },
-          "secondaryAccent": {
-            "key": "--theme-all-paper-secondaryAccent",
-            "value": "var(--palette-basic-grey)",
-            "variable": "--theme-all-paper-secondaryAccent: var(--palette-basic-grey);"
-          },
-          "activeBorder": {
-            "key": "--theme-all-paper-activeBorder",
-            "value": "var(--palette-basic-lightPink)",
-            "variable": "--theme-all-paper-activeBorder: var(--palette-basic-lightPink);"
-          },
-          "tagBackground": {
-            "key": "--theme-all-paper-tagBackground",
-            "value": "oklch(40% 0.12 320)",
-            "variable": "--theme-all-paper-tagBackground: oklch(40% 0.12 320);"
-          },
-          "tagText": {
-            "key": "--theme-all-paper-tagText",
-            "value": "oklch(98% 0.01 320)",
-            "variable": "--theme-all-paper-tagText: oklch(98% 0.01 320);"
-          }
+        "navbarColor": {
+          "key": "--navbarColor",
+          "value": "var(--palette-basic-darkTheme)",
+          "variable": "--navbarColor: var(--palette-basic-darkTheme);"
         },
-        "light": {
-          "primaryBackground": {
-            "key": "--theme-all-light-primaryBackground",
-            "value": "var(--palette-basic-white)",
-            "variable": "--theme-all-light-primaryBackground: var(--palette-basic-white);"
-          },
-          "navbarColor": {
-            "key": "--theme-all-light-navbarColor",
-            "value": "var(--palette-basic-white)",
-            "variable": "--theme-all-light-navbarColor: var(--palette-basic-white);"
-          },
-          "primaryText": {
-            "key": "--theme-all-light-primaryText",
-            "value": "var(--palette-basic-black)",
-            "variable": "--theme-all-light-primaryText: var(--palette-basic-black);"
-          },
-          "colorAccent": {
-            "key": "--theme-all-light-colorAccent",
-            "value": "var(--palette-basic-darkTheme)",
-            "variable": "--theme-all-light-colorAccent: var(--palette-basic-darkTheme);"
-          },
-          "secondaryAccent": {
-            "key": "--theme-all-light-secondaryAccent",
-            "value": "var(--palette-basic-grey)",
-            "variable": "--theme-all-light-secondaryAccent: var(--palette-basic-grey);"
-          },
-          "activeBorder": {
-            "key": "--theme-all-light-activeBorder",
-            "value": "var(--palette-basic-darkTheme)",
-            "variable": "--theme-all-light-activeBorder: var(--palette-basic-darkTheme);"
-          },
-          "tagBackground": {
-            "key": "--theme-all-light-tagBackground",
-            "value": "oklch(35% 0.08 260)",
-            "variable": "--theme-all-light-tagBackground: oklch(35% 0.08 260);"
-          },
-          "tagText": {
-            "key": "--theme-all-light-tagText",
-            "value": "oklch(98% 0.01 260)",
-            "variable": "--theme-all-light-tagText: oklch(98% 0.01 260);"
-          }
+        "primaryText": {
+          "key": "--primaryText",
+          "value": "var(--palette-basic-white)",
+          "variable": "--primaryText: var(--palette-basic-white);"
         },
-        "dark": {
-          "primaryBackground": {
-            "key": "--theme-all-dark-primaryBackground",
-            "value": "var(--palette-basic-darkTheme)",
-            "variable": "--theme-all-dark-primaryBackground: var(--palette-basic-darkTheme);"
-          },
-          "navbarColor": {
-            "key": "--theme-all-dark-navbarColor",
-            "value": "var(--palette-basic-darkTheme)",
-            "variable": "--theme-all-dark-navbarColor: var(--palette-basic-darkTheme);"
-          },
-          "primaryText": {
-            "key": "--theme-all-dark-primaryText",
-            "value": "var(--palette-basic-white)",
-            "variable": "--theme-all-dark-primaryText: var(--palette-basic-white);"
-          },
-          "colorAccent": {
-            "key": "--theme-all-dark-colorAccent",
-            "value": "var(--palette-basic-darkPink)",
-            "variable": "--theme-all-dark-colorAccent: var(--palette-basic-darkPink);"
-          },
-          "secondaryAccent": {
-            "key": "--theme-all-dark-secondaryAccent",
-            "value": "var(--palette-basic-grey)",
-            "variable": "--theme-all-dark-secondaryAccent: var(--palette-basic-grey);"
-          },
-          "activeBorder": {
-            "key": "--theme-all-dark-activeBorder",
-            "value": "var(--palette-basic-lightGreen)",
-            "variable": "--theme-all-dark-activeBorder: var(--palette-basic-lightGreen);"
-          },
-          "tagBackground": {
-            "key": "--theme-all-dark-tagBackground",
-            "value": "oklch(65% 0.15 170)",
-            "variable": "--theme-all-dark-tagBackground: oklch(65% 0.15 170);"
-          },
-          "tagText": {
-            "key": "--theme-all-dark-tagText",
-            "value": "oklch(20% 0.05 170)",
-            "variable": "--theme-all-dark-tagText: oklch(20% 0.05 170);"
-          }
+        "colorAccent": {
+          "key": "--colorAccent",
+          "value": "var(--palette-basic-darkPink)",
+          "variable": "--colorAccent: var(--palette-basic-darkPink);"
+        },
+        "secondaryAccent": {
+          "key": "--secondaryAccent",
+          "value": "var(--palette-basic-grey)",
+          "variable": "--secondaryAccent: var(--palette-basic-grey);"
+        },
+        "activeBorder": {
+          "key": "--activeBorder",
+          "value": "var(--palette-basic-lightGreen)",
+          "variable": "--activeBorder: var(--palette-basic-lightGreen);"
+        },
+        "tagBackground": {
+          "key": "--tagBackground",
+          "value": "oklch(65% 0.15 170)",
+          "variable": "--tagBackground: oklch(65% 0.15 170);"
+        },
+        "tagText": {
+          "key": "--tagText",
+          "value": "oklch(20% 0.05 170)",
+          "variable": "--tagText: oklch(20% 0.05 170);"
+        }
+      }
+    },
+    "light": {
+      "colors": {
+        "primaryBackground": {
+          "key": "--primaryBackground",
+          "value": "var(--palette-basic-white)",
+          "variable": "--primaryBackground: var(--palette-basic-white);"
+        },
+        "navbarColor": {
+          "key": "--navbarColor",
+          "value": "var(--palette-basic-white)",
+          "variable": "--navbarColor: var(--palette-basic-white);"
+        },
+        "primaryText": {
+          "key": "--primaryText",
+          "value": "var(--palette-basic-black)",
+          "variable": "--primaryText: var(--palette-basic-black);"
+        },
+        "colorAccent": {
+          "key": "--colorAccent",
+          "value": "var(--palette-basic-darkTheme)",
+          "variable": "--colorAccent: var(--palette-basic-darkTheme);"
+        },
+        "secondaryAccent": {
+          "key": "--secondaryAccent",
+          "value": "var(--palette-basic-grey)",
+          "variable": "--secondaryAccent: var(--palette-basic-grey);"
+        },
+        "activeBorder": {
+          "key": "--activeBorder",
+          "value": "var(--palette-basic-darkTheme)",
+          "variable": "--activeBorder: var(--palette-basic-darkTheme);"
+        },
+        "tagBackground": {
+          "key": "--tagBackground",
+          "value": "oklch(35% 0.08 260)",
+          "variable": "--tagBackground: oklch(35% 0.08 260);"
+        },
+        "tagText": {
+          "key": "--tagText",
+          "value": "oklch(98% 0.01 260)",
+          "variable": "--tagText: oklch(98% 0.01 260);"
+        }
+      }
+    },
+    "paper": {
+      "colors": {
+        "primaryBackground": {
+          "key": "--primaryBackground",
+          "value": "var(--palette-basic-beige)",
+          "variable": "--primaryBackground: var(--palette-basic-beige);"
+        },
+        "navbarColor": {
+          "key": "--navbarColor",
+          "value": "var(--palette-basic-beige)",
+          "variable": "--navbarColor: var(--palette-basic-beige);"
+        },
+        "primaryText": {
+          "key": "--primaryText",
+          "value": "var(--palette-basic-black)",
+          "variable": "--primaryText: var(--palette-basic-black);"
+        },
+        "colorAccent": {
+          "key": "--colorAccent",
+          "value": "var(--palette-basic-grey)",
+          "variable": "--colorAccent: var(--palette-basic-grey);"
+        },
+        "secondaryAccent": {
+          "key": "--secondaryAccent",
+          "value": "var(--palette-basic-grey)",
+          "variable": "--secondaryAccent: var(--palette-basic-grey);"
+        },
+        "activeBorder": {
+          "key": "--activeBorder",
+          "value": "var(--palette-basic-lightPink)",
+          "variable": "--activeBorder: var(--palette-basic-lightPink);"
+        },
+        "tagBackground": {
+          "key": "--tagBackground",
+          "value": "oklch(40% 0.12 320)",
+          "variable": "--tagBackground: oklch(40% 0.12 320);"
+        },
+        "tagText": {
+          "key": "--tagText",
+          "value": "oklch(98% 0.01 320)",
+          "variable": "--tagText: oklch(98% 0.01 320);"
+        }
+      }
+    },
+    "pink": {
+      "colors": {
+        "primaryBackground": {
+          "key": "--primaryBackground",
+          "value": "var(--gradients-pink-primary)",
+          "variable": "--primaryBackground: var(--gradients-pink-primary);"
+        },
+        "navbarColor": {
+          "key": "--navbarColor",
+          "value": "var(--palette-basic-indigo)",
+          "variable": "--navbarColor: var(--palette-basic-indigo);"
+        },
+        "primaryText": {
+          "key": "--primaryText",
+          "value": "var(--palette-basic-black)",
+          "variable": "--primaryText: var(--palette-basic-black);"
+        },
+        "giantText": {
+          "key": "--giantText",
+          "value": "var(--palette-basic-beige)",
+          "variable": "--giantText: var(--palette-basic-beige);"
+        },
+        "colorAccent": {
+          "key": "--colorAccent",
+          "value": "var(--palette-basic-black)",
+          "variable": "--colorAccent: var(--palette-basic-black);"
+        },
+        "secondaryAccent": {
+          "key": "--secondaryAccent",
+          "value": "var(--palette-basic-grey)",
+          "variable": "--secondaryAccent: var(--palette-basic-grey);"
+        },
+        "activeBorder": {
+          "key": "--activeBorder",
+          "value": "var(--palette-basic-lightGreen)",
+          "variable": "--activeBorder: var(--palette-basic-lightGreen);"
+        },
+        "tagBackground": {
+          "key": "--tagBackground",
+          "value": "oklch(45% 0.15 180)",
+          "variable": "--tagBackground: oklch(45% 0.15 180);"
+        },
+        "tagText": {
+          "key": "--tagText",
+          "value": "oklch(95% 0.02 180)",
+          "variable": "--tagText: oklch(95% 0.02 180);"
         }
       }
     }

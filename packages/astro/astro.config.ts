@@ -7,6 +7,7 @@ import rehypeSlug from "rehype-slug"
 export default defineConfig({
 	site: "https://emmanuel.style",
 	markdown: {
+		gfm: true,
 		rehypePlugins: [
 			rehypeSlug,
 			[rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: ["heading-link"] } }]
@@ -16,79 +17,10 @@ export default defineConfig({
 		AstroPWA({
 			registerType: "autoUpdate",
 			workbox: {
-				navigateFallback: "/",
-				// Include fonts and all assets for offline support
-				globPatterns: ["**/*.{js,css,html,png,svg,ico,webp,woff,woff2,otf,ttf}"],
-				// Cache Google Fonts
-				runtimeCaching: [
-					{
-						urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-						handler: "CacheFirst",
-						options: {
-							cacheName: "google-fonts-cache",
-							expiration: {
-								maxEntries: 10,
-								maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-							},
-							cacheableResponse: {
-								statuses: [0, 200]
-							}
-						}
-					},
-					{
-						urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-						handler: "CacheFirst",
-						options: {
-							cacheName: "gstatic-fonts-cache",
-							expiration: {
-								maxEntries: 10,
-								maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-							},
-							cacheableResponse: {
-								statuses: [0, 200]
-							}
-						}
-					},
-					// Cache images
-					{
-						urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/i,
-						handler: "CacheFirst",
-						options: {
-							cacheName: "images-cache",
-							expiration: {
-								maxEntries: 50,
-								maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
-							}
-						}
-					},
-					// Cache local fonts
-					{
-						urlPattern: /\.(?:woff|woff2|ttf|otf)$/i,
-						handler: "CacheFirst",
-						options: {
-							cacheName: "fonts-cache",
-							expiration: {
-								maxEntries: 20,
-								maxAgeSeconds: 60 * 60 * 24 * 365 // 1 year
-							},
-							cacheableResponse: {
-								statuses: [0, 200]
-							}
-						}
-					},
-					// Cache CSS and JS
-					{
-						urlPattern: /\.(?:css|js)$/i,
-						handler: "StaleWhileRevalidate",
-						options: {
-							cacheName: "static-resources",
-							expiration: {
-								maxEntries: 30,
-								maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
-							}
-						}
-					}
-				]
+				globDirectory: "dist",
+				navigateFallback: null,
+				maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+				globPatterns: ["**/*.{html,js,css,ico,png,jpg,jpeg,svg,gif,webp,woff,woff2,otf,ttf}"]
 			},
 			devOptions: {
 				enabled: true,
