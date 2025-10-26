@@ -133,11 +133,11 @@ The most practical and foundational step towards this new era is a profound and 
 
 [^6]: The "Galileo Affair" is a well-documented historical event. For a summary of primary sources, see ["Famous Trials" by Professor Douglas O. Linder](https://famous-trials.com/galileotrial/1014-home).
 
-[^7]: Isaac Newton's _Philosophiæ Naturalis Principia Mathematica_ (1687) is a cornerstone of modern science. A digitized version is available at the [Cambridge University Library](https://cudl.lib.cam.ac.uk/view/PR-ADV-B-00039-00001/1).
+[^7]: Isaac Newton's **Philosophiæ Naturalis Principia Mathematica** (1687) is a cornerstone of modern science. A digitized version is available at the [Cambridge University Library](https://cudl.lib.cam.ac.uk/view/PR-ADV-B-00039-00001/1).
 
-[^8]: Diderot's _Encyclopédie, ou dictionnaire raisonné des sciences, des arts et des métiers_ (1751-1772) was a seminal work of the Enlightenment. See the online version hosted by the [Bibliothèque Nationale de France](https://gallica.bnf.fr/ark:/12148/bpt6k50534p/f2.item.r=encyclopedie.langEN).
+[^8]: Diderot's **Encyclopédie, ou dictionnaire raisonné des sciences, des arts et des métiers** (1751-1772) was a seminal work of the Enlightenment. See the online version hosted by the [Bibliothèque Nationale de France](https://gallica.bnf.fr/ark:/12148/bpt6k50534p/f2.item.r=encyclopedie.langEN).
 
-[^9]: Adam Smith's _An Inquiry into the Nature and Causes of the Wealth of Nations_ (1776) is a foundational text in classical economics. See the version at the [Online Library of Liberty](https://www.econlib.org/library/Smith/smWN.html).
+[^9]: Adam Smith's **An Inquiry into the Nature and Causes of the Wealth of Nations** (1776) is a foundational text in classical economics. See the version at the [Online Library of Liberty](https://www.econlib.org/library/Smith/smWN.html).
 
 [^10]: The phrase "Sapere aude" ("Dare to know") was used by Immanuel Kant in his 1784 essay ["Answering the Question: What Is Enlightenment?"](https://en.wikipedia.org/wiki/What_Is_Enlightenment%3F).
 
@@ -145,6 +145,6 @@ The most practical and foundational step towards this new era is a profound and 
 
 [^12]: fMRI studies have shown that phonics-based reading instruction is more effective than whole-language methods. [Stanford University News, "Brain waves show how different teaching methods affect reading development"](https://news.stanford.edu/2015/05/28/reading-brain-phonics-052815/).
 
-[^13]: Germany's _Energiewende_ has led to a paradoxical increase in coal use. For a comparison of CO2 intensity, see live data from [Electricity Maps for Germany vs. France](https://app.electricitymaps.com/map?zone=DE&zone=FR).
+[^13]: Germany's **Energiewende** has led to a paradoxical increase in coal use. For a comparison of CO2 intensity, see live data from [Electricity Maps for Germany vs. France](https://app.electricitymaps.com/map?zone=DE&zone=FR).
 
 [^14]: "Anabasis" is a Greek term meaning "a journey upward." "Hyper Anabasis" suggests a great ascent beyond current limitations.
