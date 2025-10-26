@@ -1,4 +1,7 @@
 ---
+title: "Draft: The Principles of Promethean Cosmism"
+description: "An exploration of Promethean Cosmism, a philosophical framework advocating for humanity's"
+publishDate: 2025-10-15
 draft: true
 ---
 
