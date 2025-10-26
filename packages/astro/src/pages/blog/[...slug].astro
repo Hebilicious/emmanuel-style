@@ -254,12 +254,41 @@ const formatDate = (date: Date) => {
   }
 
   section.footnotes {
-    border-top: 2px solid black;
+    border-top: 2px solid var(--activeBorder);
     font-size: var(--typography_fluid-content-s);
     font-style: italic;
+    padding: 0 2rem;
     ol {
+      list-style: auto;
       padding: 0;
     }
+  }
+
+  figcaption {
+    padding-top: 0.5rem;
+  }
+
+  table {
+    margin: 2rem;
+    border-collapse: collapse;
+    font-size: var(--typography_fluid-content-xs);
+    max-width: 100%;
+  }
+
+  th,
+  td {
+    border: 1px solid;
+    padding: 0.75em;
+  }
+
+  td {
+    &:hover {
+      background-color: var(--tagBackground);
+    }
+  }
+
+  th {
+    font-weight: bold;
   }
 }
 </style>

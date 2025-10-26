@@ -1,4 +1,5 @@
 import vue from "@astrojs/vue"
+import rehypeFigure from "@microflash/rehype-figure"
 import AstroPWA from "@vite-pwa/astro"
 import { defineConfig, fontProviders } from "astro/config"
 import rehypeAutolinkHeadings from "rehype-autolink-headings"
@@ -10,7 +11,8 @@ export default defineConfig({
 		gfm: true,
 		rehypePlugins: [
 			rehypeSlug,
-			[rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: ["heading-link"] } }]
+			[rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: ["heading-link"] } }],
+			[rehypeFigure, { className: "prose-figure" }]
 		]
 	},
 	integrations: [

@@ -15,6 +15,7 @@
 	"dependencies": {
 		"@astrojs/vue": "catalog:astro",
 		"@hebilicious/cssforge": "catalog:astro",
+		"@microflash/rehype-figure": "catalog:astro",
 		"@vite-pwa/astro": "catalog:astro",
 		"@vueuse/core": "catalog:astro",
 		"astro": "catalog:astro",
