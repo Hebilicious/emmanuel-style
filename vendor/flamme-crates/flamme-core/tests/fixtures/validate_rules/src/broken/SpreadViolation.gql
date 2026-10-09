@@ -1,0 +1,9 @@
+query SpreadViolation {
+  viewer {
+    id
+    ...SpeciesId
+    ... on Species {
+      name
+    }
+  }
+}

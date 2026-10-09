@@ -1,0 +1,35 @@
+# Schema shape for the FLM1015 parity fixture: a schema key declared twice on one
+# type, and a schema key naming a field that is not a scalar.
+
+interface Node {
+	id: ID!
+}
+
+type Species implements Node @key(fields: ["id"]) @key(fields: ["name"]) {
+	id: ID!
+	name: String!
+	habitat: Habitat!
+}
+
+type Habitat {
+	id: ID!
+	name: String!
+}
+
+# The description is part of the definition's location: graphql-js's loc.startToken
+# is the token the definition starts at, the description when there is one.
+"""
+A trainer. home is deliberately not a scalar, so its key reports FLM1015.
+"""
+type Trainer implements Node @key(fields: "home") {
+	id: ID!
+	name: String!
+	home: Habitat
+}
+
+union SearchResult = Species | Trainer
+
+type Query {
+	search: [SearchResult!]!
+	node(id: ID!): Node
+}

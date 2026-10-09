@@ -1,0 +1,25 @@
+query Defaults(
+	$int: Int = 1
+	$float: Float = 1.5
+	$string: String = "a\nb"
+	$nothing: String = null
+	$bool: Boolean = true
+	$kind: Kind = Draft
+	$list: [Int!] = [1, 2]
+	$empty: [Int!] = []
+	$object: Filter = { term: "x", kinds: [Draft], nested: { limit: 2 } }
+) {
+	thing(
+		int: $int
+		float: $float
+		string: $string
+		nothing: $nothing
+		bool: $bool
+		kind: $kind
+		list: $list
+		empty: $empty
+		object: $object
+	) {
+		id
+	}
+}

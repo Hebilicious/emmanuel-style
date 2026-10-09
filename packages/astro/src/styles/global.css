@@ -1,11 +1,79 @@
-html,
+/*
+ * Global shell.
+ *
+ * Every colour, size and spacing value comes from the custom properties
+ * cssforge generates into cssforge.css. Components stay on those tokens instead
+ * of inventing values, which is what keeps light and dark in step.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  -webkit-text-size-adjust: 100%;
+  tab-size: 2;
+  scrollbar-gutter: stable;
+}
+
 body {
-  font-family:
-    var(--font-dosis),
-    "Dosis",
-    sans-serif;
+  margin: 0;
   min-height: 100dvh;
+  background: var(--paper);
+  color: var(--ink);
+  font-family:
+    var(--font-monaspace),
+    ui-monospace,
+    monospace;
+  font-size: var(--typography_fluid-content-font-size-m);
+  font-weight: var(--typography-weight-body-regular);
+  line-height: 1.65;
   overscroll-behavior: none;
+  transition: background-color 140ms linear, color 140ms linear;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
 input,
@@ -13,5 +81,477 @@ textarea,
 button,
 select,
 a {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/*
+ * The display face: Nabla.
+ *
+ * Nabla only has COLRv1 colour layers, and the descriptor that re-colours them
+ * (`override-colors`) is not supported yet, so there is no way to hand the font
+ * the palette directly: unmodified it renders its default yellow.
+ *
+ * The colour is therefore corrected on the compositor. Grayscale turns the
+ * layers into a luminance ramp (#ffd214 is mid, #fffabe is light, #ffffff is
+ * bare paper in the default palette), and a level shift maps that ramp onto the
+ * theme's ink. Light theme darkens it into printed ink; dark theme inverts the
+ * ramp so the letterform cores read light on black. The invert also makes
+ * anti-aliased edges resolve toward the page background instead of a grey halo.
+ *
+ * Engines without colour fonts fall back to the plain text colour.
+ */
+.display {
+  font-family:
+    var(--font-nabla),
+    var(--font-monaspace),
+    monospace;
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  filter: grayscale(1) brightness(1.06) contrast(1.55) invert(1) contrast(1.22);
+}
+
+.DarkTheme .display {
+  filter: grayscale(1) brightness(1.04) contrast(1.35);
+}
+
+/* Shared text roles, so pages describe intent rather than picking colours. */
+.muted {
+  color: var(--muted);
+}
+
+.faint {
+  color: var(--faint);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+.label {
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/*
+ * Newspaper columns.
+ *
+ * Column count is driven by available width rather than by a media query, so a
+ * list flows into as many columns as the viewport honestly supports. Items must
+ * not be split across a column boundary, hence `break-inside: avoid`, and the
+ * hairline rule between columns is what makes it read as a broadsheet rather
+ * than as a card grid.
+ */
+.columns {
+  column-gap: var(--spacing_fluid-column-space-column-s);
+  column-rule: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.columns > * {
+  break-inside: avoid;
+}
+
+/* Two columns once there is room for two comfortable measures. */
+@media (min-width: 54rem) {
+  .columns-2 {
+    column-count: 2;
+  }
+}
+
+/* Three only on genuinely wide screens, or the measure gets too short. */
+@media (min-width: 84rem) {
+  .columns-3 {
+    column-count: 3;
+  }
+}
+
+/* A lead block that spans the full broadsheet width. */
+.span-all {
+  grid-column: 1 / -1;
+}
+
+/* Cap a block's measure without capping the page. */
+.measure {
+  max-width: 62ch;
+}
+
+.measure-tight {
+  max-width: 48ch;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/*
+ * The docked terminal reserves its own height on the document, so opening the
+ * prompt pushes the page up rather than covering the text being read. The
+ * height is measured in script because the panel grows with its output.
+ */
+body.has-console {
+  padding-bottom: var(--console-height, 0px);
+}
+
+/*
+ * No visible scrollbars.
+ *
+ * A terminal does not show one, and the page is navigated with the keyboard:
+ * `j`/`k`, the arrows, and `Space` scroll the reading pane, so the bar is only
+ * chrome. Scrolling itself still works, including by wheel and trackpad once
+ * the visitor opts back into the mouse.
+ */
+* {
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/*
+ * The pointer is off by default.
+ *
+ * It is not hidden: a hidden cursor looks like a broken page. It is replaced by
+ * a dot with a slash, which reads as "the pointer is disabled here" and still
+ * tells you where the pointer is. The mouse gate restores the real cursor for
+ * the session once the visitor asks for it.
+ */
+body:not(.mouse-enabled) {
+  cursor:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'><circle cx='11' cy='11' r='3.5' fill='%23888'/><path d='M3 3 L19 19' stroke='%23888' stroke-width='2'/></svg>")
+    11 11,
+    not-allowed;
+}
+
+/*
+ * Pointer events stay enabled even though the mouse is disabled. Blocking them
+ * would make the double-click that re-enables the mouse impossible to deliver,
+ * and would break text selection. What is refused is *navigation*: see the click
+ * handler in utils/mouseGate.ts, and the wheel, which is disabled in
+ * utils/paginate.ts so the pane cannot be scrolled at all.
+ */
+
+body:not(.mouse-enabled) a,
+body:not(.mouse-enabled) button {
+  cursor: inherit;
+}
+
+/*
+ * The page cursor: one highlighted row, drawn with a rail and a wash so it is
+ * obvious at a glance which element Enter would follow.
+ */
+[data-cursor="true"] {
+  background: var(--sunk);
+  box-shadow: inset var(--spacing-size-rule) 0 0 0 var(--accent);
+  outline: none;
+}
+
+/*
+ * The screen.
+ *
+ * The paginator builds each page as a column of an explicit width and shows two at
+ * a time, moving the spread with a transform. There is no scroll container
+ * anywhere: the pane clips, the columns sit side by side, and nothing can be
+ * panned sideways.
+ */
+.Page[data-pageCount] {
+  overflow: hidden;
+}
+
+/*
+ * The flow is only a host for the spread. It never scrolls, so no scrollbar can
+ * appear and the arrow keys have nothing to move.
+ */
+.Page[data-pageCount] [data-flow] {
+  overflow: hidden;
+  flex: 0 0 auto;
+  /* No scroll container: the spread is moved with a transform, so no scrollbar,
+     no scrollable overflow, and nothing for an arrow key to pan. */
+  scrollbar-width: none;
+}
+
+.Page[data-pageCount] [data-flow]::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.Page[data-pageCount] [data-spread-host] {
+  will-change: transform;
+  transition: transform 240ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Page[data-pageCount] [data-spread-host] {
+    transition: none;
+  }
+}
+
+/* A page column is exactly what it is told to be. */
+.Page[data-pageCount] [data-page-column] {
+  min-width: 0;
+}
+
+/*
+ * A page holding one wide block uses the spread.
+ *
+ * The width is set in CSS rather than inline so it can follow the pane: the
+ * paginator only decides that this page is a spread, not how wide a spread is.
+ */
+/*
+ * A spread is as wide as the layout has columns: the whole pane on a phone, since
+ * a phone shows one page at a time.
+ */
+.Page[data-pageCount] [data-page-column][data-page-width="spread"] {
+  width: 100%;
+}
+
+.Page[data-pageCount] [data-page-column][data-page-width="measure"] {
+  width: var(--column-width, 100%);
+}
+
+.Page[data-pageCount] [data-page-column] > * {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/*
+ * A whole-screen block is capped to the screen.
+ *
+ * The chart and each role are given a page to themselves, and the badges and text
+ * inside them wrap to one column rather than two once the block cannot grow past
+ * the page it is on.
+ */
+/*
+ * A wrapper whose children are pages of their own is taken out of the box model,
+ * so the paginator sees the roles rather than the section around them.
+ */
+.Page[data-pageCount] [data-page-column] > .Ledger {
+  display: contents;
+}
+
+.Page[data-pageCount] [data-page-column] > .Role {
+  width: 100%;
+}
+
+.Page[data-pageCount] [data-page-column] > [data-screen],
+.Page[data-pageCount] [data-page-column] > .Chart {
+  max-height: var(--screen-height, 80dvh);
+  overflow: hidden;
+}
+
+/*
+ * A figure fits its column and its page.
+ *
+ * The article images are several thousand pixels tall, so left alone a figure was
+ * far taller than a page: it was cropped by the screen and its caption was pushed
+ * out of sight. The image is capped to the column width and a landscape box, so
+ * the whole figure, caption included, fits the space it is given.
+ */
+.Page[data-pageCount] [data-page-column] figure {
+  margin: 0;
+  max-width: 100%;
+}
+
+.Page[data-pageCount] [data-page-column] figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(var(--screen-height, 60dvh) * 0.6);
+  object-fit: contain;
+}
+
+/*
+ * Footnotes are set in the body face, one to a line, with the back-reference kept
+ * beside its note rather than left to wrap on its own.
+ */
+.Page[data-pageCount] [data-page-column] .footnotes {
+  padding-top: var(--spacing_fluid-tight-space-tight-s);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+  font-family: var(--font-monaspace, monospace);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  line-height: 1.5;
+}
+
+.Page[data-pageCount] [data-page-column] .footnotes h2 {
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.Page[data-pageCount] [data-page-column] .footnotes ol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  margin: 0;
+  padding-left: 1.5em;
+}
+
+.Page[data-pageCount] [data-page-column] .footnotes li {
+  padding-left: 0.25em;
+}
+
+.Page[data-pageCount] [data-page-column] .footnotes li::marker {
+  color: var(--faint);
+}
+
+.Page[data-pageCount] [data-page-column] .footnotes p {
+  display: inline;
+  margin: 0;
+}
+
+/*
+ * Notes carried by the page they belong to: a hairline and a smaller face, which
+ * is how a printed page sets them. No heading, because a label repeating on every
+ * page is noise.
+ */
+.Page[data-pageCount] [data-page-column] [data-page-notes-section] {
+  margin-top: auto;
+  padding-top: var(--spacing_fluid-tight-space-tight-s);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  line-height: 1.4;
+}
+
+.NotesTitle {
+  color: var(--accent);
+  letter-spacing: 0.08em;
+}
+
+.Page[data-pageCount] [data-page-column] [data-page-notes] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  margin: var(--spacing_fluid-tight-space-tight-s) 0 0;
+  padding-left: 1.5em;
+}
+
+.Page[data-pageCount] [data-page-column] [data-page-notes] li::marker {
+  color: var(--faint);
+}
+
+.Page[data-pageCount] [data-page-column] [data-page-notes] p {
+  display: inline;
+  margin: 0;
+}
+
+/*
+ * A footnote marker reads as a link, because it is one, and every link in the
+ * article is reachable and visible as such.
+ */
+.Page[data-pageCount] [data-page-column] [data-footnote-ref] {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.Page[data-pageCount] [data-page-column] a {
+  color: var(--accent);
+}
+
+.Page[data-pageCount] [data-page-column] figure figcaption {
+  margin-top: var(--spacing_fluid-tight-space-tight-xs);
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+}
+
+/* A section heading starts a column, so a shelf or a chapter begins a page. */
+.Page[data-pageCount] [data-page-column] > .ShelfTitle {
+  break-before: auto;
+}
+
+/*
+ * Page turns.
+ *
+ * The outgoing page rotates about its inner edge like a sheet being turned, and the
+ * incoming page settles up from behind it. Opacity is held near full until the
+ * sheet is most of the way over: fading the whole time hid the rotation, which is
+ * why the turn read as a plain fade.
+ */
+.Page {
+  view-transition-name: reading-pane;
+  perspective: 2400px;
+}
+
+::view-transition-old(reading-pane) {
+  transform-origin: left center;
+  backface-visibility: hidden;
+  animation: sheet-turn 420ms cubic-bezier(0.55, 0.06, 0.68, 0.19) both;
+}
+
+::view-transition-new(reading-pane) {
+  transform-origin: left center;
+  backface-visibility: hidden;
+  animation: sheet-settle 420ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@keyframes sheet-turn {
+  0% {
+    opacity: 1;
+    transform: rotateY(0deg) scale(1);
+    filter: brightness(1);
+  }
+  70% {
+    opacity: 1;
+    filter: brightness(0.72);
+  }
+  100% {
+    opacity: 0;
+    transform: rotateY(-92deg) scale(0.96);
+    filter: brightness(0.4);
+  }
+}
+
+@keyframes sheet-settle {
+  0% {
+    opacity: 0;
+    transform: rotateY(24deg) translateX(4%) scale(0.98);
+    filter: brightness(0.6);
+  }
+  40% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: rotateY(0deg) translateX(0) scale(1);
+    filter: brightness(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(reading-pane),
+  ::view-transition-new(reading-pane) {
+    animation: none;
+  }
+}
+
+/* The gate is the one thing that must still be clickable. */
+body:not(.mouse-enabled) .Gate,
+body:not(.mouse-enabled) .Gate * {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

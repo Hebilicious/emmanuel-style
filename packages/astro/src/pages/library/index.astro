@@ -1,0 +1,162 @@
+---
+import {
+	type Category,
+	categories,
+	repositories
+} from "../../data/repositories"
+import Layout from "../../layouts/Layout.astro"
+
+const order: Category[] = ["modules", "tooling", "chain"]
+
+const shelves = order
+	.map((category) => ({
+		category,
+		label: categories[category],
+		items: repositories.filter((repository) => repository.category === category)
+	}))
+	.filter((shelf) => shelf.items.length > 0)
+---
+
+<Layout
+  title="Library - Emmanuel"
+  path="/library"
+  masthead="Library"
+  section="open source">
+  <!--
+    One flow: shelf headings and entry lists are siblings, so the paginator packs
+    them together and a shelf can continue onto the next page rather than each
+    shelf being an all-or-nothing unit.
+  -->
+  <div class="ShelfFlow" data-flow data-columns>
+    {shelves.map((shelf) => (
+      <>
+        <h2 class="ShelfTitle label" data-section data-label={shelf.label}>
+          <span class="accent">#</span>
+          {shelf.label}
+        </h2>
+        {shelf.items.map((repository) => (
+          <div class="Entry">
+            <a
+              class="EntryLink"
+              href={repository.url}
+              target="_blank"
+              rel="noopener noreferrer">
+              <span class="Head">
+                <span class="Repo">{repository.name}</span>
+                <span class="Lang">{repository.language}</span>
+                {repository.archived && <span class="Flag">archived</span>}
+                <span class="Stars" data-stars={repository.name}>
+                  <span class="visually-hidden">stars</span>
+                </span>
+              </span>
+              <span class="Body">
+                <span class="Description">{repository.description}</span>
+                {repository.homepage && (
+                  <span class="Home" title={repository.homepage}>
+                    site
+                  </span>
+                )}
+              </span>
+            </a>
+          </div>
+        ))}
+      </>
+    ))}
+  </div>
+</Layout>
+
+<script>
+import "../../utils/stars"
+</script>
+
+<style>
+.Intro {
+  max-width: 60ch;
+  padding-bottom: var(--spacing_fluid-flow-space-s);
+  border-bottom: var(--spacing-size-rule) double var(--rule-strong);
+  color: var(--muted);
+}
+
+.Shelf {
+  padding-top: var(--spacing_fluid-flow-space-l);
+}
+
+.ShelfTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-bottom: var(--spacing_fluid-tight-space-tight-s);
+  border-bottom: var(--spacing-size-hairline) solid var(--rule-strong);
+  color: var(--ink);
+}
+
+.Entry {
+  border-bottom: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.Entry:last-child {
+  border-bottom: 0;
+}
+
+.EntryLink {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-block: var(--spacing_fluid-tight-space-tight-l);
+}
+
+.EntryLink:hover .Repo {
+  color: var(--accent);
+}
+
+.Head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-tight-space-tight-m);
+}
+
+.Repo {
+  font-weight: var(--typography-weight-body-bold);
+  transition: color 120ms linear;
+}
+
+.Lang,
+.Flag {
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.Stars {
+  /* Reserve the widest realistic count so loading does not shift the row. */
+  min-width: 6ch;
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.Body {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing_fluid-flow-space-s);
+}
+
+.Description {
+  max-width: 58ch;
+  color: var(--muted);
+}
+
+.Home {
+  flex-shrink: 0;
+  color: var(--link);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+</style>

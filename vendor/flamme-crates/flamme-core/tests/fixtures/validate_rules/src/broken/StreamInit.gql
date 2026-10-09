@@ -1,0 +1,8 @@
+query StreamInit {
+  searched(term: "a") @stream(initialCount: -1) {
+    id
+  }
+  viewer @stream(initialCount: 0) {
+    id
+  }
+}

@@ -1,0 +1,9 @@
+extend schema @dir
+extend scalar DateTime @specifiedBy(url: "x")
+extend type Query @entity
+extend type Query { added: Int }
+extend interface Node @entity
+extend interface Node implements Named
+extend union SearchResult = Other
+extend enum Episode { SPECIAL }
+extend input Filter { extra: Int }

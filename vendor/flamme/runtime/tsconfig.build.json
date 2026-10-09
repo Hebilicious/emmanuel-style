@@ -1,0 +1,18 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    "tsBuildInfoFile": "dist/.tsbuildinfo",
+    "paths": {}
+  },
+  "include": ["src/**/*.ts"],
+  // No project references: `runtime` is the root of the dependency graph and imports nothing from
+  // the workspace (§2.2 rule 3, D1), so its build never drags another package's build in.
+  "references": []
+}

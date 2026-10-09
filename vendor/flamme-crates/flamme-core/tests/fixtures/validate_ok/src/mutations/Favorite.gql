@@ -1,0 +1,6 @@
+mutation FavoriteMutation($id: ID!) @dedupe(cancelFirst: true, match: variables) {
+  favorite(id: $id) {
+    id
+    ...SpeciesCard
+  }
+}

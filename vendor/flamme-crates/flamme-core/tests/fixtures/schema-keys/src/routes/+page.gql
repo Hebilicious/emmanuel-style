@@ -1,0 +1,12 @@
+query Search {
+	search {
+		... on Species {
+			id
+			name
+		}
+		... on Trainer {
+			id
+			name
+		}
+	}
+}

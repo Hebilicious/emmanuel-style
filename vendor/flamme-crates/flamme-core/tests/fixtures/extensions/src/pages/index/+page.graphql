@@ -1,0 +1,6 @@
+query Home {
+	favorites {
+		id
+		name
+	}
+}

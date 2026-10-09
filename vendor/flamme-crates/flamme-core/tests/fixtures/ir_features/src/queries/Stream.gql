@@ -1,0 +1,10 @@
+query Streamed($id: ID!) {
+	node(id: $id) {
+		... on User {
+			pinned @stream(initialCount: 1, label: "pinned") {
+				id
+				title
+			}
+		}
+	}
+}

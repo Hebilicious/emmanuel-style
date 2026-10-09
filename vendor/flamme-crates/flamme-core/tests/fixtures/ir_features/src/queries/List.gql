@@ -1,0 +1,18 @@
+query PostList @cache(policy: CacheOnly, partial: true) {
+	feed @list(name: "Posts") {
+		id
+		title
+	}
+	posts(first: 5) @list(name: "Paged") {
+		edges {
+			node {
+				id
+			}
+		}
+	}
+	me {
+		pinned @list(name: "Pinned") {
+			id
+		}
+	}
+}

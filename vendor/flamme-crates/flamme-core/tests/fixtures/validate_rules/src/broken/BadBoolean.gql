@@ -1,0 +1,5 @@
+query BadBoolean {
+  viewer @include(if: 1) {
+    id
+  }
+}

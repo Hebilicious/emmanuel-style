@@ -1,0 +1,74 @@
+directive @key(fields: [String!]!) repeatable on OBJECT | INTERFACE
+
+directive @legacy(term: String @deprecated(reason: "use the query field")) on FIELD
+
+type Query {
+  viewer: User!
+  species(id: ID!): Species
+  searched(term: String!): [Species!]!
+  searchedConnection(first: Int, after: String, last: Int, before: String): SpeciesConnection!
+  speciesList(first: Int, after: String, last: Int, before: String): SpeciesConnection!
+  speciesFiltered(filter: SpeciesFilter!): [Species!]!
+  speciesByRarity(rarity: Rarity!): [Species!]!
+  searchOld(term: String @deprecated(reason: "use query")): [Species!]!
+  trainer: Trainer
+}
+
+type Mutation {
+  favorite(id: ID!): Species!
+}
+
+type Subscription {
+  speciesAdded: Species!
+  userAdded: User!
+}
+
+type User @key(fields: ["id"]) @key(fields: ["name"]) {
+  id: ID!
+  name: String!
+  favorite: Species
+  oldName: String @deprecated(reason: "use name")
+}
+
+type Trainer {
+  id: ID!
+  name: String!
+  team: SpeciesMove
+}
+
+type Species {
+  id: ID!
+  name: String!
+  move: SpeciesMove
+  friends: [Species!]
+}
+
+type SpeciesMove {
+  name: String!
+  power: Int
+}
+
+type SpeciesConnection {
+  edges: [SpeciesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SpeciesEdge {
+  node: Species!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+input SpeciesFilter {
+  term: String!
+  limit: Int @deprecated(reason: "use take")
+}
+
+enum Rarity {
+  COMMON @deprecated(reason: "boring")
+  RARE
+}

@@ -1,0 +1,53 @@
+{
+  "name": "@flamme/effect",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Effect-native bindings for Flamme: queries, mutations and subscriptions as Effects and as atoms.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "import": "./dist/vue/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@flamme/runtime": "workspace:*"
+  },
+  "peerDependencies": {
+    "@effect/atom-vue": "4.0.0-rc.115",
+    "effect": "4.0.0-rc.115",
+    "vue": "3.5.42",
+    "vue-router": "5.3.1"
+  },
+  "peerDependenciesMeta": {
+    "@effect/atom-vue": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "vue-router": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@effect/atom-vue": "4.0.0-rc.115",
+    "@flamme/router": "workspace:*",
+    "effect": "4.0.0-rc.115",
+    "vue": "3.5.42",
+    "vue-router": "5.3.1"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  }
+}

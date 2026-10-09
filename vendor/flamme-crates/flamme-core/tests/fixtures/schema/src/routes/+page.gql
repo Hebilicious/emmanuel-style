@@ -1,0 +1,17 @@
+query Search($filter: SearchFilter) {
+	search(filter: $filter) {
+		... on Species {
+			id
+			name
+			region
+		}
+		... on Trainer {
+			id
+			name
+		}
+		... on Gym {
+			id
+			name
+		}
+	}
+}

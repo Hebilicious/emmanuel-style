@@ -1,0 +1,49 @@
+{
+  "name": "@flamme/router",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "vue-router data-loader adapter and the loader-backed query handle.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./auto": {
+      "types": "./dist/auto.d.ts",
+      "import": "./dist/auto.js"
+    },
+    "./codegen": {
+      "types": "./dist/codegen.d.ts",
+      "import": "./dist/codegen.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@flamme/core": "workspace:*",
+    "@flamme/runtime": "workspace:*",
+    "@flamme/vue": "workspace:*",
+    "graphql": "16.14.2"
+  },
+  "devDependencies": {
+    "vue": "3.5.42",
+    "@types/node": "24.13.5"
+  },
+  "peerDependencies": {
+    "vue": "3.5.42",
+    "vue-router": "5.3.1"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  },
+  "peerDependenciesMeta": {
+    "vue-router": {
+      "optional": false
+    }
+  }
+}

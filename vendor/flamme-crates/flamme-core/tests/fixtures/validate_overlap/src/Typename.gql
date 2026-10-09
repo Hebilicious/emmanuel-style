@@ -1,0 +1,6 @@
+query Typename {
+  species(id: "1") {
+    x: name
+    x: __typename
+  }
+}

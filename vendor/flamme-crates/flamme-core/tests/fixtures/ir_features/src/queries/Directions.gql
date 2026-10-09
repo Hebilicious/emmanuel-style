@@ -1,0 +1,9 @@
+query Directions {
+	back(last: 2) @paginate(mode: Infinite, name: "Back_Items") {
+		edges {
+			node {
+				id
+			}
+		}
+	}
+}

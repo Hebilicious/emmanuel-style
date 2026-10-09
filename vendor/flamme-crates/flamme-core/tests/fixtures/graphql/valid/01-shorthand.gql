@@ -1,0 +1,6 @@
+# A shorthand query, with the commas and comments graphql-js ignores.
+{
+  hero,   # the hero
+  name
+  friends { totalCount }
+}

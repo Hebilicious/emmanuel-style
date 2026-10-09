@@ -1,35 +1,104 @@
 packages:
   - 'packages/*'
+  # Flamme is vendored, not published: the workspace is the only source of it, and
+  # the Astro package stays in place beside the new one so the two can be compared.
+  - 'vendor/flamme/*'
+
+# One version of Vue and its router for the whole workspace. The vendored framework
+# packages resolve their peers against these, so no second copy can appear through a
+# different peer set: two copies mean two sets of injection keys, and a `RouterView`
+# then cannot find the router it is rendered under.
+overrides:
+  vue: 3.5.42
+  vue-router: 5.3.1
+
+allowBuilds:
+  dprint: true
+  esbuild: true
+  lefthook: true
+  workerd: true
 
 catalogs:
+  api:
+    "@types/node": "24.13.5"
+    "hono": "4.13.8"
+    "typescript": "6.0.3"
+    "wrangler": "4.133.0"
   astro:
-    "@hebilicious/cssforge": "jsr:^0.4.1"
-    "astro": "^5.15.1"
-    "@astrojs/vue": "^5.1.1"
-    "@vite-pwa/astro": "^1.1.1"
-    "@vueuse/core": "^14.0.0"
-    "vue": "^3.5.22"
-    "rehype-autolink-headings": "^7.1.0"
-    "rehype-slug": "^6.0.0"
-    "@microflash/rehype-figure": "^2.1.4"
+    "@astrojs/vue": "7.0.3"
+    "@hebilicious/cssforge": "jsr:0.4.1"
+    "@astrojs/markdown-remark": "7.3.1"
+    "@microflash/rehype-figure": "2.1.4"
+    "@vueuse/core": "15.0.0"
+    "astro": "7.3.3"
+    "rehype-autolink-headings": "7.1.0"
+    "rehype-slug": "6.0.0"
+    "vue": "3.5.42"
   nuxt:
-    "@nuxt/devtools": "latest"
-    "@nuxt/image": "1.0.0-rc.1"
-    "@types/node": "^18"
-    "@unocss/nuxt": "^0.53.1"
-    "@unocss/transformer-directives": "^0.53.1"
-    "@vite-pwa/assets-generator": "^0.0.2"
-    "@vite-pwa/nuxt": "^0.1.0"
-    "@vue/test-utils": "^2.3.2"
-    "@vueuse/nuxt": "^10.1.2"
-    "jsdom": "^22.1.0"
-    "nuxt": "^3.5.2"
-    "postcss": "^8.4.24"
-    "postcss-100vh-fix": "^1.0.2"
-    "postcss-nested": "^6.0.1"
-    "postcss-viewport-height-correction": "^1.1.1"
-    "vitest": "^0.32.0"
-    "wrangler": "^3.1.0"
-    "@unocss/reset": "^0.53.1"
-    "@vueuse/core": "^10.1.2"
-    
+    "@nuxt/devtools": "3.4.2"
+    "@nuxt/image": "2.1.0"
+    "@types/node": "24.13.5"
+    "@unocss/nuxt": "66.10.5"
+    "@unocss/reset": "66.10.5"
+    "@unocss/transformer-directives": "66.10.5"
+    "@vite-pwa/assets-generator": "2.0.0"
+    "@vite-pwa/nuxt": "1.1.1"
+    "@vue/test-utils": "2.5.1"
+    "@vueuse/core": "15.0.0"
+    "@vueuse/nuxt": "15.0.0"
+    "jsdom": "30.1.0"
+    "nuxt": "4.5.2"
+    "postcss": "8.5.28"
+    "postcss-100vh-fix": "2.0.0"
+    "postcss-nested": "8.0.1"
+    "postcss-viewport-height-correction": "1.1.1"
+    "vitest": "5.0.1"
+    "wrangler": "4.133.0"
+
+minimumReleaseAgeExclude:
+  - '@astrojs/vue@7.0.3'
+  - '@biomejs/biome@2.5.14'
+  - '@biomejs/cli-darwin-arm64@2.5.14'
+  - '@biomejs/cli-darwin-x64@2.5.14'
+  - '@biomejs/cli-linux-arm64-musl@2.5.14'
+  - '@biomejs/cli-linux-arm64@2.5.14'
+  - '@biomejs/cli-linux-x64-musl@2.5.14'
+  - '@biomejs/cli-linux-x64@2.5.14'
+  - '@biomejs/cli-win32-arm64@2.5.14'
+  - '@biomejs/cli-win32-x64@2.5.14'
+  - '@unocss/cli@66.10.5'
+  - '@unocss/config@66.10.5'
+  - '@unocss/core@66.10.5'
+  - '@unocss/extractor-arbitrary-variants@66.10.5'
+  - '@unocss/inspector@66.10.5'
+  - '@unocss/nuxt@66.10.5'
+  - '@unocss/preset-attributify@66.10.5'
+  - '@unocss/preset-icons@66.10.5'
+  - '@unocss/preset-mini@66.10.5'
+  - '@unocss/preset-tagify@66.10.5'
+  - '@unocss/preset-typography@66.10.5'
+  - '@unocss/preset-uno@66.10.5'
+  - '@unocss/preset-web-fonts@66.10.5'
+  - '@unocss/preset-wind3@66.10.5'
+  - '@unocss/preset-wind4@66.10.5'
+  - '@unocss/preset-wind@66.10.5'
+  - '@unocss/reset@66.10.5'
+  - '@unocss/rollup@66.10.5'
+  - '@unocss/rule-utils@66.10.5'
+  - '@unocss/transformer-attributify-jsx@66.10.5'
+  - '@unocss/transformer-compile-class@66.10.5'
+  - '@unocss/transformer-directives@66.10.5'
+  - '@unocss/transformer-variant-group@66.10.5'
+  - '@unocss/vite@66.10.5'
+  - '@unocss/webpack@66.10.5'
+  - '@vue/test-utils@2.5.1'
+  - '@vueuse/core@15.0.0'
+  - '@vueuse/metadata@15.0.0'
+  - '@vueuse/nuxt@15.0.0'
+  - '@vueuse/shared@15.0.0'
+  - astro@7.3.3
+  - jsdom@30.1.0
+  - miniflare@5.20260916.0-alpha
+  - unocss@66.10.5
+  - wrangler@4.133.0
+  - '@cloudflare/workers-types@5.20260917.1'

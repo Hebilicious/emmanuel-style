@@ -1,0 +1,15 @@
+type Query {
+  species: [Species!]!
+  move(id: Int!): SpeciesMove
+}
+
+type Species {
+  id: Int!
+  name: String!
+  moves: [SpeciesMove!]!
+}
+
+type SpeciesMove {
+  name: String!
+  power: Int!
+}

@@ -1,0 +1,8 @@
+# 😀 a comment with an astral character in it
+{
+  field
+  # 😀 another one
+  other(arg: "😀") {
+    nested
+  }
+}

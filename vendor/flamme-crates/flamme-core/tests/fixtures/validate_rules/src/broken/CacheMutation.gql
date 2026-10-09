@@ -1,0 +1,5 @@
+mutation CacheMutation @cache(policy: NetworkOnly) {
+  favorite(id: "1") {
+    id
+  }
+}

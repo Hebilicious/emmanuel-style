@@ -1,0 +1,6 @@
+query Info {
+	species(id: 1) {
+		id
+		name
+	}
+}

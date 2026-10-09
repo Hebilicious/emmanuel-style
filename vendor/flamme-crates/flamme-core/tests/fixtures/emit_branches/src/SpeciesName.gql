@@ -1,0 +1,3 @@
+fragment SpeciesName on Species {
+  name
+}

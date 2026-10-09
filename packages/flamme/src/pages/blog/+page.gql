@@ -1,0 +1,13 @@
+query Blog {
+	site {
+		name
+		date
+	}
+	posts {
+		slug
+		title
+		description
+		date
+		tags
+	}
+}

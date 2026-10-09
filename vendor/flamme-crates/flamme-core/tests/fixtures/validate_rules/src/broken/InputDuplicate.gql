@@ -1,0 +1,5 @@
+query InputDuplicate {
+  speciesFiltered(filter: { term: "a", term: "b" }) {
+    id
+  }
+}

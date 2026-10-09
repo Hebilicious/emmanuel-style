@@ -1,0 +1,4 @@
+fragment MoveA on SpeciesMove {
+  name
+  power
+}

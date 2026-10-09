@@ -1,0 +1,11 @@
+query Board {
+  ...QueryFrag
+  species {
+    id
+    ...SpeciesA
+    ...SpeciesB
+  }
+  move(id: 1) {
+    ...MoveA
+  }
+}

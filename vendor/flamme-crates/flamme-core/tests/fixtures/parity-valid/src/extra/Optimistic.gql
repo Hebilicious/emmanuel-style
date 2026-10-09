@@ -1,0 +1,8 @@
+mutation Optimistic($id: Int!) {
+	toggleFavorite(id: $id) {
+		species {
+			id @optimisticKey
+			favorite
+		}
+	}
+}

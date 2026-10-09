@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  // `AbortSignal`/`AbortController` are part of the §5.1/§5.2 signatures (`TransportFn`,
+  // `RequestContext.signal`) but live in no ES lib; the DOM lib is the only type source available
+  // here because the base config sets `types: []` and runtime is not a Node-side package. It is a
+  // *type* dependency only: no DOM API is called at runtime (§2.2 rule 3).
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

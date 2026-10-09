@@ -1,0 +1,3 @@
+fragment SpreadA on User {
+  name
+}

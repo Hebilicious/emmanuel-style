@@ -1,0 +1,22 @@
+{
+  "name": "@flamme/runtime",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Network layer, normalized cache and reactive stores.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  }
+}

@@ -1,0 +1,6 @@
+mutation Rename($id: Int!, $name: String!) {
+  rename(id: $id, name: $name) @optimisticKey {
+    id
+    name
+  }
+}

@@ -1,0 +1,11 @@
+/home/heb/GitHub/emmanuelstyle/vendor/target/release/deps/convert_case-b4c9450ef39c41d6.d: /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/lib.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/boundary.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/case.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/converter.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/pattern.rs
+
+/home/heb/GitHub/emmanuelstyle/vendor/target/release/deps/libconvert_case-b4c9450ef39c41d6.rlib: /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/lib.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/boundary.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/case.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/converter.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/pattern.rs
+
+/home/heb/GitHub/emmanuelstyle/vendor/target/release/deps/libconvert_case-b4c9450ef39c41d6.rmeta: /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/lib.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/boundary.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/case.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/converter.rs /home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/pattern.rs
+
+/home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/lib.rs:
+/home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/boundary.rs:
+/home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/case.rs:
+/home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/converter.rs:
+/home/heb/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/convert_case-0.12.0/src/pattern.rs:

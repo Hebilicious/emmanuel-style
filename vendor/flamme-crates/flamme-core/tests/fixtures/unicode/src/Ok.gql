@@ -1,0 +1,1 @@
+query Ok { species(id: "café 😀") { id name flavor_text } }

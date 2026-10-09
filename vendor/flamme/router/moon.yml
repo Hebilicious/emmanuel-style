@@ -1,0 +1,15 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+layer: 'library'
+language: 'typescript'
+tags: ['typescript', 'library']
+
+tasks:
+  test:
+    args:
+      [
+        '--project',
+        'router',
+        '--coverage.include=packages/router/src/**/*.ts',
+        '--coverage.reportsDirectory=coverage/router',
+      ]

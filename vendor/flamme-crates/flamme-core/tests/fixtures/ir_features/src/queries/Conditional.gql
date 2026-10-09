@@ -1,0 +1,8 @@
+query Conditional($withAuthor: Boolean!, $withComments: Boolean!) {
+	feed {
+		id
+		...PostCard @include(if: $withAuthor)
+		...PostCard @skip(if: $withComments)
+		...PostCard
+	}
+}

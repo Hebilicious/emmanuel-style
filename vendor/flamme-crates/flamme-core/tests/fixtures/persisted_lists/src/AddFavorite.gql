@@ -1,0 +1,8 @@
+mutation AddFavorite($id: Int!) {
+  addFavorite(id: $id) {
+    species {
+      id
+      ...Found_toggle
+    }
+  }
+}

@@ -1,0 +1,74 @@
+{
+ "config": {
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+   "src/**/*.{vue,ts,graphql,gql}",
+   "src/pages/**/+page.gql",
+   "src/pages/**/+page.graphql",
+   "src/pages/**/+layout.gql",
+   "src/pages/**/+layout.graphql",
+   "src/pages/**/+page.ts",
+   "src/pages/**/+layout.ts"
+  ],
+  "exclude": [
+   "server/schema.graphql"
+  ],
+  "runtimeDir": "/tmp/flamme-oracle-3m1umV",
+  "compiler": "ts",
+  "projectDir": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_more",
+  "routing": {
+   "pagesDir": "src/pages",
+   "documentFile": "+page.gql",
+   "layoutDocumentFile": "+layout.gql",
+   "documentExtensions": [
+    ".gql",
+    ".graphql"
+   ],
+   "document": "auto",
+   "compose": "route",
+   "params": {}
+  },
+  "scalars": {},
+  "types": {},
+  "defaultKeys": [
+   "id"
+  ],
+  "defaultCachePolicy": "CacheOrNetwork",
+  "defaultPartial": false,
+  "defaultPaginateMode": "Infinite",
+  "defaultListPosition": "last",
+  "defaultListTarget": "single",
+  "defaultFragmentMasking": "enable",
+  "logLevel": "info"
+ },
+ "schema": {
+  "sdl": "schema {\n  query: Query\n  subscription: NotAnObject\n}\n\ntype Query {\n  a(x: Int! @deprecated(reason: \"no\")): Int\n  b: [Int]\n  c(__a: Int): Int\n}\n\ninput NotAnObject {\n  a: Int\n}\n\ninput BadInput {\n  f: Query\n  __b: Int\n}\n\nunion Dup = Query | Query\n\nenum BadEnum {\n  __a\n  OK\n}\n\ninterface L {\n  xs: [Int]\n  x: Int!\n}\n\ntype LT implements L {\n  xs: [String]\n  x: Int\n}\n\ninterface A1 implements A2 {\n  x: Int\n}\n\ninterface A2 implements A1 {\n  x: Int\n}\n\ndirective @badArg(x: Int! @deprecated(reason: \"no\")) on FIELD\n",
+  "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_more/server/schema.graphql"
+ },
+ "inputs": [
+  {
+   "relative": "src/Only.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_more/src/Only.gql",
+   "text": "query Only {\n  a\n}\n",
+   "size": 19,
+   "mtimeMs": 1789501859998.8408
+  }
+ ],
+ "files": [],
+ "diagnostics": [
+  {
+   "code": "FLM2002",
+   "severity": "error",
+   "message": "Invalid schema: Subscription root type must be Object type if provided, it cannot be NotAnObject.\n\nRequired argument @badArg(x:) cannot be deprecated.\n\nRequired argument Query.a(x:) cannot be deprecated.\n\nName \"__a\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nThe type of BadInput.f must be Input Type but got: Query.\n\nName \"__b\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nUnion type Dup can only include type Query once.\n\nName \"__a\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nInterface field L.xs expects type [Int] but LT.xs is type [String].\n\nInterface field L.x expects type Int! but LT.x is type Int.\n\nType A1 cannot implement A2 because it would create a circular reference.\n\nType A2 cannot implement A1 because it would create a circular reference.",
+   "location": {
+    "file": "src/Only.gql",
+    "line": 1,
+    "column": 1,
+    "length": 1
+   }
+  }
+ ],
+ "artifacts": [],
+ "written": []
+}

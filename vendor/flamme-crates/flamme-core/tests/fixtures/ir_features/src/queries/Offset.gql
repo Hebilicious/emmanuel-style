@@ -1,0 +1,10 @@
+query OffsetPage($offset: Int = 0, $limit: Int = 5) {
+	paged(offset: $offset, limit: $limit) @paginate(name: "Offset_Paged") {
+		edges {
+			node {
+				id
+				...PostCard @mask_disable @required
+			}
+		}
+	}
+}

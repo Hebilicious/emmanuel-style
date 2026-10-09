@@ -1,0 +1,30 @@
+{
+	"name": "@emmanuel/schema",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "The GraphQL schema for emmanuel.style, built with Pothos, plus the generated SDL the Flamme compiler validates against.",
+	"exports": {
+		".": {
+			"types": "./src/index.ts",
+			"import": "./src/index.ts"
+		},
+		"./sdl": {
+			"types": "./src/sdl.ts",
+			"import": "./src/sdl.ts"
+		}
+	},
+	"scripts": {
+		"emit": "tsx src/emit.ts",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@pothos/core": "4.15.1",
+		"graphql": "16.14.2"
+	},
+	"devDependencies": {
+		"@types/node": "24.13.5",
+		"tsx": "4.20.0",
+		"typescript": "6.0.3"
+	}
+}

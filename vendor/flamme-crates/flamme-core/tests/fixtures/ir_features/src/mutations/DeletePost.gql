@@ -1,0 +1,9 @@
+mutation DeletePost($id: ID!) {
+	deletePost(id: $id) {
+		post {
+			id
+			...Posts_remove @prepend
+			...Pinned_toggle @listTarget(name: "Pinned")
+		}
+	}
+}

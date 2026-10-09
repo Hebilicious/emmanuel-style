@@ -1,0 +1,15 @@
+query Feed($first: Int = 10) {
+	posts(first: $first) @paginate(mode: Infinite, name: "Feed_Posts") {
+		edges @loading(count: 3) {
+			node {
+				id
+				title
+				...PostCard
+			}
+		}
+		pageInfo {
+			hasNextPage
+			startCursor
+		}
+	}
+}

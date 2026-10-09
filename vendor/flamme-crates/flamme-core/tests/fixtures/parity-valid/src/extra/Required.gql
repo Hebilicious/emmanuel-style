@@ -1,0 +1,9 @@
+query Required($id: Int!) {
+	species(id: $id) {
+		id
+		name @required
+		sprites @required {
+			front
+		}
+	}
+}

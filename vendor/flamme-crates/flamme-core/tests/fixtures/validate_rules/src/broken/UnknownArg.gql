@@ -1,0 +1,5 @@
+query UnknownArg {
+  species(id: "1", nope: 2) {
+    id
+  }
+}

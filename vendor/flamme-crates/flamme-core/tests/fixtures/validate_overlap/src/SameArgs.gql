@@ -1,0 +1,8 @@
+query SameArgs {
+  speciesFiltered(filter: { term: "a", limit: 1 }) {
+    id
+  }
+  speciesFiltered(filter: { limit: 1, term: "a" }) {
+    id
+  }
+}

@@ -1,0 +1,5 @@
+query DeprecatedEnum {
+  speciesByRarity(rarity: COMMON) {
+    id
+  }
+}

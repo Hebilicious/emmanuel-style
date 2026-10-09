@@ -1,0 +1,226 @@
+---
+/**
+* The repository card.
+*
+* A library entry opens this instead of leaving the site: the card shows what the
+* project is, and its own button opens the repository in a new tab. Renders
+* nothing until a repository is asked for, and reads its data from the command
+* index rather than duplicating it into every entry.
+*/
+---
+
+<div class="Card" data-repo-card hidden>
+  <div
+    class="Sheet"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="repo-name">
+    <p class="Overline label" data-repo-category></p>
+    <h2 class="Name display" id="repo-name" data-repo-name></h2>
+    <p class="Meta">
+      <span class="Lang" data-repo-lang></span>
+      <span class="Sep" data-repo-archived-sep aria-hidden="true">·</span>
+      <span class="Flag" data-repo-archived>archived</span>
+    </p>
+    <p class="Description" data-repo-description></p>
+    <div class="Choices">
+      <button type="button" class="Choice" data-repo-open>
+        <span class="Key" aria-hidden="true">o</span>
+        Open on GitHub
+      </button>
+      <button type="button" class="Choice" data-repo-close>
+        <span class="Key" aria-hidden="true">Esc</span>
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+/*
+ * A card, not a page: centred over a scrim so it cannot be missed, and sized to
+ * its content so a short description does not leave a tall empty sheet.
+ */
+.Card {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 20;
+}
+
+.Card[hidden] {
+  display: none;
+}
+
+.Sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  width: min(42rem, calc(100vw - 4rem));
+  max-height: 70dvh;
+  padding: var(--spacing_fluid-flow-space-s);
+  background: var(--surface);
+  border: var(--spacing-size-rule) double var(--rule-strong);
+  box-shadow: 0 1rem 3rem rgb(0 0 0 / 45%);
+}
+
+.Overline {
+  color: var(--accent);
+}
+
+.Name {
+  font-size: var(--typography_fluid-display-font-size-display-s);
+  line-height: 1.1;
+}
+
+.Meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.Flag {
+  color: var(--muted);
+}
+
+.Description {
+  color: var(--muted);
+}
+
+.Choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-top: var(--spacing_fluid-tight-space-tight-s);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.Choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding: var(--spacing_fluid-tight-space-tight-xs)
+    var(--spacing_fluid-tight-space-tight-m);
+  background: none;
+  border: var(--spacing-size-hairline) solid var(--rule);
+  color: var(--ink);
+  font: inherit;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.Choice:hover,
+.Choice:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+</style>
+
+<script>
+import { pageReady } from "../utils/pageReady"
+
+interface Repository {
+	name: string
+	href: string
+	description: string
+	language: string
+	archived: boolean
+	homepage: string | null
+	category: string
+}
+
+/** The repository records, read from the build-time index. */
+const repositories = (): Repository[] => {
+	const node = document.getElementById("command-index")
+	if (!node?.textContent) return []
+	try {
+		const parsed = JSON.parse(node.textContent) as {
+			repositories?: Repository[]
+		}
+		return parsed.repositories ?? []
+	} catch {
+		return []
+	}
+}
+
+export const openRepositoryCard = (name: string) => {
+	const card = document.querySelector<HTMLElement>("[data-repo-card]")
+	const record = repositories().find((item) => item.name === name)
+	if (!card || !record) return false
+
+	const set = (selector: string, value: string) => {
+		const node = card.querySelector<HTMLElement>(selector)
+		if (node) node.textContent = value
+	}
+
+	set("[data-repo-name]", record.name)
+	set("[data-repo-category]", record.category)
+	set("[data-repo-lang]", record.language)
+	set("[data-repo-description]", record.description)
+
+	card.querySelector<HTMLElement>("[data-repo-archived]")!.hidden =
+		!record.archived
+	card.querySelector<HTMLElement>("[data-repo-archived-sep]")!.hidden =
+		!record.archived
+	card.hidden = false
+	card.querySelector<HTMLButtonElement>("[data-repo-open]")?.focus()
+	return true
+}
+
+pageReady((signal) => {
+	const card = document.querySelector<HTMLElement>("[data-repo-card]")
+	if (!card) return
+
+	const name = () =>
+		card.querySelector<HTMLElement>("[data-repo-name]")?.textContent ?? ""
+
+	const close = () => {
+		card.hidden = true
+	}
+
+	const open = () => {
+		const record = repositories().find((item) => item.name === name())
+		if (record) window.open(record.href, "_blank", "noopener,noreferrer")
+		close()
+	}
+
+	card.querySelector("[data-repo-open]")?.addEventListener("click", open)
+	card.querySelector("[data-repo-close]")?.addEventListener("click", close)
+
+	document.addEventListener(
+		"keydown",
+		(event) => {
+			if (card.hidden) return
+			if (event.key === "o" || event.key === "O" || event.key === "Enter") {
+				event.preventDefault()
+				open()
+				return
+			}
+			if (event.key === "Escape") {
+				event.preventDefault()
+				close()
+			}
+		},
+		{ signal }
+	)
+
+	// A click outside the sheet closes it, the way a dialog behaves.
+	card.addEventListener(
+		"click",
+		(event) => {
+			if (event.target === card) close()
+		},
+		{ signal }
+	)
+
+	document.addEventListener("repo:card", (event) => {
+		const detail = (event as CustomEvent<string>).detail
+		openRepositoryCard(detail)
+	})
+})
+</script>

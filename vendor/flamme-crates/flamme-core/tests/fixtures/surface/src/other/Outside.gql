@@ -1,0 +1,4 @@
+fragment MoveDisplay on SpeciesMove @loading {
+	learned_at
+	method
+}

@@ -1,0 +1,4 @@
+fragment SpeciesA on Species {
+  id
+  name
+}

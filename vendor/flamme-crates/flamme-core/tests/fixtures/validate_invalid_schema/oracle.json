@@ -1,0 +1,92 @@
+{
+ "config": {
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+   "src/**/*.{vue,ts,graphql,gql}",
+   "src/pages/**/+page.gql",
+   "src/pages/**/+page.graphql",
+   "src/pages/**/+layout.gql",
+   "src/pages/**/+layout.graphql",
+   "src/pages/**/+page.ts",
+   "src/pages/**/+layout.ts"
+  ],
+  "exclude": [
+   "server/schema.graphql"
+  ],
+  "runtimeDir": "/tmp/flamme-oracle-jzbPQ5",
+  "compiler": "ts",
+  "projectDir": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema",
+  "routing": {
+   "pagesDir": "src/pages",
+   "documentFile": "+page.gql",
+   "layoutDocumentFile": "+layout.gql",
+   "documentExtensions": [
+    ".gql",
+    ".graphql"
+   ],
+   "document": "auto",
+   "compose": "route",
+   "params": {}
+  },
+  "scalars": {},
+  "types": {},
+  "defaultKeys": [
+   "id"
+  ],
+  "defaultCachePolicy": "CacheOrNetwork",
+  "defaultPartial": false,
+  "defaultPaginateMode": "Infinite",
+  "defaultListPosition": "last",
+  "defaultListTarget": "single",
+  "defaultFragmentMasking": "enable",
+  "logLevel": "info"
+ },
+ "schema": {
+  "sdl": "schema {\n  query: NotAnObject\n}\n\ninput NotAnObject {\n  a: Int\n}\n\ntype Empty\n\nunion EmptyUnion\n\nenum EmptyEnum\n\ninput EmptyInput\n",
+  "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema/server/schema.graphql"
+ },
+ "inputs": [
+  {
+   "relative": "src/First.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema/src/First.gql",
+   "text": "query First {\n  field\n}\n",
+   "size": 24,
+   "mtimeMs": 1789501256477.2705
+  },
+  {
+   "relative": "src/Second.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema/src/Second.gql",
+   "text": "query Second {\n  field\n}\n",
+   "size": 25,
+   "mtimeMs": 1789501256477.932
+  }
+ ],
+ "files": [],
+ "diagnostics": [
+  {
+   "code": "FLM2002",
+   "severity": "error",
+   "message": "Invalid schema: Query root type must be Object type, it cannot be NotAnObject.\n\nType Empty must define one or more fields.\n\nUnion type EmptyUnion must define one or more member types.\n\nEnum type EmptyEnum must define one or more values.\n\nInput Object type EmptyInput must define one or more fields.",
+   "location": {
+    "file": "src/First.gql",
+    "line": 1,
+    "column": 1,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM2002",
+   "severity": "error",
+   "message": "Invalid schema: Query root type must be Object type, it cannot be NotAnObject.\n\nType Empty must define one or more fields.\n\nUnion type EmptyUnion must define one or more member types.\n\nEnum type EmptyEnum must define one or more values.\n\nInput Object type EmptyInput must define one or more fields.",
+   "location": {
+    "file": "src/Second.gql",
+    "line": 1,
+    "column": 1,
+    "length": 1
+   }
+  }
+ ],
+ "artifacts": [],
+ "written": []
+}

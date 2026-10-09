@@ -1,0 +1,14 @@
+query Paginated {
+  species(first: 2) @paginate(mode: Infinite, name: "Paged_Species") {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

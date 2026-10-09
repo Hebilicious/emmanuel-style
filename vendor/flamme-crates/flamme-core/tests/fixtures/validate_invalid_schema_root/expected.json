@@ -1,0 +1,13 @@
+[
+ {
+  "code": "FLM2002",
+  "severity": "error",
+  "message": "Invalid schema: Query root type must be provided.",
+  "location": {
+   "file": "src/Only.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ }
+]

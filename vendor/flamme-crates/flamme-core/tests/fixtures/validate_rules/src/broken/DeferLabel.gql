@@ -1,0 +1,13 @@
+query DeferLabel {
+  viewer {
+    id
+    ... on User @defer(label: "same") {
+      name
+    }
+    ... on User @defer(label: "same") {
+      favorite {
+        id
+      }
+    }
+  }
+}

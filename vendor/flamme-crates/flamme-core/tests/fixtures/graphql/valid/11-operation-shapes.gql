@@ -1,0 +1,11 @@
+query query @dir {
+  a
+}
+
+mutation {
+  b
+}
+
+subscription subscription @dir(x: 1) {
+  c: c
+}

@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // A Vite plugin is Node-side build tooling: it resolves paths and inspects
+    // `process`. `@types/node` is a devDependency of this package, so the types
+    // resolve under pnpm's strict layout.
+    "types": ["node"],
+    // The runtime barrel's transport seam is DOM-typed and the plugin typechecks
+    // it through `@flamme/core`; see the note in packages/core/tsconfig.json.
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

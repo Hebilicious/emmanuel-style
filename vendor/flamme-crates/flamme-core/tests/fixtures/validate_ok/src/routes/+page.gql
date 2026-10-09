@@ -1,0 +1,21 @@
+query ViewerQuery($cursor: String) {
+  viewer {
+    id
+    name
+    favorite {
+      ...SpeciesCard
+    }
+  }
+  speciesList(first: 10, after: $cursor) @paginate(name: "AllSpecies") {
+    edges {
+      node {
+        id
+        ...SpeciesCard
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}

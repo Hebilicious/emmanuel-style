@@ -1,0 +1,12 @@
+query EmbeddedPageInfo {
+  speciesList(first: 1) {
+    edges {
+      node {
+        id
+      }
+    }
+    pageInfo {
+      ...PageInfoFields
+    }
+  }
+}

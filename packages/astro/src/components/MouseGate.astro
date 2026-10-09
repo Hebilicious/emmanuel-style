@@ -1,0 +1,133 @@
+---
+/**
+* The mouse gate.
+*
+* Navigation on this site is keyboard only, so a pointer click does not follow
+* a link. Instead it asks, once, whether the visitor actually wants the mouse:
+* "Yes, I need a mouse" turns pointer navigation on for the session, and the
+* other answer keeps the terminal as the way around.
+*
+* The interception is a capture-phase listener on the document, so the original
+* anchors keep their hrefs: search engines, screen readers and copy-link all
+* still see real links.
+*/
+---
+
+<div class="Gate" data-gate hidden>
+  <div class="Panel" role="dialog" aria-modal="true" aria-labelledby="gate-ask">
+    <p class="Ask" id="gate-ask" data-gate-ask>Enable mouse navigation?</p>
+    <p class="Aside">This site is keyboard only.</p>
+    <div class="Choices">
+      <button type="button" class="Choice" data-gate-yes>
+        <span class="Key" aria-hidden="true">y</span>
+        Yes — I need a mouse
+      </button>
+      <button type="button" class="Choice" data-gate-no>
+        <span class="Key" aria-hidden="true">n</span>
+        No — I use vim btw
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+import { createMouseGate } from "../utils/mouseGate"
+
+createMouseGate()
+</script>
+
+<style>
+.Gate {
+  position: fixed;
+  /*
+   * Dead centre of the screen. The pointer is disabled and its cursor hidden by
+   * default, so a click is unexpected: the question has to be impossible to miss
+   * rather than tucked into a corner.
+   */
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--spacing_fluid-gutter-space-gutter-s);
+  background: color-mix(in oklab, var(--paper) 84%, transparent);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+}
+
+.Gate[hidden] {
+  display: none;
+}
+
+/* One dialog at a time: the mouse question, or the external-link question. */
+.Panel[hidden] {
+  display: none;
+}
+
+.Panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+  width: min(32rem, 100%);
+  padding: var(--spacing_fluid-flow-space-s);
+  border: var(--spacing-size-rule) double var(--accent);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.Ask {
+  font-size: var(--typography_fluid-content-font-size-m);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.Aside {
+  color: var(--faint);
+}
+
+.Choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-flow-space-s);
+}
+
+.Choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  min-width: 14rem;
+  padding: var(--spacing_fluid-tight-space-tight-xs)
+    var(--spacing_fluid-tight-space-tight-m);
+  border: var(--spacing-size-hairline) solid var(--rule-strong);
+  color: var(--ink);
+}
+
+.Choice:hover,
+.Choice:focus-visible {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.Key {
+  padding: 0 0.35em;
+  border: var(--spacing-size-hairline) solid var(--accent);
+  color: var(--accent);
+  font-weight: var(--typography-weight-body-bold);
+}
+
+.Choice:hover .Key,
+.Choice:focus-visible .Key {
+  border-color: var(--accent-ink);
+  color: var(--accent-ink);
+}
+
+.Aside {
+  color: var(--faint);
+}
+
+.Aside kbd {
+  padding: 0 0.3em;
+  border: var(--spacing-size-hairline) solid var(--rule);
+}
+</style>

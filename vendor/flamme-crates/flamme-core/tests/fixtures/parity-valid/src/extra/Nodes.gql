@@ -1,0 +1,13 @@
+query Nodes($id: Int!) {
+	node(id: $id) {
+		id
+		... on Species {
+			name
+			favorite
+		}
+		... on SearchPage {
+			title
+			total
+		}
+	}
+}

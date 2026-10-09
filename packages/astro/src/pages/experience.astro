@@ -1,0 +1,319 @@
+---
+import ExperienceChart from "../components/ExperienceChart.astro"
+import {
+	education,
+	formatDuration,
+	formatMonth,
+	monthsBetween,
+	roles
+} from "../data/experience"
+import Layout from "../layouts/Layout.astro"
+
+const profile = "https://www.linkedin.com/in/emmanuel-donnet"
+
+const totalMonths = roles.reduce(
+	(sum, role) => sum + monthsBetween(role.start, role.end),
+	0
+)
+---
+
+<Layout
+  title="Experience - Emmanuel"
+  path="/experience"
+  masthead="Experience"
+  section="the ledger">
+  <div class="LedgerFlow" data-flow data-columns>
+    <ExperienceChart standAlone />
+
+    <section class="Ledger" aria-label="Roles" data-flatten data-label="roles">
+      {roles.map((role) => (
+        <article
+          class="Role"
+          data-screen
+          data-label={role.company}
+          id={`role-${role.company.toLowerCase().replace(/\s+/g, "-")}`}>
+          <header class="RoleHead">
+            <h2 class="Title display">{role.title}</h2>
+            <p class="Company">
+              <span class="Name">{role.company}</span>
+              <span class="Sep" aria-hidden="true">
+                ·
+              </span>
+              <span class="Where">{role.location}</span>
+            </p>
+            <p class="Span">
+              <time datetime={role.start}>{formatMonth(role.start)}</time>
+              <span aria-hidden="true"> → </span>
+              {role.end ? (
+                <time datetime={role.end}>{formatMonth(role.end)}</time>
+              ) : <span>Present</span>}
+              <span class="Sep" aria-hidden="true">
+                ·
+              </span>
+              <span
+                class="Duration">{formatDuration(monthsBetween(role.start, role.end))}</span>
+            </p>
+          </header>
+
+          <div class="RoleBody">
+            <p class="Summary">{role.summary}</p>
+            <ul class="Highlights">
+              {role.highlights.map((item) => <li class="Highlight">{item}</li>)}
+            </ul>
+            <ul class="Stack">
+              {role.stack.map((item) => <li class="Tech">{item}</li>)}
+            </ul>
+          </div>
+        </article>
+      ))}
+    </section>
+
+    <section class="Education" aria-label="Education" data-label="education">
+      <h2 class="SectionTitle label">
+        <span class="accent">#</span>
+        education
+      </h2>
+      {education.map((entry) => (
+        <article class="School">
+          <h3 class="Degree">{entry.degree}</h3>
+          <p class="SchoolMeta">
+            <span class="Name">{entry.school}</span>
+            <span class="Sep" aria-hidden="true">
+              ·
+            </span>
+            <span class="Where">{entry.location}</span>
+            <span class="Sep" aria-hidden="true">
+              ·
+            </span>
+            <span>
+              {formatMonth(entry.start)} → {formatMonth(entry.end)}
+            </span>
+          </p>
+          <p class="Summary">{entry.summary}</p>
+        </article>
+      ))}
+    </section>
+
+    <footer class="Source">
+      <p class="Meta">
+        <span>{roles.length} roles</span>
+        <span class="Sep" aria-hidden="true">·</span>
+        <span>{formatDuration(totalMonths)} total</span>
+        <span class="Sep" aria-hidden="true">·</span>
+        <a
+          class="Link"
+          href={profile}
+          target="_blank"
+          rel="noopener noreferrer">
+          linkedin.com/in/emmanuel-donnet
+        </a>
+      </p>
+    </footer>
+  </div>
+</Layout>
+
+<style>
+.Intro {
+  max-width: 60ch;
+  padding-bottom: var(--spacing_fluid-flow-space-s);
+  border-bottom: var(--spacing-size-rule) double var(--rule-strong);
+  color: var(--muted);
+}
+
+/*
+ * No layout of its own: the paginator sizes the ledger to the screen and the
+ * browser breaks the roles into page-width columns.
+ */
+.Ledger {
+  display: block;
+}
+
+/*
+ * The chart and each section open a page, so the reader never lands mid-way
+ * through one and a section never starts on the right-hand page.
+ */
+.LedgerFlow {
+  display: block;
+}
+
+/*
+ * The chart opens the ledger and each role takes a page. Nothing sets a column
+ * break here: the paginator assigns whole blocks to pages, and a CSS break fought
+ * it and left columns half empty.
+ */
+.LedgerFlow {
+  display: block;
+}
+
+/*
+ * A role has to fit inside one page. A two-column card with a wide label rail
+ * made each role taller than the pane, so roles were clipped however the pages
+ * were cut; stacked and compact, a role is about a third of a page.
+ */
+/*
+ * A role has to fit the ledger's height. A single stacked column ran to 446px,
+ * taller than the space under the chart, so roles were pushed below the fold.
+ * Two columns make it a card about a third of a screen tall.
+ */
+.Role {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  align-items: start;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-block: var(--spacing_fluid-tight-space-tight-s);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.Role:first-child {
+  border-top: 0;
+}
+
+.RoleHead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+}
+
+.Title {
+  font-size: var(--typography_fluid-content-font-size-l);
+}
+
+.Company,
+.Span,
+.SchoolMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.06em;
+}
+
+.Name {
+  color: var(--ink);
+}
+
+.Where,
+.Duration {
+  color: var(--faint);
+}
+
+.Sep {
+  color: var(--faint);
+}
+
+.RoleBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+}
+
+.Summary {
+  color: var(--muted);
+  font-size: var(--typography_fluid-content-font-size-s);
+  /* Clamped, because the card has a fixed height to fit. */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.Highlights {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  line-height: 1.35;
+}
+
+.Highlight {
+  position: relative;
+  padding-left: var(--spacing_fluid-tight-space-tight-m);
+  color: var(--muted);
+}
+
+.Highlight::before {
+  content: "›";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+}
+
+.Stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+}
+
+.Tech {
+  padding: 0 var(--spacing_fluid-tight-space-tight-s);
+  border: var(--spacing-size-hairline) solid var(--rule);
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.Education {
+  display: grid;
+  margin-top: var(--spacing_fluid-flow-space-xl);
+}
+
+.SectionTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-bottom: var(--spacing_fluid-tight-space-tight-s);
+  border-bottom: var(--spacing-size-hairline) solid var(--rule-strong);
+  color: var(--ink);
+}
+
+.School {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-block: var(--spacing_fluid-flow-space-s);
+}
+
+.Degree {
+  font-size: var(--typography_fluid-content-font-size-m);
+}
+
+.Source {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  margin-top: var(--spacing_fluid-flow-space-xl);
+  padding-top: var(--spacing_fluid-flow-space-s);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.Note {
+  max-width: 60ch;
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+}
+
+.Meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.Link {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+@media (max-width: 48rem) {
+  .Role {
+    grid-template-columns: 1fr;
+    gap: var(--spacing_fluid-tight-space-tight-m);
+  }
+}
+</style>

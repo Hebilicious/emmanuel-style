@@ -1,0 +1,18 @@
+query Hero($episode: Episode = JEDI, $withFriends: Boolean! = false, $list: [Int!] = [1, 2, 3], $obj: Input = {a: 1, b: [true, null], c: {d: "x"}}, $n: Int = -0) @cached(ttl: 30) {
+  hero(episode: $episode) {
+    alias: name
+    friends @include(if: $withFriends) {
+      totalCount
+    }
+  }
+}
+
+mutation SetName($id: ID!, $name: String = "hello") {
+  setName(id: $id, name: $name)
+}
+
+subscription OnName {
+  nameChanged {
+    name
+  }
+}

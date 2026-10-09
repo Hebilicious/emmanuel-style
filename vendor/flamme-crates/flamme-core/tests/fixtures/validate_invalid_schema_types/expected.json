@@ -1,0 +1,13 @@
+[
+ {
+  "code": "FLM2002",
+  "severity": "error",
+  "message": "Invalid schema: The type of Query.a must be Output Type but got: Filter.\n\nThe type of Query.b(x:) must be Input Type but got: Query.\n\nInterface field I1.x expected but T1 does not provide it.\n\nInterface field I2.x expects type Int but T2.x is type String.\n\nInterface field argument I3.x(y:) expected but T3.x does not provide it.\n\nObject field T4.x includes required argument y that is missing from the Interface field I4.x.\n\nType T5 must implement I5 because it is implemented by I6.\n\nType I7 cannot implement itself because it would create a circular reference.\n\nType T6 can only implement I8 once.\n\nType T7 must only implement Interface types, it cannot implement U1.\n\nUnion type U2 can only include Object types, it cannot include Int.",
+  "location": {
+   "file": "src/Only.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ }
+]

@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // The adapter boundary and the `./vue` entry read web-platform globals
+    // (`indexedDB`, `localStorage`, `window`, `navigator`), and `vue`/`vue-router`
+    // declare web-platform types, so this package needs the DOM lib.
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

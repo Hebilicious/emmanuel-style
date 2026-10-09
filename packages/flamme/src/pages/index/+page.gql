@@ -1,0 +1,7 @@
+query Home {
+	site {
+		name
+		tagline
+		date
+	}
+}

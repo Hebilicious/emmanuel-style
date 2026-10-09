@@ -1,0 +1,3 @@
+fragment SpreadUser on User {
+  name: id
+}

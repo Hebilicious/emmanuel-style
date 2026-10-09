@@ -1,0 +1,38 @@
+scalar DateTime
+scalar JSON
+scalar Map
+
+enum Rarity {
+  Common
+  Rare
+  Legendary
+}
+
+input SpeciesFilter {
+  name: String
+  rarities: [Rarity!]
+  limit: Int = 10
+  nested: SpeciesFilter
+}
+
+type Query {
+  species(
+    filter: SpeciesFilter
+    since: DateTime
+    weight: Float
+    ratio: Float
+    huge: Float
+    small: Float
+    neg: Float
+    nested: SpeciesFilter
+  ): [Species!]!
+}
+
+type Species {
+  id: Int!
+  name: String!
+  rarity: Rarity!
+  stats: JSON!
+  attributes: Map
+  born: DateTime
+}

@@ -1,0 +1,7 @@
+fragment PostWithAuthor on Post {
+	...PostCard
+	comments {
+		id
+		text
+	}
+}

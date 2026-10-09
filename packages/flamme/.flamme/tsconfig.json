@@ -1,0 +1,52 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "$flamme": [
+        "./index.ts"
+      ],
+      "$flamme/*": [
+        "./*"
+      ]
+    },
+    "rootDirs": [
+      "..",
+      "."
+    ],
+    "target": "ES2023",
+    "lib": [
+      "ES2023"
+    ],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "types": [],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "useUnknownInCatchVariables": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "ambient.d.ts",
+    "index.ts",
+    "props.ts",
+    "runtime/index.ts",
+    "artifacts/**/*.ts",
+    "graphql/**/*.ts",
+    "../src/**/*.ts",
+    "../src/**/*.vue",
+    "../test/**/*.ts",
+    "../vite.config.ts"
+  ]
+}

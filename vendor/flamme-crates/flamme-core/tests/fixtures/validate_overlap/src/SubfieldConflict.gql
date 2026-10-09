@@ -1,0 +1,8 @@
+query SubfieldConflict {
+  a: viewer {
+    name
+  }
+  a: viewer {
+    name: id
+  }
+}

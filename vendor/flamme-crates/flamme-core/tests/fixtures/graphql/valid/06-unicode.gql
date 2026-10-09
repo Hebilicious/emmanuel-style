@@ -1,0 +1,15 @@
+query Unicode {
+  field(
+    emoji: "😀 smile"
+    astralEscape: "\uD83D\uDE00"
+    braced: "\u{1F600}"
+    cjk: "日本語"
+    precomposed: "é"
+    combining: "e\u0301"
+    controls: "\u0000\u001F\u007F\u009F"
+    quote: "\""
+    backslash: "\\"
+    del: "\u007F"
+  )
+  after
+}

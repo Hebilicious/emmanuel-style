@@ -1,0 +1,26 @@
+type Query {
+  species(id: Int!): Species
+}
+
+type Mutation {
+  rename(id: Int!, name: String!): Species
+}
+
+type Subscription {
+  speciesChanged(id: Int!): Species
+}
+
+type Species {
+  id: Int!
+  name: String!
+  flavorText: String
+  evolutionChain: [Species!]!
+  creature: Creature
+}
+
+union Creature = Species | Plant
+
+type Plant {
+  id: Int!
+  height: Int!
+}

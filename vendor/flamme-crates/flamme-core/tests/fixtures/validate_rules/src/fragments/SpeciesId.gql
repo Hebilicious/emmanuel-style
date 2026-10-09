@@ -1,0 +1,3 @@
+fragment SpeciesId on Species {
+  id
+}

@@ -1,0 +1,15 @@
+schema {
+  query: NotAnObject
+}
+
+input NotAnObject {
+  a: Int
+}
+
+type Empty
+
+union EmptyUnion
+
+enum EmptyEnum
+
+input EmptyInput

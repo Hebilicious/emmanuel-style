@@ -1,0 +1,10 @@
+query Typename {
+  viewer {
+    __typename
+    id
+    species: favorite {
+      __typename
+      id
+    }
+  }
+}

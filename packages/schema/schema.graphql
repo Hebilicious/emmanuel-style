@@ -1,0 +1,118 @@
+# Generated from packages/schema/src/index.ts. Do not edit by hand.
+#
+# `pnpm --filter @emmanuel/schema emit` writes it; the site's Flamme compiler
+# validates every document against it.
+
+"""One block of a page body, in reading order."""
+type Block {
+  caption: String
+  depth: Int!
+  html: String!
+  id: ID!
+  image: String
+  kind: String!
+
+  """The footnotes this block cites, which belong on its page."""
+  noteIds: [String!]!
+  text: String!
+}
+
+"""The favourite count of one article."""
+type Favourite {
+  count: Int!
+  slug: ID!
+}
+
+type Mutation {
+  """Favourite an article for this reader, or take the favourite back."""
+  toggleFavourite(slug: String!): Favourite
+}
+
+"""One footnote."""
+type Note {
+  html: String!
+  id: ID!
+  number: Int!
+  text: String!
+}
+
+"""One article."""
+type Post {
+  """The body, in reading order."""
+  blocks: [Block!]
+  date: String!
+  description: String!
+
+  """Every footnote, so a page can place the ones its blocks cite."""
+  notes: [Note!]
+  slug: ID!
+  tags: [String!]!
+  title: String!
+}
+
+type Query {
+  """The favourite count of one article."""
+  favourites(slug: String!): Favourite
+  post(slug: String!): Post
+
+  """Every article, newest first, for the blog index."""
+  posts: [Post!]
+  roles: [Role!]
+  schools: [School!]
+  shelves: [Shelf!]
+  site: Site
+
+  """Repositories with their star counts, for the Library."""
+  stars(names: [String!]!): [Repository!]
+}
+
+"""A repository published on GitHub."""
+type Repository {
+  archived: Boolean!
+  category: String!
+  description: String!
+  homepage: String
+  language: String!
+  name: String!
+  stars: Int
+  url: String!
+}
+
+"""One role."""
+type Role {
+  company: String!
+  end: String
+  highlights: [String!]!
+  id: ID!
+  location: String!
+  stack: [String!]!
+  start: String!
+  summary: String!
+  title: String!
+}
+
+"""One education entry."""
+type School {
+  end: String
+  id: ID!
+  location: String!
+  qualification: String!
+  school: String!
+  start: String!
+  summary: String!
+}
+
+"""A named group of repositories."""
+type Shelf {
+  label: String!
+  repositories: [Repository!]
+  slug: ID!
+}
+
+"""The site-wide facts."""
+type Site {
+  date: String!
+  name: String!
+  sections: [Shelf!]
+  tagline: String!
+}

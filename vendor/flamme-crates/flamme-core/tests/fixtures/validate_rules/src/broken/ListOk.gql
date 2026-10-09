@@ -1,0 +1,6 @@
+query ListOk {
+  searched(term: "a") @list(name: "Species") {
+    id
+    ...CacheFragment
+  }
+}

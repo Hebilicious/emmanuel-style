@@ -1,0 +1,5 @@
+query ListMisuse {
+  viewer {
+    name @list(name: "Bad")
+  }
+}

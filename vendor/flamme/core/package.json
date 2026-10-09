@@ -1,0 +1,35 @@
+{
+  "name": "@flamme/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Framework-agnostic compiler, IR and artifact pipeline.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./sfc": {
+      "types": "./dist/sfc.d.ts",
+      "import": "./dist/sfc.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@flamme/runtime": "workspace:*",
+    "@vue/compiler-sfc": "3.5.42",
+    "graphql": "16.14.2",
+    "oxc-parser": "0.149.0"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.2"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  }
+}

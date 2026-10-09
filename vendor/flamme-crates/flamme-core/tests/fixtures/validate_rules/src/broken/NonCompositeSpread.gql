@@ -1,0 +1,6 @@
+query NonCompositeSpread {
+  viewer {
+    id
+    ...NonComposite
+  }
+}

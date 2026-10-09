@@ -1,0 +1,26 @@
+query Deferred($id: Int! = 1, $with: Boolean!) @cache(policy: NetworkOnly, partial: true) {
+  species(id: $id) {
+    id
+    name @required
+    flavorText @include(if: $with)
+    ...SpeciesPreview @defer(label: "preview")
+    ...SpeciesName @include(if: $with)
+    ...SpeciesId @skip(if: $with)
+    ... @defer(label: "Preview") {
+      flavorText
+    }
+    evolutionChain @stream(initialCount: 1, label: "chain") {
+      id
+    }
+    creature {
+      ... on Species {
+        name
+        flavorText @required
+        ...SpeciesPreview @defer(label: "creature preview", if: $with)
+      }
+      ... on Plant {
+        height
+      }
+    }
+  }
+}

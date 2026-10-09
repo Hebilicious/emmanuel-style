@@ -1,0 +1,56 @@
+{
+	"compilerOptions": {
+		"target": "ES2023",
+		"lib": ["ES2023", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"moduleResolution": "bundler",
+		"moduleDetection": "force",
+		"resolveJsonModule": true,
+		"types": ["vite/client", "node"],
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"useUnknownInCatchVariables": true,
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"jsx": "preserve",
+		"paths": {
+			"$flamme": ["./.flamme/index.ts"],
+			"$flamme/records/*": ["./.flamme/records/*.ts"],
+			"$flamme/*": ["./.flamme/*"],
+			"@emmanuel/schema": ["../schema/src/index.ts"]
+		}
+	},
+	/*
+	 * The generated files are listed by name, not by `".flamme/**\/*.ts"`.
+	 * TypeScript does not descend into a dot-directory with a wildcard, so the glob
+	 * left `.flamme/routes.ts` out of the root files and its module augmentation of
+	 * `@flamme/router/auto` never applied: `FlammeGeneratedRoutes` stayed empty,
+	 * `usePageQuery()` was typed over `never`, and the generated `PageData` import was
+	 * reported as unused. Flamme's own app lists them the same way.
+	 */
+	"include": [
+		".flamme/ambient.d.ts",
+		".flamme/index.ts",
+		".flamme/runtime/index.ts",
+		".flamme/artifacts/**/*.ts",
+		".flamme/routes.ts",
+		".flamme/records/**/*.ts",
+		".flamme/graphql/**/*.ts",
+		".content/**/*.ts",
+		"src/**/*.ts",
+		"src/**/*.vue",
+		"scripts/**/*.ts",
+		"*.ts"
+	],
+	"exclude": ["dist", "node_modules"]
+}

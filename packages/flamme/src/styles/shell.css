@@ -1,0 +1,219 @@
+/*
+ * The shell: one fixed screen.
+ *
+ * The site is a screen, not a document. The shell is exactly the viewport height,
+ * the bar is one row at the top, the dock is one row at the bottom, and the reading
+ * pane between them is the only thing that changes. Nothing scrolls: the paginator
+ * fills the pane with a spread and turns it.
+ *
+ * This file is the Astro build's shell rules carried over, with the masthead row
+ * removed: its nameplate and dateline moved into the bar, which returns about a
+ * hundred pixels of reading height on every route.
+ */
+
+.Terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+  padding-inline: var(--spacing_fluid-gutter-space-gutter-s);
+}
+
+/* The bar: date, nameplate, sections, section name, theme switch, on one row. */
+.Bar {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-block: var(--spacing_fluid-tight-space-tight-s);
+  border-bottom: var(--spacing-size-hairline) solid var(--rule);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.Standing {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/*
+ * The nameplate is centred on the screen, not on the space left over.
+ *
+ * Sharing the row with `flex: 1` centred it between its neighbours, so a wide date
+ * on one side and a narrow set of links on the other pushed it off centre. Taken
+ * out of the row and pinned to the middle, it is centred whatever flanks it.
+ */
+.Bar {
+  position: relative;
+}
+
+.Plate {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--typography_fluid-display-font-size-display-s);
+  text-align: center;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* The row keeps its ends apart; the middle is the nameplate's, pinned above. */
+.Standing {
+  margin-right: auto;
+}
+
+.Commands {
+  display: flex;
+  flex: none;
+  gap: var(--spacing_fluid-tight-space-tight-l);
+}
+
+.Command {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15em;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.Command:hover,
+.Command.Active {
+  color: var(--accent);
+}
+
+/* The shortcut a section answers to, above the label so it costs no width. */
+.Keys {
+  font-size: 0.62em;
+  transform: translateY(-0.45em);
+  color: var(--faint);
+}
+
+.Section {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.Mark {
+  color: var(--accent);
+}
+
+.Dot {
+  color: var(--faint);
+}
+
+.Edge {
+  flex: none;
+  height: var(--spacing-size-rule);
+  border-block: var(--spacing-size-hairline) solid var(--rule-strong);
+}
+
+/* The reading pane: the only part of the shell whose contents change. */
+/*
+ * The reading pane. `view-transition-name` is NOT set here: the reader names itself
+ * for the page-turn animation, and naming the pane too makes two elements claim the
+ * same name, which aborts the transition with "Unexpected duplicate
+ * view-transition-name" and leaves the turn with no animation at all.
+ */
+.Page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  position: relative;
+  overflow: hidden;
+  padding-block: var(--spacing_fluid-flow-space-m)
+    var(--spacing_fluid-flow-space-s);
+}
+
+/* The dock: the status row and the prompt, stuck to the bottom of the screen. */
+.Dock {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  margin-top: auto;
+  margin-inline: calc(var(--spacing_fluid-gutter-space-gutter-s) * -1);
+  padding: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-gutter-space-gutter-s)
+    var(--spacing_fluid-tight-space-tight-xs);
+  border-top: var(--spacing-size-rule) double var(--rule-strong);
+  background: var(--surface);
+}
+
+.Status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.Hint,
+.Cell {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  color: var(--faint);
+}
+
+.Key {
+  padding: 0 0.25em;
+  border: var(--spacing-size-hairline) solid var(--rule);
+  color: var(--faint);
+}
+
+.Pages {
+  color: var(--accent);
+}
+
+.Focus {
+  min-width: 12ch;
+  color: var(--ink);
+}
+
+/*
+ * Below a tablet the bar cannot hold five items on one line, so it wraps and the
+ * nameplate takes its own row. This is the only layout change the site makes, and
+ * the paginator switches to one column at the same breakpoint.
+ */
+@media (max-width: 60rem) {
+  .Bar {
+    flex-wrap: wrap;
+    row-gap: var(--spacing_fluid-tight-space-tight-xs);
+  }
+
+  /* Below a tablet the nameplate takes its own row, so it goes back into the flow. */
+  .Plate {
+    position: static;
+    order: -1;
+    flex-basis: 100%;
+    transform: none;
+    text-align: left;
+  }
+
+  .Standing {
+    font-size: var(--typography_fluid-micro-font-size-micro-s);
+  }
+
+  /* The legend is for a keyboard, and a phone has none. */
+  .Hint {
+    display: none;
+  }
+}

@@ -1,0 +1,6 @@
+query TwoSpreads {
+  viewer {
+    ...SpreadA
+    ...SpreadB
+  }
+}

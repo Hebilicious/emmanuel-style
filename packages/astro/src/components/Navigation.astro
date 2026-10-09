@@ -1,0 +1,235 @@
+---
+import ThemeSwitch from "./ThemeSwitch.vue"
+
+interface Props {
+	path: string
+	/** Nameplate. The front page carries the full title, sections carry theirs. */
+	title: string
+	/** Dateline: the section this page belongs to. */
+	section: string
+}
+
+const { path, title, section: sectionName } = Astro.props
+
+/**
+ * Normalise the trailing slash Astro's static output adds, so `/library` and
+ * `/library/` select the same section.
+ */
+const current = path.replace(/\/+$/, "") || "/"
+
+/**
+ * Each section carries the keys that reach it, drawn as a superscript so the
+ * shortcuts are discoverable without a manual. These are the `g`-prefixed pairs
+ * handled in utils/cursor.ts. Plain letters with no modifier, so none of them
+ * collides with a browser binding.
+ */
+const sections = [
+	{
+		label: "home",
+		href: "/",
+		keys: "h",
+		match: (value: string) => value === "/"
+	},
+	{
+		label: "library",
+		href: "/library",
+		keys: "l",
+		match: (value: string) => value === "/library"
+	},
+	{
+		label: "blog",
+		href: "/blog",
+		keys: "b",
+		match: (value: string) => value.startsWith("/blog")
+	},
+	{
+		label: "experience",
+		href: "/experience",
+		keys: "e",
+		match: (value: string) => value.startsWith("/experience")
+	}
+]
+
+const isActive = (match: (value: string) => boolean) => match(current)
+---
+
+<header class="Bar">
+  <p class="Standing">
+    <span data-today></span>
+    <span class="Dot" data-today-sep aria-hidden="true" hidden>·</span>
+    <span>earth</span>
+  </p>
+
+  <h1 class="Plate display">{title}</h1>
+
+  <nav class="Commands" aria-label="Sections">
+    {sections.map((section) => (
+      <a
+        href={section.href}
+        class:list={["Command", { Active: isActive(section.match) }]}
+        aria-current={isActive(section.match) ? "page" : undefined}>
+        <span class="Label">
+          {isActive(section.match) ? `[${section.label}]` : section.label}
+        </span>
+        <sup class="Keys" aria-hidden="true">{section.keys}</sup>
+      </a>
+    ))}
+  </nav>
+
+  <p class="Standing Section">
+    <span class="Mark" aria-hidden="true">§</span>
+    {sectionName}
+  </p>
+
+  <ThemeSwitch client:load />
+</header>
+<div class="Edge" aria-hidden="true"></div>
+
+<script>
+import { pageReady } from "../utils/pageReady"
+
+/*
+ * The date is written on `astro:page-load`, not at module scope: a module is
+ * evaluated once per URL, so a date written on the first page would be missing
+ * from every page reached by an in-page navigation.
+ */
+pageReady((signal) => {
+	const target = document.querySelector("[data-today]")
+	if (!target) return
+
+	target.textContent = new Intl.DateTimeFormat("en-GB", {
+		weekday: "long",
+		day: "numeric",
+		month: "long",
+		year: "numeric"
+	}).format(new Date())
+
+	// The separator only makes sense once the date is there.
+	const separator = document.querySelector<HTMLElement>("[data-today-sep]")
+	if (separator) separator.hidden = false
+	void signal
+})
+</script>
+
+<style>
+/*
+ * One bar: date on the left, nameplate in the middle, sections and the section
+ * name on the right. The masthead used to be its own row, which cost about a
+ * hundred pixels of reading height on every page.
+ */
+.Bar {
+  flex-wrap: nowrap;
+}
+
+.Standing {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.Plate {
+  flex: 1 1 auto;
+  text-align: center;
+  font-size: var(--typography_fluid-display-font-size-display-s);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.Section {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+}
+
+.Mark {
+  color: var(--accent);
+}
+
+.Dot {
+  color: var(--faint);
+}
+
+/*
+ * Below a tablet the bar would not fit five items on one line, so it wraps and the
+ * nameplate takes its own row. This is the only layout change, and it is the same
+ * switch used for the rest of the site.
+ */
+@media (max-width: 60rem) {
+  .Bar {
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .Plate {
+    order: -1;
+    flex-basis: 100%;
+    text-align: left;
+  }
+
+  .Standing {
+    font-size: var(--typography_fluid-micro-font-size-micro-s);
+  }
+}
+
+.Bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+  flex-wrap: wrap;
+  padding-block: var(--spacing_fluid-tight-space-tight-m);
+  border-bottom: var(--spacing-size-hairline) solid var(--rule);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.Commands {
+  display: flex;
+  gap: var(--spacing_fluid-tight-space-tight-l);
+  flex-wrap: wrap;
+}
+
+.Command {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 0.15em;
+  color: var(--muted);
+  white-space: nowrap;
+  padding-block: var(--spacing_fluid-tight-space-tight-xs);
+}
+
+/* The shortcut rides above the label, so it costs no horizontal room. */
+.Keys {
+  color: var(--faint);
+  font-size: 0.62em;
+  line-height: 1;
+  transform: translateY(-0.4em);
+}
+
+.Command:hover {
+  color: var(--ink);
+}
+
+.Command:hover .Keys,
+.Active .Keys {
+  color: var(--accent);
+}
+
+.Active {
+  color: var(--accent);
+  font-weight: var(--typography-weight-body-bold);
+}
+
+.Edge {
+  height: var(--spacing-size-rule);
+  border-top: var(--spacing-size-rule) double var(--rule-strong);
+  border-bottom: var(--spacing-size-hairline) solid var(--rule);
+}
+</style>

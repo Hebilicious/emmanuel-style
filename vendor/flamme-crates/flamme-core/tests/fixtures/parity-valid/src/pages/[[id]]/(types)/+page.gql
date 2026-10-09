@@ -1,0 +1,6 @@
+	query SpeciesTypes($id: Int! = 1) @loading {
+		species(id: $id, delay: 500) {
+			id
+			types
+		}
+	}

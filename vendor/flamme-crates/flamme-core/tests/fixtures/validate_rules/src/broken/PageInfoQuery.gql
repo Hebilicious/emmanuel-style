@@ -1,0 +1,6 @@
+query PageInfoQuery($withName: Boolean!) {
+  viewer {
+    id
+    ...UserName @include(if: $withName)
+  }
+}

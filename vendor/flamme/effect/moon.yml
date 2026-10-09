@@ -1,0 +1,61 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+layer: 'library'
+language: 'typescript'
+tags: ['typescript', 'library']
+
+# The worked example lives inside this project (`example/`), so its sources and its own config are
+# task inputs: a change there must re-run the tests and the typechecker.
+fileGroups:
+  sources:
+    - 'src/**/*'
+    - 'example/src/**/*'
+    - 'example/index.html'
+    - 'example/vite.config.ts'
+
+tasks:
+  build-example:
+    # The example is a real Vite app (`example/`), not part of the library's `tsc` build. It is not
+    # in the gate either; this task exists so the bundle is one cached command when someone wants it
+    # (`moon run effect:build-example`). `example/dist` is git-ignored by the root `.gitignore`.
+    command: 'vite'
+    args:
+      - 'build'
+      - '--config'
+      - 'example/vite.config.ts'
+      # relative to Vite's root, which is `example/` (the positional argument below)
+      - '--outDir'
+      - 'dist'
+      - 'example'
+    inputs:
+      - '@group(sources)'
+      - 'example/index.html'
+    outputs:
+      - 'example/dist'
+  typecheck:
+    # `tsconfig.json` includes the example's `*.vue` components, and `.vue` only typechecks under
+    # `vue-tsc` (the same override `@flamme/vue` makes).
+    command: 'vue-tsc'
+  test:
+    # The shared `.moon/tasks/all.yml` task carries the coverage gate as CLI flags, and moon appends
+    # inherited args to a project's own. Replacing them keeps the command unambiguous: this project
+    # scopes the run with `--project effect` instead of the inherited `--root ../..`, so it repeats
+    # the gate (90 lines / 90 statements / 90 functions / 85 branches) exactly as the comment in
+    # `.moon/tasks/all.yml` requires. Keep in sync with `COVERAGE_THRESHOLDS` in `/vitest.config.ts`.
+    options:
+      mergeArgs: 'replace'
+    args:
+      [
+        'run',
+        '--root',
+        '../..',
+        '--coverage',
+        '--project',
+        'effect',
+        '--coverage.include=packages/effect/src/**/*.ts',
+        '--coverage.reportsDirectory=coverage/effect',
+        '--coverage.thresholds.lines=90',
+        '--coverage.thresholds.functions=90',
+        '--coverage.thresholds.branches=85',
+        '--coverage.thresholds.statements=90',
+      ]

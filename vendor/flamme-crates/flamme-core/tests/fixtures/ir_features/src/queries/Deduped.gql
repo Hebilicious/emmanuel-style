@@ -1,0 +1,5 @@
+query Deduped @dedupe(cancelFirst: true, match: all) {
+	feed {
+		id
+	}
+}

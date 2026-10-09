@@ -1,0 +1,24 @@
+[workspace]
+members = ["flamme-crates/*"]
+resolver = "3"
+
+[workspace.package]
+version = "0.0.0"
+edition = "2024"
+license = "MIT"
+publish = false
+
+[workspace.dependencies]
+flamme-core = { path = "flamme-crates/flamme-core" }
+serde = { version = "1", features = ["derive"] }
+# `preserve_order` keeps insertion order in `serde_json::Map`, which the IR needs:
+# `InputObject.defaults` carries object literals whose key order the emitter prints
+# (JavaScript object order), and a sorted map would emit different bytes.
+serde_json = { version = "1", features = ["preserve_order"] }
+sha2 = "0.10"
+
+[profile.release]
+# The native module is a build-time compiler: the small loss in compile time is
+# paid back by a faster full-compile pass.
+lto = "thin"
+codegen-units = 1

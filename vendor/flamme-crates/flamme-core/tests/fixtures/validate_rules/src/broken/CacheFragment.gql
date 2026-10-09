@@ -1,0 +1,3 @@
+fragment CacheFragment on Species @cache(policy: CacheOnly) {
+  id
+}

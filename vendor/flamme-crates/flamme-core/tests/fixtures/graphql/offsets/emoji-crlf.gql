@@ -1,0 +1,6 @@
+query Emoji($v: String = "😀😀") {
+  before(arg: "😀", n: 1)
+  after {
+    deep(x: ["😀", {k: "😀"}])
+  }
+}

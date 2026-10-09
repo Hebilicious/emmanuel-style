@@ -1,0 +1,4 @@
+fragment Info on Species {
+  id
+  name
+}

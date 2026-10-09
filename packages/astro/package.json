@@ -3,20 +3,21 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
+		"dev": "pnpm run cssforge && astro dev",
+		"build": "pnpm run cssforge && astro build",
 		"preview": "astro preview",
 		"astro": "astro",
+		"check": "astro check",
 		"deploy": "wrangler deploy",
 		"deploy-pr": "wrangler versions upload",
-		"cssforge": "node node_modules/@hebilicious/cssforge/src/cli.js --css ./src/styles/cssforge.css",
-		"cssforge:watch": "node node_modules/@hebilicious/cssforge/src/cli.js --css ./src/styles/cssforge.css --watch"
+		"cssforge": "tsx ./node_modules/@hebilicious/cssforge/src/cli.ts --prefix . --config ./cssforge.config.ts --mode all --css ./src/styles/cssforge.css --json ./.cssforge/output.json --ts ./.cssforge/output.ts",
+		"cssforge:watch": "tsx ./node_modules/@hebilicious/cssforge/src/cli.ts --prefix . --config ./cssforge.config.ts --mode all --css ./src/styles/cssforge.css --json ./.cssforge/output.json --ts ./.cssforge/output.ts --watch"
 	},
 	"dependencies": {
+		"@astrojs/markdown-remark": "catalog:astro",
 		"@astrojs/vue": "catalog:astro",
 		"@hebilicious/cssforge": "catalog:astro",
 		"@microflash/rehype-figure": "catalog:astro",
-		"@vite-pwa/astro": "catalog:astro",
 		"@vueuse/core": "catalog:astro",
 		"astro": "catalog:astro",
 		"rehype-autolink-headings": "catalog:astro",
@@ -24,8 +25,16 @@
 		"vue": "catalog:astro"
 	},
 	"devDependencies": {
-		"lightningcss": "^1.30.2",
-		"workbox-window": "^7.3.0",
-		"wrangler": "^4.45.0"
+		"@astrojs/check": "0.9.10",
+		"esbuild": "0.28.2",
+		"lightningcss": "^1.33.0",
+		"sharp": "0.35.4",
+		"tsx": "^4.23.13",
+		"workbox-build": "7.4.1",
+		"workbox-core": "7.4.1",
+		"workbox-precaching": "7.4.1",
+		"workbox-routing": "7.4.1",
+		"workbox-strategies": "7.4.1",
+		"wrangler": "^4.133.0"
 	}
 }

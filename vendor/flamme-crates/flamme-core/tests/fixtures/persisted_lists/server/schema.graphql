@@ -1,0 +1,32 @@
+type Query {
+  favorites(first: Int): [Species!]!
+  species(first: Int, after: String): SpeciesConnection!
+}
+
+type Mutation {
+  addFavorite(id: Int!): AddPayload
+}
+
+type AddPayload {
+  species: Species!
+}
+
+type Species {
+  id: Int!
+  name: String!
+}
+
+type SpeciesConnection {
+  edges: [SpeciesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SpeciesEdge {
+  node: Species!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}

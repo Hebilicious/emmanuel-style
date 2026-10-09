@@ -1,0 +1,3 @@
+fragment DeferInFragment on Species {
+  ...SpeciesId @defer(label: "d")
+}

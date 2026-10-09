@@ -1,0 +1,1 @@
+query Q($x: Int = $y) { a }

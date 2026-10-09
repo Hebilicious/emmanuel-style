@@ -1,0 +1,72 @@
+type Query {
+  a: Filter
+  b(x: Query): Int
+}
+
+input Filter {
+  term: String
+}
+
+interface I1 {
+  x: Int
+}
+
+type T1 implements I1 {
+  y: Int
+}
+
+interface I2 {
+  x: Int
+}
+
+type T2 implements I2 {
+  x: String
+}
+
+interface I3 {
+  x(y: Int): Int
+}
+
+type T3 implements I3 {
+  x: Int
+}
+
+interface I4 {
+  x: Int
+}
+
+type T4 implements I4 {
+  x(y: Int!): Int
+}
+
+interface I5 {
+  x: Int
+}
+
+interface I6 implements I5 {
+  x: Int
+}
+
+type T5 implements I6 {
+  x: Int
+}
+
+interface I7 implements I7 {
+  x: Int
+}
+
+interface I8 {
+  x: Int
+}
+
+type T6 implements I8 & I8 {
+  x: Int
+}
+
+union U1 = T7
+
+type T7 implements U1 {
+  x: Int
+}
+
+union U2 = Int

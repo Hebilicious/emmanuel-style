@@ -1,0 +1,6 @@
+query UnknownFragment {
+  viewer {
+    id
+    ...Nope
+  }
+}

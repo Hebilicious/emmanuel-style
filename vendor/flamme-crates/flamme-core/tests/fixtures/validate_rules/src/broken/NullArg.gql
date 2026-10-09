@@ -1,0 +1,5 @@
+query NullArg {
+  species(id: null) {
+    id
+  }
+}

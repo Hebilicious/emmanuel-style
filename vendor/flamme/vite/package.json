@@ -1,0 +1,47 @@
+{
+  "name": "@flamme/vite",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vite plugin and codegen integration.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@flamme/core": "workspace:*",
+    "@flamme/router": "workspace:*",
+    "@flamme/runtime": "workspace:*",
+    "magic-string": "1.3.1"
+  },
+  "peerDependencies": {
+    "@vue/compiler-sfc": "3.5.42",
+    "@vizejs/native": "0.419.0",
+    "vite": "8.3.0"
+  },
+  "peerDependenciesMeta": {
+    "@vue/compiler-sfc": {
+      "optional": true
+    },
+    "@vizejs/native": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@jridgewell/trace-mapping": "0.3.31",
+    "@types/node": "22.20.2",
+    "@vitejs/plugin-vue": "6.0.8",
+    "vite": "8.3.0"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  }
+}

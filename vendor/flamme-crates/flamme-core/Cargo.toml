@@ -1,0 +1,23 @@
+[package]
+name = "flamme-core"
+description = "The Flamme GraphQL compiler: schema indexing, extraction, validation, IR and emit."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+# Embedded TypeScript/TSX parsing for document extraction (`extract.rs`).
+# The npm `oxc-parser` the TypeScript compiler uses is this same parser, so the
+# AST the port walks is the AST the oracle walks.
+oxc_allocator = "0.130.0"
+oxc_ast = "0.130.0"
+oxc_parser = "0.130.0"
+oxc_span = "0.130.0"
+oxc_semantic = "0.130.0"
+
+[dev-dependencies]
+serde_json = { workspace = true }

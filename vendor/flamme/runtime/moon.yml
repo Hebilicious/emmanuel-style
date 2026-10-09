@@ -1,0 +1,30 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+layer: 'library'
+language: 'typescript'
+tags: ['typescript', 'library']
+
+tasks:
+  test:
+    # The shared `.moon/tasks/all.yml` task carries the coverage gate as CLI flags, and moon appends
+    # inherited args to a project's own. Replacing them keeps the command unambiguous: this project
+    # scopes the run with `--project runtime` instead of the inherited `--root ../..`, so it repeats
+    # the gate (90 lines / 90 statements / 90 functions / 85 branches) exactly as the comment in
+    # `.moon/tasks/all.yml` requires. Keep in sync with `COVERAGE_THRESHOLDS` in `/vitest.config.ts`.
+    options:
+      mergeArgs: 'replace'
+    args:
+      [
+        'run',
+        '--root',
+        '../..',
+        '--coverage',
+        '--project',
+        'runtime',
+        '--coverage.include=packages/runtime/src/**/*.ts',
+        '--coverage.reportsDirectory=coverage/runtime',
+        '--coverage.thresholds.lines=90',
+        '--coverage.thresholds.functions=90',
+        '--coverage.thresholds.branches=85',
+        '--coverage.thresholds.statements=90',
+      ]

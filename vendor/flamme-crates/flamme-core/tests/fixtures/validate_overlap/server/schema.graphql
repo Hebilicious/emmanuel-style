@@ -1,0 +1,58 @@
+type Query {
+  viewer: User!
+  named: Named!
+  species(id: ID!): Species
+  searched(term: String!): [Species!]!
+  speciesList(first: Int, after: String, last: Int, before: String): SpeciesConnection!
+  speciesFiltered(filter: SpeciesFilter!): [Species!]!
+}
+
+type Mutation {
+  favorite(id: ID!): Species!
+}
+
+interface Named {
+  display: String
+}
+
+type User implements Named {
+  id: ID!
+  name: String!
+  display: String!
+  favorite: Species
+  power(level: Int): Int
+}
+
+type Species implements Named {
+  id: ID!
+  name: String!
+  display: String
+  move: SpeciesMove
+  friends: [Species!]
+  power(boost: Int): Int
+}
+
+type SpeciesMove {
+  name: String!
+  power: Int
+}
+
+type SpeciesConnection {
+  edges: [SpeciesEdge!]!
+  pageInfo: PageInfo!
+}
+
+type SpeciesEdge {
+  node: Species!
+  cursor: String!
+}
+
+type PageInfo {
+  hasNextPage: Boolean!
+  endCursor: String
+}
+
+input SpeciesFilter {
+  term: String!
+  limit: Int
+}

@@ -1,0 +1,3 @@
+fragment Collide on User {
+  id
+}

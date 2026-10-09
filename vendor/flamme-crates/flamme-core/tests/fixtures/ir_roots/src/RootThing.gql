@@ -1,0 +1,6 @@
+query RootThing($id: ID!) {
+	thing(id: $id) {
+		id
+		name
+	}
+}

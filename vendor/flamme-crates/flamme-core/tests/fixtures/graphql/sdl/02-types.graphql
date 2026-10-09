@@ -1,0 +1,40 @@
+"scalar description"
+scalar DateTime @specifiedBy(url: "https://example.com")
+
+type Query implements Node & Named @entity {
+  "field description"
+  hero(episode: Episode = JEDI, first: Int = 10): [Character!]! @deprecated(reason: "use heroById")
+  id: ID!
+}
+
+interface Node {
+  id: ID!
+}
+
+interface Named implements Node {
+  id: ID!
+  name: String
+}
+
+union SearchResult = Human | Droid | Starship
+
+union Anything
+
+enum Episode {
+  "the first one"
+  NEWHOPE
+  EMPIRE @deprecated
+  JEDI
+}
+
+input Filter {
+  term: String = "all"
+  limit: Int = 10
+  nested: Filter = {term: "x", limit: 1}
+  tags: [String!] = ["a", "b"]
+  empty: [Int] = []
+}
+
+directive @entity(a: Int, b: String = "x") repeatable on OBJECT | INTERFACE
+
+directive @specifiedBy(url: String!) on SCALAR | FIELD_DEFINITION

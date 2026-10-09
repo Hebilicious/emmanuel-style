@@ -1,0 +1,101 @@
+[
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/DifferingArgs.gql:2:3 Fields \"species\" conflict because they have differing arguments. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/DifferingArgs.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/NestedSubfields.gql:2:3 Fields \"a\" conflict because subfields \"b\" conflict because subfields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/NestedSubfields.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/Overlap.gql:3:5 Fields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/Overlap.gql",
+   "line": 3,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/Skipped.gql:2:3 Fields \"species\" conflict because they have differing arguments. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/Skipped.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/SpreadConflict.gql:3:5 Fields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/SpreadConflict.gql",
+   "line": 3,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/SubfieldConflict.gql:2:3 Fields \"a\" conflict because subfields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/SubfieldConflict.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/TwoSpreads.gql:2:3 Fields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/TwoSpreads.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/TypeConflict.gql:4:7 Fields \"d\" conflict because they return conflicting types \"String\" and \"String!\". Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/TypeConflict.gql",
+   "line": 4,
+   "column": 7,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/Typename.gql:3:5 Fields \"x\" conflict because \"name\" and \"__typename\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+  "location": {
+   "file": "src/Typename.gql",
+   "line": 3,
+   "column": 5,
+   "length": 1
+  }
+ }
+]

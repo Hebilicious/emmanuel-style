@@ -1,0 +1,6 @@
+fragment SpeciesB on Species {
+  id
+  moves {
+    name
+  }
+}

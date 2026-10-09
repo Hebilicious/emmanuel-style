@@ -1,0 +1,59 @@
+---
+/**
+ * Build-time index for the terminal, exposed as a virtual file system.
+ *
+ * The terminal speaks the tools a developer already knows: `cd`, `ls`, `cat`,
+ * `grep`, `pwd`, `open`. That needs a tree, not a flat list, and `cat` needs the
+ * actual text of an article, so article bodies and repository records are
+ * inlined here at build time. Nothing the terminal does then needs a network
+ * round trip, which is what keeps it working offline.
+ */
+import { getCollection } from "astro:content"
+import { repositories } from "../data/repositories"
+
+const articles = (
+	await getCollection("blog", ({ data }) => data.draft !== true)
+)
+	.sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf())
+	.map((entry) => ({
+		slug: entry.id,
+		/** Path inside the virtual file system, so `cat blog/<name>.md` works. */
+		path: `blog/${entry.id}.md`,
+		href: `/blog/${entry.id}`,
+		title: entry.data.title,
+		description: entry.data.description,
+		tags: entry.data.tags,
+		date: entry.data.publishDate.toISOString().slice(0, 10),
+		body: entry.body ?? ""
+	}))
+
+const index = {
+	root: "/",
+	/**
+	 * Top-level directories. Each is a real page, so `cd` into one and `open`
+	 * follows it; paths are relative to `/`, so `cd blog/hyper-anabasis.md`
+	 * resolves without the leading slash.
+	 */
+	tree: {
+		home: { description: "front page", href: "/" },
+		library: { description: "open source, by shelf", href: "/library" },
+		blog: { description: "every article", href: "/blog" },
+		experience: { description: "roles and education", href: "/experience" }
+	},
+	articles,
+	repositories: repositories.map((repository) => ({
+		name: repository.name,
+		path: `library/${repository.name}.txt`,
+		href: repository.url,
+		description: repository.description,
+		language: repository.language,
+		archived: repository.archived ?? false,
+		homepage: repository.homepage ?? null,
+		category: repository.category
+	}))
+}
+
+const json = JSON.stringify(index)
+---
+
+<script is:inline type="application/json" id="command-index" set:html={json} />

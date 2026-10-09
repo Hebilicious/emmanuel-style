@@ -1,0 +1,6 @@
+query Info($id: Int! = 1) @loading {
+	species(id: $id, delay: 500) {
+		id
+		name
+	}
+}

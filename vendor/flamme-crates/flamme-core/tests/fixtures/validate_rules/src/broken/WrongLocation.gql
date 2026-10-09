@@ -1,0 +1,5 @@
+query WrongLocation {
+  viewer @cache(policy: CacheOnly) {
+    id
+  }
+}

@@ -1,0 +1,36 @@
+	query Info($id: Int! = 1) @loading {
+		species(id: $id, delay: 500) {
+			id
+			pokedexNumber
+			name
+			flavor_text
+			favorite
+			...SpriteInfo
+			... @defer(label: "evolutionChain") {
+				evolution_chain @loading(count: 3) {
+					id
+					...SpeciesPreview
+				}
+			}
+			moves(first: 1) @paginate(mode: SinglePage, name: "Species_Moves") {
+				edges @loading(count: 1) {
+					node {
+						learned_at
+						method
+						move {
+							name
+							accuracy
+							power
+							pp
+							type
+						}
+						...MoveDisplay
+					}
+				}
+				pageInfo {
+					hasNextPage
+					hasPreviousPage
+				}
+			}
+		}
+	}

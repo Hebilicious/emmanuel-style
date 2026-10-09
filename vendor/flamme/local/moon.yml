@@ -1,0 +1,18 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+layer: 'library'
+language: 'typescript'
+tags: ['typescript', 'library']
+
+tasks:
+  test:
+    # The inherited task carries the coverage gate as CLI flags; this scopes the
+    # run to the `local` vitest project and keeps the same four thresholds. Keep
+    # in sync with `COVERAGE_THRESHOLDS` in `/vitest.config.ts`.
+    args:
+      [
+        '--project',
+        'local',
+        '--coverage.include=packages/local/src/**/*.ts',
+        '--coverage.reportsDirectory=coverage/local',
+      ]

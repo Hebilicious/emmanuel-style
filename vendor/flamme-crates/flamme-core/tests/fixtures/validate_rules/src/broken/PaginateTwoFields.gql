@@ -1,0 +1,16 @@
+query PaginateTwoFields($first: String) {
+  speciesList(first: 1) @paginate(name: "Two_A") {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+  searchedConnection(first: 1) @paginate(name: "Two_B") {
+    edges {
+      node {
+        id
+      }
+    }
+  }
+}

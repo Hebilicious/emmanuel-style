@@ -1,0 +1,10 @@
+mutation CreatePost($input: PostInput!) {
+	createPost(input: $input) {
+		post @optimisticKey {
+			id
+			title
+			...Posts_insert
+			...Posts_toggle @append
+		}
+	}
+}

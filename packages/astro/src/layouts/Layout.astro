@@ -1,15 +1,34 @@
 ---
 import { Font } from "astro:assets"
-import { pwaInfo } from "virtual:pwa-info"
-import "../styles/reset.css"
+import { ClientRouter } from "astro:transitions"
+import CommandIndex from "../components/CommandIndex.astro"
+import Cursor from "../components/Cursor.astro"
+import Footer from "../components/Footer.astro"
+import ImageViewer from "../components/ImageViewer.astro"
+import MouseGate from "../components/MouseGate.astro"
+import Navigation from "../components/Navigation.astro"
+import RepoCard from "../components/RepoCard.astro"
+import Terminal from "../components/Terminal.astro"
+import { themeBootScript } from "../utils/themeBoot"
 import "../styles/cssforge.css"
 import "../styles/global.css"
 
 interface Props {
 	title: string
+	/** Canonical path used to mark the current section in the command bar. */
+	path?: string
+	/** Nameplate shown in the bar. */
+	masthead?: string
+	/** Dateline shown beside the nameplate. */
+	section?: string
 }
 
-const { title } = Astro.props
+const {
+	title,
+	path = Astro.url.pathname,
+	masthead = "The Emmanuel Style",
+	section = "front page"
+} = Astro.props
 ---
 
 <!DOCTYPE html>
@@ -20,46 +39,148 @@ const { title } = Astro.props
     <link rel="icon" type="image/png" href="/icon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#ffffff" />
+    <meta name="theme-color" content="#0b081b" />
     <title>{title}</title>
     <meta name="description" content="Emmanuel's landing page." />
+    <link rel="manifest" href="/manifest.webmanifest" />
 
-    <!-- Fonts handled by Astro experimental fonts API -->
-    <Font cssVariable="--font-dosis" preload />
-    <Font cssVariable="--font-aclonica" preload />
+    <Font cssVariable="--font-nabla" />
     <Font cssVariable="--font-monaspace" preload />
 
-    <script is:inline>
-    ;(function () {
-	const STORAGE_KEY = "vueuse-color-scheme"
-	const DEFAULT_THEME = "dark"
-	const themeMap = {
-		light: "LightTheme",
-		dark: "DarkTheme",
-		paper: "PaperTheme",
-		pink: "PinkTheme"
-	}
+    <script is:inline set:html={themeBootScript} />
 
-	try {
-		const preferedTheme = window.matchMedia(
-			"(prefers-color-scheme: dark)"
-		).matches
-			? "dark"
-			: "light"
-		const savedTheme =
-			localStorage.getItem(STORAGE_KEY) || preferedTheme || DEFAULT_THEME
-		const themeClass = themeMap[savedTheme] || themeMap[DEFAULT_THEME]
-		document.documentElement.classList.add(themeClass)
-	} catch (e) {
-		document.documentElement.classList.add(themeMap[DEFAULT_THEME])
-	}
-})()
-    </script>
-
-    {pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} />}
+    <!-- SPA navigation: swaps the page instead of reloading the document. -->
+    <ClientRouter />
   </head>
   <body>
-    <slot />
+    <a class="Skip" href="#main">Skip to content</a>
+    <div class="Terminal">
+      <Navigation path={path} title={masthead} section={section} />
+      <main class="Page" id="main">
+        <slot />
+      </main>
+      <div class="Dock">
+        <Footer />
+        <Terminal />
+      </div>
+    </div>
+    <!--
+      The keyboard layer. These re-bind themselves on `astro:page-load`, so they
+      keep working after the router swaps the body.
+    -->
+    <MouseGate />
+    <RepoCard />
+    <ImageViewer />
+    <Cursor />
+    <CommandIndex />
   </body>
 </html>
+
+<script>
+import { registerWebMcpTools } from "../utils/webmcp"
+
+registerWebMcpTools()
+</script>
+
 <script src="/src/pwa.ts"></script>
+
+<style>
+/*
+ * The shell.
+ *
+ * A newspaper is not a single narrow column: broadsheet pages are read in
+ * several columns, and a terminal is happiest filling the width it is given.
+ * So the shell is fluid up to a broadsheet measure rather than pinned to a
+ * reading column, and the margin rules only appear when there is width to
+ * spare. Individual prose blocks still cap their own measure.
+ */
+/*
+ * The shell IS the viewport: a column of masthead, scrolling page, status line
+ * and prompt. Because the page is a flex child rather than the document, opening
+ * the prompt takes height away from it and the content reflows into what is
+ * left, instead of the document keeping full height and being covered.
+ */
+.Terminal {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  overflow: hidden;
+  width: 100%;
+  max-width: 108rem;
+  margin: 0 auto;
+  padding: var(--spacing_fluid-tight-space-tight-m)
+    var(--spacing_fluid-gutter-space-gutter-s)
+    var(--spacing_fluid-tight-space-tight-s);
+  border-inline: var(--spacing-size-hairline) solid var(--rule);
+}
+
+/*
+ * One bar pinned to the bottom: the status row on top, the prompt below it.
+ * Keeping them in a single element is what makes the prompt and the footer read
+ * as one thing rather than two stacked strips.
+ */
+.Dock {
+  flex: none;
+  /*
+   * Pushed to the bottom of the shell. The page above it grows to fill the space,
+   * but on a short page it does not, and without this the dock floated in the
+   * middle of the screen with empty space below it.
+   */
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  margin-inline: calc(var(--spacing_fluid-gutter-space-gutter-s) * -1);
+  padding: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-gutter-space-gutter-s)
+    var(--spacing_fluid-tight-space-tight-xs);
+  border-top: var(--spacing-size-rule) double var(--rule-strong);
+  background: var(--surface);
+}
+
+/*
+ * The reading pane never scrolls. Its content is split into viewport-height
+ * pages by utils/paginate.ts and only the current one is painted, which is what
+ * makes `n` / `p` a page turn rather than a scroll.
+ *
+ * `min-height: 0` is required: without it a flex child refuses to shrink below
+ * its content and the prompt would be pushed off screen.
+ */
+.Page {
+  flex: 1 1 auto;
+  min-height: 0;
+  /*
+   * Measured by the paginator through `clientHeight`, so it must be the visible
+   * box. Without a cap the pane grows to fit its content, `clientHeight` reports
+   * the grown height, and every page is budgeted for more room than it has,
+   * which is what pushed the last blocks of each page out of sight.
+   */
+  max-height: 100%;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  position: relative;
+  padding-block: var(--spacing_fluid-flow-space-m)
+    var(--spacing_fluid-flow-space-xl);
+}
+
+.Skip {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  padding: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-tight-space-tight-m);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.Skip:focus {
+  left: var(--spacing_fluid-tight-space-tight-s);
+  z-index: 10;
+}
+
+/* Below the broadsheet breakpoint the margin rules would waste the width. */
+@media (max-width: 72rem) {
+  .Terminal {
+    border-inline: 0;
+  }
+}
+</style>

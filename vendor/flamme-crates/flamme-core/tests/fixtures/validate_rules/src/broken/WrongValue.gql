@@ -1,0 +1,8 @@
+query WrongValue {
+  species(id: 1.5) {
+    id
+  }
+  searched(term: 3) {
+    id
+  }
+}

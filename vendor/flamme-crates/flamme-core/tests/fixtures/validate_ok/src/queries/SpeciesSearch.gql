@@ -1,0 +1,12 @@
+query SpeciesSearch($term: String!, $withMove: Boolean!) @cache(policy: CacheOnly) {
+  searched(term: $term) @loading(count: 3) {
+    id
+    ...SpeciesCard
+    ...SpeciesHeader @include(if: $withMove)
+    ... on Species @defer(label: "friends") {
+      friends @stream(initialCount: 2) {
+        id
+      }
+    }
+  }
+}

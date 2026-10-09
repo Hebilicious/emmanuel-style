@@ -1,0 +1,6 @@
+query UnknownTypeSpread {
+  species(id: "1") {
+    id
+    ...UnknownThing
+  }
+}

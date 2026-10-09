@@ -1,0 +1,74 @@
+{
+ "config": {
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+   "src/**/*.{vue,ts,graphql,gql}",
+   "src/pages/**/+page.gql",
+   "src/pages/**/+page.graphql",
+   "src/pages/**/+layout.gql",
+   "src/pages/**/+layout.graphql",
+   "src/pages/**/+page.ts",
+   "src/pages/**/+layout.ts"
+  ],
+  "exclude": [
+   "server/schema.graphql"
+  ],
+  "runtimeDir": "/tmp/flamme-oracle-mDlYMp",
+  "compiler": "ts",
+  "projectDir": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_input",
+  "routing": {
+   "pagesDir": "src/pages",
+   "documentFile": "+page.gql",
+   "layoutDocumentFile": "+layout.gql",
+   "documentExtensions": [
+    ".gql",
+    ".graphql"
+   ],
+   "document": "auto",
+   "compose": "route",
+   "params": {}
+  },
+  "scalars": {},
+  "types": {},
+  "defaultKeys": [
+   "id"
+  ],
+  "defaultCachePolicy": "CacheOrNetwork",
+  "defaultPartial": false,
+  "defaultPaginateMode": "Infinite",
+  "defaultListPosition": "last",
+  "defaultListTarget": "single",
+  "defaultFragmentMasking": "enable",
+  "logLevel": "info"
+ },
+ "schema": {
+  "sdl": "type Query {\n  a(x: C1): Int\n  b(x: D1): Int\n  c: Int\n}\n\ninput C1 {\n  b: C2!\n}\n\ninput C2 {\n  a: C1!\n}\n\ninput D1 {\n  a: Int! @deprecated(reason: \"gone\")\n}\n\ninput O1 @oneOf {\n  a: Int!\n}\n\ninput O2 @oneOf {\n  a: Int = 1\n}\n\ntype __Foo {\n  x: Int\n}\n\ntype ReservedField {\n  __a: Int\n}\n\ndirective @bad(x: Query) on FIELD\n\ndirective @__alsoBad on FIELD\n",
+  "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_input/server/schema.graphql"
+ },
+ "inputs": [
+  {
+   "relative": "src/Only.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_input/src/Only.gql",
+   "text": "query Only {\n  c\n}\n",
+   "size": 19,
+   "mtimeMs": 1789501256517.0579
+  }
+ ],
+ "files": [],
+ "diagnostics": [
+  {
+   "code": "FLM2002",
+   "severity": "error",
+   "message": "Invalid schema: The type of @bad(x:) must be Input Type but got: Query.\n\nName \"__alsoBad\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nCannot reference Input Object \"C1\" within itself through a series of non-null fields: \"b.a\".\n\nRequired input field D1.a cannot be deprecated.\n\nOneOf input field O1.a must be nullable.\n\nOneOf input field O2.a cannot have a default value.\n\nName \"__Foo\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nName \"__a\" must not begin with \"__\", which is reserved by GraphQL introspection.",
+   "location": {
+    "file": "src/Only.gql",
+    "line": 1,
+    "column": 1,
+    "length": 1
+   }
+  }
+ ],
+ "artifacts": [],
+ "written": []
+}

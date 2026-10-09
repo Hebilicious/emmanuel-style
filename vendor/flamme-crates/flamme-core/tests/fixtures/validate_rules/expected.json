@@ -1,0 +1,1106 @@
+[
+ {
+  "code": "FLM1015",
+  "severity": "error",
+  "message": "Type \"User\" has more than one @key directive; declare the key fields once.",
+  "location": {
+   "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_rules/server/schema.graphql",
+   "line": 26,
+   "column": 1,
+   "length": 4
+  }
+ },
+ {
+  "code": "FLM1011",
+  "severity": "error",
+  "message": "src/broken/Syntax.gql:5:1 cannot parse the document: Syntax Error: Expected Name, found <EOF>.",
+  "location": {
+   "file": "src/broken/Syntax.gql",
+   "line": 5,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1027",
+  "severity": "error",
+  "message": "src/components/InlineQuery.vue:3:22 \"src/components/InlineQuery.vue\" declares the query \"InlineComponent\" (operation \"InlineComponent\") in a component; move it to a colocated \"+page.gql\" document or a \"+page.ts\" Page export.",
+  "location": {
+   "file": "src/components/InlineQuery.vue",
+   "line": 3,
+   "column": 22,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1004",
+  "severity": "error",
+  "message": "Duplicate document name \"Dup\": first declared at src/broken/DupOne.gql:1:1, redeclared at src/broken/DupTwo.gql:1:1.",
+  "location": {
+   "file": "src/broken/DupTwo.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  },
+  "related": [
+   {
+    "message": "first declared here",
+    "location": {
+     "file": "src/broken/DupOne.gql",
+     "line": 1,
+     "column": 1,
+     "length": 1
+    }
+   }
+  ]
+ },
+ {
+  "code": "FLM1020",
+  "severity": "error",
+  "message": "Operation \"Collide\" and fragment \"Collide\" collide onto one artifact name; rename one of them (they are separate documents).",
+  "location": {
+   "file": "src/broken/Collide.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  },
+  "related": [
+   {
+    "message": "the fragment with the same name",
+    "location": {
+     "file": "src/broken/CollideFragment.gql",
+     "line": 1,
+     "column": 1,
+     "length": 1
+    }
+   }
+  ]
+ },
+ {
+  "code": "FLM1010",
+  "severity": "error",
+  "message": "Ambiguous document filename \"Info.gql\": src/a/Info.gql and src/b/Info.gql cannot both be imported as './Info.gql'.",
+  "location": {
+   "file": "src/b/Info.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  },
+  "related": [
+   {
+    "message": "the other document with this filename",
+    "location": {
+     "file": "src/a/Info.gql",
+     "line": 1,
+     "column": 1,
+     "length": 1
+    }
+   }
+  ]
+ },
+ {
+  "code": "FLM1012",
+  "severity": "error",
+  "message": "List \"Bad\" is also declared on type \"Species\" at src/broken/ListConflict.gql:2:23.",
+  "location": {
+   "file": "src/broken/ListMisuse.gql",
+   "line": 3,
+   "column": 10,
+   "length": 1
+  },
+  "related": [
+   {
+    "message": "first declared on \"Species\" here",
+    "location": {
+     "file": "src/broken/ListConflict.gql",
+     "line": 2,
+     "column": 23,
+     "length": 1
+    }
+   }
+  ]
+ },
+ {
+  "code": "FLM1012",
+  "severity": "error",
+  "message": "List \"Bad\" is also declared on type \"Species\" at src/broken/ListConflict.gql:2:23.",
+  "location": {
+   "file": "src/broken/ListMisuse.gql",
+   "line": 3,
+   "column": 10,
+   "length": 1
+  },
+  "related": [
+   {
+    "message": "first declared on \"Species\" here",
+    "location": {
+     "file": "src/broken/ListConflict.gql",
+     "line": 2,
+     "column": 23,
+     "length": 1
+    }
+   }
+  ]
+ },
+ {
+  "code": "FLM1003",
+  "severity": "error",
+  "message": "Anonymous operations are not supported; name the query at src/broken/Anonymous.gql:1:1.",
+  "location": {
+   "file": "src/broken/Anonymous.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/BadBoolean.gql:2:23 Boolean cannot represent a non boolean value: 1",
+  "location": {
+   "file": "src/broken/BadBoolean.gql",
+   "line": 2,
+   "column": 23,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/BadInt.gql:2:26 Int cannot represent non-integer value: \"x\"",
+  "location": {
+   "file": "src/broken/BadInt.gql",
+   "line": 2,
+   "column": 26,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1011",
+  "severity": "error",
+  "message": "src/broken/BadInt.gql: @loading(count:) requires an integer literal.",
+  "location": {
+   "file": "src/broken/BadInt.gql",
+   "line": 2,
+   "column": 10,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1013",
+  "severity": "error",
+  "message": "@loading(count: 0) requires a list field; \"viewer\" is Query.viewer.",
+  "location": {
+   "file": "src/broken/BadInt.gql",
+   "line": 2,
+   "column": 10,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/BigInt.gql:2:45 Int cannot represent non 32-bit signed integer value: 99999999999",
+  "location": {
+   "file": "src/broken/BigInt.gql",
+   "line": 2,
+   "column": 45,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/CacheFragment.gql:1:35 Directive \"@cache\" may not be used on FRAGMENT_DEFINITION.",
+  "location": {
+   "file": "src/broken/CacheFragment.gql",
+   "line": 1,
+   "column": 35,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@cache\" is only supported on operations; it is reserved for fragments.",
+  "location": {
+   "file": "src/broken/CacheFragment.gql",
+   "line": 1,
+   "column": 35,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1011",
+  "severity": "warning",
+  "message": "@cache on a fragment has no effect; the policy applies to queries only.",
+  "location": {
+   "file": "src/broken/CacheFragment.gql",
+   "line": 1,
+   "column": 35,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1011",
+  "severity": "warning",
+  "message": "@cache on a mutation has no effect; the policy applies to queries only.",
+  "location": {
+   "file": "src/broken/CacheMutation.gql",
+   "line": 1,
+   "column": 24,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/CycleA.gql:2:3 Cannot spread fragment \"CycleA\" within itself via \"CycleB\".",
+  "location": {
+   "file": "src/broken/CycleA.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1006",
+  "severity": "error",
+  "message": "Fragment cycle detected: CycleA → CycleB → CycleA.",
+  "location": {
+   "file": "src/broken/CycleA.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/CycleB.gql:2:3 Cannot spread fragment \"CycleB\" within itself via \"CycleA\".",
+  "location": {
+   "file": "src/broken/CycleB.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@defer\" is not supported inside a fragment definition; the directive belongs on the spread in the operation that requests the data.",
+  "location": {
+   "file": "src/broken/DeferInFragment.gql",
+   "line": 2,
+   "column": 16,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1026",
+  "severity": "error",
+  "message": "The @defer label \"same\" is used twice in \"DeferLabel\"; labels must be unique across a document so a patch can be attributed.",
+  "location": {
+   "file": "src/broken/DeferLabel.gql",
+   "line": 7,
+   "column": 17,
+   "length": 1
+  },
+  "related": [
+   {
+    "message": "the first use of this label",
+    "location": {
+     "file": "src/broken/DeferLabel.gql",
+     "line": 4,
+     "column": 17,
+     "length": 1
+    }
+   }
+  ]
+ },
+ {
+  "code": "FLM1031",
+  "severity": "warning",
+  "message": "The field User.oldName is deprecated. use name",
+  "location": {
+   "file": "src/broken/Deprecated.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1031",
+  "severity": "warning",
+  "message": "Field \"Query.searchOld\" argument \"term\" is deprecated. use query",
+  "location": {
+   "file": "src/broken/DeprecatedArg.gql",
+   "line": 2,
+   "column": 13,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1031",
+  "severity": "warning",
+  "message": "Directive \"@legacy\" argument \"term\" is deprecated. use the query field",
+  "location": {
+   "file": "src/broken/DeprecatedDirective.gql",
+   "line": 2,
+   "column": 18,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1031",
+  "severity": "warning",
+  "message": "The enum value \"Rarity.COMMON\" is deprecated. boring",
+  "location": {
+   "file": "src/broken/DeprecatedEnum.gql",
+   "line": 2,
+   "column": 27,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1031",
+  "severity": "warning",
+  "message": "The input field SpeciesFilter.limit is deprecated. use take",
+  "location": {
+   "file": "src/broken/DeprecatedInput.gql",
+   "line": 2,
+   "column": 40,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/DuplicateArgs.gql:2:11 There can be only one argument named \"id\".",
+  "location": {
+   "file": "src/broken/DuplicateArgs.gql",
+   "line": 2,
+   "column": 11,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/Embedded.gql:4:5 Fragment \"PageInfoFields\" cannot be spread here as objects of type \"User\" can never be of type \"PageInfo\".",
+  "location": {
+   "file": "src/broken/Embedded.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1023",
+  "severity": "warning",
+  "message": "Fragment \"PageInfoFields\" is spread on \"PageInfo\", which has no key fields; fragment data on an embedded type is not addressable, so its fields are inlined into the parent's read instead and no \" $fragments\" reference is generated for it.",
+  "location": {
+   "file": "src/broken/EmbeddedPageInfo.gql",
+   "line": 9,
+   "column": 7,
+   "length": 1
+  },
+  "hint": "give \"PageInfo\" a key field (schema @key or types: { PageInfo: { keys: [\"id\"] } }) to make the fragment addressable, or keep selecting its fields in the parent"
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/EnumString.gql:2:27 Enum \"Rarity\" cannot represent non-enum value: \"x\".",
+  "location": {
+   "file": "src/broken/EnumString.gql",
+   "line": 2,
+   "column": 27,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/EnumValue.gql:2:27 Value \"NOPE\" does not exist in \"Rarity\" enum.",
+  "location": {
+   "file": "src/broken/EnumValue.gql",
+   "line": 2,
+   "column": 27,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/InputDuplicate.gql:2:29 There can be only one input field named \"term\".",
+  "location": {
+   "file": "src/broken/InputDuplicate.gql",
+   "line": 2,
+   "column": 29,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/InputUnknown.gql:2:27 Field \"SpeciesFilter.term\" of required type \"String!\" was not provided.",
+  "location": {
+   "file": "src/broken/InputUnknown.gql",
+   "line": 2,
+   "column": 27,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/InputUnknown.gql:2:29 Field \"nope\" is not defined by type \"SpeciesFilter\".",
+  "location": {
+   "file": "src/broken/InputUnknown.gql",
+   "line": 2,
+   "column": 29,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/Introspection.gql:2:3 Maximum introspection depth exceeded",
+  "location": {
+   "file": "src/broken/Introspection.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1021",
+  "severity": "error",
+  "message": "\"name\" is aliased to \"id\", which is a key field of \"User\"; the cache would compute record ids from the alias. Select the real key field or rename the alias.",
+  "location": {
+   "file": "src/broken/KeyAlias.gql",
+   "line": 3,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "@list is only supported on list and connection fields; \"name\" is String.",
+  "location": {
+   "file": "src/broken/ListMisuse.gql",
+   "line": 3,
+   "column": 10,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/ListOk.gql:2:20 Directive \"@cache\" may not be used on FRAGMENT_DEFINITION.",
+  "location": {
+   "file": "src/broken/ListOk.gql",
+   "line": 2,
+   "column": 20,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@required\" is not supported on a list operation spread (\"...Species_insert\"); conditional list operations are reserved and the spread's fields are not selected.",
+  "location": {
+   "file": "src/broken/ListSpread.gql",
+   "line": 2,
+   "column": 21,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1016",
+  "severity": "error",
+  "message": "@listTarget(name: \"Nope\") names a list that no document declares; no @list(name: \"Nope\") exists.",
+  "location": {
+   "file": "src/broken/ListTarget.gql",
+   "line": 2,
+   "column": 21,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/ListTargetMisplaced.gql:4:5 Fragment \"SpeciesId\" cannot be spread here as objects of type \"User\" can never be of type \"Species\".",
+  "location": {
+   "file": "src/broken/ListTargetMisplaced.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@listTarget\" is only supported on a list operation spread (\"...<List>_insert\", \"...<List>_remove\", \"...<List>_toggle\"); it names the list the operation targets.",
+  "location": {
+   "file": "src/broken/ListTargetMisplaced.gql",
+   "line": 4,
+   "column": 18,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1013",
+  "severity": "error",
+  "message": "@loading(count: 3) requires a list field; \"viewer\" is Query.viewer.",
+  "location": {
+   "file": "src/broken/LoadingCount.gql",
+   "line": 2,
+   "column": 10,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/MaskConflict.gql:4:5 Fragment \"SpeciesId\" cannot be spread here as objects of type \"User\" can never be of type \"Species\".",
+  "location": {
+   "file": "src/broken/MaskConflict.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1014",
+  "severity": "error",
+  "message": "Conflicting mask directives on the spread of \"SpeciesId\".",
+  "location": {
+   "file": "src/broken/MaskConflict.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/MissingArg.gql:2:3 Field \"species\" argument \"id\" of type \"ID!\" is required, but it was not provided.",
+  "location": {
+   "file": "src/broken/MissingArg.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1005",
+  "severity": "error",
+  "message": "Type \"Trainer\" declares key fields [team] but the selection for \"trainer\" provides none of them; select \"team\" or fix types: { Trainer: { keys: [...] } } in flamme.config.ts.",
+  "location": {
+   "file": "src/broken/MissingKey.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/NonComposite.gql:1:26 Fragment \"NonComposite\" cannot condition on non composite type \"String\".",
+  "location": {
+   "file": "src/broken/NonComposite.gql",
+   "line": 1,
+   "column": 26,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/NonCompositeSpread.gql:1:26 Fragment \"NonComposite\" cannot condition on non composite type \"String\".",
+  "location": {
+   "file": "src/broken/NonCompositeSpread.gql",
+   "line": 1,
+   "column": 26,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/NullArg.gql:2:15 Expected value of type \"ID!\", found null.",
+  "location": {
+   "file": "src/broken/NullArg.gql",
+   "line": 2,
+   "column": 15,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/OptimisticKey.gql:1:21 Directive \"@optimisticKey\" may not be used on QUERY.",
+  "location": {
+   "file": "src/broken/OptimisticKey.gql",
+   "line": 1,
+   "column": 21,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/OptimisticKey.gql:4:17 Directive \"@optimisticKey\" may not be used on INLINE_FRAGMENT.",
+  "location": {
+   "file": "src/broken/OptimisticKey.gql",
+   "line": 4,
+   "column": 17,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@optimisticKey\" is only supported on a field; it marks the field that will hold a created record's server id.",
+  "location": {
+   "file": "src/broken/OptimisticKey.gql",
+   "line": 1,
+   "column": 21,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@optimisticKey\" is only supported on a field; it marks the field that will hold a created record's server id.",
+  "location": {
+   "file": "src/broken/OptimisticKey.gql",
+   "line": 4,
+   "column": 17,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/PaginateTwoFields.gql:1:25 Variable \"$first\" is never used in operation \"PaginateTwoFields\".",
+  "location": {
+   "file": "src/broken/PaginateTwoFields.gql",
+   "line": 1,
+   "column": 25,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1024",
+  "severity": "error",
+  "message": "Cannot bind the cursor variable \"$first\": the document declares it as String, but @paginate sends Int for \"first\". Rename the variable or remove @paginate.",
+  "location": {
+   "file": "src/broken/PaginateTwoFields.gql",
+   "line": 1,
+   "column": 25,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1009",
+  "severity": "error",
+  "message": "Document \"PaginateTwoFields\" paginates two fields (\"speciesList\", \"searchedConnection\"); only one paginated field per document is supported.",
+  "location": {
+   "file": "src/broken/PaginateTwoFields.gql",
+   "line": 9,
+   "column": 32,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1024",
+  "severity": "error",
+  "message": "Cannot bind the cursor variable \"$first\": the document declares it as String, but @paginate sends Int for \"first\". Rename the variable or remove @paginate.",
+  "location": {
+   "file": "src/broken/PaginateTwoFields.gql",
+   "line": 1,
+   "column": 25,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/PolicyEnum.gql:1:33 Value \"Nope\" does not exist in \"CachePolicy\" enum.",
+  "location": {
+   "file": "src/broken/PolicyEnum.gql",
+   "line": 1,
+   "column": 33,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1011",
+  "severity": "warning",
+  "message": "@required has no effect on \"id\": User.id is already non-null.",
+  "location": {
+   "file": "src/broken/RequiredNoEffect.gql",
+   "line": 3,
+   "column": 8,
+   "length": 1
+  },
+  "hint": "remove @required"
+ },
+ {
+  "code": "FLM1019",
+  "severity": "error",
+  "message": "Document name \"default\" (src/broken/ReservedName.gql) cannot be used as a TypeScript identifier; rename the query.",
+  "location": {
+   "file": "src/broken/ReservedName.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  },
+  "hint": "for example \"default$doc\""
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/ResourceReserved.gql:1:24 Unknown directive \"@refetch\".",
+  "location": {
+   "file": "src/broken/ResourceReserved.gql",
+   "line": 1,
+   "column": 24,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@refetch\" is not supported by flamme 0.x; it is reserved.",
+  "location": {
+   "file": "src/broken/ResourceReserved.gql",
+   "line": 1,
+   "column": 24,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/ScalarLeafs.gql:2:3 Field \"viewer\" of type \"User!\" must have a selection of subfields. Did you mean \"viewer { ... }\"?",
+  "location": {
+   "file": "src/broken/ScalarLeafs.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/ScalarLeafsToo.gql:3:10 Field \"name\" must not have a selection since type \"String!\" has no subfields.",
+  "location": {
+   "file": "src/broken/ScalarLeafsToo.gql",
+   "line": 3,
+   "column": 10,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/SpreadViolation.gql:4:5 Fragment \"SpeciesId\" cannot be spread here as objects of type \"User\" can never be of type \"Species\".",
+  "location": {
+   "file": "src/broken/SpreadViolation.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/SpreadViolation.gql:5:5 Fragment cannot be spread here as objects of type \"User\" can never be of type \"Species\".",
+  "location": {
+   "file": "src/broken/SpreadViolation.gql",
+   "line": 5,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1008",
+  "severity": "error",
+  "message": "Directive \"@stream\" is not supported inside a fragment definition; a fragment has no request of its own, so the stream cannot be delivered. Put the field and its @stream in the operation.",
+  "location": {
+   "file": "src/broken/StreamInFragment.gql",
+   "line": 2,
+   "column": 11,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1026",
+  "severity": "error",
+  "message": "@stream(initialCount:) requires a non-negative integer literal; \"searched\" has -1.",
+  "location": {
+   "file": "src/broken/StreamInit.gql",
+   "line": 2,
+   "column": 23,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1026",
+  "severity": "error",
+  "message": "@stream is only supported on list fields; \"viewer\" is Query.viewer, whose type is User!.",
+  "location": {
+   "file": "src/broken/StreamInit.gql",
+   "line": 5,
+   "column": 10,
+   "length": 1
+  },
+  "hint": "wrap the field in an inline fragment with @defer instead, or remove @stream"
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/SubscriptionIntrospection.gql:2:3 Subscription \"SubscriptionIntrospection\" must not select an introspection top level field.",
+  "location": {
+   "file": "src/broken/SubscriptionIntrospection.gql",
+   "line": 2,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/SubscriptionTooMany.gql:5:3 Subscription \"SubscriptionTooMany\" must select only one top level field.",
+  "location": {
+   "file": "src/broken/SubscriptionTooMany.gql",
+   "line": 5,
+   "column": 3,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UndefinedVariable.gql:2:15 Variable \"$missing\" is not defined by operation \"UndefinedVariable\".",
+  "location": {
+   "file": "src/broken/UndefinedVariable.gql",
+   "line": 2,
+   "column": 15,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownArg.gql:2:20 Unknown argument \"nope\" on field \"Query.species\".",
+  "location": {
+   "file": "src/broken/UnknownArg.gql",
+   "line": 2,
+   "column": 20,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownDirective.gql:1:24 Unknown directive \"@nope\".",
+  "location": {
+   "file": "src/broken/UnknownDirective.gql",
+   "line": 1,
+   "column": 24,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownField.gql:4:5 Cannot query field \"nope\" on type \"User\". Did you mean \"name\"?",
+  "location": {
+   "file": "src/broken/UnknownField.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1001",
+  "severity": "error",
+  "message": "Unknown fragment \"Nope\" spread by \"UnknownFragment\" at src/broken/UnknownFragment.gql:4:5.",
+  "location": {
+   "file": "src/broken/UnknownFragment.gql",
+   "line": 4,
+   "column": 5,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownThing.gql:1:26 Unknown type \"Missing\".",
+  "location": {
+   "file": "src/broken/UnknownThing.gql",
+   "line": 1,
+   "column": 26,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownTypeSpread.gql:1:26 Unknown type \"Missing\".",
+  "location": {
+   "file": "src/broken/UnknownTypeSpread.gql",
+   "line": 1,
+   "column": 26,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownVariableType.gql:1:31 Unknown type \"Missing\".",
+  "location": {
+   "file": "src/broken/UnknownVariableType.gql",
+   "line": 1,
+   "column": 31,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnknownVariableType.gql:1:27 Variable \"$x\" is never used in operation \"UnknownVariableType\".",
+  "location": {
+   "file": "src/broken/UnknownVariableType.gql",
+   "line": 1,
+   "column": 27,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/UnusedVariable.gql:1:22 Variable \"$used\" is never used in operation \"UnusedVariable\".",
+  "location": {
+   "file": "src/broken/UnusedVariable.gql",
+   "line": 1,
+   "column": 22,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/VariablePosition.gql:1:24 Variable \"$a\" of type \"String\" used in position expecting type \"String!\".",
+  "location": {
+   "file": "src/broken/VariablePosition.gql",
+   "line": 1,
+   "column": 24,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/WrongLocation.gql:2:10 Directive \"@cache\" may not be used on FIELD.",
+  "location": {
+   "file": "src/broken/WrongLocation.gql",
+   "line": 2,
+   "column": 10,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/WrongValue.gql:2:15 ID cannot represent a non-string and non-integer value: 1.5",
+  "location": {
+   "file": "src/broken/WrongValue.gql",
+   "line": 2,
+   "column": 15,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1007",
+  "severity": "error",
+  "message": "src/broken/WrongValue.gql:5:18 String cannot represent a non string value: 3",
+  "location": {
+   "file": "src/broken/WrongValue.gql",
+   "line": 5,
+   "column": 18,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1002",
+  "severity": "error",
+  "message": "Fragment \"Collide\" (src/broken/CollideFragment.gql:1:1) is never spread by an operation; add it to a query or delete it.",
+  "location": {
+   "file": "src/broken/CollideFragment.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1002",
+  "severity": "error",
+  "message": "Fragment \"CycleA\" (src/broken/CycleA.gql:1:1) is never spread by an operation; add it to a query or delete it.",
+  "location": {
+   "file": "src/broken/CycleA.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1002",
+  "severity": "error",
+  "message": "Fragment \"CycleB\" (src/broken/CycleB.gql:1:1) is never spread by an operation; add it to a query or delete it.",
+  "location": {
+   "file": "src/broken/CycleB.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1002",
+  "severity": "error",
+  "message": "Fragment \"DeferInFragment\" (src/broken/DeferInFragment.gql:1:1) is never spread by an operation; add it to a query or delete it.",
+  "location": {
+   "file": "src/broken/DeferInFragment.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1002",
+  "severity": "error",
+  "message": "Fragment \"StreamInFragment\" (src/broken/StreamInFragment.gql:1:1) is never spread by an operation; add it to a query or delete it.",
+  "location": {
+   "file": "src/broken/StreamInFragment.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ },
+ {
+  "code": "FLM1002",
+  "severity": "error",
+  "message": "Fragment \"TagSpecies\" (src/components/species.ts:4:3) is never spread by an operation; add it to a query or delete it.",
+  "location": {
+   "file": "src/components/species.ts",
+   "line": 4,
+   "column": 3,
+   "length": 1
+  }
+ }
+]

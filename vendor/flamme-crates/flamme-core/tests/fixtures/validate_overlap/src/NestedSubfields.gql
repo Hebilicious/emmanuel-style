@@ -1,0 +1,12 @@
+query NestedSubfields {
+  a: viewer {
+    b: favorite {
+      name
+    }
+  }
+  a: viewer {
+    b: favorite {
+      name: id
+    }
+  }
+}

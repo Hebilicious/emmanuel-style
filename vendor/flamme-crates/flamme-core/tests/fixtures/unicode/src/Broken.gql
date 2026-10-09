@@ -1,0 +1,6 @@
+query Broken {
+	species(id: "café 😀") {
+		id
+		nope
+	}
+}

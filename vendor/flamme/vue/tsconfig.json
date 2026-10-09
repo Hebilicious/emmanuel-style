@@ -1,0 +1,10 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  // `*.vue` components are real sources for this package and must be included,
+  // otherwise they are invisible to the checker. `.vue` files only typecheck
+  // under `vue-tsc`; see the `typecheck.checker` override in `moon.yml`.
+  "include": ["src/**/*.ts", "src/**/*.vue", "test/**/*.ts", "test/**/*.vue"]
+}

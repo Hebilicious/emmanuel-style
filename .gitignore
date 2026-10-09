@@ -29,3 +29,6 @@ old
 # moon
 .moon/cache
 .moon/docker
+
+# Playwright CLI session artifacts
+.playwright-cli

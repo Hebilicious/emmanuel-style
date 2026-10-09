@@ -1,0 +1,74 @@
+{
+ "config": {
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+   "src/**/*.{vue,ts,graphql,gql}",
+   "src/pages/**/+page.gql",
+   "src/pages/**/+page.graphql",
+   "src/pages/**/+layout.gql",
+   "src/pages/**/+layout.graphql",
+   "src/pages/**/+page.ts",
+   "src/pages/**/+layout.ts"
+  ],
+  "exclude": [
+   "server/schema.graphql"
+  ],
+  "runtimeDir": "/tmp/flamme-oracle-OC53og",
+  "compiler": "ts",
+  "projectDir": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_types",
+  "routing": {
+   "pagesDir": "src/pages",
+   "documentFile": "+page.gql",
+   "layoutDocumentFile": "+layout.gql",
+   "documentExtensions": [
+    ".gql",
+    ".graphql"
+   ],
+   "document": "auto",
+   "compose": "route",
+   "params": {}
+  },
+  "scalars": {},
+  "types": {},
+  "defaultKeys": [
+   "id"
+  ],
+  "defaultCachePolicy": "CacheOrNetwork",
+  "defaultPartial": false,
+  "defaultPaginateMode": "Infinite",
+  "defaultListPosition": "last",
+  "defaultListTarget": "single",
+  "defaultFragmentMasking": "enable",
+  "logLevel": "info"
+ },
+ "schema": {
+  "sdl": "type Query {\n  a: Filter\n  b(x: Query): Int\n}\n\ninput Filter {\n  term: String\n}\n\ninterface I1 {\n  x: Int\n}\n\ntype T1 implements I1 {\n  y: Int\n}\n\ninterface I2 {\n  x: Int\n}\n\ntype T2 implements I2 {\n  x: String\n}\n\ninterface I3 {\n  x(y: Int): Int\n}\n\ntype T3 implements I3 {\n  x: Int\n}\n\ninterface I4 {\n  x: Int\n}\n\ntype T4 implements I4 {\n  x(y: Int!): Int\n}\n\ninterface I5 {\n  x: Int\n}\n\ninterface I6 implements I5 {\n  x: Int\n}\n\ntype T5 implements I6 {\n  x: Int\n}\n\ninterface I7 implements I7 {\n  x: Int\n}\n\ninterface I8 {\n  x: Int\n}\n\ntype T6 implements I8 & I8 {\n  x: Int\n}\n\nunion U1 = T7\n\ntype T7 implements U1 {\n  x: Int\n}\n\nunion U2 = Int\n",
+  "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_types/server/schema.graphql"
+ },
+ "inputs": [
+  {
+   "relative": "src/Only.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_types/src/Only.gql",
+   "text": "query Only {\n  a {\n    term\n  }\n}\n",
+   "size": 34,
+   "mtimeMs": 1789501256515.4282
+  }
+ ],
+ "files": [],
+ "diagnostics": [
+  {
+   "code": "FLM2002",
+   "severity": "error",
+   "message": "Invalid schema: The type of Query.a must be Output Type but got: Filter.\n\nThe type of Query.b(x:) must be Input Type but got: Query.\n\nInterface field I1.x expected but T1 does not provide it.\n\nInterface field I2.x expects type Int but T2.x is type String.\n\nInterface field argument I3.x(y:) expected but T3.x does not provide it.\n\nObject field T4.x includes required argument y that is missing from the Interface field I4.x.\n\nType T5 must implement I5 because it is implemented by I6.\n\nType I7 cannot implement itself because it would create a circular reference.\n\nType T6 can only implement I8 once.\n\nType T7 must only implement Interface types, it cannot implement U1.\n\nUnion type U2 can only include Object types, it cannot include Int.",
+   "location": {
+    "file": "src/Only.gql",
+    "line": 1,
+    "column": 1,
+    "length": 1
+   }
+  }
+ ],
+ "artifacts": [],
+ "written": []
+}

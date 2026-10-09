@@ -1,0 +1,7 @@
+query Deferred($id: ID!, $withCard: Boolean! = false) {
+	node(id: $id) {
+		...PostCard @defer(if: $withCard, label: "card")
+		...PostWithAuthor @defer(label: "PostCard")
+		...PostCard @defer
+	}
+}

@@ -1,0 +1,5 @@
+query VariablePosition($a: String) {
+  speciesFiltered(filter: { term: $a }) {
+    id
+  }
+}

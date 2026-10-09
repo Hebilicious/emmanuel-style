@@ -1,0 +1,46 @@
+schema {
+  query: Query
+  subscription: NotAnObject
+}
+
+type Query {
+  a(x: Int! @deprecated(reason: "no")): Int
+  b: [Int]
+  c(__a: Int): Int
+}
+
+input NotAnObject {
+  a: Int
+}
+
+input BadInput {
+  f: Query
+  __b: Int
+}
+
+union Dup = Query | Query
+
+enum BadEnum {
+  __a
+  OK
+}
+
+interface L {
+  xs: [Int]
+  x: Int!
+}
+
+type LT implements L {
+  xs: [String]
+  x: Int
+}
+
+interface A1 implements A2 {
+  x: Int
+}
+
+interface A2 implements A1 {
+  x: Int
+}
+
+directive @badArg(x: Int! @deprecated(reason: "no")) on FIELD

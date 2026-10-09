@@ -1,0 +1,5 @@
+query DeprecatedInput {
+  speciesFiltered(filter: { term: "a", limit: 1 }) {
+    id
+  }
+}

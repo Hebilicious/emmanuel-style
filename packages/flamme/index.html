@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <meta name="theme-color" content="#0a0a09" />
+    <title>Emmanuel</title>
+    <script>
+      // The theme is applied before the first paint, so a reader who chose dark never sees
+      // a flash of paper. The key is the one @vueuse/core writes, so a returning reader
+      // keeps the theme they picked in the previous build.
+      try {
+        var stored = localStorage.getItem("vueuse-color-scheme");
+        // Dark is the default, matching the previous build: the stored choice wins and
+        // a first visit starts dark rather than following the system preference.
+        var dark = stored !== "light";
+        document.documentElement.classList.add(dark ? "DarkTheme" : "LightTheme");
+      } catch (error) {
+        document.documentElement.classList.add("LightTheme");
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"><!--app-html--></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

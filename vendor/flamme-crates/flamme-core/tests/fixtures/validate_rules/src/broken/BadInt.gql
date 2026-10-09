@@ -1,0 +1,5 @@
+query BadInt {
+  viewer @loading(count: "x") {
+    id
+  }
+}

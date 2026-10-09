@@ -1,0 +1,155 @@
+---
+const year = new Date().getFullYear()
+---
+
+<!--
+  The status line. It is the top row of the dock, so it sits directly above the
+  prompt and the two read as one bar pinned to the bottom of the screen.
+-->
+<div class="Status">
+  <span class="Cell">
+    <span>emmanuel.style</span>
+    <span class="Dot" aria-hidden="true">·</span>
+    <span>{year}</span>
+  </span>
+  <span class="Cell">
+    <span class="Hint" data-status-hint>
+      <span class="Key">g</span> then <span class="Key">h</span><span
+        class="Key">l</span><span class="Key">b</span><span
+        class="Key">e</span><span class="Key">t</span> sections ·
+      <span class="Key">n</span><span class="Key">p</span>
+      <span data-turn-label>pages</span> ·
+      <span class="Key">j</span><span class="Key">k</span> rows ·
+      <span class="Key">↵</span> open ·
+      <span class="Key">/</span> prompt
+    </span>
+    <span class="Dot" aria-hidden="true">·</span>
+    <span class="Focus" data-focus-label>&nbsp;</span>
+    <span class="Dot" aria-hidden="true">·</span>
+    <span class="Pages" data-pages hidden></span>
+    <span class="Dot" data-pages-sep aria-hidden="true" hidden>·</span>
+    <span>net</span>
+    <span class="State" data-net>online</span>
+  </span>
+</div>
+
+<script>
+import { pageReady } from "../utils/pageReady"
+
+pageReady((signal) => {
+	const net = document.querySelector("[data-net]")
+	if (net) {
+		const paintNet = () => {
+			net.textContent = navigator.onLine ? "online" : "offline"
+		}
+		paintNet()
+		window.addEventListener("online", paintNet, { signal })
+		window.addEventListener("offline", paintNet, { signal })
+	}
+
+	// Page position, reported by the paginator. Shown only when a page runs to
+	// more than one screen, and reserved otherwise, so this row cannot change
+	// height and shift everything above it.
+	const pages = document.querySelector<HTMLElement>("[data-pages]")
+	const separator = document.querySelector<HTMLElement>("[data-pages-sep]")
+	// The front page has nothing to turn, so N and P step the quote instead.
+	const turnLabel = document.querySelector<HTMLElement>("[data-turn-label]")
+	if (turnLabel && document.querySelector("[data-quotes]"))
+		turnLabel.textContent = "quotes"
+
+	// The focus indicator: what Enter would follow, named rather than implied.
+	const focusLabel = document.querySelector<HTMLElement>("[data-focus-label]")
+	document.addEventListener(
+		"focus:label",
+		(event) => {
+			if (!focusLabel) return
+			const detail = (event as CustomEvent<string>).detail
+			focusLabel.textContent = detail ? `focus ${detail}` : "\u00a0"
+		},
+		{ signal }
+	)
+
+	document.addEventListener(
+		"page:position",
+		(event) => {
+			if (!pages) return
+			const detail = (event as CustomEvent<{ current: number; total: number }>)
+				.detail
+			const many = detail.total > 1
+			pages.hidden = !many
+			if (separator) separator.hidden = !many
+			if (many) pages.textContent = `page ${detail.current}/${detail.total}`
+		},
+		{ signal }
+	)
+})
+</script>
+
+<style>
+/*
+ * No positioning of its own: the dock owns the placement, this is its top row.
+ * A hairline under it is all that separates the status from the prompt.
+ */
+.Status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-tight-space-tight-l);
+  padding-bottom: var(--spacing_fluid-tight-space-tight-xs);
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.Cell {
+  display: flex;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+}
+
+.Dot {
+  color: var(--faint);
+}
+
+.State {
+  color: var(--accent);
+}
+
+.Key {
+  color: var(--faint);
+}
+
+/*
+ * The hint never changes with the prompt's state. Hiding it while the prompt was
+ * open changed this row's height, which moved the prompt and every line above
+ * it: the layout shifted on every `/` and `Escape`.
+ */
+.Key {
+  padding: 0 0.25em;
+  border: var(--spacing-size-hairline) solid var(--rule);
+  color: var(--faint);
+}
+
+/*
+ * The shortcut legend is for a keyboard, and a phone has none. It wrapped over
+ * four lines there and pushed the status row out of shape, so it is dropped below
+ * the tablet breakpoint rather than squeezed.
+ */
+@media (max-width: 60rem) {
+  .Hint {
+    display: none;
+  }
+}
+
+.Pages {
+  color: var(--accent);
+}
+
+/* What Enter would follow. A fixed width keeps the row from shifting. */
+.Focus {
+  min-width: 12ch;
+  color: var(--ink);
+}
+</style>

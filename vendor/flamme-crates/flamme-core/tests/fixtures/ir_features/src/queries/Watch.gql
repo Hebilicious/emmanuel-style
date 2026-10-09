@@ -1,0 +1,6 @@
+subscription Watch {
+	postAdded {
+		id
+		title
+	}
+}

@@ -1,0 +1,250 @@
+---
+import { formatDuration, monthsBetween, roles } from "../data/experience"
+
+/**
+ * Experience over time, drawn as a Gantt-style timeline.
+ *
+ * Rendered to static SVG at build time: no chart library, no client script, so
+ * it works offline and in both themes through the current colour tokens.
+ */
+interface Props {
+	/** Chart width in user units. The SVG scales to its container. */
+	width?: number
+	/** Height of one role row. */
+	rowHeight?: number
+	/**
+	 * Marks the chart as a block that gets a page to itself. It is taller than a
+	 * page can share, so pairing it with anything else would push that content out
+	 * of sight.
+	 */
+	standAlone?: boolean
+}
+
+const { width = 720, rowHeight = 34, standAlone = false } = Astro.props
+
+const axisHeight = 26
+const labelWidth = 132
+/** Room for the final year label and a duration label that runs to the edge. */
+const rightPad = 26
+const plotWidth = width - labelWidth - rightPad
+const height = axisHeight + roles.length * rowHeight + 8
+
+const toMonthIndex = (value: string) => {
+	const [year, month] = value.split("-").map(Number)
+	return year * 12 + (month - 1)
+}
+
+const now = new Date()
+const currentIndex = now.getFullYear() * 12 + now.getMonth()
+
+const starts = roles.map((role) => toMonthIndex(role.start))
+const earliest = Math.min(...starts)
+
+// Round the domain out to whole years so the axis lands on January.
+const domainStart = Math.floor(earliest / 12) * 12
+const domainEnd = Math.ceil((currentIndex + 1) / 12) * 12
+const domainSpan = domainEnd - domainStart
+
+const x = (monthIndex: number) =>
+	labelWidth + ((monthIndex - domainStart) / domainSpan) * plotWidth
+
+/**
+ * One tick per year that contains data. The domain is rounded out so the last
+ * bar has room, but a trailing year with nothing in it would be a misleading
+ * label, so it is left off.
+ */
+const years: { index: number; label: string; x: number }[] = []
+for (let index = domainStart; index < domainEnd; index += 12) {
+	years.push({
+		index,
+		label: String(Math.floor(index / 12)),
+		x: x(index)
+	})
+}
+
+const bars = roles.map((role, row) => {
+	const startIndex = toMonthIndex(role.start)
+	const endIndex = role.end ? toMonthIndex(role.end) + 1 : currentIndex + 1
+	const barX = x(startIndex)
+	const barWidth = Math.max(x(endIndex) - barX, 3)
+
+	// Keep the duration label inside the viewBox: after the bar, or before it
+	// when there is no room, but never past the right edge where it would clip.
+	const labelAfter = barX + barWidth + 6
+	const fits = labelAfter + 52 <= width
+	return {
+		role,
+		row,
+		y: axisHeight + row * rowHeight,
+		x: barX,
+		width: barWidth,
+		current: role.end === null,
+		duration: formatDuration(monthsBetween(role.start, role.end)),
+		labelX: fits ? labelAfter : barX - 6,
+		labelAnchor: fits ? "start" : "end"
+	}
+})
+---
+
+<figure class="Chart" data-screen={standAlone ? "true" : undefined}>
+  <figcaption class="Caption label">
+    <span class="accent">▚</span>
+    Experience over time
+  </figcaption>
+
+  <div class="Scroll">
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      width={width}
+      height={height}
+      role="img"
+      aria-label="Timeline of roles, from oldest to most recent"
+      preserveAspectRatio="xMinYMin meet">
+      <g class="Grid">
+        {years.map((year) => (
+          <line x1={year.x} x2={year.x} y1={axisHeight - 6} y2={height - 4} />
+        ))}
+      </g>
+
+      <g class="Axis">
+        {years.map((year) => (
+          <text x={year.x} y={axisHeight - 12} text-anchor="middle">
+            {year.label}
+          </text>
+        ))}
+      </g>
+
+      <g class="Rows">
+        {bars.map((bar) => (
+          <g>
+            <text class="Company" x={0} y={bar.y + rowHeight / 2 + 4}>
+              {bar.role.company}
+            </text>
+            <rect
+              class:list={["Bar", { Current: bar.current }]}
+              x={bar.x}
+              y={bar.y + 7}
+              width={bar.width}
+              height={rowHeight - 16}
+              rx="2"
+            />
+            <text
+              class="Duration"
+              x={bar.labelX}
+              y={bar.y + rowHeight / 2 + 4}
+              text-anchor={bar.labelAnchor}>
+              {bar.duration}
+            </text>
+          </g>
+        ))}
+      </g>
+    </svg>
+  </div>
+
+  <p class="Legend">
+    <span class="Swatch" aria-hidden="true"></span>
+    current role
+  </p>
+</figure>
+
+<style>
+/*
+ * The chart shares the screen with the roles, so it is capped to a fraction of it
+ * and scales its rows to fit. Left to its natural height it took 429px of a 597px
+ * screen and pushed the roles below the fold.
+ */
+.Chart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  margin: 0;
+  max-height: calc(var(--screen-height, 60dvh) * 0.9);
+  padding: var(--spacing_fluid-tight-space-tight-m);
+  border: var(--spacing-size-hairline) solid var(--rule);
+  background: var(--surface);
+}
+
+.Caption {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--muted);
+}
+
+.Scroll {
+  overflow-x: auto;
+}
+
+/*
+ * The svg is scaled to the capped height, so the chart fits the space it is given
+ * instead of setting its own.
+ */
+svg {
+  display: block;
+  width: 100%;
+  max-height: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Chart internals use the same tokens as the rest of the page. */
+svg :global(.Grid line) {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+svg :global(.Axis text) {
+  fill: var(--faint);
+  font-family:
+    var(--font-monaspace),
+    ui-monospace,
+    monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+svg :global(.Company) {
+  fill: var(--ink);
+  font-family:
+    var(--font-monaspace),
+    ui-monospace,
+    monospace;
+  font-size: 11px;
+}
+
+svg :global(.Bar) {
+  fill: var(--sunk);
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+svg :global(.Bar.Current) {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+
+svg :global(.Duration) {
+  fill: var(--muted);
+  font-family:
+    var(--font-monaspace),
+    ui-monospace,
+    monospace;
+  font-size: 10px;
+}
+
+.Legend {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.Swatch {
+  width: 0.9em;
+  height: 0.55em;
+  background: var(--accent);
+}
+</style>

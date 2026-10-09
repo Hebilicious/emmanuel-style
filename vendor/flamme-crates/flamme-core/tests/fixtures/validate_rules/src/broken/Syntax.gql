@@ -1,0 +1,4 @@
+query Syntax {
+  viewer {
+    id
+}

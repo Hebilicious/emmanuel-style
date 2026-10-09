@@ -1,0 +1,7 @@
+{
+  field(a: "x", b: """
+    line one
+    line two
+  """)
+  after
+}

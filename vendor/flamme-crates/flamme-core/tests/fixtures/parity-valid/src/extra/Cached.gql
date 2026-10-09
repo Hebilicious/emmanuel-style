@@ -1,0 +1,6 @@
+query Cached @cache(policy: NetworkOnly, partial: true) @dedupe(cancelFirst: true, match: variables) {
+	favorites {
+		id
+		name
+	}
+}

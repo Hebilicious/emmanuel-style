@@ -1,0 +1,24 @@
+{
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+    "src/**/*.{vue,ts,graphql,gql}"
+  ],
+  "exclude": [
+    "server/schema.graphql"
+  ],
+  "types": {
+    "Gym": {
+      "keys": [
+        "name",
+        "leader"
+      ]
+    },
+    "League": {
+      "keys": [
+        "slug",
+        "name"
+      ]
+    }
+  }
+}

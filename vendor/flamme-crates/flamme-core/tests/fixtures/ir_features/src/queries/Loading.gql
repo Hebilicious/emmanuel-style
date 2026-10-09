@@ -1,0 +1,10 @@
+query Loading($id: ID!) {
+	node(id: $id) {
+		id @loading
+		... on Post {
+			author @loading {
+				name
+			}
+		}
+	}
+}

@@ -1,0 +1,13 @@
+[
+ {
+  "code": "FLM2002",
+  "severity": "error",
+  "message": "Invalid schema: The type of @bad(x:) must be Input Type but got: Query.\n\nName \"__alsoBad\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nCannot reference Input Object \"C1\" within itself through a series of non-null fields: \"b.a\".\n\nRequired input field D1.a cannot be deprecated.\n\nOneOf input field O1.a must be nullable.\n\nOneOf input field O2.a cannot have a default value.\n\nName \"__Foo\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nName \"__a\" must not begin with \"__\", which is reserved by GraphQL introspection.",
+  "location": {
+   "file": "src/Only.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ }
+]

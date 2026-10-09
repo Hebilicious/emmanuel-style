@@ -1,0 +1,21 @@
+query NodeView($id: ID!, $withBody: Boolean! = true) {
+	node(id: $id) @required {
+		id
+		... on Post @defer(label: "body") {
+			title
+			subtitle @required
+			author {
+				name @required
+			}
+			byline: author @required {
+				id
+			}
+		}
+		... on Comment @defer(if: $withBody) {
+			text
+		}
+		... on User @defer {
+			name
+		}
+	}
+}

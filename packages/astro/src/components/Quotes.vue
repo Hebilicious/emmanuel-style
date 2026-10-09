@@ -67,15 +67,47 @@ const currentQuote = computed(() => quotes[index.value])
 
 let interval: ReturnType<typeof setInterval>
 
-onMounted(() => {
+const INTERVAL = 7500
+
+/**
+ * Advance the quote.
+ *
+ * Exposed so a page turn can drive it: `n` and `p` on the homepage mean "next
+ * quote" and "previous quote", and a manual change restarts the timer so the
+ * automatic rotation does not immediately jump again.
+ */
+const next = () => {
+	index.value = (index.value + 1) % quotes.length
+	restart()
+}
+
+const previous = () => {
+	index.value = (index.value - 1 + quotes.length) % quotes.length
+	restart()
+}
+
+const restart = () => {
+	clearInterval(interval)
 	interval = setInterval(() => {
 		index.value = (index.value + 1) % quotes.length
-	}, 7500)
+	}, INTERVAL)
+}
+
+const onStep = (event: Event) => {
+	const delta = (event as CustomEvent<number>).detail
+	if (delta > 0) next()
+	else previous()
+}
+
+onMounted(() => {
+	restart()
+	// The paginator owns N and P; on a page with nothing to turn they step the
+	// quote instead, and each step restarts the rotation timer.
+	document.addEventListener("quote:step", onStep)
+	onUnmounted(() => document.removeEventListener("quote:step", onStep))
 })
 
-onUnmounted(() => {
-	clearInterval(interval)
-})
+onUnmounted(() => clearInterval(interval))
 </script>
 <template>
   <div class="SubText" :key="currentQuote.quote">

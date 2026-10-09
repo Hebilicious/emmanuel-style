@@ -1,0 +1,6 @@
+query Use {
+  species {
+    id
+    ...Info
+  }
+}

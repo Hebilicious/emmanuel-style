@@ -1,0 +1,8 @@
+query Skipped {
+  species(id: "1") {
+    id
+  }
+  species(id: "2") @skip(if: true) {
+    id
+  }
+}

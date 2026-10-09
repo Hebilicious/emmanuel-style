@@ -1,0 +1,25 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+layer: 'library'
+language: 'typescript'
+tags: ['typescript', 'library']
+
+tasks:
+  typecheck:
+    # `tsconfig.json` includes `*.vue`, and `.vue` only typechecks under
+    # `vue-tsc`. The app layer gets that by overriding `command` in
+    # `.moon/tasks/application.yml`; this package is a library, so it overrides
+    # the command directly.
+    command: 'vue-tsc'
+  test:
+    # The vitest `typecheck.checker` is selected in the root `vitest.config.ts`
+    # (`checker: name === 'vue' ? 'vue-tsc' : 'tsc'`). It cannot be set from the
+    # CLI: `--typecheck.checker=vue-tsc` is silently ignored by vitest 5.0.0, so
+    # the config is the only working switch.
+    args:
+      [
+        '--project',
+        'vue',
+        '--coverage.include=packages/vue/src/**/*.ts',
+        '--coverage.reportsDirectory=coverage/vue',
+      ]

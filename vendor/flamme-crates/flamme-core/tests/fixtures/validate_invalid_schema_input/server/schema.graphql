@@ -1,0 +1,37 @@
+type Query {
+  a(x: C1): Int
+  b(x: D1): Int
+  c: Int
+}
+
+input C1 {
+  b: C2!
+}
+
+input C2 {
+  a: C1!
+}
+
+input D1 {
+  a: Int! @deprecated(reason: "gone")
+}
+
+input O1 @oneOf {
+  a: Int!
+}
+
+input O2 @oneOf {
+  a: Int = 1
+}
+
+type __Foo {
+  x: Int
+}
+
+type ReservedField {
+  __a: Int
+}
+
+directive @bad(x: Query) on FIELD
+
+directive @__alsoBad on FIELD

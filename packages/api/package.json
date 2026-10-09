@@ -1,0 +1,23 @@
+{
+	"name": "api-worker",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy",
+		"deploy-pr": "wrangler versions upload",
+		"test": "node --test src/*.test.ts",
+		"typecheck": "tsc --noEmit",
+		"types": "wrangler types"
+	},
+	"devDependencies": {
+		"@types/node": "catalog:api",
+		"typescript": "catalog:api",
+		"wrangler": "catalog:api"
+	},
+	"dependencies": {
+		"graphql": "16.14.2",
+		"hono": "catalog:api"
+	}
+}

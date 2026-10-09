@@ -1,0 +1,259 @@
+{
+ "config": {
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+   "src/**/*.{vue,ts,graphql,gql}",
+   "src/pages/**/+page.gql",
+   "src/pages/**/+page.graphql",
+   "src/pages/**/+layout.gql",
+   "src/pages/**/+layout.graphql",
+   "src/pages/**/+page.ts",
+   "src/pages/**/+layout.ts"
+  ],
+  "exclude": [
+   "server/schema.graphql"
+  ],
+  "types": {
+   "SpeciesMove": {
+    "keys": [
+     "name"
+    ]
+   }
+  },
+  "runtimeDir": "/tmp/flamme-oracle-Qnkplh",
+  "compiler": "ts",
+  "projectDir": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap",
+  "routing": {
+   "pagesDir": "src/pages",
+   "documentFile": "+page.gql",
+   "layoutDocumentFile": "+layout.gql",
+   "documentExtensions": [
+    ".gql",
+    ".graphql"
+   ],
+   "document": "auto",
+   "compose": "route",
+   "params": {}
+  },
+  "scalars": {},
+  "defaultKeys": [
+   "id"
+  ],
+  "defaultCachePolicy": "CacheOrNetwork",
+  "defaultPartial": false,
+  "defaultPaginateMode": "Infinite",
+  "defaultListPosition": "last",
+  "defaultListTarget": "single",
+  "defaultFragmentMasking": "enable",
+  "logLevel": "info"
+ },
+ "schema": {
+  "sdl": "type Query {\n  viewer: User!\n  named: Named!\n  species(id: ID!): Species\n  searched(term: String!): [Species!]!\n  speciesList(first: Int, after: String, last: Int, before: String): SpeciesConnection!\n  speciesFiltered(filter: SpeciesFilter!): [Species!]!\n}\n\ntype Mutation {\n  favorite(id: ID!): Species!\n}\n\ninterface Named {\n  display: String\n}\n\ntype User implements Named {\n  id: ID!\n  name: String!\n  display: String!\n  favorite: Species\n  power(level: Int): Int\n}\n\ntype Species implements Named {\n  id: ID!\n  name: String!\n  display: String\n  move: SpeciesMove\n  friends: [Species!]\n  power(boost: Int): Int\n}\n\ntype SpeciesMove {\n  name: String!\n  power: Int\n}\n\ntype SpeciesConnection {\n  edges: [SpeciesEdge!]!\n  pageInfo: PageInfo!\n}\n\ntype SpeciesEdge {\n  node: Species!\n  cursor: String!\n}\n\ntype PageInfo {\n  hasNextPage: Boolean!\n  endCursor: String\n}\n\ninput SpeciesFilter {\n  term: String!\n  limit: Int\n}\n",
+  "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/server/schema.graphql"
+ },
+ "inputs": [
+  {
+   "relative": "src/DifferingArgs.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/DifferingArgs.gql",
+   "text": "query DifferingArgs {\n  species(id: \"1\") {\n    id\n  }\n  species(id: \"2\") {\n    id\n  }\n}\n",
+   "size": 88,
+   "mtimeMs": 1789501243981.7568
+  },
+  {
+   "relative": "src/ExclusiveArgs.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/ExclusiveArgs.gql",
+   "text": "query ExclusiveArgs {\n  named {\n    ... on User {\n      p: power(level: 1)\n    }\n    ... on Species {\n      p: power(boost: 2)\n    }\n  }\n}\n",
+   "size": 139,
+   "mtimeMs": 1789501243992.5425
+  },
+  {
+   "relative": "src/NestedSubfields.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/NestedSubfields.gql",
+   "text": "query NestedSubfields {\n  a: viewer {\n    b: favorite {\n      name\n    }\n  }\n  a: viewer {\n    b: favorite {\n      name: id\n    }\n  }\n}\n",
+   "size": 136,
+   "mtimeMs": 1789501243985.7805
+  },
+  {
+   "relative": "src/Overlap.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/Overlap.gql",
+   "text": "query Overlap {\n  species(id: \"1\") {\n    name\n    name: id\n  }\n}\n",
+   "size": 65,
+   "mtimeMs": 1789395504945.511
+  },
+  {
+   "relative": "src/SameArgs.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/SameArgs.gql",
+   "text": "query SameArgs {\n  speciesFiltered(filter: { term: \"a\", limit: 1 }) {\n    id\n  }\n  speciesFiltered(filter: { limit: 1, term: \"a\" }) {\n    id\n  }\n}\n",
+   "size": 147,
+   "mtimeMs": 1789501243982.765
+  },
+  {
+   "relative": "src/Skipped.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/Skipped.gql",
+   "text": "query Skipped {\n  species(id: \"1\") {\n    id\n  }\n  species(id: \"2\") @skip(if: true) {\n    id\n  }\n}\n",
+   "size": 98,
+   "mtimeMs": 1789501243993.5957
+  },
+  {
+   "relative": "src/SpreadA.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/SpreadA.gql",
+   "text": "fragment SpreadA on User {\n  name\n}\n",
+   "size": 36,
+   "mtimeMs": 1789501243988.9543
+  },
+  {
+   "relative": "src/SpreadB.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/SpreadB.gql",
+   "text": "fragment SpreadB on User {\n  name: id\n}\n",
+   "size": 40,
+   "mtimeMs": 1789501243990.384
+  },
+  {
+   "relative": "src/SpreadConflict.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/SpreadConflict.gql",
+   "text": "query SpreadConflict {\n  viewer {\n    name\n    ...SpreadUser\n  }\n}\n",
+   "size": 67,
+   "mtimeMs": 1789501243988.0696
+  },
+  {
+   "relative": "src/SpreadUser.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/SpreadUser.gql",
+   "text": "fragment SpreadUser on User {\n  name: id\n}\n",
+   "size": 43,
+   "mtimeMs": 1789501243987.2412
+  },
+  {
+   "relative": "src/SubfieldConflict.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/SubfieldConflict.gql",
+   "text": "query SubfieldConflict {\n  a: viewer {\n    name\n  }\n  a: viewer {\n    name: id\n  }\n}\n",
+   "size": 85,
+   "mtimeMs": 1789501243984.4346
+  },
+  {
+   "relative": "src/TwoSpreads.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/TwoSpreads.gql",
+   "text": "query TwoSpreads {\n  viewer {\n    ...SpreadA\n    ...SpreadB\n  }\n}\n",
+   "size": 66,
+   "mtimeMs": 1789501243991.5176
+  },
+  {
+   "relative": "src/TypeConflict.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/TypeConflict.gql",
+   "text": "query TypeConflict {\n  named {\n    ... on Named {\n      d: display\n    }\n    ... on User {\n      d: display\n    }\n  }\n}\n",
+   "size": 120,
+   "mtimeMs": 1789501243983.6604
+  },
+  {
+   "relative": "src/Typename.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_overlap/src/Typename.gql",
+   "text": "query Typename {\n  species(id: \"1\") {\n    x: name\n    x: __typename\n  }\n}\n",
+   "size": 74,
+   "mtimeMs": 1789501243994.6506
+  }
+ ],
+ "files": [],
+ "diagnostics": [
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/DifferingArgs.gql:2:3 Fields \"species\" conflict because they have differing arguments. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/DifferingArgs.gql",
+    "line": 2,
+    "column": 3,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/NestedSubfields.gql:2:3 Fields \"a\" conflict because subfields \"b\" conflict because subfields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/NestedSubfields.gql",
+    "line": 2,
+    "column": 3,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/Overlap.gql:3:5 Fields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/Overlap.gql",
+    "line": 3,
+    "column": 5,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/Skipped.gql:2:3 Fields \"species\" conflict because they have differing arguments. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/Skipped.gql",
+    "line": 2,
+    "column": 3,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/SpreadConflict.gql:3:5 Fields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/SpreadConflict.gql",
+    "line": 3,
+    "column": 5,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/SubfieldConflict.gql:2:3 Fields \"a\" conflict because subfields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/SubfieldConflict.gql",
+    "line": 2,
+    "column": 3,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/TwoSpreads.gql:2:3 Fields \"name\" conflict because \"name\" and \"id\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/TwoSpreads.gql",
+    "line": 2,
+    "column": 3,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/TypeConflict.gql:4:7 Fields \"d\" conflict because they return conflicting types \"String\" and \"String!\". Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/TypeConflict.gql",
+    "line": 4,
+    "column": 7,
+    "length": 1
+   }
+  },
+  {
+   "code": "FLM1007",
+   "severity": "error",
+   "message": "src/Typename.gql:3:5 Fields \"x\" conflict because \"name\" and \"__typename\" are different fields. Use different aliases on the fields to fetch both if this was intentional.",
+   "location": {
+    "file": "src/Typename.gql",
+    "line": 3,
+    "column": 5,
+    "length": 1
+   }
+  }
+ ],
+ "artifacts": [],
+ "written": []
+}

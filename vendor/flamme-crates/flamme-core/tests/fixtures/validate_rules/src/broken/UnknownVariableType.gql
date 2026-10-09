@@ -1,0 +1,5 @@
+query UnknownVariableType($x: Missing!) {
+  viewer {
+    id
+  }
+}

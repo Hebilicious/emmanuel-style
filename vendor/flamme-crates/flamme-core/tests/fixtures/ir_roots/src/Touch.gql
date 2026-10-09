@@ -1,0 +1,5 @@
+mutation Touch($id: ID!) {
+	touch(id: $id) {
+		id
+	}
+}

@@ -1,0 +1,10 @@
+query ExclusiveArgs {
+  named {
+    ... on User {
+      p: power(level: 1)
+    }
+    ... on Species {
+      p: power(boost: 2)
+    }
+  }
+}

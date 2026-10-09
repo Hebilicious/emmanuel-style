@@ -1,0 +1,5 @@
+query ListConflict {
+  searched(term: "a") @list(name: "Bad") {
+    id
+  }
+}

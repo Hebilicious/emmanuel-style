@@ -1,0 +1,29 @@
+# A schema that declares the compiler's own directives and enums (§7.5). The merge
+# appends only what is missing, so @loading, @paginate and the rest still land here,
+# while @key, @cache and both enums keep the user's declarations.
+
+directive @key(fields: [String!]!) on OBJECT | INTERFACE
+directive @cache(policy: CachePolicy, partial: Boolean) on QUERY | MUTATION | SUBSCRIPTION
+
+enum CachePolicy {
+	CacheOrNetwork
+	NetworkOnly
+	CacheAndNetwork
+	CacheOnly
+	SessionOnly
+}
+
+enum PaginateMode {
+	SinglePage
+	Infinite
+	Windowed
+}
+
+type Wallet @key(fields: ["id"]) {
+	id: ID!
+	balance: Int!
+}
+
+type Query {
+	wallet(id: ID!): Wallet
+}

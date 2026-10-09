@@ -1,0 +1,6 @@
+query MaskConflict {
+  viewer {
+    id
+    ...SpeciesId @mask_enable @mask_disable
+  }
+}

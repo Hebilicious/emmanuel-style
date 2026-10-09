@@ -1,0 +1,33 @@
+{
+  "name": "@flamme/vue",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Vue composables and bindings for Flamme artifacts.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@flamme/local": "workspace:*",
+    "@flamme/runtime": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": "3.5.42"
+  },
+  "devDependencies": {
+    "@vue/test-utils": "2.5.0",
+    "vue": "3.5.42"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  }
+}

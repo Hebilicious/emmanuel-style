@@ -1,0 +1,12 @@
+query Skipped($withTitle: Boolean!) {
+	feed {
+		id
+		title @include(if: $withTitle)
+		... {
+			subtitle
+		}
+		... on Post @include(if: $withTitle) {
+			body
+		}
+	}
+}

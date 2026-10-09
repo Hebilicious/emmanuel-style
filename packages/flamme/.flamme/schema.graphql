@@ -1,0 +1,142 @@
+# Generated from packages/schema/src/index.ts. Do not edit by hand.
+#
+# `pnpm --filter @emmanuel/schema emit` writes it; the site's Flamme compiler
+# validates every document against it.
+
+"""One block of a page body, in reading order."""
+type Block {
+  caption: String
+  depth: Int!
+  html: String!
+  id: ID!
+  image: String
+  kind: String!
+
+  """The footnotes this block cites, which belong on its page."""
+  noteIds: [String!]!
+  text: String!
+}
+
+"""The favourite count of one article."""
+type Favourite {
+  count: Int!
+  slug: ID!
+}
+
+type Mutation {
+  """Favourite an article for this reader, or take the favourite back."""
+  toggleFavourite(slug: String!): Favourite
+}
+
+"""One footnote."""
+type Note {
+  html: String!
+  id: ID!
+  number: Int!
+  text: String!
+}
+
+"""One article."""
+type Post {
+  """The body, in reading order."""
+  blocks: [Block!]
+  date: String!
+  description: String!
+
+  """Every footnote, so a page can place the ones its blocks cite."""
+  notes: [Note!]
+  slug: ID!
+  tags: [String!]!
+  title: String!
+}
+
+type Query {
+  """The favourite count of one article."""
+  favourites(slug: String!): Favourite
+  post(slug: String!): Post
+
+  """Every article, newest first, for the blog index."""
+  posts: [Post!]
+  roles: [Role!]
+  schools: [School!]
+  shelves: [Shelf!]
+  site: Site
+
+  """Repositories with their star counts, for the Library."""
+  stars(names: [String!]!): [Repository!]
+}
+
+"""A repository published on GitHub."""
+type Repository {
+  archived: Boolean!
+  category: String!
+  description: String!
+  homepage: String
+  language: String!
+  name: String!
+  stars: Int
+  url: String!
+}
+
+"""One role."""
+type Role {
+  company: String!
+  end: String
+  highlights: [String!]!
+  id: ID!
+  location: String!
+  stack: [String!]!
+  start: String!
+  summary: String!
+  title: String!
+}
+
+"""One education entry."""
+type School {
+  end: String
+  id: ID!
+  location: String!
+  qualification: String!
+  school: String!
+  start: String!
+  summary: String!
+}
+
+"""A named group of repositories."""
+type Shelf {
+  label: String!
+  repositories: [Repository!]
+  slug: ID!
+}
+
+"""The site-wide facts."""
+type Site {
+  date: String!
+  name: String!
+  sections: [Shelf!]
+  tagline: String!
+}
+
+directive @loading(count: Int, cascade: Boolean) on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD
+directive @paginate(mode: PaginateMode, name: String) on FIELD
+directive @list(name: String!, connection: Boolean) on FIELD
+directive @key(fields: [String!]!) on OBJECT | INTERFACE
+directive @mask_enable on FRAGMENT_SPREAD
+directive @mask_disable on FRAGMENT_SPREAD
+directive @cache(policy: CachePolicy, partial: Boolean) on QUERY | MUTATION | SUBSCRIPTION
+directive @dedupe(cancelFirst: Boolean, match: DedupeMatchMode) on QUERY | MUTATION
+directive @prepend on FRAGMENT_SPREAD
+directive @append on FRAGMENT_SPREAD
+directive @listTarget(name: String!) on FRAGMENT_SPREAD
+directive @optimisticKey on FIELD
+directive @required on FIELD | FRAGMENT_SPREAD
+directive @when on FRAGMENT_SPREAD
+directive @when_not on FRAGMENT_SPREAD
+directive @allLists on FRAGMENT_SPREAD
+directive @listID(value: ID!) on FRAGMENT_SPREAD
+directive @includeListID on FIELD
+directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+directive @stream(if: Boolean = true, label: String, initialCount: Int = 0) on FIELD
+enum PaginateMode { SinglePage Infinite }
+enum CachePolicy { CacheOrNetwork NetworkOnly CacheAndNetwork CacheOnly }
+enum DedupeMatchMode { variables all }

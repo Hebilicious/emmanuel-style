@@ -1,0 +1,8 @@
+subscription SubscriptionTooMany {
+  speciesAdded {
+    id
+  }
+  userAdded {
+    id
+  }
+}

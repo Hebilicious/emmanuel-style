@@ -1,0 +1,13 @@
+[
+ {
+  "code": "FLM2002",
+  "severity": "error",
+  "message": "Invalid schema: Subscription root type must be Object type if provided, it cannot be NotAnObject.\n\nRequired argument @badArg(x:) cannot be deprecated.\n\nRequired argument Query.a(x:) cannot be deprecated.\n\nName \"__a\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nThe type of BadInput.f must be Input Type but got: Query.\n\nName \"__b\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nUnion type Dup can only include type Query once.\n\nName \"__a\" must not begin with \"__\", which is reserved by GraphQL introspection.\n\nInterface field L.xs expects type [Int] but LT.xs is type [String].\n\nInterface field L.x expects type Int! but LT.x is type Int.\n\nType A1 cannot implement A2 because it would create a circular reference.\n\nType A2 cannot implement A1 because it would create a circular reference.",
+  "location": {
+   "file": "src/Only.gql",
+   "line": 1,
+   "column": 1,
+   "length": 1
+  }
+ }
+]

@@ -1,0 +1,9 @@
+query PagedNull {
+	fwd(first: 1, after: null) @paginate(mode: SinglePage, name: "Fwd_Null") {
+		edges {
+			node {
+				id
+			}
+		}
+	}
+}

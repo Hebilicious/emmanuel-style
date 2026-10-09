@@ -1,0 +1,2 @@
+query First { favorites { id } }
+query Second { favorites { id } }

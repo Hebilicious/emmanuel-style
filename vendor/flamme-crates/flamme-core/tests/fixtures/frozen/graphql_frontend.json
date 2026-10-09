@@ -1,0 +1,1381 @@
+{
+ "valid": {
+  "01-shorthand.gql": {
+   "error": null,
+   "printed": "{\n  hero\n  name\n  friends {\n    totalCount\n  }\n}",
+   "reprinted": "{\n  hero\n  name\n  friends {\n    totalCount\n  }\n}"
+  },
+  "02-operations.gql": {
+   "error": null,
+   "printed": "query Hero($episode: Episode = JEDI, $withFriends: Boolean! = false, $list: [Int!] = [1, 2, 3], $obj: Input = {a: 1, b: [true, null], c: {d: \"x\"}}, $n: Int = -0) @cached(ttl: 30) {\n  hero(episode: $episode) {\n    alias: name\n    friends @include(if: $withFriends) {\n      totalCount\n    }\n  }\n}\n\nmutation SetName($id: ID!, $name: String = \"hello\") {\n  setName(id: $id, name: $name)\n}\n\nsubscription OnName {\n  nameChanged {\n    name\n  }\n}",
+   "reprinted": "query Hero($episode: Episode = JEDI, $withFriends: Boolean! = false, $list: [Int!] = [1, 2, 3], $obj: Input = {a: 1, b: [true, null], c: {d: \"x\"}}, $n: Int = -0) @cached(ttl: 30) {\n  hero(episode: $episode) {\n    alias: name\n    friends @include(if: $withFriends) {\n      totalCount\n    }\n  }\n}\n\nmutation SetName($id: ID!, $name: String = \"hello\") {\n  setName(id: $id, name: $name)\n}\n\nsubscription OnName {\n  nameChanged {\n    name\n  }\n}"
+  },
+  "03-fragments.gql": {
+   "error": null,
+   "printed": "fragment FriendFields on User @cached {\n  id\n  ...NameParts\n  ... on Admin @include(if: true) {\n    permissions\n  }\n  ... @skip(if: false) {\n    always\n  }\n}\n\nquery WithFragments {\n  me {\n    ...FriendFields\n  }\n}",
+   "reprinted": "fragment FriendFields on User @cached {\n  id\n  ...NameParts\n  ... on Admin @include(if: true) {\n    permissions\n  }\n  ... @skip(if: false) {\n    always\n  }\n}\n\nquery WithFragments {\n  me {\n    ...FriendFields\n  }\n}"
+  },
+  "04-values.gql": {
+   "error": null,
+   "printed": "query Values {\n  field(\n    int: 42\n    negative: -17\n    float: 1.25\n    exponent: 6.022e23\n    negativeExponent: -1.5E-10\n    string: \"a \\\"quoted\\\" value with \\\\ and / and \\b\\f\\n\\r\\t\"\n    unicode: \"\u00e9\u00e9\ud83d\ude00\"\n    block: \"\"\"block value\"\"\"\n    yes: true\n    no: false\n    nothing: null\n    enum: RED\n    list: [1, \"two\", [3], {four: 4}, null, true]\n    object: {a: 1, b: {c: [2]}}\n    emptyList: []\n    emptyObject: {}\n    variable: $v\n  ) @dir(a: 1, b: \"x\")\n}",
+   "reprinted": "query Values {\n  field(\n    int: 42\n    negative: -17\n    float: 1.25\n    exponent: 6.022e23\n    negativeExponent: -1.5E-10\n    string: \"a \\\"quoted\\\" value with \\\\ and / and \\b\\f\\n\\r\\t\"\n    unicode: \"\u00e9\u00e9\ud83d\ude00\"\n    block: \"\"\"block value\"\"\"\n    yes: true\n    no: false\n    nothing: null\n    enum: RED\n    list: [1, \"two\", [3], {four: 4}, null, true]\n    object: {a: 1, b: {c: [2]}}\n    emptyList: []\n    emptyObject: {}\n    variable: $v\n  ) @dir(a: 1, b: \"x\")\n}"
+  },
+  "05-block-strings.gql": {
+   "error": null,
+   "printed": "query BlockStrings {\n  field(\n    a: \"\"\"\n    Hello,\n      World!\n    \"\"\"\n    b: \"\"\"single line\"\"\"\n    c: \"\"\"has a \\\"\"\" escaped triple quote\"\"\"\n    d: \"\"\"leading blank line\"\"\"\n    e: \"\"\"\n    ends with a quote\\\"\"\"\n    \"\"\"\n    f: \"\"\"\n    a block string that is definitely longer than seventy characters wide in total\n    \"\"\"\n    g: \"plain\"\n    h: \"\"\" leading space\"\"\"\n    i: \"\"\"\n    ends with one quote\"\n    \"\"\"\n    j: \"\"\"\n    ends with a backslash\\\n    \"\"\"\n    k: \"\"\"\"\"\"\n  )\n}",
+   "reprinted": "query BlockStrings {\n  field(\n    a: \"\"\"\n    Hello,\n      World!\n    \"\"\"\n    b: \"\"\"single line\"\"\"\n    c: \"\"\"has a \\\"\"\" escaped triple quote\"\"\"\n    d: \"\"\"leading blank line\"\"\"\n    e: \"\"\"\n    ends with a quote\\\"\"\"\n    \"\"\"\n    f: \"\"\"\n    a block string that is definitely longer than seventy characters wide in total\n    \"\"\"\n    g: \"plain\"\n    h: \"\"\" leading space\"\"\"\n    i: \"\"\"\n    ends with one quote\"\n    \"\"\"\n    j: \"\"\"\n    ends with a backslash\\\n    \"\"\"\n    k: \"\"\"\"\"\"\n  )\n}"
+  },
+  "06-unicode.gql": {
+   "error": null,
+   "printed": "query Unicode {\n  field(\n    emoji: \"\ud83d\ude00 smile\"\n    astralEscape: \"\ud83d\ude00\"\n    braced: \"\ud83d\ude00\"\n    cjk: \"\u65e5\u672c\u8a9e\"\n    precomposed: \"\u00e9\"\n    combining: \"e\u0301\"\n    controls: \"\\u0000\\u001F\\u007F\\u009F\"\n    quote: \"\\\"\"\n    backslash: \"\\\\\"\n    del: \"\\u007F\"\n  )\n  after\n}",
+   "reprinted": "query Unicode {\n  field(\n    emoji: \"\ud83d\ude00 smile\"\n    astralEscape: \"\ud83d\ude00\"\n    braced: \"\ud83d\ude00\"\n    cjk: \"\u65e5\u672c\u8a9e\"\n    precomposed: \"\u00e9\"\n    combining: \"e\u0301\"\n    controls: \"\\u0000\\u001F\\u007F\\u009F\"\n    quote: \"\\\"\"\n    backslash: \"\\\\\"\n    del: \"\\u007F\"\n  )\n  after\n}"
+  },
+  "07-crlf.gql": {
+   "error": null,
+   "printed": "{\n  field(a: \"x\", b: \"\"\"\n  line one\n  line two\n  \"\"\")\n  after\n}",
+   "reprinted": "{\n  field(a: \"x\", b: \"\"\"\n  line one\n  line two\n  \"\"\")\n  after\n}"
+  },
+  "08-long-args.gql": {
+   "error": null,
+   "printed": "query LongArguments {\n  field(shortArg: 1)\n  fieldWithManyArguments(\n    firstArgument: \"some value here\"\n    secondArgument: 1234567890\n    third: true\n  )\n  aFieldWhosePrintedArgumentsLineIsExactlyAtTheLimit(argumentOne: \"some value\")\n}\n\nquery MultilineVarDefs(\n$doc: String = \"\"\"\nfirst\nsecond\n\"\"\"\n$other: Int = 1\n) {\n  field(doc: $doc, other: $other)\n}",
+   "reprinted": "query LongArguments {\n  field(shortArg: 1)\n  fieldWithManyArguments(\n    firstArgument: \"some value here\"\n    secondArgument: 1234567890\n    third: true\n  )\n  aFieldWhosePrintedArgumentsLineIsExactlyAtTheLimit(argumentOne: \"some value\")\n}\n\nquery MultilineVarDefs(\n$doc: String = \"\"\"\nfirst\nsecond\n\"\"\"\n$other: Int = 1\n) {\n  field(doc: $doc, other: $other)\n}"
+  },
+  "09-directives.gql": {
+   "error": null,
+   "printed": "query Directives @a @b(x: 1) {\n  field @c\n  ... on Type @d {\n    nested @e\n  }\n  ...Spread @f(arg: {k: [1, 2]})\n}\n\nfragment Spread on Type {\n  field\n}",
+   "reprinted": "query Directives @a @b(x: 1) {\n  field @c\n  ... on Type @d {\n    nested @e\n  }\n  ...Spread @f(arg: {k: [1, 2]})\n}\n\nfragment Spread on Type {\n  field\n}"
+  },
+  "10-arg-line-length.gql": {
+   "error": null,
+   "printed": "query ArgumentLineLength {\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(a: 1, b: 2)\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(a: 1, b: 2)\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(\n    a: 1\n    b: 2\n  )\n}",
+   "reprinted": "query ArgumentLineLength {\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(a: 1, b: 2)\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(a: 1, b: 2)\n  aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa(\n    a: 1\n    b: 2\n  )\n}"
+  },
+  "11-operation-shapes.gql": {
+   "error": null,
+   "printed": "query query @dir {\n  a\n}\n\nmutation {\n  b\n}\n\nsubscription subscription @dir(x: 1) {\n  c: c\n}",
+   "reprinted": "query query @dir {\n  a\n}\n\nmutation {\n  b\n}\n\nsubscription subscription @dir(x: 1) {\n  c: c\n}"
+  }
+ },
+ "sdl": {
+  "01-schema.graphql": {
+   "error": null,
+   "shapes": [
+    {
+     "kind": "SchemaDefinition",
+     "description": "A description of the schema.",
+     "directives": [
+      {
+       "name": "dir",
+       "arguments": [
+        [
+         "a",
+         "1"
+        ]
+       ]
+      }
+     ],
+     "operationTypes": [
+      [
+       "query",
+       "Query"
+      ],
+      [
+       "mutation",
+       "Mutation"
+      ],
+      [
+       "subscription",
+       "Subscription"
+      ]
+     ]
+    },
+    {
+     "kind": "SchemaExtension",
+     "description": null,
+     "directives": [
+      {
+       "name": "other",
+       "arguments": []
+      }
+     ],
+     "operationTypes": []
+    },
+    {
+     "kind": "SchemaExtension",
+     "description": null,
+     "directives": [],
+     "operationTypes": [
+      [
+       "query",
+       "Query"
+      ]
+     ]
+    }
+   ]
+  },
+  "02-types.graphql": {
+   "error": null,
+   "shapes": [
+    {
+     "kind": "ScalarTypeDefinition",
+     "description": "scalar description",
+     "name": "DateTime",
+     "directives": [
+      {
+       "name": "specifiedBy",
+       "arguments": [
+        [
+         "url",
+         "\"https://example.com\""
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "ObjectTypeDefinition",
+     "description": null,
+     "name": "Query",
+     "interfaces": [
+      "Node",
+      "Named"
+     ],
+     "directives": [
+      {
+       "name": "entity",
+       "arguments": []
+      }
+     ],
+     "fields": [
+      {
+       "description": "field description",
+       "name": "hero",
+       "arguments": [
+        {
+         "description": null,
+         "name": "episode",
+         "type": "Episode",
+         "defaultValue": "JEDI",
+         "directives": []
+        },
+        {
+         "description": null,
+         "name": "first",
+         "type": "Int",
+         "defaultValue": "10",
+         "directives": []
+        }
+       ],
+       "type": "[Character!]!",
+       "directives": [
+        {
+         "name": "deprecated",
+         "arguments": [
+          [
+           "reason",
+           "\"use heroById\""
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "description": null,
+       "name": "id",
+       "arguments": [],
+       "type": "ID!",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "InterfaceTypeDefinition",
+     "description": null,
+     "name": "Node",
+     "interfaces": [],
+     "directives": [],
+     "fields": [
+      {
+       "description": null,
+       "name": "id",
+       "arguments": [],
+       "type": "ID!",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "InterfaceTypeDefinition",
+     "description": null,
+     "name": "Named",
+     "interfaces": [
+      "Node"
+     ],
+     "directives": [],
+     "fields": [
+      {
+       "description": null,
+       "name": "id",
+       "arguments": [],
+       "type": "ID!",
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "name",
+       "arguments": [],
+       "type": "String",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "UnionTypeDefinition",
+     "description": null,
+     "name": "SearchResult",
+     "directives": [],
+     "types": [
+      "Human",
+      "Droid",
+      "Starship"
+     ]
+    },
+    {
+     "kind": "UnionTypeDefinition",
+     "description": null,
+     "name": "Anything",
+     "directives": [],
+     "types": []
+    },
+    {
+     "kind": "EnumTypeDefinition",
+     "description": null,
+     "name": "Episode",
+     "directives": [],
+     "values": [
+      {
+       "description": "the first one",
+       "name": "NEWHOPE",
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "EMPIRE",
+       "directives": [
+        {
+         "name": "deprecated",
+         "arguments": []
+        }
+       ]
+      },
+      {
+       "description": null,
+       "name": "JEDI",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "InputObjectTypeDefinition",
+     "description": null,
+     "name": "Filter",
+     "directives": [],
+     "fields": [
+      {
+       "description": null,
+       "name": "term",
+       "type": "String",
+       "defaultValue": "\"all\"",
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "limit",
+       "type": "Int",
+       "defaultValue": "10",
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "nested",
+       "type": "Filter",
+       "defaultValue": "{term: \"x\", limit: 1}",
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "tags",
+       "type": "[String!]",
+       "defaultValue": "[\"a\", \"b\"]",
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "empty",
+       "type": "[Int]",
+       "defaultValue": "[]",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "DirectiveDefinition",
+     "description": null,
+     "name": "entity",
+     "arguments": [
+      {
+       "description": null,
+       "name": "a",
+       "type": "Int",
+       "defaultValue": null,
+       "directives": []
+      },
+      {
+       "description": null,
+       "name": "b",
+       "type": "String",
+       "defaultValue": "\"x\"",
+       "directives": []
+      }
+     ],
+     "repeatable": true,
+     "locations": [
+      "OBJECT",
+      "INTERFACE"
+     ]
+    },
+    {
+     "kind": "DirectiveDefinition",
+     "description": null,
+     "name": "specifiedBy",
+     "arguments": [
+      {
+       "description": null,
+       "name": "url",
+       "type": "String!",
+       "defaultValue": null,
+       "directives": []
+      }
+     ],
+     "repeatable": false,
+     "locations": [
+      "SCALAR",
+      "FIELD_DEFINITION"
+     ]
+    }
+   ]
+  },
+  "03-extensions.graphql": {
+   "error": null,
+   "shapes": [
+    {
+     "kind": "SchemaExtension",
+     "description": null,
+     "directives": [
+      {
+       "name": "dir",
+       "arguments": []
+      }
+     ],
+     "operationTypes": []
+    },
+    {
+     "kind": "ScalarTypeExtension",
+     "description": null,
+     "name": "DateTime",
+     "directives": [
+      {
+       "name": "specifiedBy",
+       "arguments": [
+        [
+         "url",
+         "\"x\""
+        ]
+       ]
+      }
+     ]
+    },
+    {
+     "kind": "ObjectTypeExtension",
+     "description": null,
+     "name": "Query",
+     "interfaces": [],
+     "directives": [
+      {
+       "name": "entity",
+       "arguments": []
+      }
+     ],
+     "fields": []
+    },
+    {
+     "kind": "ObjectTypeExtension",
+     "description": null,
+     "name": "Query",
+     "interfaces": [],
+     "directives": [],
+     "fields": [
+      {
+       "description": null,
+       "name": "added",
+       "arguments": [],
+       "type": "Int",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "InterfaceTypeExtension",
+     "description": null,
+     "name": "Node",
+     "interfaces": [],
+     "directives": [
+      {
+       "name": "entity",
+       "arguments": []
+      }
+     ],
+     "fields": []
+    },
+    {
+     "kind": "InterfaceTypeExtension",
+     "description": null,
+     "name": "Node",
+     "interfaces": [
+      "Named"
+     ],
+     "directives": [],
+     "fields": []
+    },
+    {
+     "kind": "UnionTypeExtension",
+     "description": null,
+     "name": "SearchResult",
+     "directives": [],
+     "types": [
+      "Other"
+     ]
+    },
+    {
+     "kind": "EnumTypeExtension",
+     "description": null,
+     "name": "Episode",
+     "directives": [],
+     "values": [
+      {
+       "description": null,
+       "name": "SPECIAL",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "InputObjectTypeExtension",
+     "description": null,
+     "name": "Filter",
+     "directives": [],
+     "fields": [
+      {
+       "description": null,
+       "name": "extra",
+       "type": "Int",
+       "defaultValue": null,
+       "directives": []
+      }
+     ]
+    }
+   ]
+  },
+  "04-descriptions.graphql": {
+   "error": null,
+   "shapes": [
+    {
+     "kind": "ObjectTypeDefinition",
+     "description": "A block description\nwith two lines.",
+     "name": "Described",
+     "interfaces": [],
+     "directives": [],
+     "fields": [
+      {
+       "description": "inline block description",
+       "name": "field",
+       "arguments": [
+        {
+         "description": "an argument description",
+         "name": "arg",
+         "type": "Int",
+         "defaultValue": "1",
+         "directives": []
+        }
+       ],
+       "type": "String",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "EnumTypeDefinition",
+     "description": null,
+     "name": "DescribedEnum",
+     "directives": [],
+     "values": [
+      {
+       "description": "a described value",
+       "name": "ONE",
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "InputObjectTypeDefinition",
+     "description": null,
+     "name": "DescribedInput",
+     "directives": [],
+     "fields": [
+      {
+       "description": "an input field description",
+       "name": "field",
+       "type": "String",
+       "defaultValue": null,
+       "directives": []
+      }
+     ]
+    },
+    {
+     "kind": "DirectiveDefinition",
+     "description": null,
+     "name": "described",
+     "arguments": [
+      {
+       "description": "a directive argument description",
+       "name": "arg",
+       "type": "Int",
+       "defaultValue": null,
+       "directives": []
+      }
+     ],
+     "repeatable": false,
+     "locations": [
+      "FIELD"
+     ]
+    }
+   ]
+  }
+ },
+ "invalid": {
+  "01-missing-brace-close.gql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found <EOF>.",
+    "line": 1,
+    "column": 8
+   },
+   "printed": null
+  },
+  "02-empty.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 1
+   },
+   "printed": null
+  },
+  "03-expected-name.gql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found \"}\".",
+    "line": 1,
+    "column": 10
+   },
+   "printed": null
+  },
+  "04-number-leading-zero.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid number, unexpected digit after 0: \"1\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "05-number-float-dot.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid number, expected digit but got: \")\".",
+    "line": 1,
+    "column": 16
+   },
+   "printed": null
+  },
+  "06-unterminated-string.gql": {
+   "error": {
+    "message": "Syntax Error: Unterminated string.",
+    "line": 1,
+    "column": 21
+   },
+   "printed": null
+  },
+  "07-bad-escape.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid character escape sequence: \"\\q\".",
+    "line": 1,
+    "column": 16
+   },
+   "printed": null
+  },
+  "08-bad-unicode.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid Unicode escape sequence: \"\\u12\")\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "09-bad-unicode-brace.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid Unicode escape sequence: \"\\u{110000}\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "10-lone-surrogate.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid Unicode escape sequence: \"\\uD800\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "11-single-quote.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected single quote character ('), did you mean to use a double quote (\")?",
+    "line": 1,
+    "column": 14
+   },
+   "printed": null
+  },
+  "12-unexpected-astral.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected character: U+1F600.",
+    "line": 1,
+    "column": 8
+   },
+   "printed": null
+  },
+  "13-variable-in-const.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected variable \"$y\" in constant value.",
+    "line": 1,
+    "column": 19
+   },
+   "printed": null
+  },
+  "14-expected-brace.gql": {
+   "error": {
+    "message": "Syntax Error: Expected \"{\", found <EOF>.",
+    "line": 1,
+    "column": 12
+   },
+   "printed": null
+  },
+  "15-unexpected-name.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected Name \"garbage\".",
+    "line": 1,
+    "column": 7
+   },
+   "printed": null
+  },
+  "16-description-on-shorthand.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected description, descriptions are not supported on shorthand queries.",
+    "line": 1,
+    "column": 1
+   },
+   "printed": null
+  },
+  "17-description-on-unknown.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected description, only GraphQL definitions support descriptions.",
+    "line": 1,
+    "column": 1
+   },
+   "printed": null
+  },
+  "18-fragment-named-on.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected Name \"on\".",
+    "line": 1,
+    "column": 10
+   },
+   "printed": null
+  },
+  "19-unclosed-list.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected \"}\".",
+    "line": 1,
+    "column": 18
+   },
+   "printed": null
+  },
+  "20-bad-exponent.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid number, expected digit but got: \")\".",
+    "line": 1,
+    "column": 16
+   },
+   "printed": null
+  },
+  "21-lone-dot.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected character: \".\".",
+    "line": 1,
+    "column": 14
+   },
+   "printed": null
+  },
+  "22-number-then-name.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid number, expected digit but got: \"x\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "23-unterminated-block-string.gql": {
+   "error": {
+    "message": "Syntax Error: Unterminated string.",
+    "line": 1,
+    "column": 23
+   },
+   "printed": null
+  },
+  "24-var-def-missing-type.gql": {
+   "error": {
+    "message": "Syntax Error: Expected \":\", found \")\".",
+    "line": 1,
+    "column": 11
+   },
+   "printed": null
+  },
+  "25-spread-on.gql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found \"}\".",
+    "line": 1,
+    "column": 9
+   },
+   "printed": null
+  },
+  "26-empty-selection.gql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found \"}\".",
+    "line": 1,
+    "column": 3
+   },
+   "printed": null
+  },
+  "27-arg-missing-colon.gql": {
+   "error": {
+    "message": "Syntax Error: Expected \":\", found Int \"1\".",
+    "line": 1,
+    "column": 13
+   },
+   "printed": null
+  },
+  "28-stray-brace.gql": {
+   "error": {
+    "message": "Syntax Error: Unexpected \"}\".",
+    "line": 1,
+    "column": 1
+   },
+   "printed": null
+  },
+  "29-empty-braced-unicode.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid Unicode escape sequence: \"\\u{\"\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "30-double-zero.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid number, unexpected digit after 0: \"0\".",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "31-double-dot-number.gql": {
+   "error": {
+    "message": "Syntax Error: Invalid number, expected digit but got: \".\".",
+    "line": 1,
+    "column": 17
+   },
+   "printed": null
+  },
+  "32-two-strings.gql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found BlockString \"y\".",
+    "line": 1,
+    "column": 22
+   },
+   "printed": null
+  },
+  "33-crlf-error.gql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found \"}\".",
+    "line": 3,
+    "column": 1
+   },
+   "printed": null
+  }
+ },
+ "invalidSdl": {
+  "01-reserved-enum-value.graphql": {
+   "error": {
+    "message": "Syntax Error: Name \"true\" is reserved and cannot be used for an enum value.",
+    "line": 1,
+    "column": 10
+   },
+   "printed": null
+  },
+  "02-bad-directive-location.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected Name \"BOGUS\".",
+    "line": 1,
+    "column": 17
+   },
+   "printed": null
+  },
+  "03-extend-schema-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 14
+   },
+   "printed": null
+  },
+  "04-extend-scalar-no-directives.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 16
+   },
+   "printed": null
+  },
+  "05-extend-type-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 14
+   },
+   "printed": null
+  },
+  "06-missing-colon.graphql": {
+   "error": {
+    "message": "Syntax Error: Expected \":\", found Name \"Int\".",
+    "line": 1,
+    "column": 12
+   },
+   "printed": null
+  },
+  "07-extend-directive.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected Name \"directive\".",
+    "line": 1,
+    "column": 8
+   },
+   "printed": null
+  },
+  "08-arg-missing-colon.graphql": {
+   "error": {
+    "message": "Syntax Error: Expected \":\", found Name \"Int\".",
+    "line": 1,
+    "column": 14
+   },
+   "printed": null
+  },
+  "09-schema-empty-braces.graphql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found \"}\".",
+    "line": 1,
+    "column": 10
+   },
+   "printed": null
+  },
+  "10-union-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found <EOF>.",
+    "line": 1,
+    "column": 11
+   },
+   "printed": null
+  },
+  "11-implements-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found \"{\".",
+    "line": 1,
+    "column": 19
+   },
+   "printed": null
+  },
+  "12-extend-union-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "13-extend-enum-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 14
+   },
+   "printed": null
+  },
+  "14-extend-input-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 15
+   },
+   "printed": null
+  },
+  "15-extend-interface-empty.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected <EOF>.",
+    "line": 1,
+    "column": 19
+   },
+   "printed": null
+  },
+  "16-variable-in-const.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected variable \"$v\" in constant value.",
+    "line": 1,
+    "column": 21
+   },
+   "printed": null
+  },
+  "17-input-variable-in-const.graphql": {
+   "error": {
+    "message": "Syntax Error: Unexpected variable \"$v\" in constant value.",
+    "line": 1,
+    "column": 20
+   },
+   "printed": null
+  },
+  "18-directive-no-locations.graphql": {
+   "error": {
+    "message": "Syntax Error: Expected Name, found <EOF>.",
+    "line": 1,
+    "column": 27
+   },
+   "printed": null
+  }
+ },
+ "types": {
+  "01-named.graphql": {
+   "error": null,
+   "printed": "Int"
+  },
+  "02-list.graphql": {
+   "error": null,
+   "printed": "[Int]"
+  },
+  "03-non-null.graphql": {
+   "error": null,
+   "printed": "Int!"
+  },
+  "04-nested.graphql": {
+   "error": null,
+   "printed": "[[Int!]!]!"
+  },
+  "05-whitespace.graphql": {
+   "error": null,
+   "printed": "[Int!]"
+  },
+  "06-comment.graphql": {
+   "error": null,
+   "printed": "[Int]"
+  },
+  "07-multiline.graphql": {
+   "error": null,
+   "printed": "[[String!]!]!"
+  }
+ },
+ "offsets": {
+  "emoji-comment.gql": {
+   "error": null,
+   "printed": "{\n  field\n  other(arg: \"\ud83d\ude00\") {\n    nested\n  }\n}",
+   "locs": [
+    [
+     "OperationDefinition",
+     "",
+     46,
+     112
+    ],
+    [
+     "Field",
+     "field",
+     50,
+     55
+    ],
+    [
+     "FieldName",
+     "field",
+     50,
+     55
+    ],
+    [
+     "Field",
+     "other",
+     77,
+     110
+    ],
+    [
+     "FieldName",
+     "other",
+     77,
+     82
+    ],
+    [
+     "Argument",
+     "arg",
+     83,
+     92
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     88,
+     92
+    ],
+    [
+     "Field",
+     "nested",
+     100,
+     106
+    ],
+    [
+     "FieldName",
+     "nested",
+     100,
+     106
+    ]
+   ]
+  },
+  "emoji-crlf.gql": {
+   "error": null,
+   "printed": "query Emoji($v: String = \"\ud83d\ude00\ud83d\ude00\") {\n  before(arg: \"\ud83d\ude00\", n: 1)\n  after {\n    deep(x: [\"\ud83d\ude00\", {k: \"\ud83d\ude00\"}])\n  }\n}",
+   "locs": [
+    [
+     "OperationDefinition",
+     "Emoji",
+     0,
+     112
+    ],
+    [
+     "VariableDefinition",
+     "",
+     12,
+     31
+    ],
+    [
+     "Variable",
+     "v",
+     12,
+     14
+    ],
+    [
+     "NamedType",
+     "String",
+     16,
+     22
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00\ud83d\ude00",
+     25,
+     31
+    ],
+    [
+     "Field",
+     "before",
+     38,
+     61
+    ],
+    [
+     "FieldName",
+     "before",
+     38,
+     44
+    ],
+    [
+     "Argument",
+     "arg",
+     45,
+     54
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     50,
+     54
+    ],
+    [
+     "Argument",
+     "n",
+     56,
+     60
+    ],
+    [
+     "IntValue",
+     "1",
+     59,
+     60
+    ],
+    [
+     "Field",
+     "after",
+     65,
+     109
+    ],
+    [
+     "FieldName",
+     "after",
+     65,
+     70
+    ],
+    [
+     "Field",
+     "deep",
+     78,
+     104
+    ],
+    [
+     "FieldName",
+     "deep",
+     78,
+     82
+    ],
+    [
+     "Argument",
+     "x",
+     83,
+     103
+    ],
+    [
+     "ListValue",
+     "",
+     86,
+     103
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     87,
+     91
+    ],
+    [
+     "ObjectValue",
+     "",
+     93,
+     102
+    ],
+    [
+     "ObjectField",
+     "k",
+     94,
+     101
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     97,
+     101
+    ]
+   ]
+  },
+  "emoji-escaped.gql": {
+   "error": null,
+   "printed": "{\n  a(x: \"\ud83d\ude00\")\n  b\n}",
+   "locs": [
+    [
+     "OperationDefinition",
+     "",
+     0,
+     30
+    ],
+    [
+     "Field",
+     "a",
+     4,
+     24
+    ],
+    [
+     "FieldName",
+     "a",
+     4,
+     5
+    ],
+    [
+     "Argument",
+     "x",
+     6,
+     23
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     9,
+     23
+    ],
+    [
+     "Field",
+     "b",
+     27,
+     28
+    ],
+    [
+     "FieldName",
+     "b",
+     27,
+     28
+    ]
+   ]
+  },
+  "emoji.gql": {
+   "error": null,
+   "printed": "query Emoji($v: String = \"\ud83d\ude00\") {\n  before(arg: \"\ud83d\ude00\", n: 1)\n  after {\n    deep(x: [\"\ud83d\ude00\", {k: \"\ud83d\ude00\"}])\n  }\n}",
+   "locs": [
+    [
+     "OperationDefinition",
+     "Emoji",
+     0,
+     105
+    ],
+    [
+     "VariableDefinition",
+     "",
+     12,
+     29
+    ],
+    [
+     "Variable",
+     "v",
+     12,
+     14
+    ],
+    [
+     "NamedType",
+     "String",
+     16,
+     22
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     25,
+     29
+    ],
+    [
+     "Field",
+     "before",
+     35,
+     58
+    ],
+    [
+     "FieldName",
+     "before",
+     35,
+     41
+    ],
+    [
+     "Argument",
+     "arg",
+     42,
+     51
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     47,
+     51
+    ],
+    [
+     "Argument",
+     "n",
+     53,
+     57
+    ],
+    [
+     "IntValue",
+     "1",
+     56,
+     57
+    ],
+    [
+     "Field",
+     "after",
+     61,
+     103
+    ],
+    [
+     "FieldName",
+     "after",
+     61,
+     66
+    ],
+    [
+     "Field",
+     "deep",
+     73,
+     99
+    ],
+    [
+     "FieldName",
+     "deep",
+     73,
+     77
+    ],
+    [
+     "Argument",
+     "x",
+     78,
+     98
+    ],
+    [
+     "ListValue",
+     "",
+     81,
+     98
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     82,
+     86
+    ],
+    [
+     "ObjectValue",
+     "",
+     88,
+     97
+    ],
+    [
+     "ObjectField",
+     "k",
+     89,
+     96
+    ],
+    [
+     "StringValue",
+     "\ud83d\ude00",
+     92,
+     96
+    ]
+   ]
+  }
+ }
+}

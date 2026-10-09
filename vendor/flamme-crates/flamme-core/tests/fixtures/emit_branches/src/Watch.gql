@@ -1,0 +1,6 @@
+subscription Watch($id: Int!) {
+  speciesChanged(id: $id) {
+    id
+    name
+  }
+}

@@ -1,0 +1,6 @@
+query SpreadConflict {
+  viewer {
+    name
+    ...SpreadUser
+  }
+}

@@ -1,0 +1,25 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "emmanuel-style-api",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-17",
+	"preview_urls": true,
+	"observability": {
+		"enabled": true
+	},
+	"durable_objects": {
+		"bindings": [
+			{ "name": "FAVOURITES", "class_name": "Favourites" },
+			{ "name": "STAR_CACHE", "class_name": "StarCache" }
+		]
+	},
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": ["Favourites", "StarCache"]
+		}
+	],
+	"vars": {
+		"ALLOWED_ORIGINS": "https://emmanuel.style,http://localhost:4321,http://localhost:4400"
+	}
+}

@@ -1,4 +1,5 @@
 declare module "@microflash/rehype-figure" {
+	import type { Root } from "hast"
 	import type { Plugin } from "unified"
 
 	interface RehypeFigureOptions {
@@ -12,6 +13,6 @@ declare module "@microflash/rehype-figure" {
 		dank?: boolean
 	}
 
-	const rehypeFigure: Plugin<[RehypeFigureOptions?], any>
+	const rehypeFigure: Plugin<[RehypeFigureOptions?], Root>
 	export default rehypeFigure
 }

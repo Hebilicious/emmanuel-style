@@ -1,0 +1,11 @@
+query Directives @a @b(x: 1) {
+  field @c
+  ... on Type @d {
+    nested @e
+  }
+  ...Spread @f(arg: {k: [1, 2]})
+}
+
+fragment Spread on Type {
+  field
+}

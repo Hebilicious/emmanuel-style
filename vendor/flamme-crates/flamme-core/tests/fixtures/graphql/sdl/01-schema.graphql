@@ -1,0 +1,12 @@
+"A description of the schema."
+schema @dir(a: 1) {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+extend schema @other
+
+extend schema {
+  query: Query
+}

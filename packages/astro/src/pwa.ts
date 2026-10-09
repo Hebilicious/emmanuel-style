@@ -1,51 +1,34 @@
-import { registerSW } from "virtual:pwa-register"
+/**
+ * Registers the precache service worker written at build time by the
+ * `offline-support` integration in astro.config.ts.
+ *
+ * The worker is bundled as an ES module by `workbox-build`, so it must be
+ * registered with `type: "module"`.
+ *
+ * In development there is no worker to register, and the site is served from
+ * the dev server instead.
+ */
+const registerServiceWorker = () => {
+	if (!("serviceWorker" in navigator)) return
 
-registerSW({
-	immediate: true,
-	onRegistered(registration: ServiceWorkerRegistration | undefined) {
-		console.log("Service Worker registered:", registration)
-		if (registration) {
-			setInterval(
-				() => {
-					console.log("🔄 Checking for updates (periodic)...")
-					registration.update()
-				},
-				5 * 60 * 1000
-			) // 5 minutes
-		}
-	},
-	onRegisterError(error: Error) {
-		console.error("Service Worker registration error:", error)
-	},
-	onOfflineReady() {
-		console.log("App ready to work offline")
-	},
-	onNeedRefresh() {
-		console.log("New content available, please refresh")
-	}
-})
-
-const update = () => {
-	navigator.serviceWorker?.getRegistration().then((registration) => {
-		registration?.update()
+	window.addEventListener("load", () => {
+		navigator.serviceWorker.register("/sw.js", { type: "module" }).catch((error) => {
+			console.error("Service worker registration failed:", error)
+		})
 	})
-}
-// Check for updates when user returns to the tab
-document.addEventListener("visibilitychange", () => {
-	if (!document.hidden) {
-		console.log("🔄 Checking for updates (tab visible)...")
-		update()
+
+	const update = () => {
+		navigator.serviceWorker.getRegistration().then((registration) => {
+			registration?.update()
+		})
 	}
-})
 
-// Check for updates on every page load/reload
-window.addEventListener("load", () => {
-	console.log("🔄 Checking for updates (page load)...")
-	update()
-})
+	// Pick up new deploys while a tab stays open.
+	setInterval(update, 5 * 60 * 1000)
+	document.addEventListener("visibilitychange", () => {
+		if (!document.hidden) update()
+	})
+	window.addEventListener("online", update)
+}
 
-// Check for updates when the user comes back online
-window.addEventListener("online", () => {
-	console.log("🔄 Checking for updates (back online)...")
-	update()
-})
+if (import.meta.env.PROD) registerServiceWorker()

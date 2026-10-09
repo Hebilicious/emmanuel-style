@@ -1,0 +1,8 @@
+fragment PostCard on Post {
+	id
+	title
+	author {
+		id
+		name
+	}
+}

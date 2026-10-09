@@ -1,0 +1,4 @@
+fragment SpeciesHeader on Species {
+  id
+  name
+}

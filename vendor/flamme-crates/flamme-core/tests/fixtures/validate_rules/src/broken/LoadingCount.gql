@@ -1,0 +1,5 @@
+query LoadingCount {
+  viewer @loading(count: 3) {
+    id
+  }
+}

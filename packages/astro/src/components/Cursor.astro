@@ -1,0 +1,14 @@
+---
+/**
+* Mounts the keyboard layer: the page cursor and the paginator. Renders nothing;
+* it exists so both modules load together and re-bind on every navigation.
+*/
+---
+
+<script>
+import { createCursor } from "../utils/cursor"
+import { createPaginator } from "../utils/paginate"
+
+createCursor()
+createPaginator()
+</script>

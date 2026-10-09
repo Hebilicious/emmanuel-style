@@ -1,0 +1,12 @@
+query LongArguments {
+  field(shortArg: 1)
+  fieldWithManyArguments(firstArgument: "some value here", secondArgument: 1234567890, third: true)
+  aFieldWhosePrintedArgumentsLineIsExactlyAtTheLimit(argumentOne: "some value")
+}
+
+query MultilineVarDefs($doc: String = """
+    first
+    second
+  """, $other: Int = 1) {
+  field(doc: $doc, other: $other)
+}

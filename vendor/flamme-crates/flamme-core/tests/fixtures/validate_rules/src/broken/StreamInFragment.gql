@@ -1,0 +1,5 @@
+fragment StreamInFragment on Species {
+  friends @stream(initialCount: 1) {
+    id
+  }
+}

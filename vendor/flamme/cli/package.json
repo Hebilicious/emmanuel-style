@@ -1,0 +1,31 @@
+{
+  "name": "@flamme/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Codegen CLI for Flamme.",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "flamme": "./dist/bin.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "@flamme/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.2"
+  },
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json"
+  }
+}

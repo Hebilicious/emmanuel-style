@@ -1,0 +1,26 @@
+"""
+A block description
+with two lines.
+"""
+type Described {
+  """inline block description"""
+  field(
+    "an argument description"
+    arg: Int = 1
+  ): String
+}
+
+enum DescribedEnum {
+  """a described value"""
+  ONE
+}
+
+input DescribedInput {
+  "an input field description"
+  field: String
+}
+
+directive @described(
+  "a directive argument description"
+  arg: Int
+) on FIELD

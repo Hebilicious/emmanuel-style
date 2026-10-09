@@ -1,82 +1,75 @@
 import { useColorMode } from "@vueuse/core"
-import { ref, watch } from "vue"
 
-export type Theme = "pink" | "dark" | "paper" | "light"
+/** The two surviving themes. `paper`, `pink` and the rest are gone. */
+export type Theme = "light" | "dark"
+
+/**
+ * Storage key kept from the previous build so returning visitors keep the
+ * theme they picked.
+ */
+export const THEME_STORAGE_KEY = "vueuse-color-scheme"
 
 export const DEFAULT_THEME: Theme = "dark"
 
 export const themesList = new Map<Theme, string>([
 	["light", "LightTheme"],
-	["dark", "DarkTheme"],
-	["paper", "PaperTheme"],
-	["pink", "PinkTheme"]
+	["dark", "DarkTheme"]
 ])
 
 export const themeMap: Record<string, string> = {
 	light: "LightTheme",
-	dark: "DarkTheme",
-	paper: "PaperTheme",
-	pink: "PinkTheme"
+	dark: "DarkTheme"
 }
+
+export const isTheme = (value: unknown): value is Theme => value === "light" || value === "dark"
 
 const isClient = () => typeof document !== "undefined"
 
-const upsertMetaNav = ({ color = "", name = "" }) => {
+const upsertMeta = ({ color = "", name = "" }) => {
 	if (!isClient()) return
 	document.querySelector(`meta[name='${name}']`)?.remove()
-	const metaNav = document.createElement("meta")
-	metaNav.setAttribute("name", name)
-	metaNav.setAttribute("content", color.trim())
-	document.querySelector("head")?.appendChild(metaNav)
+	const meta = document.createElement("meta")
+	meta.setAttribute("name", name)
+	meta.setAttribute("content", color.trim())
+	document.querySelector("head")?.appendChild(meta)
 }
 
-const setNavbarColor = (color: string) => {
-	upsertMetaNav({ color, name: "theme-color" }) // chrome
-	upsertMetaNav({ color, name: "msapplication-navbutton-color" }) // win
-	upsertMetaNav({ color, name: "apple-mobile-web-app-status-bar-style" }) // ios
+export const setNavbarColor = (color: string) => {
+	upsertMeta({ color, name: "theme-color" })
+	upsertMeta({ color, name: "msapplication-navbutton-color" })
+	upsertMeta({ color, name: "apple-mobile-web-app-status-bar-style" })
 }
 
-/**
- * Apply theme class to document element and update navbar color
- * This only handles switching themes after initial load
- */
-const applyTheme = (theme: Theme) => {
+/** Apply a theme class and repaint the browser chrome to match. */
+export const applyTheme = (theme: Theme) => {
 	if (!isClient()) return
 
-	// Remove all theme classes and add the new one
-	const themeClasses = Array.from(themesList.values())
-	document.documentElement.classList.remove(...themeClasses)
-
+	document.documentElement.classList.remove(...themesList.values())
 	const themeClass = themesList.get(theme)
-	if (themeClass) {
-		document.documentElement.classList.add(themeClass)
-	}
+	if (themeClass) document.documentElement.classList.add(themeClass)
 
-	// Update navbar color
-	const color = getComputedStyle(document.documentElement).getPropertyValue("--navbarColor")
+	const color = getComputedStyle(document.documentElement).getPropertyValue("--primaryBackground")
 	setNavbarColor(color)
 }
 
 /**
- * Composable for theme switching in Vue components
- * Note: Initial theme is applied by the inline script in Layout.astro
- * This composable only handles user-initiated theme changes
+ * Theme switching for Vue islands. The initial class is applied by the inline
+ * script in Layout.astro, so this only reacts to later changes.
  */
 export const useTheme = () => {
-	const rootRef = ref<HTMLElement | null>(null)
 	const mode = useColorMode<Theme>({
 		modes: Object.fromEntries(themesList) as Partial<Record<Theme, string>>,
-		initialValue: DEFAULT_THEME
+		initialValue: DEFAULT_THEME,
+		storageKey: THEME_STORAGE_KEY
 	})
 
-	const selectTheme = (themeName: Theme = DEFAULT_THEME) => {
-		mode.value = themeName
+	const selectTheme = (theme: Theme = DEFAULT_THEME) => {
+		mode.value = theme
 	}
 
-	// Only watch for changes, don't apply on mount (already done by inline script)
-	watch(mode, (newTheme) => {
-		applyTheme(newTheme as Theme)
-	})
+	const toggleTheme = () => {
+		selectTheme(mode.value === "dark" ? "light" : "dark")
+	}
 
-	return { mode, themesList, selectTheme, setNavbarColor, rootRef }
+	return { mode, themesList, selectTheme, toggleTheme, setNavbarColor }
 }

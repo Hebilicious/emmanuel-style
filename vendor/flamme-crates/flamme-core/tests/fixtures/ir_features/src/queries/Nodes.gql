@@ -1,0 +1,8 @@
+query NodesPaged {
+	posts(first: 2) @paginate(name: "Nodes_Posts") {
+		nodes {
+			id
+			title
+		}
+	}
+}

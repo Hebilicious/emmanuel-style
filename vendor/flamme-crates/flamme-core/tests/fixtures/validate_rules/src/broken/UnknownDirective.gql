@@ -1,0 +1,5 @@
+query UnknownDirective @nope {
+  viewer {
+    id
+  }
+}

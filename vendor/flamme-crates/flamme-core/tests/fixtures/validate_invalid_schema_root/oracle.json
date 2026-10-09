@@ -1,0 +1,74 @@
+{
+ "config": {
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+   "src/**/*.{vue,ts,graphql,gql}",
+   "src/pages/**/+page.gql",
+   "src/pages/**/+page.graphql",
+   "src/pages/**/+layout.gql",
+   "src/pages/**/+layout.graphql",
+   "src/pages/**/+page.ts",
+   "src/pages/**/+layout.ts"
+  ],
+  "exclude": [
+   "server/schema.graphql"
+  ],
+  "runtimeDir": "/tmp/flamme-oracle-0IiWjT",
+  "compiler": "ts",
+  "projectDir": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_root",
+  "routing": {
+   "pagesDir": "src/pages",
+   "documentFile": "+page.gql",
+   "layoutDocumentFile": "+layout.gql",
+   "documentExtensions": [
+    ".gql",
+    ".graphql"
+   ],
+   "document": "auto",
+   "compose": "route",
+   "params": {}
+  },
+  "scalars": {},
+  "types": {},
+  "defaultKeys": [
+   "id"
+  ],
+  "defaultCachePolicy": "CacheOrNetwork",
+  "defaultPartial": false,
+  "defaultPaginateMode": "Infinite",
+  "defaultListPosition": "last",
+  "defaultListTarget": "single",
+  "defaultFragmentMasking": "enable",
+  "logLevel": "info"
+ },
+ "schema": {
+  "sdl": "type Standalone {\n  a: Int\n}\n",
+  "file": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_root/server/schema.graphql"
+ },
+ "inputs": [
+  {
+   "relative": "src/Only.gql",
+   "absolute": "/home/heb/GitHub/houdini-vue/crates/flamme-core/tests/fixtures/validate_invalid_schema_root/src/Only.gql",
+   "text": "query Only {\n  a\n}\n",
+   "size": 19,
+   "mtimeMs": 1789501859997.6895
+  }
+ ],
+ "files": [],
+ "diagnostics": [
+  {
+   "code": "FLM2002",
+   "severity": "error",
+   "message": "Invalid schema: Query root type must be provided.",
+   "location": {
+    "file": "src/Only.gql",
+    "line": 1,
+    "column": 1,
+    "length": 1
+   }
+  }
+ ],
+ "artifacts": [],
+ "written": []
+}

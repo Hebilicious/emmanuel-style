@@ -1,0 +1,16 @@
+fragment FriendFields on User @cached {
+  id
+  ...NameParts
+  ... on Admin @include(if: true) {
+    permissions
+  }
+  ... @skip(if: false) {
+    always
+  }
+}
+
+query WithFragments {
+  me {
+    ...FriendFields
+  }
+}

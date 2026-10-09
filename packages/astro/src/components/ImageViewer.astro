@@ -1,0 +1,126 @@
+---
+/**
+* The image viewer.
+*
+* An article picture is set small enough to share a page with text, so it can be
+* too small to read. Opening it full screen is how a figure is examined; `Esc` or
+* a click closes it. Renders nothing until a figure asks to be shown.
+*/
+---
+
+<div class="Zoom" data-zoom hidden>
+  <div class="Frame" role="dialog" aria-modal="true" aria-label="Image">
+    <img class="Shot" data-zoom-image alt="" />
+    <p class="Caption" data-zoom-caption></p>
+  </div>
+</div>
+
+<style>
+.Zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: var(--spacing_fluid-flow-space-s);
+  background: rgb(0 0 0 / 92%);
+}
+
+.Zoom[hidden] {
+  display: none;
+}
+
+.Frame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/*
+ * The image is contained within the screen rather than cropped: the point of
+ * opening it is to see all of it.
+ */
+.Shot {
+  display: block;
+  max-width: 100%;
+  max-height: 82dvh;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+  object-fit: contain;
+  border: var(--spacing-size-hairline) solid var(--rule-strong);
+}
+
+.Caption {
+  color: var(--muted);
+  text-align: center;
+}
+</style>
+
+<script>
+import { pageReady } from "../utils/pageReady"
+
+/** The caption of the figure an image came from, if it had one. */
+const captionFor = (src: string) => {
+	for (const image of Array.from(
+		document.querySelectorAll("[data-flow] img, figure img")
+	)) {
+		if (image.getAttribute("src") === src) {
+			return (
+				image
+					.closest("figure")
+					?.querySelector("figcaption")
+					?.textContent?.trim() ?? ""
+			)
+		}
+	}
+	return ""
+}
+
+pageReady((signal) => {
+	const root = document.querySelector<HTMLElement>("[data-zoom]")
+	const image = document.querySelector<HTMLImageElement>("[data-zoom-image]")
+	const caption = document.querySelector<HTMLElement>("[data-zoom-caption]")
+	if (!root || !image || !caption) return
+
+	const close = () => {
+		root.hidden = true
+		image.removeAttribute("src")
+	}
+
+	const open = (src: string) => {
+		image.src = src
+		image.alt = captionFor(src)
+		caption.textContent = captionFor(src)
+		root.hidden = false
+		root.focus()
+	}
+
+	document.addEventListener(
+		"figure:zoom",
+		(event) => open((event as CustomEvent<string>).detail),
+		{ signal }
+	)
+
+	document.addEventListener(
+		"keydown",
+		(event) => {
+			if (root.hidden) return
+			if (
+				event.key === "Escape" ||
+				event.key === "Enter" ||
+				event.key === " "
+			) {
+				event.preventDefault()
+				close()
+			}
+		},
+		{ signal }
+	)
+
+	// A click anywhere closes it, and so does a click on the image itself.
+	root.addEventListener("click", close, { signal })
+})
+</script>

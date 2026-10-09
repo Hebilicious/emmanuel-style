@@ -1,0 +1,25 @@
+query BlockStrings {
+  field(
+    a: """
+      Hello,
+        World!
+      """
+    b: """single line"""
+    c: """has a \""" escaped triple quote"""
+    d: """
+
+      leading blank line
+    """
+    e: """ends with a quote\""""""
+    f: """a block string that is definitely longer than seventy characters wide in total"""
+    g: "plain"
+    h: """ leading space"""
+    i: """ends with one quote"
+
+    """
+    j: """ends with a backslash\
+
+    """
+    k: """"""
+  )
+}

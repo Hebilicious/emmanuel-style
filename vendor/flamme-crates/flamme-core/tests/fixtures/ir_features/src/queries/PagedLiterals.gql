@@ -1,0 +1,9 @@
+query PagedLiterals {
+	fwd(first: 2) @paginate(mode: SinglePage, name: "Fwd_Literal") {
+		edges {
+			node {
+				id
+			}
+		}
+	}
+}

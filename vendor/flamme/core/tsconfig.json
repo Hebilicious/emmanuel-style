@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    // `src/contract.ts` re-exports the runtime's artifact types, and the runtime
+    // barrel's HTTP transport seam is DOM-typed (`RequestCredentials`,
+    // `RequestInit`, `Response`). Checking the *sources* of those types needs the
+    // same ambient lib the runtime package declares; without it every consumer
+    // typecheck fails with TS2304.
+    "lib": ["ES2023", "DOM"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

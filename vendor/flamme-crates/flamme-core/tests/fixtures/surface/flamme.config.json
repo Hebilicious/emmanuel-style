@@ -1,0 +1,18 @@
+{
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+    "src/**/*.{vue,ts,tsx,js,jsx,graphql,gql}"
+  ],
+  "exclude": [
+    "server/schema.graphql",
+    "src/other/**"
+  ],
+  "types": {
+    "SpeciesMove": {
+      "keys": [
+        "name"
+      ]
+    }
+  }
+}

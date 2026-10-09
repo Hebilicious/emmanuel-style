@@ -1,0 +1,9 @@
+query PagedBare {
+	posts(first: 3) @paginate(name: "Bare_Paged") {
+		edges {
+			node {
+				id
+			}
+		}
+	}
+}

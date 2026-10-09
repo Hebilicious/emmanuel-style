@@ -1,0 +1,28 @@
+query Enums(
+  $filter: SpeciesFilter = { name: "charmander" }
+  $since: DateTime
+  $weight: Float = 0.0000001
+  $ratio: Float = 1.5
+  $huge: Float = 1e21
+  $small: Float = 1e-7
+  $neg: Float = -1.5
+  $nested: SpeciesFilter = { name: "bulbasaur", limit: 3 }
+) {
+  species(
+    filter: $filter
+    since: $since
+    weight: $weight
+    ratio: $ratio
+    huge: $huge
+    small: $small
+    neg: $neg
+    nested: $nested
+  ) {
+    id
+    name
+    rarity
+    stats
+    attributes
+    born
+  }
+}

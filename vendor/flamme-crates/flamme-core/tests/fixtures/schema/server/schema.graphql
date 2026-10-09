@@ -1,0 +1,81 @@
+# Schema shape for the schema-index parity fixture.
+#
+# It exercises everything buildSchemaIndex reads: an interface, a union, an enum,
+# input objects, both @key spellings, a configured key (one field kept because the
+# type declares it, one dropped because it does not) and a type that falls back to
+# defaultKeys.
+
+interface Node {
+	id: ID!
+}
+
+type Species implements Node @key(fields: ["id"]) {
+	id: ID!
+	name: String!
+	weight: Int
+	region: Region!
+	favorite: Boolean!
+}
+
+type Trainer implements Node @key(fields: "id name") {
+	id: ID!
+	name: String!
+	home: Region
+}
+
+type Gym implements Node {
+	id: ID!
+	name: String!
+	leader: Trainer
+}
+
+type League implements Node {
+	id: ID!
+	name: String!
+	gyms: [Gym!]!
+}
+
+type Badge {
+	id: ID!
+	name: String!
+}
+
+# A key on an extension is invisible to the oracle: it reads
+# type.astNode.directives, and astNode is the base definition. Badge therefore
+# falls back to defaultKeys.
+extend type Badge @key(fields: ["name"]) {
+	extra: String
+}
+
+union SearchResult = Species | Trainer | Gym
+
+enum Region {
+	Kanto
+	Johto
+	Hoenn
+}
+
+extend enum Region {
+	Sinnoh
+}
+
+input SearchFilter {
+	region: Region
+	limit: Int!
+	match: String
+}
+
+input NestedFilter {
+	filter: SearchFilter!
+	tags: [String!]
+}
+
+type Query {
+	search(filter: SearchFilter): [SearchResult!]!
+	species(id: ID!): Species
+	trainer(id: ID!): Trainer
+	gym(id: ID!): Gym
+	league(id: ID!): League
+	badge(id: ID!): Badge
+	node(id: ID!): Node
+}

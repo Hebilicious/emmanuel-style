@@ -1,0 +1,9 @@
+{
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": ["src/**/*"],
+  "exclude": ["server/schema.graphql"],
+  "routing": {
+    "documentExtensions": [".gql", ".graphql", ".graphqls"]
+  }
+}

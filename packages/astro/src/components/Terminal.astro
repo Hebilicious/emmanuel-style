@@ -1,0 +1,184 @@
+---
+/**
+* The terminal.
+*
+* Navigation on this site is keyboard only, and this is why. It is a real
+* prompt: it completes commands against the build-time index, opens routes and
+* articles, and reports what it did. Mouse clicks are intercepted separately by
+* MouseGate, which offers to hand control back to the pointer.
+*
+* It is a fixed element rather than a Vue island so that it survives Astro's
+* page swaps without re-mounting or losing its buffer.
+*/
+---
+
+<div class="Console" data-terminal hidden>
+  <p class="Hint" data-terminal-hintline>
+    <span class="accent">j/k</span> move · <span class="accent">↵</span>
+    follow ·
+    <span class="accent">Ctrl+g</span> then h l b e · <span
+      class="accent">gg/G</span> ·
+    <span class="accent">/</span> prompt
+  </p>
+  <p class="Out" data-terminal-out role="status" aria-live="polite"></p>
+  <ul class="Matches" data-terminal-matches></ul>
+  <form class="Prompt" data-terminal-form>
+    <label class="visually-hidden" for="terminal-input">Command</label>
+    <span class="Sign" aria-hidden="true">❯</span>
+    <input
+      id="terminal-input"
+      class="Input"
+      data-terminal-input
+      type="text"
+      name="command"
+      autocomplete="off"
+      autocapitalize="off"
+      spellcheck="false"
+      placeholder="cd · ls · cat · grep · open"
+    />
+    <kbd class="Hint" data-terminal-hint>?</kbd>
+  </form>
+</div>
+
+<script>
+import { createTerminal } from "../utils/terminal"
+
+createTerminal()
+</script>
+
+<style>
+/*
+ * A docked panel, not an overlay.
+ *
+ * This is a TUI for people with eyes: the page is the point, so the prompt must
+ * never sit on top of the thing being read. It is fixed to the bottom of the
+ * viewport, and the document reserves exactly its height (see `.has-console`
+ * below), so opening it pushes the page up instead of covering it and closing
+ * it gives the space straight back.
+ *
+ * Its own height is bounded so a long `ls` output scrolls inside the panel
+ * rather than growing until it swallows the page.
+ */
+/*
+ * A sibling of the page, not an overlay.
+ *
+ * Children run hint, output, matches, prompt, with the prompt last and
+ * `flex: none`. Completion results therefore grow upward and the page above
+ * gives up the height, so the prompt line never moves while you type, which is
+ * the whole point of a prompt.
+ */
+.Console {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  /*
+   * The dock draws the border and background, so the prompt only adds a hairline
+   * between itself and the status row: one bar, not two stacked strips.
+   */
+  padding-top: var(--spacing_fluid-tight-space-tight-xs);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+  color: var(--ink);
+  font-family:
+    var(--font-monaspace),
+    ui-monospace,
+    monospace;
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+}
+
+.Console[hidden] {
+  display: none;
+}
+
+/*
+ * A single, permanent line of guidance, so the panel can be small while the
+ * commands stay discoverable. It is not part of the scrollable output.
+ */
+.Hint {
+  max-width: 100ch;
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+}
+
+/* Long output scrolls here, capped so the prompt cannot eat the page. */
+.Out {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-width: 100ch;
+  max-height: 22dvh;
+  overflow-y: auto;
+  color: var(--muted);
+  white-space: pre-wrap;
+}
+
+.Out:empty {
+  display: none;
+}
+
+.Prompt {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  max-width: 100ch;
+  padding: var(--spacing_fluid-tight-space-tight-xs)
+    var(--spacing_fluid-tight-space-tight-s);
+  border: var(--spacing-size-hairline) solid var(--rule-strong);
+  background: var(--surface);
+}
+
+.Sign {
+  color: var(--accent);
+}
+
+.Input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+}
+
+.Input::placeholder {
+  color: var(--faint);
+}
+
+.Hint {
+  color: var(--faint);
+}
+
+.Matches {
+  flex: 0 1 auto;
+  min-height: 0;
+  display: grid;
+  align-content: end;
+  max-width: 100ch;
+  max-height: 26dvh;
+  overflow-y: auto;
+}
+
+.Matches:empty {
+  display: none;
+}
+
+.Matches :global(.Match) {
+  display: grid;
+  grid-template-columns: 10ch minmax(0, 1fr);
+  gap: var(--spacing_fluid-tight-space-tight-m);
+  padding: var(--spacing_fluid-tight-space-tight-xs)
+    var(--spacing_fluid-tight-space-tight-s);
+  color: var(--muted);
+}
+
+.Matches :global(.Match[data-active="true"]) {
+  background: var(--sunk);
+  color: var(--ink);
+}
+
+.Matches :global(.MatchKey) {
+  color: var(--accent);
+}
+</style>

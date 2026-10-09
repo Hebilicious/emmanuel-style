@@ -1,0 +1,9 @@
+query Bare {
+	bare(first: 10) @paginate(mode: SinglePage, name: "Bare_Items") {
+		edges {
+			node {
+				id
+			}
+		}
+	}
+}

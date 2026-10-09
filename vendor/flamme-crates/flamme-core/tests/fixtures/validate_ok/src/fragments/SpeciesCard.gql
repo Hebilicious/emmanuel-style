@@ -1,0 +1,7 @@
+fragment SpeciesCard on Species {
+  id
+  name
+  move {
+    name
+  }
+}

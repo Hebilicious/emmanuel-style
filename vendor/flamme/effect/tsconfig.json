@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.base.json",
+  // `AbortSignal` (Effect hands the promise thunk one) and `RequestCredentials` (the runtime's
+  // `FetchTransportOptions`) live in no ES lib; the DOM lib is the only type source available here
+  // because the base config sets `types: []`. It is a *type* dependency only: the package calls no
+  // DOM API, and every request it makes goes through `Client`.
+  //
+  // `example/**` is the worked example. Its components are `.vue`, so `moon run effect:typecheck`
+  // runs `vue-tsc` (see `moon.yml`), exactly as `@flamme/vue` does.
+  "compilerOptions": {
+    "lib": ["ES2023", "DOM", "DOM.Iterable"]
+  },
+  "include": [
+    "src/**/*.ts",
+    "test/**/*.ts",
+    "example/src/**/*.ts",
+    "example/src/**/*.vue",
+    "example/vite.config.ts"
+  ]
+}

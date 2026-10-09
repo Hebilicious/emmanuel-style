@@ -1,0 +1,5 @@
+query FeedStream {
+	feed @stream {
+		id
+	}
+}

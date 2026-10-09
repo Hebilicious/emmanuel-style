@@ -1,0 +1,20 @@
+# The root operation types are renamed, so `rootType` must follow the `schema`
+# block rather than the conventional type names.
+schema {
+	query: RootQuery
+	mutation: RootMutation
+}
+
+type RootQuery {
+	thing(id: ID!): Thing!
+	things: [Thing!]!
+}
+
+type RootMutation {
+	touch(id: ID!): Thing!
+}
+
+type Thing {
+	id: ID!
+	name: String!
+}

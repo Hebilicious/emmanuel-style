@@ -1,0 +1,60 @@
+$schema: 'https://moonrepo.dev/schemas/project.json'
+
+layer: 'library'
+language: 'typescript'
+tags: ['typescript', 'library']
+
+tasks:
+  test:
+    # The golden suite writes the generated tree and type-checks it against the
+    # real runtime package, and `core:build` compiles `@flamme/runtime`
+    # imports. Both resolve through `packages/runtime/dist`, which is gitignored,
+    # so without this dependency a clean checkout fails with `TS2307: Cannot find
+    # module '@flamme/runtime'` (B3). `^:build` is the build task of every
+    # dependency in the workspace graph (moon's `^` target) — here, the runtime.
+    deps:
+      - '^:build'
+    # The coverage include names the modules this suite owns. The deleted TypeScript
+    # compiler used to be the bulk of `packages/core/src` and was exercised here; what
+    # is left of the shared tooling is exercised by the packages that drive it:
+    # `extract.ts`, `sfc.ts` and `page-module.ts` by `@flamme/vite`'s transform and the
+    # router's page-module resolution, `contract.ts`/`ir.ts` are type declarations, and
+    # the two `index.ts` barrels re-export without a branch of their own. Those are
+    # excluded here; every module the compiler path runs through stays in, at the same
+    # 90/90/85/90 gate.
+    args:
+      [
+        '--project',
+        'core',
+        '--coverage.include=packages/core/src/**/*.ts',
+        '--coverage.exclude=packages/core/src/index.ts',
+        '--coverage.exclude=packages/core/src/contract.ts',
+        '--coverage.exclude=packages/core/src/ir.ts',
+        '--coverage.exclude=packages/core/src/extract.ts',
+        '--coverage.exclude=packages/core/src/sfc.ts',
+        '--coverage.exclude=packages/core/src/page-module.ts',
+        '--coverage.exclude=packages/core/src/plugins/index.ts',
+        '--coverage.reportsDirectory=coverage/core',
+      ]
+  build:
+    deps:
+      - '^:build'
+
+  native:
+    # Builds the napi module the Rust compiler loads, and installs it where
+    # `@flamme/core` finds it. `test` depends on it: the inherited task in
+    # `.moon/tasks/all.yml` names `core:native` in its `deps`, and this project's
+    # own `deps` append to that, so `moon run core:test` always runs the compiler.
+    # A direct `pnpm exec vitest run --project core` in a checkout without the built
+    # module fails with `FLM2002` and the build command, which is the same answer a
+    # user gets. Run this task on its own only before a benchmark.
+    command: 'node'
+    args:
+      - '../../crates/flamme-napi/install-native.mjs'
+    inputs:
+      - '/crates/**/*'
+      - '/Cargo.toml'
+      - '/Cargo.lock'
+      - '/rust-toolchain.toml'
+    options:
+      cache: false

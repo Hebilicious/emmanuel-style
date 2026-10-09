@@ -1,0 +1,21 @@
+query Values {
+  field(
+    int: 42
+    negative: -17
+    float: 1.25
+    exponent: 6.022e23
+    negativeExponent: -1.5E-10
+    string: "a \"quoted\" value with \\ and \/ and \b\f\n\r\t"
+    unicode: "\u00e9\u00E9\u{1F600}"
+    block: """block value"""
+    yes: true
+    no: false
+    nothing: null
+    enum: RED
+    list: [1, "two", [3], {four: 4}, null, true]
+    object: {a: 1, b: {c: [2]}}
+    emptyList: []
+    emptyObject: {}
+    variable: $v
+  ) @dir(a: 1, b: "x")
+}

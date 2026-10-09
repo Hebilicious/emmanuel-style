@@ -1,0 +1,50 @@
+/*
+ * The faces.
+ *
+ * Astro's font integration wrote these declarations into every page; a Vite app
+ * has to declare them itself. The `@font-face` rules are the ones that build
+ * emitted, with the same `tech(color-COLRv1)` on Nabla: it is a colour font with no
+ * outline glyphs, so a browser that does not support COLRv1 renders nothing at all
+ * for it rather than falling back, which is why it is declared with the tech hint
+ * and always listed with a monospace fallback.
+ *
+ * The files live in `public/fonts` and are served from `/fonts`, so the URLs are
+ * stable and the service worker can precache them by path.
+ */
+
+@font-face {
+  font-family: "Nabla";
+  src: url("/fonts/Nabla[EDPT,EHLT].ttf") format("truetype") tech(color-COLRv1);
+  font-display: swap;
+  font-weight: 400 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Monaspace Argon";
+  src: url("/fonts/MonaspaceArgon-Regular.otf") format("opentype");
+  font-display: swap;
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Monaspace Argon";
+  src: url("/fonts/MonaspaceArgon-Medium.otf") format("opentype");
+  font-display: swap;
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Monaspace Argon";
+  src: url("/fonts/MonaspaceArgon-Bold.otf") format("opentype");
+  font-display: swap;
+  font-weight: 700;
+  font-style: normal;
+}
+
+:root {
+  --font-nabla: "Nabla", "Monaspace Argon", monospace;
+  --font-monaspace: "Monaspace Argon", ui-monospace, monospace;
+}

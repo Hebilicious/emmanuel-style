@@ -1,0 +1,5 @@
+query DeprecatedDirective {
+  viewer @legacy(term: "x") {
+    id
+  }
+}

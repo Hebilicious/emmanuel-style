@@ -1,0 +1,5 @@
+query DeprecatedArg {
+  searchOld(term: "a") {
+    id
+  }
+}

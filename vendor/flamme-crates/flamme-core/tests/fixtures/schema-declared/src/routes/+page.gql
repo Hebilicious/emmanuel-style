@@ -1,0 +1,6 @@
+query Wallet($id: ID!) {
+	wallet(id: $id) {
+		id
+		balance
+	}
+}

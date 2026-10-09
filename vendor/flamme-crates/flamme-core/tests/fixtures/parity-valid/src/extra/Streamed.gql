@@ -1,0 +1,9 @@
+query Streamed($id: Int!) {
+	species(id: $id) {
+		id
+		evolution_chain @stream(initialCount: 1, label: "chain") {
+			id
+			name
+		}
+	}
+}

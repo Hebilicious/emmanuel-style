@@ -1,0 +1,9 @@
+type Query {
+	species(id: String!): Species
+}
+
+type Species {
+	id: Int!
+	name: String!
+	flavor_text: String
+}

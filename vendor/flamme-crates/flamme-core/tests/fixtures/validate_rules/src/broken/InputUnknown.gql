@@ -1,0 +1,5 @@
+query InputUnknown {
+  speciesFiltered(filter: { nope: 1 }) {
+    id
+  }
+}

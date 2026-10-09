@@ -1,0 +1,6 @@
+query Deprecated {
+  viewer {
+    id
+    oldName
+  }
+}

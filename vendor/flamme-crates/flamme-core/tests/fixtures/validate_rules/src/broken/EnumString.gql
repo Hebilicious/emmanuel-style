@@ -1,0 +1,5 @@
+query EnumString {
+  speciesByRarity(rarity: "x") {
+    id
+  }
+}

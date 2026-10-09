@@ -1,0 +1,122 @@
+{
+  "version": 1,
+  "compiler": "0.0.0",
+  "runtime": "0.0.0",
+  "schemaHash": "e2e59e7cf9ee141b9cc0a3da38d9396cb439c594731bc04e97d3e3b9e84c901e",
+  "documents": [
+    {
+      "name": "Blog",
+      "kind": "query",
+      "hash": "005f81b8ed135e4aa88b604418df33209d54b489acfac8689db67af35a40c517",
+      "file": "artifacts/Blog.ts",
+      "sources": [
+        "src/pages/blog/+page.gql"
+      ]
+    },
+    {
+      "name": "Chrome",
+      "kind": "query",
+      "hash": "8a1ec133d9c631658a677b499523eae0d4a620acfe277bb8c8aeafd2b3b05cf2",
+      "file": "artifacts/Chrome.ts",
+      "sources": [
+        "src/pages/+layout.gql"
+      ]
+    },
+    {
+      "name": "Experience",
+      "kind": "query",
+      "hash": "53c16505d633c0f76aa040d8a2be1c5954c89a1dcbdb8588eb15737bdfa6a7de",
+      "file": "artifacts/Experience.ts",
+      "sources": [
+        "src/pages/experience/+page.gql"
+      ]
+    },
+    {
+      "name": "Home",
+      "kind": "query",
+      "hash": "1c10df96864e45ae25ce75b31b3056da5d1f714bb0047f29b1251317383ec6be",
+      "file": "artifacts/Home.ts",
+      "sources": [
+        "src/pages/index/+page.gql"
+      ]
+    },
+    {
+      "name": "Library",
+      "kind": "query",
+      "hash": "73997aa786d13ee8bbf70fe6c47e4bc0a7d4d8edbca05d48ada8eb48c8a9fb03",
+      "file": "artifacts/Library.ts",
+      "sources": [
+        "src/pages/library/+page.gql"
+      ]
+    },
+    {
+      "name": "Post",
+      "kind": "query",
+      "hash": "b6905f23f8e2a8a4811e996fd2d356dd852ffa715a785af905e441cb8ad80e9f",
+      "file": "artifacts/Post.ts",
+      "sources": [
+        "src/pages/blog/[slug]/+page.gql"
+      ]
+    },
+    {
+      "name": "Route_layout_oy84b0",
+      "kind": "query",
+      "hash": "89361335631b97168091314a8f37003ea04229c5b75da7afd40b6d45a9b1af74",
+      "file": "artifacts/Route_layout_oy84b0.ts",
+      "sources": [
+        ".flamme/composed/Route_layout_oy84b0.composed.gql"
+      ]
+    },
+    {
+      "name": "Routeblog_1j1hl4",
+      "kind": "query",
+      "hash": "b6b6208106661e5850165b287aa3105e597c439ea8129688fd0dc499cc73b138",
+      "file": "artifacts/Routeblog_1j1hl4.ts",
+      "sources": [
+        ".flamme/composed/Routeblog_1j1hl4.composed.gql"
+      ]
+    },
+    {
+      "name": "Routeblog__slug__1gn4ng",
+      "kind": "query",
+      "hash": "a27e179cc9f0fb3378c82459b37ce91b90002f8c9c70f702187734ab3995f52f",
+      "file": "artifacts/Routeblog__slug__1gn4ng.ts",
+      "sources": [
+        ".flamme/composed/Routeblog__slug__1gn4ng.composed.gql"
+      ]
+    },
+    {
+      "name": "Routeexperience_fpods0",
+      "kind": "query",
+      "hash": "b50e76ab0d03e69efc66a373622806f1630e004010941f683442fdb3621c1c49",
+      "file": "artifacts/Routeexperience_fpods0.ts",
+      "sources": [
+        ".flamme/composed/Routeexperience_fpods0.composed.gql"
+      ]
+    },
+    {
+      "name": "Routeindex_1pcgrc",
+      "kind": "query",
+      "hash": "6f472eb65236244016e5300af787fe3251a5bb5e7f7b775b47985113f42937b2",
+      "file": "artifacts/Routeindex_1pcgrc.ts",
+      "sources": [
+        ".flamme/composed/Routeindex_1pcgrc.composed.gql"
+      ]
+    },
+    {
+      "name": "Routelibrary_n8fr6o",
+      "kind": "query",
+      "hash": "b697adc2f5d1fa980efe7568cf7d60eaa16cbbe4768bb36d8fd3099fdf74a9f7",
+      "file": "artifacts/Routelibrary_n8fr6o.ts",
+      "sources": [
+        ".flamme/composed/Routelibrary_n8fr6o.composed.gql"
+      ]
+    }
+  ],
+  "lists": {},
+  "fragments": {},
+  "paginated": {},
+  "defaultKeys": [
+    "id"
+  ]
+}

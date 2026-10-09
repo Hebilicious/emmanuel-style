@@ -1,0 +1,5 @@
+fragment QueryFrag on Query {
+  species {
+    id
+  }
+}

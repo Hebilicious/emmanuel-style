@@ -1,0 +1,22 @@
+query Experience {
+	roles {
+		id
+		title
+		company
+		location
+		start
+		end
+		summary
+		highlights
+		stack
+	}
+	schools {
+		id
+		qualification
+		school
+		location
+		start
+		end
+		summary
+	}
+}

@@ -1,0 +1,121 @@
+# emmanuel.style API
+
+The backend worker behind two features on the site:
+
+| Feature            | Routes                                                | Storage                                              |
+| ------------------ | ----------------------------------------------------- | ---------------------------------------------------- |
+| Article favourites | `POST /api/graphql`, `GET/POST /api/favourites/:slug` | One Durable Object per article, holding its counter  |
+| GitHub star counts | `POST /api/graphql`, `GET /api/stars?repos=a,b,c`     | One shared Durable Object holding a cache with a TTL |
+| Health             | `GET /api/health`                                     | none                                                 |
+
+The site itself stays static and works offline. Every route here is additive, and
+the client treats an unreachable worker as "no data" instead of an error, so the
+pages keep rendering when this worker is down or not deployed.
+
+## GraphQL
+
+`POST /api/graphql` takes `{query, variables, operationName}` and answers
+`{data}` or `{errors}`. It serves the server-owned part of the shared schema and
+nothing else:
+
+```graphql
+query { favourites(slug: "x") { slug count } }
+query { stars(names: ["emmanuelstyle"]) { repo stars } }
+mutation { toggleFavourite(slug: "x") { slug count } }
+```
+
+`site`, `post`, `shelves`, `roles` and `schools` are **not** here. Those are
+resolved by the app from the markdown bundle, and their resolvers in
+`@emmanuel/schema` throw on purpose. Mounting that Pothos schema in the worker
+would publish five root fields that can only fail. The worker therefore builds
+its own small schema with `graphql-js` for the operations it actually owns; the
+field and argument names match `packages/schema/schema.graphql`, so a document
+compiled against the shared schema runs here unchanged.
+
+**Readers.** A mutating request carries `x-reader-id`, a client-generated stable
+id. `toggleFavourite` is a toggle, not an increment: the Durable Object stores
+the hashed reader key alongside the count and flips that reader's own flag, so
+replaying a queued write lands on the same state. Two toggles by one reader
+return the count to where it started. The header is normalised and hashed, so a
+raw client id is never stored. A toggle with no reader id is `{errors: [...]}`,
+since there is nothing to make it idempotent against.
+
+## Design
+
+**Favourites** use one Durable Object per article slug. A Durable Object is
+single-threaded per object, so a read-modify-write of the counter cannot
+interleave and no database or transaction is needed. Keying by slug means two
+readers favouriting different articles never contend.
+
+**Stars** use a single shared Durable Object as a cache. Visitors to the Library
+all want the same star counts, and GitHub's anonymous API allows 60 requests an
+hour per IP, so the cache turns a burst of traffic into one upstream call per
+repository per TTL window. Stale values are served when a refresh fails, which
+degrades to slightly old numbers rather than no numbers. Set a `GITHUB_TOKEN`
+secret to raise the upstream limit from 60 to 5000 an hour.
+
+## Commands
+
+```sh
+pnpm install
+pnpm dev        # wrangler dev on http://localhost:8787
+pnpm test       # node --test, covers toggle idempotency per reader
+pnpm types      # regenerate worker-configuration.d.ts after a binding change
+pnpm typecheck  # tsc --noEmit
+pnpm deploy     # wrangler deploy
+```
+
+To check the GraphQL surface by hand against a state of its own, so an existing
+counter does not make the first answer look wrong:
+
+```sh
+pnpm exec wrangler dev --port 8788 --persist-to /tmp/api-state
+curl -X POST localhost:8788/api/graphql -H 'content-type: application/json' \
+  -H 'x-reader-id: a' -d '{"query":"mutation{ toggleFavourite(slug:\"x\"){count} }"}'
+```
+
+## Local development
+
+Run this worker and the site side by side. The Astro dev server proxies `/api`
+to `http://localhost:8787`, so the site needs no configuration:
+
+```sh
+# terminal 1
+cd packages/api && pnpm dev
+
+# terminal 2
+cd packages/astro && pnpm dev
+```
+
+Override the proxy target with `API_DEV_ORIGIN` when the worker runs elsewhere.
+
+## Deployment
+
+1. Deploy the worker, then note its origin:
+
+   ```sh
+   cd packages/api && pnpm deploy
+   ```
+
+2. Point the site at it and rebuild. Without this the site only talks to its own
+   origin, which is how the same-origin route setup works:
+
+   ```sh
+   cd packages/astro && PUBLIC_API_BASE=https://emmanuel-style-api.<account>.workers.dev pnpm build
+   ```
+
+   The API allows cross-origin calls from `ALLOWED_ORIGINS` in `wrangler.jsonc`,
+   which lists the production domain and the local dev port.
+
+3. Optional, for a higher GitHub rate limit:
+
+   ```sh
+   pnpm exec wrangler secret put GITHUB_TOKEN
+   ```
+
+## Bindings
+
+`wrangler.jsonc` declares both Durable Object bindings and the `v1` migration
+that creates them as SQLite-backed classes. `worker-configuration.d.ts` is
+generated by `wrangler types` and committed so `astro check` and `tsc` see the
+bindings; rerun `pnpm types` after changing a binding name.

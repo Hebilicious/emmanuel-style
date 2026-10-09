@@ -1,0 +1,123 @@
+---
+interface Props {
+	/** Nameplate. The front page carries the full title, sections carry theirs. */
+	title?: string
+	/** Dateline: the section this page belongs to. */
+	section?: string
+}
+
+const { title = "The Emmanuel Style", section = "front page" } = Astro.props
+---
+
+<div class="Masthead">
+  <p class="Meta">
+    <span data-today></span>
+    <span class="Dot" data-today-sep aria-hidden="true" hidden>·</span>
+    <span>earth</span>
+  </p>
+  <h1 class="Title display">{title}</h1>
+  <p class="Section">
+    <span class="Mark" aria-hidden="true">§</span>
+    {section}
+  </p>
+</div>
+
+<script>
+import { pageReady } from "../utils/pageReady"
+
+/*
+ * Bound on `astro:page-load`, not run once at module scope: a module only
+ * evaluates the first time the browser loads it, so a date written on the
+ * initial page would be missing from every page reached by an in-page
+ * navigation.
+ */
+pageReady(() => {
+	const target = document.querySelector("[data-today]")
+	if (!target) return
+
+	target.textContent = new Intl.DateTimeFormat("en-GB", {
+		weekday: "long",
+		day: "numeric",
+		month: "long",
+		year: "numeric"
+	}).format(new Date())
+
+	// The separator only makes sense once the date is actually there, otherwise
+	// the line reads as a stray dot before "earth".
+	const separator = document.querySelector<HTMLElement>("[data-today-sep]")
+	if (separator) separator.hidden = false
+})
+</script>
+
+<style>
+.Masthead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  padding-block: var(--spacing_fluid-tight-space-tight-m)
+    var(--spacing_fluid-tight-space-tight-s);
+  text-align: center;
+}
+
+.Meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.Dot {
+  color: var(--faint);
+}
+
+.Title {
+  font-size: var(--typography_fluid-display-font-size-display-m);
+  text-wrap: balance;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+}
+
+.Section {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.Mark {
+  color: var(--accent);
+}
+
+/*
+ * Broadsheet arrangement: dateline, nameplate and section share one row, so the
+ * title spends the horizontal space the page has instead of stacking three
+ * centred lines of vertical space it does not need.
+ */
+@media (min-width: 60rem) {
+  .Masthead {
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--spacing_fluid-column-space-column-s);
+    text-align: left;
+  }
+
+  .Meta,
+  .Section {
+    flex: none;
+  }
+
+  .Title {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}
+</style>

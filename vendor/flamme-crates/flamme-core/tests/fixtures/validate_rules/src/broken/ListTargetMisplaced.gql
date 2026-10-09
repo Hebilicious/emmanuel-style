@@ -1,0 +1,6 @@
+query ListTargetMisplaced {
+  viewer {
+    id
+    ...SpeciesId @listTarget(name: "Species")
+  }
+}

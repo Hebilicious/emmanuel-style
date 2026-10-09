@@ -1,0 +1,3 @@
+fragment CycleA on Species {
+  ...CycleB
+}

@@ -1,0 +1,133 @@
+# The `ir_features` fixture's API: interfaces, a union, cursor and offset
+# connections, a bare connection without a cursor, and list/mutation payloads.
+type Query {
+	posts(first: Int, after: String, last: Int, before: String): PostConnection!
+	fwd(first: Int, after: String): FwdConnection!
+	back(last: Int, before: String): BackConnection!
+	paged(offset: Int, limit: Int): OffsetConnection!
+	bare(first: Int, after: String): BareConnection!
+	feed: [Post!]!
+	search(term: String!): [SearchResult!]!
+	node(id: ID!): Node
+	me: User!
+	thing(
+		int: Int
+		float: Float
+		string: String
+		nothing: String
+		bool: Boolean
+		kind: Kind
+		list: [Int!]
+		empty: [Int!]
+		object: Filter
+	): Post!
+}
+
+enum Kind {
+	Draft
+	Published
+}
+
+input Filter {
+	term: String
+	kinds: [Kind!]
+	limit: Int
+	nested: Filter
+}
+
+interface Node {
+	id: ID!
+}
+
+type User implements Node {
+	id: ID!
+	name: String!
+	pinned: [Post!]!
+}
+
+type Post implements Node {
+	id: ID!
+	title: String!
+	subtitle: String
+	body: String!
+	author: User!
+	comments: [Comment!]!
+}
+
+type Comment implements Node {
+	id: ID!
+	text: String!
+	author: User!
+}
+
+union SearchResult = Post | User
+
+type PostConnection {
+	edges: [PostEdge!]!
+	nodes: [Post!]!
+	pageInfo: PageInfo!
+}
+
+type FwdConnection {
+	edges: [PostEdge!]!
+	pageInfo: PageInfo!
+	first: Int
+	after: String
+}
+
+type BackConnection {
+	edges: [PostEdge!]!
+	pageInfo: PageInfo!
+	last: Int
+	before: String
+}
+
+type OffsetConnection {
+	edges: [PostEdge!]!
+	pageInfo: PageInfo!
+	offset: Int
+	limit: Int
+}
+
+type BareConnection {
+	edges: [BareEdge!]!
+	pageInfo: PageInfo!
+}
+
+type PostEdge {
+	cursor: String
+	node: Post!
+}
+
+type BareEdge {
+	node: Post!
+}
+
+type PageInfo {
+	endCursor: String
+	hasNextPage: Boolean!
+	hasPreviousPage: Boolean!
+	startCursor: String!
+}
+
+type Mutation {
+	createPost(input: PostInput!): CreatePostPayload
+	deletePost(id: ID!): DeletePostPayload
+}
+
+input PostInput {
+	title: String!
+	tags: [String!]
+}
+
+type CreatePostPayload {
+	post: Post
+}
+
+type DeletePostPayload {
+	post: Post
+}
+
+type Subscription {
+	postAdded: Post!
+}

@@ -1,0 +1,6 @@
+query Include($id: Int!, $showSprites: Boolean!) {
+	species(id: $id) {
+		id
+		...SpriteField @include(if: $showSprites)
+	}
+}

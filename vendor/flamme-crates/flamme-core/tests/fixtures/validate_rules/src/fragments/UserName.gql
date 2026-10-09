@@ -1,0 +1,3 @@
+fragment UserName on User {
+  name
+}

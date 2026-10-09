@@ -1,0 +1,8 @@
+query OptimisticKey @optimisticKey {
+  viewer {
+    id
+    ... on User @optimisticKey {
+      name
+    }
+  }
+}

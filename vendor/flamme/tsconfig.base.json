@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  // The one ambient declaration every project needs: `@flamme/router`'s `auto-shim-import` holds a
+  // literal `import('$flamme/auto-routes')` (a bundler only resolves a literal), and the specifier
+  // exists after codegen, not when `tsc` runs. `files` is inherited by every project that extends
+  // this config, so a package whose program reaches the router's sources through the path mappings
+  // below resolves the specifier too, instead of failing with TS2307.
+  "files": ["./router/src/auto-routes.d.ts"],
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    "resolveJsonModule": true,
+    "types": [],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "useUnknownInCatchVariables": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@flamme/core": ["./core/src/index.ts"],
+      "@flamme/runtime": ["./runtime/src/index.ts"],
+      "@flamme/vue": ["./vue/src/index.ts"],
+      "@flamme/effect/vue": ["./effect/src/vue/index.ts"],
+      "@flamme/effect": ["./effect/src/index.ts"],
+      "@flamme/vite": ["./vite/src/index.ts"],
+      "@flamme/cli": ["./cli/src/index.ts"],
+      "@flamme/router": ["./router/src/index.ts"],
+      "@flamme/router/auto": ["./router/src/auto.ts"],
+      "@flamme/router/codegen": ["./router/src/codegen.ts"],
+      "@flamme/local": ["./local/src/index.ts"],
+      "@flamme/local/vue": ["./local/src/vue.ts"]
+    }
+  }
+}

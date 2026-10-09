@@ -1,0 +1,3 @@
+subscription SubscriptionIntrospection {
+  __typename
+}

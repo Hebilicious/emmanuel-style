@@ -1,0 +1,14 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // `AbortSignal` crosses the adapter's public surface (the loader context and
+    // the `signal` option of `client.query`) and `vue`/`vue-router` declare
+    // web-platform types, so this package needs the DOM lib too (D12).
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    // The route generator is build-time code: it plans a page tree from disk and
+    // renders the generated module, so it reads `node:path` and the documents
+    // `@flamme/core` extracted (`research/routing-report.md`).
+    "types": ["node"]
+  },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}

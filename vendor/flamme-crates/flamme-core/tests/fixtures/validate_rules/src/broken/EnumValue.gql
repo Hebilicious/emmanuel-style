@@ -1,0 +1,5 @@
+query EnumValue {
+  speciesByRarity(rarity: NOPE) {
+    id
+  }
+}

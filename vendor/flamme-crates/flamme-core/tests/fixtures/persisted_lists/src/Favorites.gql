@@ -1,0 +1,6 @@
+query Favorites {
+  favorites(first: 10) @list(name: "Found", connection: false) {
+    id
+    name
+  }
+}

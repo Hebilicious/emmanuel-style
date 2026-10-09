@@ -1,0 +1,5 @@
+query BigInt {
+  searched(term: "a") @stream(initialCount: 99999999999) {
+    id
+  }
+}

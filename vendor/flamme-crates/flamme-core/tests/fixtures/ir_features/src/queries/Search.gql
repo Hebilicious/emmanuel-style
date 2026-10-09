@@ -1,0 +1,12 @@
+query Search($term: String!) {
+	search(term: $term) {
+		... on Post {
+			id
+			title
+		}
+		... on User {
+			id
+			name
+		}
+	}
+}

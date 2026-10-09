@@ -1,0 +1,24 @@
+{
+  "schemaPath": "./server/schema.graphql",
+  "url": "/graphql",
+  "include": [
+    "src/**/*.{gql,graphql,ts,vue}"
+  ],
+  "exclude": [
+    "server/schema.graphql"
+  ],
+  "scalars": {
+    "DateTime": {
+      "type": "Date",
+      "module": "./scalars"
+    },
+    "JSON": {
+      "type": "JsonValue",
+      "module": "./scalars",
+      "default": true
+    },
+    "Map": {
+      "type": "Map<string, unknown>"
+    }
+  }
+}

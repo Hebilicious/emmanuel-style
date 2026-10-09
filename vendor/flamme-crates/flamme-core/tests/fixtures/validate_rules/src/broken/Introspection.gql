@@ -1,0 +1,17 @@
+query Introspection {
+  __schema {
+    types {
+      fields {
+        type {
+          fields {
+            type {
+              fields {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

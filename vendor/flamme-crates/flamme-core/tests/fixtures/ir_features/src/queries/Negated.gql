@@ -1,0 +1,6 @@
+query Negated($withoutAuthor: Boolean!) {
+	feed {
+		id
+		...PostCard @skip(if: $withoutAuthor)
+	}
+}

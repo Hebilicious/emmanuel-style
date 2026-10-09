@@ -1,0 +1,6 @@
+query Embedded {
+  viewer {
+    id
+    ...PageInfoFields
+  }
+}
