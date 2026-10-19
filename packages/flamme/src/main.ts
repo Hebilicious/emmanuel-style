@@ -31,6 +31,7 @@ import "./styles/fonts.css"
 import "./styles/cssforge.css"
 import "./styles/global.css"
 import "./styles/shell.css"
+import "./styles/turns.css"
 
 const start = async (): Promise<void> => {
 	const flamme = createSiteClient()

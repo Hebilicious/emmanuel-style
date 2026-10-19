@@ -190,7 +190,7 @@ a {
 }
 
 /*
- * The pointer is off by default.
+ * The pointer, once the reader turned it off (`mouse off`).
  *
  * It is not hidden: a hidden cursor looks like a broken page. It is replaced by a
  * dot with a slash, which reads as "the pointer is disabled here" and still says

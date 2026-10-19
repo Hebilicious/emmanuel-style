@@ -60,6 +60,16 @@ declare module '*/Post.graphql' {
 	export default document
 }
 
+declare module '*/Project.gql' {
+	const document: typeof import('./artifacts/Project')['default']
+	export default document
+}
+
+declare module '*/Project.graphql' {
+	const document: typeof import('./artifacts/Project')['default']
+	export default document
+}
+
 declare module '*/SiteIndex.gql' {
 	const document: typeof import('./artifacts/SiteIndex')['default']
 	export default document

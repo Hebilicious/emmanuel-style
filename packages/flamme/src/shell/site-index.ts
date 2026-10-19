@@ -1,6 +1,6 @@
 /**
  * The site as the prompt and the WebMCP tools see it: the articles with their
- * text, the repositories, the roles.
+ * text, the projects, the roles.
  *
  * Read through Flamme like every other piece of content, from one document both
  * share, so the store behind it is shared too.
@@ -21,14 +21,15 @@ export const useSiteIndex = (): ComputedRef<TerminalIndex> => {
 			tags: post.tags,
 			body: (post.blocks ?? []).map((block) => block.text).filter((text) => text !== "")
 		})),
-		repositories: (data.value?.shelves ?? []).flatMap((shelf) =>
-			(shelf.repositories ?? []).map((repo) => ({
-				name: repo.name,
-				description: repo.description,
-				language: repo.language,
-				url: repo.url,
-				homepage: repo.homepage,
-				archived: repo.archived,
+		projects: (data.value?.shelves ?? []).flatMap((shelf) =>
+			(shelf.projects ?? []).map((project) => ({
+				name: project.name,
+				title: project.title,
+				tagline: project.tagline,
+				language: project.language,
+				url: project.url,
+				homepage: project.homepage,
+				archived: project.archived,
 				shelf: shelf.label
 			}))
 		),

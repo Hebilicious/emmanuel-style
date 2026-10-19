@@ -10,7 +10,7 @@
  * the citation sits on.
  */
 import { computed, watch } from "vue"
-import { RouterLink } from "vue-router"
+import { RouterLink, useRoute, useRouter } from "vue-router"
 import { usePageQuery } from "$flamme/records/blog__slug_"
 import FavouriteButton from "../../components/FavouriteButton.vue"
 import Pager from "../../components/Pager.vue"
@@ -21,6 +21,8 @@ import { formatDate, readingTime } from "../../utils/format.js"
 
 const { data } = usePageQuery()
 const shell = useShell()
+const route = useRoute()
+const router = useRouter()
 const post = computed(() => data.value?.post ?? null)
 
 /*
@@ -75,7 +77,6 @@ watch(
 	{ immediate: true }
 )
 
-/** A plate opens full screen, so a painting too small to read in a column can be looked at. */
 /**
  * A plate's number, handed to its caption's `::before` as a CSS string. Kept out of the
  * template: an inline object with a quoted key is rewritten by the formatter into
@@ -84,16 +85,59 @@ watch(
 const figureStyle = (item: ArticleItem) =>
 	item.figure === null ? undefined : { "--figure-number": `'${item.figure}'` }
 
-const zoom = (event: MouseEvent) => {
-	const plate = (event.target as Element | null)?.closest("figure.Plate")
-	const image = plate?.querySelector("img")
-	if (!plate || !image) return
-	shell.dialog = {
-		kind: "zoom",
-		src: image.getAttribute("src") ?? "",
-		caption: plate.querySelector("figcaption")?.textContent?.trim() ?? ""
-	}
+/*
+ * A plate opens full screen, so a painting too small to read in a column can be
+ * looked at. The open plate is in the address, `?figure=2`: a link opens the article
+ * with it open, and the back button closes it, the way it closes any page.
+ */
+const figures = computed(() =>
+	blocks.value.filter((block) => block.kind === "figure")
+)
+/** Whether this visit pushed the open figure, so closing it can step back rather than add an entry. */
+let pushed = false
+
+const zoom = (figure: number) => {
+	pushed = true
+	void router.push({ query: { ...route.query, figure: String(figure) } })
 }
+
+watch(
+	() => [route.query["figure"], figures.value] as const,
+	([value]) => {
+		const number = Number(value)
+		const block = Number.isInteger(number)
+			? figures.value[number - 1]
+			: undefined
+		if (block?.image) {
+			shell.dialog = {
+				kind: "zoom",
+				src: block.image,
+				caption: block.caption ?? ""
+			}
+		} else if (shell.dialog?.kind === "zoom") {
+			shell.dialog = null
+		}
+	},
+	{ immediate: true }
+)
+
+watch(
+	() => shell.dialog,
+	(dialog, previous) => {
+		if (
+			dialog !== null ||
+			previous?.kind !== "zoom" ||
+			route.query["figure"] === undefined
+		)
+			return
+		if (pushed) {
+			pushed = false
+			router.back()
+		} else {
+			void router.replace({ query: { ...route.query, figure: undefined } })
+		}
+	}
+)
 </script>
 
 <template>
@@ -132,7 +176,7 @@ const zoom = (event: MouseEvent) => {
           	{ "is-lede": item.lede }
           ]'
           :style="figureStyle(item)"
-          @click='item.block.kind === "figure" ? zoom($event) : undefined'
+          @click="item.figure !== null ? zoom(item.figure) : undefined"
           v-html="item.block.html">
         </div>
       </template>

@@ -89,7 +89,10 @@ const shortDate = computed(() =>
             class="Bracket"
             aria-hidden="true">]</span><sup class="Keys" aria-hidden="true">{{
             item.key
-          }}</sup>
+          }}</sup><span
+            v-if="item.label === section.label"
+            class="Underline"
+            aria-hidden="true"></span>
         </RouterLink>
       </nav>
       <p class="Folio">
@@ -137,6 +140,8 @@ const shortDate = computed(() =>
  * the letters were cut off by the row above.
  */
 .Plate {
+  /* Its own group in a turn, so the masthead changes while the leaves do (`turns.css`). */
+  view-transition-name: plate;
   margin: 0;
   padding-block: 0.08em 0.02em;
   font-size: var(--typography_fluid-display-font-size-display-s);
@@ -161,11 +166,25 @@ const shortDate = computed(() =>
 }
 
 .Section {
+  position: relative;
   display: inline-flex;
   align-items: baseline;
   color: var(--muted);
   white-space: nowrap;
   transition: color 120ms linear;
+}
+
+/*
+ * A rule under the current section. It is one element under whichever link is
+ * current, named for the transitions, so a turn to another section slides it there.
+ */
+.Underline {
+  view-transition-name: section-mark;
+  position: absolute;
+  inset-inline: 0;
+  bottom: -0.3em;
+  height: var(--spacing-size-rule);
+  background: var(--accent);
 }
 
 /* The brackets mark the current section, the way a shell marks the current item. */

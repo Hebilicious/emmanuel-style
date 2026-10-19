@@ -15,10 +15,17 @@
  * `favourites`, `toggleFavourite` and `stars` are the worker's, and `transport.ts`
  * routes those over HTTP instead.
  */
-import type { FieldSpec, SubscriptionSelection, TransportRequest, TransportResponse } from "@flamme/runtime"
+import type {
+	FieldSpec,
+	SubscriptionSelection,
+	TransportRequest,
+	TransportResponse
+} from "@flamme/runtime"
 import {
 	postBySlug,
 	posts as allPosts,
+	projectByName,
+	projects as allProjects,
 	roles as allRoles,
 	schools as allSchools,
 	shelves as allShelves,
@@ -55,7 +62,10 @@ const argOf = (
 		if (colon === -1) continue
 		const key = part.slice(0, colon).trim()
 		if (key !== name) continue
-		const bare = part.slice(colon + 1).trim().replace(/^"|"$/g, "")
+		const bare = part
+			.slice(colon + 1)
+			.trim()
+			.replace(/^"|"$/g, "")
 		return bare.startsWith("$") ? variables[bare.slice(1)] : bare
 	}
 	return undefined
@@ -135,6 +145,12 @@ const resolveRoot = (
 				break
 			case "Shelf":
 				value = allShelves
+				break
+			case "Project":
+				value =
+					fieldName(field) === "project"
+						? projectByName(String(argOf(field, variables, "name") ?? ""))
+						: allProjects
 				break
 			case "Post":
 				// `post` takes a slug, `posts` is the list; the field's own name tells them

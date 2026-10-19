@@ -3,30 +3,17 @@
  *
  * The shell is one screen, and several parts of it answer the same keys or show
  * the same facts: the dock reports the page the pager is on, the keyboard turns
- * whichever pager the route rendered, a library entry opens the card the layout
- * owns. Rather than wiring those through events on `document`, the layout creates
+ * whichever pager the route rendered, a figure opens over the page in the dialog
+ * the layout owns. Rather than wiring those through events on `document`, the layout creates
  * one reactive object and provides it, and every part reads and writes it.
  *
  * It is created per app, in the layout's `setup`, never at module scope.
  */
 import { type InjectionKey, inject, reactive } from "vue"
 
-/** A repository as the card shows it. */
-export interface RepoCard {
-	readonly name: string
-	readonly description: string
-	readonly language: string
-	readonly url: string
-	readonly homepage: string | null
-	readonly archived: boolean
-	readonly shelf: string
-	readonly stars: number | null
-}
-
 /** The one dialog that can be open at a time. */
 export type Dialog =
 	| { readonly kind: "gate" }
-	| { readonly kind: "repo"; readonly repo: RepoCard }
 	| { readonly kind: "zoom"; readonly src: string; readonly caption: string }
 
 /** What a pager registers so the keyboard and the dock can turn it. */
@@ -56,13 +43,21 @@ export interface Shell {
 	dialog: Dialog | null
 	/** The pager of the current route, or the front page's quote stepper. */
 	turner: Turner | null
+	/**
+	 * Counts the first layouts of pagers. A route's turn waits for it to move, so the
+	 * new page is captured laid out rather than empty.
+	 */
+	layouts: number
 }
 
 const SHELL_KEY: InjectionKey<Shell> = Symbol("shell")
 
 /** The key `@vueuse/core` wrote in the previous build, so a returning reader keeps their theme. */
 export const THEME_KEY = "vueuse-color-scheme"
-/** Per session, as the previous build did: the mouse comes back for this visit only. */
+/**
+ * Per session: the mouse is on unless the reader turned it off for this visit
+ * (`mouse off` at the prompt, or "No" at the gate).
+ */
 export const MOUSE_KEY = "mouse-navigation"
 
 const readTheme = (): Theme =>
@@ -72,9 +67,9 @@ const readTheme = (): Theme =>
 
 const readMouse = (): boolean => {
 	try {
-		return sessionStorage.getItem(MOUSE_KEY) === "on"
+		return sessionStorage.getItem(MOUSE_KEY) !== "off"
 	} catch {
-		return false
+		return true
 	}
 }
 
@@ -88,7 +83,8 @@ export const createShell = (): Shell =>
 		online: typeof navigator === "undefined" ? true : navigator.onLine,
 		theme: readTheme(),
 		dialog: null,
-		turner: null
+		turner: null,
+		layouts: 0
 	})
 
 export const SHELL = SHELL_KEY

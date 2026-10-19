@@ -5,8 +5,9 @@
  * Drawn in HTML rather than SVG. An SVG scales its text with its width, so on a
  * phone the labels came out at five pixels; here the labels are text in the
  * page's own face and only the bars are positioned, as percentages of the axis,
- * so the chart reads at any width. On a wide screen the company sits to the left
- * of its bar; on a phone it sits above it.
+ * so the chart reads at any width. Where the chart is wide the company sits to the
+ * left of its bar; where it is narrow, above it. "Wide" is the chart's own width
+ * (a container query), not the screen's: on a spread it has one page of two.
  *
  * Drawn from the roles the page already has, so there is no second request and no
  * second source of truth.
@@ -147,7 +148,9 @@ const rows = computed(() =>
 
 <style scoped>
 .Chart {
-  --label-width: clamp(9rem, 16vw, 15rem);
+  container: chart / inline-size;
+  /* Resolved where it is used, inside the chart, so `cqi` is the chart's width. */
+  --label-width: clamp(8rem, 28cqi, 15rem);
   display: flex;
   flex-direction: column;
   gap: var(--spacing_fluid-tight-space-tight-l);
@@ -301,20 +304,32 @@ const rows = computed(() =>
   white-space: nowrap;
 }
 
+/* A container query cannot style the container, so the chart's own padding follows the screen. */
 @media (max-width: 40rem) {
   .Chart {
-    --label-width: 0px;
     padding: var(--spacing_fluid-tight-space-tight-m);
   }
+}
 
-  /* A phone has room for a label every other year, in two digits. */
-  .Year .Full,
-  .Year.Odd {
+/* A chart of one page's width has room for the years in two digits. */
+@container chart (max-width: 56rem) {
+  .Year .Full {
     display: none;
   }
 
   .Year .Abbr {
     display: inline;
+  }
+}
+
+@container chart (max-width: 34rem) {
+  .Chart {
+    --label-width: 0px;
+  }
+
+  /* A phone has room for a label every other year. */
+  .Year.Odd {
+    display: none;
   }
 
   .Row {

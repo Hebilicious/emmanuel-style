@@ -1,12 +1,13 @@
 /**
- * The mouse gate, and what a click on a link does.
+ * The mouse, and what a click on a link does.
  *
- * The mouse is off by default: the site is read with the keyboard, so a mouse
- * click does not follow a link or open a row. Two clicks in a row, anywhere, ask
- * once whether the reader wants the mouse back; saying yes turns it on for the
- * rest of the visit. The anchors keep their `href`s, so search engines, screen
- * readers and "copy link" still see real links: the gate refuses the click, it
- * does not take the link away.
+ * The mouse is on: hovering a row puts the reading cursor on it, so the pointer
+ * draws the same highlight the keyboard does and the status row names what a click
+ * would open. A reader who wants the keyboard alone turns it off (`mouse off` at
+ * the prompt); then a mouse click does not follow a link or open a row, and two
+ * clicks in a row ask once whether to have it back. The anchors keep their
+ * `href`s either way, so search engines, screen readers and "copy link" still see
+ * real links: the gate refuses the click, it does not take the link away.
  *
  * Only a mouse (or a pen) is gated. A touch screen is not a mouse, and a phone has
  * no keyboard to fall back on, so a tap always works. A click the keyboard caused
@@ -19,6 +20,7 @@
  */
 import { onBeforeUnmount, onMounted } from "vue"
 import type { Router } from "vue-router"
+import { describe, placeCursor, rowOf } from "./cursor.js"
 import type { Shell } from "./shell.js"
 
 /** Two clicks this close together ask the question. */
@@ -47,6 +49,19 @@ export const usePointer = (
 
 	const onPointerDown = (event: PointerEvent) => {
 		lastPointer = event.pointerType
+	}
+
+	/** The row under the mouse takes the cursor, without taking the focus. */
+	let hovered: Element | null = null
+	const onPointerOver = (event: PointerEvent) => {
+		if (!shell.mouse || event.pointerType === "touch" || shell.dialog !== null) return
+		const target = event.target instanceof Element ? event.target : null
+		if (target === null || target === hovered) return
+		hovered = target
+		const row = rowOf(target)
+		if (row === undefined || row.element.hasAttribute("data-cursor")) return
+		placeCursor(row, { focus: false })
+		shell.focus = describe(row.element)
 	}
 
 	/** The kind of input behind a click: `mouse`, `pen`, `touch`, or `""` for the keyboard. */
@@ -119,6 +134,7 @@ export const usePointer = (
 
 	onMounted(() => {
 		document.addEventListener("pointerdown", onPointerDown, { capture: true })
+		document.addEventListener("pointerover", onPointerOver)
 		document.addEventListener("click", onGate, { capture: true })
 		document.addEventListener("click", onLink)
 		document.body.classList.toggle("mouse-enabled", shell.mouse)
@@ -126,6 +142,7 @@ export const usePointer = (
 
 	onBeforeUnmount(() => {
 		document.removeEventListener("pointerdown", onPointerDown, { capture: true })
+		document.removeEventListener("pointerover", onPointerOver)
 		document.removeEventListener("click", onGate, { capture: true })
 		document.removeEventListener("click", onLink)
 	})
