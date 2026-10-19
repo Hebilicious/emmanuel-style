@@ -12,14 +12,22 @@
  *
  * The manifest is read ONLY during install. Reading it per request was the bug that
  * made the whole site unreachable offline: the fetch failed, the handler rejected,
- * and a rejected `respondWith` is a network error rather than a cache miss. The cache
- * name is fixed instead, and a build replaces its contents.
+ * and a rejected `respondWith` is a network error rather than a cache miss.
+ *
+ * The cache is named after the build. `scripts/build.ts` writes a hash of every
+ * precached file over `__BUILD__` below, so each build ships a worker that differs
+ * by at least that line. That difference is what makes the browser install the new
+ * worker at all: with one fixed name and a byte-identical `sw.js`, a returning
+ * reader was never offered the new build and kept the old HTML and chunks forever.
+ * The activate step then deletes every other build's cache.
  */
 
 const MANIFEST = "/precache-manifest.json"
 
-/** One stable name, so no request ever has to read the manifest to find the cache. */
-const CACHE = "emmanuel-shell"
+/** The build this worker belongs to; written by `scripts/build.ts`. */
+const VERSION = "__BUILD__"
+
+const CACHE = `emmanuel-${VERSION}`
 
 self.addEventListener("install", (event) => {
 	event.waitUntil(
@@ -27,11 +35,6 @@ self.addEventListener("install", (event) => {
 			const response = await fetch(MANIFEST, { cache: "no-store" })
 			const manifest = await response.json()
 			const cache = await caches.open(CACHE)
-
-			// A stale entry from the previous build would be served for a chunk that no
-			// longer exists, so the cache is rebuilt rather than added to.
-			const existing = await cache.keys()
-			await Promise.all(existing.map((request) => cache.delete(request)))
 
 			// `addAll` is all-or-nothing and one 404 would leave the worker with no cache
 			// at all, so each entry is added on its own and a failure is skipped.
@@ -78,9 +81,7 @@ self.addEventListener("fetch", (event) => {
 				 */
 				const path = url.pathname.replace(/\/+$/, "")
 				const candidates =
-					path === ""
-						? ["/index.html"]
-						: [`${path}/index.html`, `${path}.html`, path, `${path}/`]
+					path === "" ? ["/index.html"] : [`${path}/index.html`, `${path}.html`, path, `${path}/`]
 
 				for (const candidate of candidates) {
 					const hit = await cache.match(candidate)
