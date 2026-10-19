@@ -20,6 +20,6 @@
 		}
 	],
 	"vars": {
-		"ALLOWED_ORIGINS": "https://emmanuel.style,http://localhost:4321,http://localhost:4400"
+		"ALLOWED_ORIGINS": "https://emmanuel.style,http://localhost:4321,http://localhost:4399,http://localhost:4400"
 	}
 }
