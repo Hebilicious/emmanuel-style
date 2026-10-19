@@ -9,12 +9,14 @@
  * and always listed with a monospace fallback.
  *
  * The files live in `public/fonts` and are served from `/fonts`, so the URLs are
- * stable and the service worker can precache them by path.
+ * stable and the service worker can precache them by path. They are WOFF2 cuts of
+ * the sources in `assets/fonts`, made by `scripts/fonts.ts`: Nabla is subset to
+ * Latin, which takes it from 1.6 MB to about 50 KB.
  */
 
 @font-face {
   font-family: "Nabla";
-  src: url("/fonts/Nabla[EDPT,EHLT].ttf") format("truetype") tech(color-COLRv1);
+  src: url("/fonts/Nabla.woff2") format("woff2") tech(color-COLRv1);
   font-display: swap;
   font-weight: 400 700;
   font-style: normal;
@@ -22,7 +24,7 @@
 
 @font-face {
   font-family: "Monaspace Argon";
-  src: url("/fonts/MonaspaceArgon-Regular.otf") format("opentype");
+  src: url("/fonts/MonaspaceArgon-Regular.woff2") format("woff2");
   font-display: swap;
   font-weight: 400;
   font-style: normal;
@@ -30,7 +32,7 @@
 
 @font-face {
   font-family: "Monaspace Argon";
-  src: url("/fonts/MonaspaceArgon-Medium.otf") format("opentype");
+  src: url("/fonts/MonaspaceArgon-Medium.woff2") format("woff2");
   font-display: swap;
   font-weight: 500;
   font-style: normal;
@@ -38,7 +40,7 @@
 
 @font-face {
   font-family: "Monaspace Argon";
-  src: url("/fonts/MonaspaceArgon-Bold.otf") format("opentype");
+  src: url("/fonts/MonaspaceArgon-Bold.woff2") format("woff2");
   font-display: swap;
   font-weight: 700;
   font-style: normal;
@@ -47,4 +49,54 @@
 :root {
   --font-nabla: "Nabla", "Monaspace Argon", monospace;
   --font-monaspace: "Monaspace Argon", ui-monospace, monospace;
+}
+
+/*
+ * Nabla's colours, in the theme's inks.
+ *
+ * Nabla is a COLRv1 font: every glyph is drawn from a ten-entry palette (the face
+ * in 0, 4 and 6, its lit side in 5 and 7, the extrusion in 1 to 3, the highlights
+ * in 8 and 9), and its default palette is yellow. `override-colors` replaces those
+ * entries, so the letters are drawn in the site's own neutrals rather than in
+ * yellow corrected afterwards by a filter. That also works where a filter cannot
+ * reach, such as a drop cap's `::first-letter`.
+ *
+ * The values are the sRGB forms of the cssforge ramps (`neutral`, `aqua`, `rose`):
+ * a descriptor takes no custom properties, so they are written out. In the dark
+ * theme the face is the lightest ink and the extrusion falls into the paper; in
+ * the light theme it is the reverse, the face printed dark on a pale relief.
+ */
+@font-palette-values --nabla-ink-dark {
+  font-family: "Nabla";
+  base-palette: 0;
+  override-colors: 0 #dbd8d1, 1 #35322e, 2 #6a665e, 3 #4c4943, 4 #dbd8d1, 5 #eceae5, 6 #dbd8d1, 7 #eceae5, 8 #f7f6f3, 9 #ffffff;
+}
+
+@font-palette-values --nabla-ink-light {
+  font-family: "Nabla";
+  base-palette: 0;
+  override-colors: 0 #35322e, 1 #b8b4ab, 2 #6a665e, 3 #8d897f, 4 #35322e, 5 #22201d, 6 #35322e, 7 #22201d, 8 #151412, 9 #0a0a09;
+}
+
+/* The accent: aqua at night, rose by day, as `--accent` is. */
+@font-palette-values --nabla-accent-dark {
+  font-family: "Nabla";
+  base-palette: 0;
+  override-colors: 0 #59cccc, 1 #023536, 2 #076b6c, 3 #045050, 4 #59cccc, 5 #6ce8e8, 6 #59cccc, 7 #6ce8e8, 8 #87ffff, 9 #ffffff;
+}
+
+@font-palette-values --nabla-accent-light {
+  font-family: "Nabla";
+  base-palette: 0;
+  override-colors: 0 #6b2f3a, 1 #f09ca8, 2 #ad606c, 3 #d17b88, 4 #6b2f3a, 5 #4e1924, 6 #6b2f3a, 7 #4e1924, 8 #320510, 9 #160004;
+}
+
+.DarkTheme {
+  --nabla-ink: --nabla-ink-dark;
+  --nabla-accent: --nabla-accent-dark;
+}
+
+.LightTheme {
+  --nabla-ink: --nabla-ink-light;
+  --nabla-accent: --nabla-accent-light;
 }
