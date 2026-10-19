@@ -4,25 +4,34 @@ export * from './runtime/index'
 
 export { default as Blog } from './artifacts/Blog'
 export type { Blog$result, Blog$input, Blog$unmasked, Blog$artifact } from './artifacts/Blog'
-export { default as Chrome } from './artifacts/Chrome'
-export type { Chrome$result, Chrome$input, Chrome$unmasked, Chrome$artifact } from './artifacts/Chrome'
 export { default as Experience } from './artifacts/Experience'
 export type { Experience$result, Experience$input, Experience$unmasked, Experience$artifact } from './artifacts/Experience'
+export { default as Favourite } from './artifacts/Favourite'
+export type { Favourite$result, Favourite$input, Favourite$unmasked, Favourite$artifact } from './artifacts/Favourite'
 export { default as Home } from './artifacts/Home'
 export type { Home$result, Home$input, Home$unmasked, Home$artifact } from './artifacts/Home'
 export { default as Library } from './artifacts/Library'
 export type { Library$result, Library$input, Library$unmasked, Library$artifact } from './artifacts/Library'
 export { default as Post } from './artifacts/Post'
 export type { Post$result, Post$input, Post$unmasked, Post$artifact } from './artifacts/Post'
+export { default as SiteIndex } from './artifacts/SiteIndex'
+export type { SiteIndex$result, SiteIndex$input, SiteIndex$unmasked, SiteIndex$artifact } from './artifacts/SiteIndex'
+export { default as Stars } from './artifacts/Stars'
+export type { Stars$result, Stars$input, Stars$unmasked, Stars$artifact } from './artifacts/Stars'
+export { default as ToggleFavourite } from './artifacts/ToggleFavourite'
+export type { ToggleFavourite$result, ToggleFavourite$input, ToggleFavourite$unmasked, ToggleFavourite$artifact } from './artifacts/ToggleFavourite'
 
 /** Typed `graphql()`: a keyed lookup, not an overload table. */
 export interface DocumentMap {
-  "query Blog {\n\tsite {\n\t\tname\n\t\tdate\n\t}\n\tposts {\n\t\tslug\n\t\ttitle\n\t\tdescription\n\t\tdate\n\t\ttags\n\t}\n}\n": typeof import('./artifacts/Blog').default
-  "query Chrome {\n\tsite {\n\t\tname\n\t\ttagline\n\t\tdate\n\t}\n}\n": typeof import('./artifacts/Chrome').default
+  "# The blog index: every article, newest first, with what its entry shows: the\n# plate it opens with, and enough of its text to say how long it is to read.\nquery Blog {\n\tposts {\n\t\tslug\n\t\ttitle\n\t\tdescription\n\t\tdate\n\t\ttags\n\t\tblocks {\n\t\t\tid\n\t\t\tkind\n\t\t\ttext\n\t\t\timage\n\t\t\tcaption\n\t\t}\n\t}\n}\n": typeof import('./artifacts/Blog').default
   "query Experience {\n\troles {\n\t\tid\n\t\ttitle\n\t\tcompany\n\t\tlocation\n\t\tstart\n\t\tend\n\t\tsummary\n\t\thighlights\n\t\tstack\n\t}\n\tschools {\n\t\tid\n\t\tqualification\n\t\tschool\n\t\tlocation\n\t\tstart\n\t\tend\n\t\tsummary\n\t}\n}\n": typeof import('./artifacts/Experience').default
-  "query Home {\n\tsite {\n\t\tname\n\t\ttagline\n\t\tdate\n\t}\n}\n": typeof import('./artifacts/Home').default
-  "query Library {\n\tshelves {\n\t\tslug\n\t\tlabel\n\t\trepositories {\n\t\t\tname\n\t\t\tdescription\n\t\t\tlanguage\n\t\t\turl\n\t\t\thomepage\n\t\t\tarchived\n\t\t\tcategory\n\t\t\tstars\n\t\t}\n\t}\n}\n": typeof import('./artifacts/Library').default
+  "# One article's favourite count, read from the worker.\nquery Favourite($slug: String!) {\n\tfavourites(slug: $slug) {\n\t\tslug\n\t\tcount\n\t}\n}\n": typeof import('./artifacts/Favourite').default
+  "# The front page: the site's facts, and the latest dispatch with its plate.\nquery Home {\n\tsite {\n\t\tname\n\t\ttagline\n\t}\n\tposts {\n\t\tslug\n\t\ttitle\n\t\tdescription\n\t\tdate\n\t\ttags\n\t\tblocks {\n\t\t\tid\n\t\t\tkind\n\t\t\timage\n\t\t\tcaption\n\t\t}\n\t}\n}\n": typeof import('./artifacts/Home').default
+  "query Library {\n\tshelves {\n\t\tslug\n\t\tlabel\n\t\trepositories {\n\t\t\tname\n\t\t\tdescription\n\t\t\tlanguage\n\t\t\turl\n\t\t\thomepage\n\t\t\tarchived\n\t\t\tcategory\n\t\t}\n\t}\n}\n": typeof import('./artifacts/Library').default
   "query Post($slug: String!) {\n\tpost(slug: $slug) {\n\t\tslug\n\t\ttitle\n\t\tdescription\n\t\tdate\n\t\ttags\n\t\tblocks {\n\t\t\tid\n\t\t\tkind\n\t\t\tdepth\n\t\t\thtml\n\t\t\ttext\n\t\t\tnoteIds\n\t\t\timage\n\t\t\tcaption\n\t\t}\n\t\tnotes {\n\t\t\tid\n\t\t\tnumber\n\t\t\thtml\n\t\t\ttext\n\t\t}\n\t}\n}\n": typeof import('./artifacts/Post').default
+  "# Everything the prompt and the WebMCP tools can name: the articles with their\n# text, the repositories and the roles. It is the layout's document, so every\n# route's loader composes it and the prompt has its index before the first paint.\n# All of it is content, answered from the bundle, so the prompt works offline.\nquery SiteIndex {\n\tposts {\n\t\tslug\n\t\ttitle\n\t\tdescription\n\t\tdate\n\t\ttags\n\t\tblocks {\n\t\t\tid\n\t\t\ttext\n\t\t}\n\t}\n\tshelves {\n\t\tslug\n\t\tlabel\n\t\trepositories {\n\t\t\tname\n\t\t\tdescription\n\t\t\tlanguage\n\t\t\turl\n\t\t\thomepage\n\t\t\tarchived\n\t\t}\n\t}\n\troles {\n\t\tid\n\t\ttitle\n\t\tcompany\n\t\tstart\n\t\tend\n\t\tsummary\n\t}\n}\n": typeof import('./artifacts/SiteIndex').default
+  "# The star counts of the Library's repositories. The worker owns this field and\n# caches GitHub's answer, so the transport sends it over HTTP; with the network off\n# the durable cache answers with the last counts it saw.\nquery Stars($names: [String!]!) {\n\tstars(names: $names) {\n\t\tname\n\t\tstars\n\t}\n}\n": typeof import('./artifacts/Stars').default
+  "# Favourite an article for this reader, or take it back. The worker keys the toggle\n# on the `x-reader-id` header, so a replay from the local queue lands on the same\n# state instead of counting twice.\nmutation ToggleFavourite($slug: String!) {\n\ttoggleFavourite(slug: $slug) {\n\t\tslug\n\t\tcount\n\t}\n}\n": typeof import('./artifacts/ToggleFavourite').default
 }
 
 /**
