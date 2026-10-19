@@ -28,10 +28,13 @@
 		"**/dist",
 		"**/.astro",
 		"**/.cssforge",
+		"**/.flamme",
+		"**/.content",
 		"**/.wrangler",
 		"**/generated/*.d.ts",
 		"**/worker-configuration.d.ts",
 		".playwright-cli",
+		".agents/skills/gh-stack/**",
 		"pnpm-workspace.yaml",
 		"pnpm-lock.yaml"
 	],
