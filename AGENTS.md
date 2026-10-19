@@ -23,13 +23,14 @@ the current work.
 - Every handoff message includes the clickable URL of the task's pull request, or of every pull request in its stack,
   each time, including handoffs after a review correction. Copy the URL from `gh pr view --json url` or `gh stack view`
   rather than retyping it.
-- Every handoff also includes the URL of a dev server started from the task's worktree and serving the commit being
-  handed off, each time: the Flamme site with `pnpm exec vite dev --port <port>` in `packages/flamme`, and the worker
-  with `pnpm dev --port 8787` in `packages/api` when the change reads it. A server started from the main checkout or
-  from another worktree does not count. Use port 4399 for the site unless another worktree holds it, then the next free
-  one, and say which. Restart the servers after a rebase or any other history rewrite in the worktree: they reload the
-  intermediate states the rewrite passes through and can keep an old one. Open it and check the change there before
-  handing off; a handoff without it is incomplete.
+- Every handoff also includes the URL of one dev server, the site's, started from the task's worktree with
+  `pnpm exec vite dev --port <port>` in `packages/flamme` and serving the commit being handed off, each time. That URL
+  is the only server a handoff names: the worker (`pnpm dev --port 8787` in `packages/api`, from the same worktree)
+  runs behind it when the change reads favourites or stars, and no built preview is needed. A server started from the
+  main checkout or from another worktree does not count. Use port 4399 unless another worktree holds it, then the next
+  free one. Restart the servers after a rebase or any other history rewrite in the worktree: they reload the
+  intermediate states the rewrite passes through and can keep an old one. Open the dev server and check the change there
+  before handing off; a handoff without it is incomplete.
 - Restart the dev server after a file under `packages/flamme/src/pages` changes, by an edit or by the pre-commit hook's
   formatting: until Hebilicious/flamme#28 is fixed, such a change empties `.flamme/records/` and drops every route's
   loader. `ls .flamme/records` lists one module per page when the tree is whole.
