@@ -7,7 +7,7 @@
  * exactly as before.
  *
  * The tools mirror the prompt, because the prompt is already the site's real
- * interface: open a section, find and open an article, list the repositories,
+ * interface: open a section, find and open an article, list and open the projects,
  * turn the page, set the theme.
  */
 import type { Router } from "vue-router"
@@ -143,15 +143,33 @@ export const registerWebMcp = (shell: Shell, router: Router, index: () => Termin
 			}
 		},
 		{
-			name: "list_repositories",
-			description: "List the open source repositories shown in the Library.",
+			name: "list_projects",
+			description:
+				"List the projects in the Library, shelf by shelf, with their names and one line each.",
 			inputSchema: { type: "object", properties: {} },
 			execute: () =>
 				text(
 					index()
-						.repositories.map((repo) => `${repo.name}  ${repo.shelf}  ${repo.url}`)
+						.projects.map((project) => `${project.name}  ${project.shelf}  ${project.tagline}`)
 						.join("\n")
 				)
+		},
+		{
+			name: "open_project",
+			description: "Open a project's page in the Library by its name, as list_projects prints it.",
+			inputSchema: {
+				type: "object",
+				properties: { name: { type: "string", description: "The project's name." } },
+				required: ["name"]
+			},
+			execute: async (args) => {
+				const project = index().projects.find(
+					(candidate) => candidate.name === String(args["name"])
+				)
+				if (project === undefined) return text(`No project named "${String(args["name"])}".`)
+				await router.push(`/library/${project.name}`)
+				return text(`Opened ${project.title}`)
+			}
 		},
 		{
 			name: "turn_page",

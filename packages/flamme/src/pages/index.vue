@@ -65,7 +65,8 @@ const sections = [
 		href: "/library",
 		label: "library",
 		key: "l",
-		blurb: "Open source modules, tools and templates, listed by shelf."
+		blurb:
+			"The work: projects, Nuxt modules, tools, and what was merged upstream."
 	},
 	{
 		href: "/blog",
@@ -235,9 +236,9 @@ const items = computed<PagerItem[]>(() => [
             }}</span>
         </p>
         <!--
-          Every quote is laid out in the same cell and only the current one is shown,
-          so the block is as tall as the longest quote and does not change height (and
-          re-paginate the page) every eight seconds.
+          Every quote is laid out in the same box and only the current one is shown,
+          so the block does not change height (and re-paginate the page) every eight
+          seconds.
         -->
         <div class="Stack">
           <blockquote
@@ -406,8 +407,9 @@ const items = computed<PagerItem[]>(() => [
 .Quote {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing_fluid-tight-space-tight-l);
-  padding: var(--spacing_fluid-flow-space-s);
+  gap: var(--spacing_fluid-tight-space-tight-m);
+  padding: var(--spacing_fluid-tight-space-tight-l)
+    var(--spacing_fluid-flow-space-s);
   border: var(--spacing-size-hairline) solid var(--rule);
   border-left: var(--spacing-size-rule) solid var(--accent);
   background: var(--surface);
@@ -418,10 +420,18 @@ const items = computed<PagerItem[]>(() => [
   font-variant-numeric: tabular-nums;
 }
 
+/*
+ * The quote shares the left-hand page with the identity, and takes what is left of
+ * it. The quotes are out of the flow, so the block is measured at its smallest and
+ * the pager does not push it, and the whole front page, onto a second spread on a
+ * short screen; then it grows into the column, and the words are set to the room
+ * they get (`cqh` is the height of the stack, `cqi` its width).
+ */
 .Stack {
-  display: grid;
+  position: relative;
   flex: 1 1 auto;
-  align-content: center;
+  min-height: 7.5rem;
+  container-type: size;
 }
 
 .Next {
@@ -448,7 +458,8 @@ const items = computed<PagerItem[]>(() => [
 }
 
 .Words {
-  grid-area: 1 / 1;
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -472,7 +483,11 @@ const items = computed<PagerItem[]>(() => [
 
 .Text {
   color: var(--ink);
-  font-size: var(--typography_fluid-content-font-size-2xl);
+  font-size: clamp(
+    1rem,
+    min(5.6cqi, 12cqh),
+    var(--typography_fluid-content-font-size-2xl)
+  );
   line-height: 1.35;
   text-wrap: balance;
 }
@@ -502,6 +517,21 @@ const items = computed<PagerItem[]>(() => [
   gap: var(--spacing_fluid-tight-space-tight-l);
   padding: var(--spacing_fluid-tight-space-tight-l) 0.6rem;
   border-bottom: var(--spacing-size-hairline) solid var(--rule);
+}
+
+/* A laptop's screen is short: the index tightens, so the front page stays one spread. */
+@media (min-width: 60rem) and (max-height: 52rem) {
+  .Entry {
+    padding-block: var(--spacing_fluid-tight-space-tight-s);
+  }
+
+  .Blurb {
+    font-size: var(--typography_fluid-content-font-size-s);
+  }
+
+  .Thumb {
+    min-height: 6rem;
+  }
 }
 
 .Label {
@@ -580,13 +610,26 @@ const items = computed<PagerItem[]>(() => [
   text-transform: uppercase;
 }
 
+/*
+ * The latest story shares the right-hand page with the index. Its headline and its
+ * standfirst are held to a few lines, so a long title does not push the story, and
+ * the front page with it, onto a second spread; the article has them in full.
+ */
 .Title {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   font-size: var(--typography_fluid-display-font-size-display-s);
   line-height: 1.1;
   text-wrap: balance;
 }
 
 .Standfirst {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
   color: var(--muted);
   font-size: var(--typography_fluid-content-font-size-s);
   line-height: 1.5;

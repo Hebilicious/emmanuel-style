@@ -16,11 +16,11 @@ import { RouterView, useRoute, useRouter } from "vue-router"
 import Bar from "../components/Bar.vue"
 import Dock from "../components/Dock.vue"
 import MouseGate from "../components/MouseGate.vue"
-import RepoCard from "../components/RepoCard.vue"
 import Zoom from "../components/Zoom.vue"
 import { useFootnotes } from "../shell/footnotes.js"
 import { useKeyboard } from "../shell/keyboard.js"
 import { usePointer } from "../shell/pointer.js"
+import { useRouteTurns } from "../shell/route-turns.js"
 import { sectionOf } from "../shell/sections.js"
 import { createShell, SHELL } from "../shell/shell.js"
 import { useSiteIndex } from "../shell/site-index.js"
@@ -38,6 +38,7 @@ const keyboard = useKeyboard(shell, router, {
 	close: () => dock.value?.close()
 })
 usePointer(shell, router, useFootnotes(shell))
+useRouteTurns(shell, router)
 
 const index = useSiteIndex()
 
@@ -72,9 +73,16 @@ watch(
 	{ immediate: true }
 )
 
-// The cursor goes to the first row of whatever screen is now showing.
+/*
+ * The cursor goes onto whatever screen is now showing. The page in the query is
+ * left out: a turn moves it, and the turn's own position change already did this.
+ * The key is a string so that only a real change fires it: an array is a new value
+ * every time `shell.position` is written, and a second call threw away where the
+ * turn had said the cursor should land.
+ */
 watch(
-	() => [route.fullPath, shell.position?.current, shell.position?.total],
+	() =>
+		`${route.path}|${shell.position?.current ?? 0}|${shell.position?.total ?? 0}`,
 	() => keyboard.home()
 )
 </script>
@@ -92,7 +100,6 @@ watch(
     <Dock ref="dock" />
 
     <MouseGate />
-    <RepoCard />
     <Zoom />
   </div>
 </template>

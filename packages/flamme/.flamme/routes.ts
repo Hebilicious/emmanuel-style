@@ -14,11 +14,13 @@ import DocExperience from '$flamme/artifacts/Experience'
 import DocHome from '$flamme/artifacts/Home'
 import DocLibrary from '$flamme/artifacts/Library'
 import DocPost from '$flamme/artifacts/Post'
+import DocProject from '$flamme/artifacts/Project'
 import DocRoute_layout_oy84b0 from '$flamme/artifacts/Route_layout_oy84b0'
 import DocRouteblog_1j1hl4 from '$flamme/artifacts/Routeblog_1j1hl4'
 import DocRouteblog__slug__1gn4ng from '$flamme/artifacts/Routeblog__slug__1gn4ng'
 import DocRouteexperience_fpods0 from '$flamme/artifacts/Routeexperience_fpods0'
 import DocRouteindex_1pcgrc from '$flamme/artifacts/Routeindex_1pcgrc'
+import DocRoutelibrary__name__2wenng from '$flamme/artifacts/Routelibrary__name__2wenng'
 import DocRoutelibrary_n8fr6o from '$flamme/artifacts/Routelibrary_n8fr6o'
 import DocSiteIndex from '$flamme/artifacts/SiteIndex'
 
@@ -154,6 +156,32 @@ export const records: readonly FlammeRoute[] = [
     ],
     composedChain: ['SiteIndex', 'Library'],
   },
+  {
+    name: 'library.[name]',
+    path: '/library/:name',
+    parent: '+layout',
+    segment: 'library/:name',
+    meta: { flamme: 'page' },
+    component: () => import('../src/pages/library/[name].vue'),
+    params: ['name'],
+    loaders: [
+      {
+        load: (client) =>
+          createComposedPageLoader(
+            client,
+            DocRoutelibrary__name__2wenng,
+            [{ variable: 'name', param: 'name', coercion: 'string' }],
+            ['SiteIndex', 'Project'],
+          ),
+      },
+    ],
+    unattachedLoaders: [
+      {
+        load: (client) => createPageLoader(client, DocProject, [{ variable: 'name', param: 'name', coercion: 'string' }]),
+      },
+    ],
+    composedChain: ['SiteIndex', 'Project'],
+  },
 ]
 
 /**
@@ -167,6 +195,7 @@ export const pages = {
   experience: { file: 'src/pages/experience.vue', path: '/experience', params: [], documents: ['Experience'] },
   index: { file: 'src/pages/index.vue', path: '/', params: [], documents: ['Home'] },
   library: { file: 'src/pages/library.vue', path: '/library', params: [], documents: ['Library'] },
+  'library.[name]': { file: 'src/pages/library/[name].vue', path: '/library/:name', params: ['name'], documents: ['Project'] },
 } as const
 
 /**
@@ -184,6 +213,7 @@ export const pageQueries = {
   experience: null as unknown as PageData<typeof DocExperience>,
   index: null as unknown as PageData<typeof DocHome>,
   library: null as unknown as PageData<typeof DocLibrary>,
+  'library.[name]': null as unknown as PageData<typeof DocProject>,
 } as const
 
 declare module '@flamme/router/auto' {
@@ -202,6 +232,7 @@ declare module '@flamme/router/auto' {
     readonly experience: PageData<typeof DocExperience>
     readonly index: PageData<typeof DocHome>
     readonly library: PageData<typeof DocLibrary>
+    readonly 'library.[name]': PageData<typeof DocProject>
   }
 }
 

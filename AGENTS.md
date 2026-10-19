@@ -49,7 +49,8 @@ the current work.
   - `pnpm --filter @emmanuel/flamme exec vitest run`
   - `pnpm --filter @emmanuel/flamme run content:check`
   - `pnpm --filter @emmanuel/flamme run build`
-  - `pnpm --filter @emmanuel/api test`
+  - `pnpm --filter api-worker test` (the worker's package is `api-worker`; a filter that matches no package exits
+    0 without running anything, so check that the output lists the tests)
   - `dprint check` on the files the branch changes
 - When a pull request or stack merges or closes, remove its worktree (`git worktree remove .worktrees/<branch>`) and
   every other worktree made for the task (a baseline, a comparison), and keep the branches. Once it merges, bring the

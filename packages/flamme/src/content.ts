@@ -15,6 +15,7 @@ import type {
 	BlockShape,
 	NoteShape,
 	PostShape,
+	ProjectShape,
 	RoleShape,
 	SchoolShape,
 	ShelfShape,
@@ -37,10 +38,16 @@ export const content = generated as ContentModule
 
 export const site: SiteShape = content.site
 export const shelves: ShelfShape[] = content.shelves
+/** Every project, shelf by shelf; the bundle carries them once, on their shelves. */
+export const projects: ProjectShape[] = shelves.flatMap((shelf) => shelf.projects)
 export const posts: PostShape[] = content.posts
 export const roles: RoleShape[] = content.roles
 export const schools: SchoolShape[] = content.schools
 export const contentVersion: string = content.version
+
+/** One project by its name, or `null`. */
+export const projectByName = (name: string): ProjectShape | null =>
+	projects.find((project) => project.name === name) ?? null
 
 /** One post by its slug, or `null`. */
 export const postBySlug = (slug: string): PostShape | null =>
@@ -65,4 +72,13 @@ export const notesFor = (
 export const blockForNote = (blocks: readonly BlockShape[], noteId: string): BlockShape | null =>
 	blocks.find((block) => block.noteIds.includes(noteId)) ?? null
 
-export type { BlockShape, NoteShape, PostShape, RoleShape, SchoolShape, ShelfShape, SiteShape }
+export type {
+	BlockShape,
+	NoteShape,
+	PostShape,
+	ProjectShape,
+	RoleShape,
+	SchoolShape,
+	ShelfShape,
+	SiteShape
+}

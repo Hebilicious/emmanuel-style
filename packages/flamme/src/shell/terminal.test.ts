@@ -12,10 +12,11 @@ const index: TerminalIndex = {
 			body: ["Plato provides a key example.", "Newton's clockwork universe."]
 		}
 	],
-	repositories: [
+	projects: [
 		{
 			name: "cssforge",
-			description: "Generate CSS variables from design tokens.",
+			title: "CSS Forge",
+			tagline: "Generate CSS variables from design tokens.",
 			language: "TypeScript",
 			url: "https://github.com/Hebilicious/cssforge",
 			homepage: null,
@@ -58,18 +59,18 @@ describe("terminal", () => {
 		expect(run("cat blog", "/", index).output).toBe("cat: blog: is a directory")
 	})
 
-	it("opens an article through the router and a repository in a new tab", () => {
+	it("opens an article and a project through the router", () => {
 		expect(run("open blog/hyper-anabasis.md", "/", index).action).toEqual({
 			kind: "go",
 			href: "/blog/hyper-anabasis"
 		})
 		expect(run("open cssforge", "/", index).action).toEqual({
-			kind: "open",
-			url: "https://github.com/Hebilicious/cssforge"
+			kind: "go",
+			href: "/library/cssforge"
 		})
 	})
 
-	it("searches article text, repositories and roles", () => {
+	it("searches article text, projects and roles", () => {
 		expect(run("grep clockwork", "/", index).output).toBe(
 			"blog/hyper-anabasis.md:5: Newton's clockwork universe."
 		)

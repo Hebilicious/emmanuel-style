@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeindex_1pcgrc",
     "kind": "query",
-    "hash": "66009c9a9b793109f2e554c4f01e97cc15b1f21c9f18c0f725a5e633b6117027",
+    "hash": "faef8d5829cb662d6c4d3f41e4c50cd39834a3142742827c37773cda4c1bad06",
     "raw": `query Routeindex_1pcgrc {
     posts {
         __typename
@@ -35,13 +35,14 @@ const artifact = {
     shelves {
         __typename
         label
-        repositories {
+        projects {
             __typename
             archived
-            description
             homepage
             language
             name
+            tagline
+            title
             url
         }
         slug
@@ -249,11 +250,10 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "repositories": {
-                            "type": "Repository",
-                            "modifiers": "[Repository!]",
-                            "keyRaw": "repositories",
-                            "nullable": true,
+                        "projects": {
+                            "type": "Project",
+                            "modifiers": "[Project!]!",
+                            "keyRaw": "projects",
 
                             "selection": {
                                 "fields": {
@@ -267,13 +267,6 @@ const artifact = {
                                         "type": "Boolean",
                                         "modifiers": "Boolean!",
                                         "keyRaw": "archived",
-                                        "visible": true,
-                                    },
-
-                                    "description": {
-                                        "type": "String",
-                                        "modifiers": "String!",
-                                        "keyRaw": "description",
                                         "visible": true,
                                     },
 
@@ -293,9 +286,23 @@ const artifact = {
                                     },
 
                                     "name": {
+                                        "type": "ID",
+                                        "modifiers": "ID!",
+                                        "keyRaw": "name",
+                                        "visible": true,
+                                    },
+
+                                    "tagline": {
                                         "type": "String",
                                         "modifiers": "String!",
-                                        "keyRaw": "name",
+                                        "keyRaw": "tagline",
+                                        "visible": true,
+                                    },
+
+                                    "title": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "title",
                                         "visible": true,
                                     },
 
@@ -394,14 +401,15 @@ export type Routeindex_1pcgrc$result = {
 	readonly shelves: ReadonlyArray<{
 		readonly slug: string;
 		readonly label: string;
-		readonly repositories: ReadonlyArray<{
+		readonly projects: ReadonlyArray<{
 			readonly name: string;
-			readonly description: string;
+			readonly title: string;
+			readonly tagline: string;
 			readonly language: string;
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
-		}> | null;
+		}>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 	readonly roles: ReadonlyArray<{
@@ -443,15 +451,16 @@ export type Routeindex_1pcgrc$unmasked = {
 		readonly __typename: "Shelf";
 		readonly slug: string;
 		readonly label: string;
-		readonly repositories: ReadonlyArray<{
-			readonly __typename: "Repository";
+		readonly projects: ReadonlyArray<{
+			readonly __typename: "Project";
 			readonly name: string;
-			readonly description: string;
+			readonly title: string;
+			readonly tagline: string;
 			readonly language: string;
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
-		}> | null;
+		}>;
 	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly __typename: "Role";

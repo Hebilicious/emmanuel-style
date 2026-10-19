@@ -24,7 +24,16 @@ export interface PagerItem {
 	 * measured at its own height, so it never takes room another block was given.
 	 */
 	readonly grow?: boolean
+	/**
+	 * Is shown whole on one page, always. When it is taller than the page it is set
+	 * smaller until it fits (`zoom`, never below `MIN_FIT`), rather than being cut:
+	 * a role of the ledger, the Library's front page. Implies `atomic`.
+	 */
+	readonly fit?: boolean
 }
+
+/** The smallest a `fit` block is set before it is allowed to split after all. */
+export const MIN_FIT = 0.62
 
 /** One footnote, as the foot of a page sets it. */
 export interface PagerNote {
@@ -37,4 +46,6 @@ export interface PagerNote {
 export interface PagerHandle {
 	turn(delta: number): void
 	go(screen: number): void
+	/** The screen a block starts on, counted from zero, or -1 before the layout. */
+	screenOf(id: string): number
 }

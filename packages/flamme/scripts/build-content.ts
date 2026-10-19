@@ -4,7 +4,7 @@
  * Reads the Astro package's markdown and data modules and writes
  * `.content/content.ts`, the typed bundle `@emmanuel/schema` describes: the
  * rendered blocks of every article, each block carrying the footnotes it cites,
- * plus the shelves, roles and schools the Library and the Experience page read.
+ * plus the shelves, projects, roles and schools the Library and the Experience page read.
  *
  * The site compiles its documents against the same schema, so a block that asks
  * for a field that does not exist fails at build time, and the data answers from
@@ -38,7 +38,7 @@ import {
 } from "./blocks.ts"
 import { webpSize } from "./image-size.ts"
 import remarkFrontMatter from "./remark-front-matter.ts"
-import { experiences, schools, shelves } from "./site-data.ts"
+import { experiences, projects, schools, shelves } from "./site-data.ts"
 import {
 	markdownFiles,
 	parseFrontMatter,
@@ -335,7 +335,7 @@ const main = async () => {
 	console.log("")
 	console.log(`wrote ${OUTPUT}`)
 	console.log(
-		`${posts.length} posts, ${blocks} blocks, ${notes} notes, ${shelves.length} shelves, ` +
+		`${posts.length} posts, ${blocks} blocks, ${notes} notes, ${shelves.length} shelves, ${projects.length} projects, ` +
 			`${experiences.length} roles, ${schools.length} schools, ` +
 			`${(Buffer.byteLength(source) / 1024).toFixed(1)} kB`
 	)

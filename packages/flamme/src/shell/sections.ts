@@ -31,7 +31,7 @@ export const SECTIONS: readonly Section[] = [
 		href: "/library",
 		key: "l",
 		plate: "Library",
-		dateline: "open source",
+		dateline: "the work",
 		title: "Library · Emmanuel",
 		match: (path) => path.startsWith("/library")
 	},

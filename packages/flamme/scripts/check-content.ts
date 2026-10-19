@@ -1,5 +1,5 @@
 /**
- * The footnote proof.
+ * The footnote proof, and the Library's.
  *
  * The layout only reaches a footnote through the block that cites it: a note
  * nobody cites never renders, and a citation nobody defines has nothing to render.
@@ -8,20 +8,25 @@
  * reads. The test runs the pipeline itself and compares the in-memory result
  * against the committed module, so a stale bundle fails here too.
  *
+ * The Library is checked for what its pages rely on: every project has a name of its
+ * own (its address), a cover the component can draw, a place on the front page that
+ * no other project has, and outside work carries its pull requests.
+ *
  * Run it with `pnpm --filter @emmanuel/flamme run content:check`.
  */
 
 import { readFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
-import type { BlockShape, PostShape } from "@emmanuel/schema"
+import type { BlockShape, PostShape, ProjectShape } from "@emmanuel/schema"
+import { MOTIFS } from "../src/components/cover.ts"
 
 const here = dirname(fileURLToPath(import.meta.url))
 const flamme = join(here, "..")
 
 interface Bundle {
 	posts: PostShape[]
-	shelves: { slug: string }[]
+	shelves: { slug: string; projects: ProjectShape[] }[]
 	roles: unknown[]
 	schools: unknown[]
 }
@@ -127,6 +132,49 @@ const verifyPost = (post: PostShape) => {
 	}
 }
 
+const verifyLibrary = (shelves: Bundle["shelves"]) => {
+	const projects = shelves.flatMap((shelf) => shelf.projects)
+	const names = projects.map((project) => project.name)
+	const duplicates = names.filter((name, index) => names.indexOf(name) !== index)
+	check(duplicates.length === 0, `library: names used twice: ${duplicates.join(", ")}`)
+	for (const project of projects) {
+		check(/^[a-z0-9][a-z0-9-]*$/.test(project.name), `library: ${project.name} is not an address`)
+		check(
+			(MOTIFS as readonly string[]).includes(project.cover),
+			`library: ${project.name} draws an unknown cover "${project.cover}"`
+		)
+		check(
+			project.tagline.trim() !== "" && project.body.length > 0,
+			`library: ${project.name} has no tagline or no text`
+		)
+		if (project.kind !== "project") {
+			check(
+				project.contributions !== null && project.contributions > 0,
+				`library: ${project.name} is outside work with no merged pull requests`
+			)
+			check(
+				project.links.length > 0,
+				`library: ${project.name} is outside work with no pull requests to read`
+			)
+			check(
+				project.repo === null,
+				`library: ${project.name} is outside work but asks for a star count`
+			)
+		}
+	}
+	const places = projects.flatMap((project) =>
+		project.featured === null ? [] : [project.featured]
+	)
+	check(
+		new Set(places).size === places.length,
+		"library: two projects share a place on the front page"
+	)
+	check(places.includes(1), "library: nothing leads the front page")
+	console.log(
+		`\nlibrary: ${projects.length} projects on ${shelves.length} shelves, ${places.length} on the front page`
+	)
+}
+
 const main = async () => {
 	const bundle = await load()
 
@@ -136,6 +184,7 @@ const main = async () => {
 	)
 
 	for (const post of bundle.posts) verifyPost(post)
+	verifyLibrary(bundle.shelves)
 
 	// Every footnote in the article is reachable from a block, and the page's
 	// block list is what the layout paginates, so an empty body is a failure too.

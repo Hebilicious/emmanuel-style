@@ -36,17 +36,14 @@ defineExpose({
         <span>{{ year }}</span>
       </span>
 
+      <!-- The sections' keys are not repeated here: the bar marks them beside each name. -->
       <span class="Cell Hint" aria-hidden="true">
-        <span class="Key">g</span><span class="Then"> then </span><span
-          class="Key">h</span><span class="Key">l</span><span
-          class="Key">b</span><span class="Key">e</span><span
-          class="Key">t</span><span class="Word Long"> sections</span>
+        <span class="Key">←</span><span class="Key">↓</span><span
+          class="Key">↑</span><span class="Key">→</span><span class="Word">
+          move</span>
         <span class="Dot">·</span>
         <span class="Key">n</span><span class="Key">p</span><span class="Word">
           {{ shell.turnLabel }}</span>
-        <span class="Dot">·</span>
-        <span class="Key">j</span><span class="Key">k</span><span class="Word">
-          rows</span>
         <span class="Dot">·</span>
         <span class="Key">↵</span><span class="Word"> open</span>
         <span class="Dot">·</span>
@@ -223,20 +220,10 @@ defineExpose({
 }
 
 /*
- * The legend shortens as the row narrows rather than being cut: first the words
- * that only explain the `g` sequence go, then every word, leaving the keys. Below
- * that it is for a keyboard, and a phone has none.
+ * The legend shortens as the row narrows rather than being cut: first the words go,
+ * leaving the keys. Below that it is for a keyboard, and a phone has none.
  */
 @media (max-width: 110rem) {
-  .Then,
-  .Long {
-    display: none;
-  }
-
-  .Then + .Key {
-    margin-left: 0.3em;
-  }
-
   .Focus {
     width: 20ch;
   }

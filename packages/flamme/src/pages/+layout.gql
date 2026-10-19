@@ -1,5 +1,5 @@
 # Everything the prompt and the WebMCP tools can name: the articles with their
-# text, the repositories and the roles. It is the layout's document, so every
+# text, the projects and the roles. It is the layout's document, so every
 # route's loader composes it and the prompt has its index before the first paint.
 # All of it is content, answered from the bundle, so the prompt works offline.
 query SiteIndex {
@@ -17,9 +17,10 @@ query SiteIndex {
 	shelves {
 		slug
 		label
-		repositories {
+		projects {
 			name
-			description
+			title
+			tagline
 			language
 			url
 			homepage

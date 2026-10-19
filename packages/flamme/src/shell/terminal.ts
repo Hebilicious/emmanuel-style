@@ -6,12 +6,12 @@
  *
  *   cd <dir>       open a section          ls [dir]      list a directory
  *   cat <file>     print a file            grep <pat>    search everything
- *   open [path]    open a page or a repo   pwd           print the directory
+ *   open [path]    open a page             pwd           print the directory
  *   theme [l|d]    switch the theme        mouse [on|off] the mouse gate
  *   help · clear · exit
  *
  * The directories are the sections; the files are the articles (`blog/<slug>.md`),
- * the repositories (`library/<name>.txt`) and the roles (`experience/<id>.txt`).
+ * the projects (`library/<name>.txt`) and the roles (`experience/<id>.txt`).
  * Everything is answered from the index the layout reads through Flamme, which is
  * the bundle, so the prompt works with the network off.
  *
@@ -29,9 +29,10 @@ export interface IndexArticle {
 	readonly body: readonly string[]
 }
 
-export interface IndexRepository {
+export interface IndexProject {
 	readonly name: string
-	readonly description: string
+	readonly title: string
+	readonly tagline: string
 	readonly language: string
 	readonly url: string
 	readonly homepage: string | null
@@ -50,7 +51,7 @@ export interface IndexRole {
 
 export interface TerminalIndex {
 	readonly articles: readonly IndexArticle[]
-	readonly repositories: readonly IndexRepository[]
+	readonly projects: readonly IndexProject[]
 	readonly roles: readonly IndexRole[]
 }
 
@@ -71,7 +72,7 @@ export interface Result {
 /** The sections, as the top-level directories. */
 const DIRECTORIES: Record<string, { href: string; about: string }> = {
 	home: { href: "/", about: "the front page" },
-	library: { href: "/library", about: "open source, by shelf" },
+	library: { href: "/library", about: "the work, by shelf" },
 	blog: { href: "/blog", about: "every article" },
 	experience: { href: "/experience", about: "roles and education" }
 }
@@ -93,7 +94,7 @@ export const COMMANDS = [
 export const HELP = [
 	"cd <dir>      open a section           ls [dir]       list a directory",
 	"cat <file>    print a file             grep <pat>     search everything",
-	"open [path]   open a page or a repo    pwd            print the directory",
+	"open [path]   open a page              pwd            print the directory",
 	"theme [l|d]   switch the theme         mouse [on|off] the mouse gate",
 	"help · clear · exit       Tab completes · ↑ ↓ history · Esc closes"
 ].join("\n")
@@ -127,13 +128,13 @@ const entries = (index: TerminalIndex, directory: string): string[] | null => {
 	if (clean === "") return Object.keys(DIRECTORIES).map((name) => `${name}/`)
 	if (clean === "home") return []
 	if (clean === "blog") return index.articles.map((article) => `${article.slug}.md`)
-	if (clean === "library") return index.repositories.map((repo) => `${repo.name}.txt`)
+	if (clean === "library") return index.projects.map((project) => `${project.name}.txt`)
 	if (clean === "experience") return index.roles.map(roleFile)
 	return null
 }
 
 /**
- * What a path names: a directory, an article, a repository, a role, or nothing.
+ * What a path names: a directory, an article, a project, a role, or nothing.
  *
  * A bare file name is looked up in every directory, so `cat cssforge` works from
  * anywhere, the way a reader who has just seen the name would type it.
@@ -149,8 +150,8 @@ const lookup = (index: TerminalIndex, cwd: string, target: string) => {
 
 	const article = index.articles.find((candidate) => candidate.slug === name)
 	if (article && (anywhere || directory === "blog")) return { kind: "article" as const, article }
-	const repo = index.repositories.find((candidate) => candidate.name === name)
-	if (repo && (anywhere || directory === "library")) return { kind: "repo" as const, repo }
+	const project = index.projects.find((candidate) => candidate.name === name)
+	if (project && (anywhere || directory === "library")) return { kind: "project" as const, project }
 	const role = index.roles.find((candidate) => candidate.id === name)
 	if (role && (anywhere || directory === "experience")) return { kind: "role" as const, role }
 	return null
@@ -176,16 +177,18 @@ const cat = (index: TerminalIndex, cwd: string, target: string): string => {
 				`open blog/${article.slug}.md to read it`
 			])
 		}
-		case "repo": {
-			const { repo } = found
+		case "project": {
+			const { project } = found
 			return [
-				repo.name,
-				`${repo.language} · ${repo.shelf}${repo.archived ? " · archived" : ""}`,
+				project.title,
+				`${project.language} · ${project.shelf}${project.archived ? " · archived" : ""}`,
 				"",
-				repo.description,
+				project.tagline,
 				"",
-				`source   ${repo.url}`,
-				...(repo.homepage ? [`site     ${repo.homepage}`] : [])
+				`source   ${project.url}`,
+				...(project.homepage ? [`site     ${project.homepage}`] : []),
+				"",
+				`open library/${project.name}.txt to read it`
 			].join("\n")
 		}
 		case "role": {
@@ -232,11 +235,11 @@ const grep = (index: TerminalIndex, args: readonly string[]): string => {
 			}
 		}
 	}
-	for (const repo of index.repositories) {
-		if (!expression.test(`${repo.name} ${repo.description} ${repo.language} ${repo.shelf}`))
-			continue
+	for (const project of index.projects) {
+		const text = `${project.name} ${project.title} ${project.tagline} ${project.language} ${project.shelf}`
+		if (!expression.test(text)) continue
 		hits.push(
-			namesOnly ? `library/${repo.name}.txt` : `library/${repo.name}.txt: ${repo.description}`
+			namesOnly ? `library/${project.name}.txt` : `library/${project.name}.txt: ${project.tagline}`
 		)
 	}
 	for (const role of index.roles) {
@@ -311,11 +314,11 @@ export const run = (line: string, cwd: string, index: TerminalIndex): Result => 
 						cwd,
 						action: { kind: "go", href: `/blog/${found.article.slug}` }
 					}
-				case "repo":
+				case "project":
 					return {
-						output: `opened ${found.repo.url} in a new tab`,
+						output: `→ /library/${found.project.name}`,
 						cwd,
-						action: { kind: "open", url: found.repo.url }
+						action: { kind: "go", href: `/library/${found.project.name}` }
 					}
 				case "role":
 					return { output: "→ /experience", cwd, action: { kind: "go", href: "/experience" } }
@@ -372,7 +375,7 @@ export const complete = (line: string, cwd: string, index: TerminalIndex): strin
 	const directories = Object.keys(DIRECTORIES).map((name) => `${name}/`)
 	const files = [
 		...index.articles.map((article) => `blog/${article.slug}.md`),
-		...index.repositories.map((repo) => `library/${repo.name}.txt`),
+		...index.projects.map((project) => `library/${project.name}.txt`),
 		...index.roles.map((role) => `experience/${roleFile(role)}`)
 	]
 	const here = cwd.replace(/^\/+|\/+$/g, "")

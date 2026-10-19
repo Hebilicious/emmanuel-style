@@ -1,33 +1,63 @@
 <script setup lang="ts">
 /**
- * The Library: the repositories, shelf by shelf.
+ * The Library: the work, as a paper's front page and then its sections.
  *
- * Each shelf opens a page and its entries are packed under it until the page is
- * full, then continue on the next. An entry is a row: Enter opens its card, which
- * says what the project is and opens it on GitHub.
+ * The first spread is the front page. The lead story takes the left-hand page,
+ * the forecaster with its plate and the opening of its text; the other featured
+ * work is set beside it on the right, under an index of the shelves. It is one
+ * composition across the spread, shown whole (`fit`), never cut between pages.
+ * On a phone the stories run one after another instead.
  *
- * The star counts are the worker's: one `Stars` query for every repository on the
- * shelves, answered from the durable cache first and refreshed from the network,
- * so the counts are there offline too, as last seen.
+ * Then the shelves, each opening a spread of its own: projects, Nuxt and Vue,
+ * tools, the work merged upstream, and the work done for clients. Every entry is a
+ * card that opens the project's page, `/library/<name>`.
+ *
+ * The star counts are the worker's: one `Stars` query for every repository of the
+ * site's own, answered from the durable cache first and refreshed from the
+ * network, so the counts are there offline too, as last seen.
  */
-import { computed } from "vue"
+import { computed, ref } from "vue"
 import { useQuery } from "@flamme/vue"
 import { Stars } from "$flamme"
 import { usePageQuery } from "$flamme/records/library"
 import Pager from "../components/Pager.vue"
-import type { PagerItem } from "../components/pager.js"
-import { useShell } from "../shell/shell.js"
+import ProjectCard from "../components/ProjectCard.vue"
+import ShelfIndex from "../components/ShelfIndex.vue"
+import type { PagerHandle, PagerItem } from "../components/pager.js"
+import { useWide } from "../shell/wide.js"
 
 const { data } = usePageQuery()
-const shell = useShell()
+const wide = useWide()
+const pager = ref<PagerHandle | null>(null)
 
 const shelves = computed(() => data.value?.shelves ?? [])
-const names = computed(() =>
-	shelves.value.flatMap((shelf) =>
-		(shelf.repositories ?? []).map((repo) => repo.name)
-	)
-)
+type Project = NonNullable<(typeof shelves.value)[number]["projects"]>[number]
 
+const all = computed(() =>
+	shelves.value.flatMap((shelf) => shelf.projects ?? [])
+)
+/** Every entry's number, in the order of the Library, as the cards print it. */
+const numbers = computed(
+	() => new Map(all.value.map((project, index) => [project.name, index + 1]))
+)
+const shelfLabel = computed(
+	() => new Map(shelves.value.map((shelf) => [shelf.slug, shelf.label]))
+)
+const labelOf = (slug: string) => shelfLabel.value.get(slug) ?? ""
+
+const featured = computed(() =>
+	all.value
+		.filter((project) => project.featured !== null)
+		.sort((a, b) => (a.featured ?? 0) - (b.featured ?? 0))
+)
+const lead = computed(() => featured.value[0] ?? null)
+const others = computed(() => featured.value.slice(1))
+
+const names = computed(() =>
+	all.value
+		.map((project) => project.repo)
+		.filter((repo): repo is string => repo !== null)
+)
 const { data: starData } = useQuery(Stars, () => ({ names: names.value }), {
 	policy: "CacheAndNetwork"
 })
@@ -39,281 +69,298 @@ const stars = computed(
 			)
 		)
 )
+const starsOf = (project: Project) =>
+	project.repo === null ? null : (stars.value.get(project.repo) ?? null)
 
-type Repository = NonNullable<
-	(typeof shelves.value)[number]["repositories"]
->[number]
+const merged = computed(() =>
+	all.value.reduce((sum, project) => sum + (project.contributions ?? 0), 0)
+)
+const own = computed(
+	() => all.value.filter((project) => project.kind === "project").length
+)
+const index = computed(() =>
+	shelves.value.map((shelf) => ({
+		slug: shelf.slug,
+		label: shelf.label,
+		count: shelf.projects?.length ?? 0
+	}))
+)
 
 type LibraryItem =
+	| (PagerItem & { readonly kind: "front" })
+	| (PagerItem & {
+			readonly kind: "story"
+			readonly project: Project
+			readonly size: "lead" | "feature"
+	  })
 	| (PagerItem & {
 			readonly kind: "shelf"
+			readonly slug: string
 			readonly label: string
+			readonly blurb: string
 			readonly count: number
 			readonly index: number
 	  })
 	| (PagerItem & {
-			readonly kind: "repo"
-			readonly repo: Repository
-			readonly shelf: string
+			readonly kind: "row"
+			readonly projects: readonly Project[]
 	  })
 
-const items = computed<LibraryItem[]>(() =>
-	shelves.value.flatMap((shelf, index) => [
-		{
-			id: `shelf-${shelf.slug}`,
-			kind: "shelf" as const,
-			label: shelf.label,
-			count: shelf.repositories?.length ?? 0,
-			index: index + 1,
-			opens: true,
-			keep: true
-		},
-		...(shelf.repositories ?? []).map((repo) => ({
-			id: `repo-${repo.name}`,
-			kind: "repo" as const,
-			repo,
-			shelf: shelf.label,
-			atomic: true
-		}))
-	])
-)
+/** Cards to a row: two to a page of a spread, one on a phone. */
+const perRow = computed(() => (wide.value ? 2 : 1))
+/*
+ * Kept out of the template: an inline object with a quoted key is rewritten by the
+ * formatter into `&quot;` entities, which the type checker cannot parse.
+ */
+const rowStyle = computed(() => ({ "--per-row": String(perRow.value) }))
 
-const total = computed(() => names.value.length)
-const starTotal = computed(() =>
-	[...stars.value.values()].reduce<number>(
-		(sum, count) => sum + (count ?? 0),
-		0
-	)
-)
-
-const open = (repo: Repository, shelf: string) => {
-	shell.dialog = {
-		kind: "repo",
-		repo: {
-			name: repo.name,
-			description: repo.description,
-			language: repo.language,
-			url: repo.url,
-			homepage: repo.homepage,
-			archived: repo.archived,
-			shelf,
-			stars: stars.value.get(repo.name) ?? null
+const items = computed<LibraryItem[]>(() => {
+	if (lead.value === null) return []
+	const front: LibraryItem[] = wide.value
+		? [{ id: "front", kind: "front", screen: true, fit: true }]
+		: [
+				// On a phone the lead story comes first, then the index, then the others.
+				{
+					id: `story-${lead.value.name}`,
+					kind: "story",
+					project: lead.value,
+					size: "lead",
+					atomic: true
+				},
+				{ id: "front", kind: "front", atomic: true },
+				...others.value.map(
+					(project): LibraryItem => ({
+						id: `story-${project.name}`,
+						kind: "story",
+						project,
+						size: "feature",
+						atomic: true
+					})
+				)
+			]
+	const sections = shelves.value.flatMap((shelf, index): LibraryItem[] => {
+		const projects = shelf.projects ?? []
+		const rows: LibraryItem[] = []
+		for (let at = 0; at < projects.length; at += perRow.value) {
+			rows.push({
+				id: `row-${shelf.slug}-${at}`,
+				kind: "row",
+				projects: projects.slice(at, at + perRow.value),
+				atomic: true
+			})
 		}
-	}
-}
+		return [
+			{
+				id: `shelf-${shelf.slug}`,
+				kind: "shelf",
+				slug: shelf.slug,
+				label: shelf.label,
+				blurb: shelf.blurb,
+				count: projects.length,
+				index: index + 1,
+				opens: true,
+				keep: true
+			},
+			...rows
+		]
+	})
+	return [...front, ...sections]
+})
 
-const host = (url: string) =>
-	url.replace(/^https?:\/\/(www\.)?/, "").replace(/\/.*$/, "")
-const compact = (count: number) =>
-	count >= 1000 ? `${(count / 1000).toFixed(1)}k` : String(count)
+/** The page each shelf opens on, for the index; known once the pager has laid out. */
+const layout = ref(0)
+const pageOf = (slug: string): number | null => {
+	void layout.value
+	const screen = pager.value?.screenOf(`shelf-${slug}`) ?? -1
+	return screen === -1 ? null : screen + 1
+}
 </script>
 
 <template>
-  <Pager :items label="Library">
-    <template #lead>
-      <p class="Standfirst">
-        <span class="Lead">Open source modules, tools and templates.</span>
-        <span class="Facts">
-          <span>{{ total }} repositories</span>
-          <span class="Dot" aria-hidden="true">·</span>
-          <span>{{ shelves.length }} shelves</span>
-          <template v-if="starTotal > 0">
-            <span class="Dot" aria-hidden="true">·</span>
-            <span class="Accent">★ {{ compact(starTotal) }}</span>
-          </template>
-        </span>
-      </p>
-    </template>
-
+  <Pager
+    ref="pager"
+    :items
+    :opens-screen="true"
+    label="Library"
+    @layout="layout += 1">
     <template #item="{ item }">
-      <h2 v-if='item.kind === "shelf"' class="Shelf">
-        <span class="Number display-accent" aria-hidden="true">{{
-          String(item.index).padStart(2, "0")
-        }}</span>
-        <span class="ShelfName">{{ item.label }}</span>
-        <span class="ShelfCount">{{ item.count }}</span>
-      </h2>
+      <!--
+        The front page: on a spread, the lead story on the left page and the index
+        and the other stories on the right, one composition split at the spine. On a
+        phone, only the index, after the lead story; the stories are items of their own.
+      -->
+      <div v-if='item.kind === "front"' class="Front" :class="{ Spread: wide }">
+        <section
+          v-if="wide && lead"
+          class="LeftPage"
+          aria-label="The lead story">
+          <p class="Flag">
+            <span class="Mark" aria-hidden="true">§</span> The front page
+          </p>
+          <ProjectCard
+            :project="lead"
+            :number="numbers.get(lead.name) ?? 1"
+            :stars="starsOf(lead)"
+            :shelf="labelOf(lead.shelf)"
+            size="lead"
+            fill
+          />
+        </section>
 
-      <button
-        v-else
-        type="button"
-        class="Entry"
-        data-row
-        :data-label="item.repo.name"
-        @click="open(item.repo, item.shelf)">
-        <span class="Head">
-          <span class="Repo">{{ item.repo.name }}</span>
-          <span class="Meta">
-            <span v-if="item.repo.archived" class="Flag">archived</span>
-            <span class="Lang">{{ item.repo.language }}</span>
-            <!-- A dash until the counts arrive; nothing for a repository GitHub has no count for. -->
-            <span v-if="!stars.has(item.repo.name)" class="Stars Pending">★
-              –</span>
-            <span
-              v-else-if="stars.get(item.repo.name) !== null"
-              class="Stars">★ {{ stars.get(item.repo.name) }}</span>
-          </span>
-        </span>
-        <span class="Body">
-          <span class="Description">{{ item.repo.description }}</span>
-          <span v-if="item.repo.homepage" class="Home">{{
-              host(item.repo.homepage)
-            }} ↗</span>
-        </span>
-      </button>
+        <section class="RightPage" aria-label="Featured work and the index">
+          <div v-if="wide" class="Features">
+            <ProjectCard
+              v-for="project of others"
+              :key="project.name"
+              :project
+              :number="numbers.get(project.name) ?? 0"
+              :stars="starsOf(project)"
+              :shelf="labelOf(project.shelf)"
+              size="feature"
+              fill
+            />
+            <ShelfIndex
+              :shelves="index"
+              :page-of="pageOf"
+              :projects="own"
+              :merged
+              boxed
+            />
+          </div>
+          <ShelfIndex
+            v-else
+            :shelves="index"
+            :page-of="pageOf"
+            :projects="own"
+            :merged
+          />
+        </section>
+      </div>
+
+      <ProjectCard
+        v-else-if='item.kind === "story"'
+        :project="item.project"
+        :number="numbers.get(item.project.name) ?? 0"
+        :stars="starsOf(item.project)"
+        :shelf="labelOf(item.project.shelf)"
+        :size="item.size"
+      />
+
+      <header v-else-if='item.kind === "shelf"' class="ShelfHead">
+        <p class="ShelfKicker">
+          <span class="Mark">Shelf {{ item.index }}</span>
+          <span class="Dot" aria-hidden="true">·</span>
+          <span>{{ item.count }} {{
+              item.count === 1 ? "entry" : "entries"
+            }}</span>
+        </p>
+        <h2 class="ShelfTitle display">{{ item.label }}</h2>
+        <p class="ShelfBlurb">{{ item.blurb }}</p>
+      </header>
+
+      <div v-else-if='item.kind === "row"' class="Row" :style="rowStyle">
+        <ProjectCard
+          v-for="project of item.projects"
+          :key="project.name"
+          :project
+          :number="numbers.get(project.name) ?? 0"
+          :stars="starsOf(project)"
+        />
+      </div>
     </template>
   </Pager>
 </template>
 
 <style scoped>
-.Standfirst {
+/*
+ * The front page on a spread: two pages with the pager's own gutter between them,
+ * so the split falls exactly at the spine and each half is a page of its own.
+ */
+.Front.Spread {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--spacing_fluid-column-space-column-s);
+  /* At least a page; taller, and the pager sets it smaller until it fits. */
+  min-height: var(--page-height);
+}
+
+.LeftPage,
+.RightPage {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+  min-width: 0;
+  min-height: 0;
+}
+
+.Flag,
+.ShelfKicker {
+  display: flex;
   align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing_fluid-tight-space-tight-xs)
-    var(--spacing_fluid-tight-space-tight-l);
-  padding-bottom: var(--spacing_fluid-tight-space-tight-s);
-  border-bottom: var(--spacing-size-hairline) solid var(--rule);
-}
-
-.Lead {
-  color: var(--ink);
-  font-size: var(--typography_fluid-content-font-size-l);
-}
-
-.Facts {
-  display: flex;
-  gap: var(--spacing_fluid-tight-space-tight-s);
+  gap: 0.9em;
   color: var(--muted);
   font-size: var(--typography_fluid-micro-font-size-micro-m);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.Mark {
+  color: var(--accent);
 }
 
 .Dot {
   color: var(--faint);
 }
 
-.Accent {
-  color: var(--accent);
+.LeftPage :deep(.Card) {
+  flex: 1 1 0;
 }
 
-/* A shelf heading: its number, its name, and how many entries it holds. */
-.Shelf {
+.Features {
+  display: grid;
+  flex: 1 1 auto;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(min-content, 1fr));
+  gap: var(--spacing_fluid-tight-space-tight-m)
+    var(--spacing_fluid-tight-space-tight-l);
+  min-height: 0;
+}
+
+/* A shelf's opening: its number, its title in the display face, and its line. */
+.ShelfHead {
   display: flex;
-  align-items: baseline;
-  gap: var(--spacing_fluid-tight-space-tight-m);
-  padding-bottom: var(--spacing_fluid-tight-space-tight-xs);
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  padding-bottom: var(--spacing_fluid-tight-space-tight-s);
   border-bottom: var(--spacing-size-rule) double var(--rule-strong);
 }
 
-.Number {
-  font-size: var(--typography_fluid-content-font-size-2xl);
-  line-height: 1;
+.ShelfTitle {
+  font-size: var(--typography_fluid-display-font-size-display-m);
+  line-height: 1.05;
 }
 
-.ShelfName {
-  flex: 1;
-  color: var(--ink);
-  font-size: var(--typography_fluid-micro-font-size-micro-l);
-  font-weight: var(--typography-weight-body-bold);
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.ShelfCount {
-  color: var(--faint);
-  font-size: var(--typography_fluid-micro-font-size-micro-m);
-  font-variant-numeric: tabular-nums;
-}
-
-.Entry {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  width: 100%;
-  padding: 0.55rem 0.7rem 0.6rem;
-  border-bottom: var(--spacing-size-hairline) solid var(--rule);
-  text-align: left;
-  text-transform: none;
-}
-
-.Head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing_fluid-tight-space-tight-m);
-}
-
-.Repo {
-  color: var(--ink);
-  font-weight: var(--typography-weight-body-bold);
-  overflow-wrap: anywhere;
-  transition: color 120ms linear;
-}
-
-.Meta {
-  display: flex;
-  flex: none;
-  align-items: baseline;
-  gap: var(--spacing_fluid-tight-space-tight-s);
-  font-size: var(--typography_fluid-micro-font-size-micro-s);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.Lang {
-  color: var(--faint);
-}
-
-.Flag {
-  color: var(--tertiary);
-}
-
-.Stars {
-  min-width: 5ch;
-  color: var(--accent);
-  font-variant-numeric: tabular-nums;
-  text-align: right;
-}
-
-.Stars.Pending {
-  color: var(--faint);
-}
-
-.Body {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--spacing_fluid-tight-space-tight-l);
-}
-
-.Description {
+.ShelfBlurb {
+  max-width: 46ch;
   color: var(--muted);
   font-size: var(--typography_fluid-content-font-size-s);
   line-height: 1.5;
 }
 
-.Home {
-  flex: none;
-  color: var(--link);
-  font-size: var(--typography_fluid-micro-font-size-micro-s);
-  letter-spacing: 0.06em;
+.Row {
+  display: grid;
+  grid-template-columns: repeat(var(--per-row), minmax(0, 1fr));
+  gap: var(--spacing_fluid-tight-space-tight-l);
 }
 
-.Entry[data-cursor="true"] .Repo,
-:global(.mouse-enabled) .Entry:hover .Repo {
-  color: var(--accent);
-}
-
-@media (max-width: 40rem) {
-  .Lead {
-    font-size: var(--typography_fluid-content-font-size-m);
+@media (max-width: 60rem) {
+  .Standfirst {
+    font-size: var(--typography_fluid-content-font-size-s);
   }
 
-  .Home {
-    display: none;
+  .ShelfTitle {
+    font-size: var(--typography_fluid-display-font-size-display-s);
   }
 }
 </style>

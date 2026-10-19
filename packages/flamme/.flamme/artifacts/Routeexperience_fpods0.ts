@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeexperience_fpods0",
     "kind": "query",
-    "hash": "110baa30e3e98c787a16ff562ffc3c9b981566cabdb4d6a58d7bd50461846a61",
+    "hash": "425e92dab7004eddc0bee8a9c4ad9583f8749c88a9705ee147deaa5a22c8ac57",
     "raw": `query Routeexperience_fpods0 {
     posts {
         __typename
@@ -45,13 +45,14 @@ const artifact = {
     shelves {
         __typename
         label
-        repositories {
+        projects {
             __typename
             archived
-            description
             homepage
             language
             name
+            tagline
+            title
             url
         }
         slug
@@ -320,11 +321,10 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "repositories": {
-                            "type": "Repository",
-                            "modifiers": "[Repository!]",
-                            "keyRaw": "repositories",
-                            "nullable": true,
+                        "projects": {
+                            "type": "Project",
+                            "modifiers": "[Project!]!",
+                            "keyRaw": "projects",
 
                             "selection": {
                                 "fields": {
@@ -338,13 +338,6 @@ const artifact = {
                                         "type": "Boolean",
                                         "modifiers": "Boolean!",
                                         "keyRaw": "archived",
-                                        "visible": true,
-                                    },
-
-                                    "description": {
-                                        "type": "String",
-                                        "modifiers": "String!",
-                                        "keyRaw": "description",
                                         "visible": true,
                                     },
 
@@ -364,9 +357,23 @@ const artifact = {
                                     },
 
                                     "name": {
+                                        "type": "ID",
+                                        "modifiers": "ID!",
+                                        "keyRaw": "name",
+                                        "visible": true,
+                                    },
+
+                                    "tagline": {
                                         "type": "String",
                                         "modifiers": "String!",
-                                        "keyRaw": "name",
+                                        "keyRaw": "tagline",
+                                        "visible": true,
+                                    },
+
+                                    "title": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "title",
                                         "visible": true,
                                     },
 
@@ -430,14 +437,15 @@ export type Routeexperience_fpods0$result = {
 	readonly shelves: ReadonlyArray<{
 		readonly slug: string;
 		readonly label: string;
-		readonly repositories: ReadonlyArray<{
+		readonly projects: ReadonlyArray<{
 			readonly name: string;
-			readonly description: string;
+			readonly title: string;
+			readonly tagline: string;
 			readonly language: string;
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
-		}> | null;
+		}>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 	readonly roles: ReadonlyArray<{
@@ -484,15 +492,16 @@ export type Routeexperience_fpods0$unmasked = {
 		readonly __typename: "Shelf";
 		readonly slug: string;
 		readonly label: string;
-		readonly repositories: ReadonlyArray<{
-			readonly __typename: "Repository";
+		readonly projects: ReadonlyArray<{
+			readonly __typename: "Project";
 			readonly name: string;
-			readonly description: string;
+			readonly title: string;
+			readonly tagline: string;
 			readonly language: string;
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
-		}> | null;
+		}>;
 	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly __typename: "Role";
