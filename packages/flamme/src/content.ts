@@ -28,6 +28,8 @@ export interface ContentModule {
 	readonly posts: PostShape[]
 	readonly roles: RoleShape[]
 	readonly schools: SchoolShape[]
+	/** A hash of the content, which changes whenever any of it does. */
+	readonly version: string
 }
 
 /** The whole generated bundle, typed. */
@@ -38,6 +40,7 @@ export const shelves: ShelfShape[] = content.shelves
 export const posts: PostShape[] = content.posts
 export const roles: RoleShape[] = content.roles
 export const schools: SchoolShape[] = content.schools
+export const contentVersion: string = content.version
 
 /** One post by its slug, or `null`. */
 export const postBySlug = (slug: string): PostShape | null =>
@@ -50,7 +53,10 @@ export const postBySlug = (slug: string): PostShape | null =>
  * blocks it is about to place which notes they carry, and renders those at the
  * foot of that page instead of leaving them to the end of the article.
  */
-export const notesFor = (blocks: readonly BlockShape[], notes: readonly NoteShape[]): NoteShape[] => {
+export const notesFor = (
+	blocks: readonly BlockShape[],
+	notes: readonly NoteShape[]
+): NoteShape[] => {
 	const wanted = new Set(blocks.flatMap((block) => block.noteIds))
 	return notes.filter((note) => wanted.has(note.id))
 }

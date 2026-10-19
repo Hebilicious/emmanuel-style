@@ -69,29 +69,28 @@ const verifyPost = (post: PostShape) => {
 	// own number and not its position.
 	for (const note of post.notes) {
 		check(
-			note.id === `fn-${note.number}`,
+			note.id === `${post.slug}-fn-${note.number}`,
 			`${post.slug}: note ${note.id} prints the number ${note.number}`
 		)
 	}
 
 	// Blocks are the page's reading order, and the ids are the layout's handles.
 	check(
-		post.blocks.every((block, index) => block.id === `b${index + 1}`),
-		`${post.slug}: block ids are not b1..b${post.blocks.length} in reading order`
+		post.blocks.every((block, index) => block.id === `${post.slug}-b${index + 1}`),
+		`${post.slug}: block ids are not ${post.slug}-b1..b${post.blocks.length} in reading order`
 	)
 	check(
 		post.blocks.every((block) => block.html.trim() !== ""),
 		`${post.slug}: a block rendered empty`
 	)
 	check(
-		post.blocks.every(
-			(block) =>
-				(block.kind === "figure") === (block.image !== null),
-		),
+		post.blocks.every((block) => (block.kind === "figure") === (block.image !== null)),
 		`${post.slug}: image is set on a block that is not a figure, or missing from one that is`
 	)
 	check(
-		post.blocks.every((block) => (block.kind === "heading" ? block.depth >= 1 && block.depth <= 6 : block.depth === 0)),
+		post.blocks.every((block) =>
+			block.kind === "heading" ? block.depth >= 1 && block.depth <= 6 : block.depth === 0
+		),
 		`${post.slug}: a heading has no depth, or a non-heading has one`
 	)
 
@@ -106,21 +105,25 @@ const verifyPost = (post: PostShape) => {
 	console.log(`  notes       ${post.notes.length}`)
 	console.log(`  kinds       ${[...kinds].sort().join(", ")}`)
 	console.log(`  figures     ${post.blocks.filter((block) => block.kind === "figure").length}`)
-	console.log(`  cited union ${[...cited].sort((a, b) => Number(a.slice(3)) - Number(b.slice(3))).join(", ")}`)
-	console.log(`  defined     ${[...defined].sort((a, b) => Number(a.slice(3)) - Number(b.slice(3))).join(", ")}`)
+	const byNumber = (a: string, b: string) =>
+		Number(/(\d+)$/.exec(a)?.[1]) - Number(/(\d+)$/.exec(b)?.[1])
+	console.log(`  cited union ${[...cited].sort(byNumber).join(", ")}`)
+	console.log(`  defined     ${[...defined].sort(byNumber).join(", ")}`)
 	console.log("  which block cites which note:")
 
 	for (const block of citedBlocks) {
 		const kind = block.kind.padEnd(9)
 		const label = block.text.length > 52 ? `${block.text.slice(0, 52)}...` : block.text
-		console.log(`    ${block.id.padEnd(5)}${kind}${block.noteIds.join(", ").padEnd(14)}${label}`)
+		console.log(`    ${block.id.padEnd(22)}${kind}${block.noteIds.join(", ").padEnd(22)}${label}`)
 	}
 
 	console.log(`  first ${Math.min(8, post.blocks.length)} blocks:`)
 	for (const block of post.blocks.slice(0, 8)) {
 		const notes = block.noteIds.length > 0 ? block.noteIds.join(", ") : "-"
 		const label = block.text.length > 44 ? `${block.text.slice(0, 44)}...` : block.text
-		console.log(`    ${block.id.padEnd(5)}${block.kind.padEnd(10)}d${block.depth}  ${notes.padEnd(12)}${label}`)
+		console.log(
+			`    ${block.id.padEnd(22)}${block.kind.padEnd(10)}d${block.depth}  ${notes.padEnd(12)}${label}`
+		)
 	}
 }
 
@@ -128,7 +131,9 @@ const main = async () => {
 	const bundle = await load()
 
 	console.log(`content bundle: ${join(flamme, ".content", "content.ts")}`)
-	console.log(`shelves ${bundle.shelves.length}, roles ${bundle.roles.length}, schools ${bundle.schools.length}`)
+	console.log(
+		`shelves ${bundle.shelves.length}, roles ${bundle.roles.length}, schools ${bundle.schools.length}`
+	)
 
 	for (const post of bundle.posts) verifyPost(post)
 
@@ -146,7 +151,9 @@ const main = async () => {
 		return
 	}
 
-	console.log("\nok: every block's footnotes resolve, and the union of the blocks' noteIds is exactly the notes defined")
+	console.log(
+		"\nok: every block's footnotes resolve, and the union of the blocks' noteIds is exactly the notes defined"
+	)
 }
 
 await main()
