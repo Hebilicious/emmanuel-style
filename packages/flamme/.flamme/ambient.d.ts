@@ -10,16 +10,6 @@ declare module '*/Blog.graphql' {
 	export default document
 }
 
-declare module '*/Chrome.gql' {
-	const document: typeof import('./artifacts/Chrome')['default']
-	export default document
-}
-
-declare module '*/Chrome.graphql' {
-	const document: typeof import('./artifacts/Chrome')['default']
-	export default document
-}
-
 declare module '*/Experience.gql' {
 	const document: typeof import('./artifacts/Experience')['default']
 	export default document
@@ -27,6 +17,16 @@ declare module '*/Experience.gql' {
 
 declare module '*/Experience.graphql' {
 	const document: typeof import('./artifacts/Experience')['default']
+	export default document
+}
+
+declare module '*/Favourite.gql' {
+	const document: typeof import('./artifacts/Favourite')['default']
+	export default document
+}
+
+declare module '*/Favourite.graphql' {
+	const document: typeof import('./artifacts/Favourite')['default']
 	export default document
 }
 
@@ -57,5 +57,35 @@ declare module '*/Post.gql' {
 
 declare module '*/Post.graphql' {
 	const document: typeof import('./artifacts/Post')['default']
+	export default document
+}
+
+declare module '*/SiteIndex.gql' {
+	const document: typeof import('./artifacts/SiteIndex')['default']
+	export default document
+}
+
+declare module '*/SiteIndex.graphql' {
+	const document: typeof import('./artifacts/SiteIndex')['default']
+	export default document
+}
+
+declare module '*/Stars.gql' {
+	const document: typeof import('./artifacts/Stars')['default']
+	export default document
+}
+
+declare module '*/Stars.graphql' {
+	const document: typeof import('./artifacts/Stars')['default']
+	export default document
+}
+
+declare module '*/ToggleFavourite.gql' {
+	const document: typeof import('./artifacts/ToggleFavourite')['default']
+	export default document
+}
+
+declare module '*/ToggleFavourite.graphql' {
+	const document: typeof import('./artifacts/ToggleFavourite')['default']
 	export default document
 }

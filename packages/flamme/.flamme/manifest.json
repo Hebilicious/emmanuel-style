@@ -7,19 +7,10 @@
     {
       "name": "Blog",
       "kind": "query",
-      "hash": "005f81b8ed135e4aa88b604418df33209d54b489acfac8689db67af35a40c517",
+      "hash": "b6bef305c96909c293971361bc23ef126ca315c301de3dbe2423848c3371e08b",
       "file": "artifacts/Blog.ts",
       "sources": [
         "src/pages/blog/+page.gql"
-      ]
-    },
-    {
-      "name": "Chrome",
-      "kind": "query",
-      "hash": "8a1ec133d9c631658a677b499523eae0d4a620acfe277bb8c8aeafd2b3b05cf2",
-      "file": "artifacts/Chrome.ts",
-      "sources": [
-        "src/pages/+layout.gql"
       ]
     },
     {
@@ -32,9 +23,18 @@
       ]
     },
     {
+      "name": "Favourite",
+      "kind": "query",
+      "hash": "754fd3aa4e5230fd6122c08bc2f1e64aa2918d9d5b171c7ef0394f3ac62a6f5c",
+      "file": "artifacts/Favourite.ts",
+      "sources": [
+        "src/documents/Favourite.gql"
+      ]
+    },
+    {
       "name": "Home",
       "kind": "query",
-      "hash": "1c10df96864e45ae25ce75b31b3056da5d1f714bb0047f29b1251317383ec6be",
+      "hash": "5b9a6816a8140330f8371be38a638c6c4446649bea655974dd40e9720efd168b",
       "file": "artifacts/Home.ts",
       "sources": [
         "src/pages/index/+page.gql"
@@ -43,7 +43,7 @@
     {
       "name": "Library",
       "kind": "query",
-      "hash": "73997aa786d13ee8bbf70fe6c47e4bc0a7d4d8edbca05d48ada8eb48c8a9fb03",
+      "hash": "cd4fbc8a748d7a0c3c58d6c9bba10c7c5101f2978dd3671c93517822a271c0eb",
       "file": "artifacts/Library.ts",
       "sources": [
         "src/pages/library/+page.gql"
@@ -61,7 +61,7 @@
     {
       "name": "Route_layout_oy84b0",
       "kind": "query",
-      "hash": "89361335631b97168091314a8f37003ea04229c5b75da7afd40b6d45a9b1af74",
+      "hash": "4292e41c1168a2ebe1bf620499b7988621cadf978b56590f58bbbf2a9fd94fb6",
       "file": "artifacts/Route_layout_oy84b0.ts",
       "sources": [
         ".flamme/composed/Route_layout_oy84b0.composed.gql"
@@ -70,7 +70,7 @@
     {
       "name": "Routeblog_1j1hl4",
       "kind": "query",
-      "hash": "b6b6208106661e5850165b287aa3105e597c439ea8129688fd0dc499cc73b138",
+      "hash": "a8972c238d78a639367f6ed0f5636d099a885a60a16ef90365127855ac634c67",
       "file": "artifacts/Routeblog_1j1hl4.ts",
       "sources": [
         ".flamme/composed/Routeblog_1j1hl4.composed.gql"
@@ -79,7 +79,7 @@
     {
       "name": "Routeblog__slug__1gn4ng",
       "kind": "query",
-      "hash": "a27e179cc9f0fb3378c82459b37ce91b90002f8c9c70f702187734ab3995f52f",
+      "hash": "754c78ea2f5739da644422b206a4e4989f4da7b51fa97f34c398bc0d2c1861f3",
       "file": "artifacts/Routeblog__slug__1gn4ng.ts",
       "sources": [
         ".flamme/composed/Routeblog__slug__1gn4ng.composed.gql"
@@ -88,7 +88,7 @@
     {
       "name": "Routeexperience_fpods0",
       "kind": "query",
-      "hash": "b50e76ab0d03e69efc66a373622806f1630e004010941f683442fdb3621c1c49",
+      "hash": "110baa30e3e98c787a16ff562ffc3c9b981566cabdb4d6a58d7bd50461846a61",
       "file": "artifacts/Routeexperience_fpods0.ts",
       "sources": [
         ".flamme/composed/Routeexperience_fpods0.composed.gql"
@@ -97,7 +97,7 @@
     {
       "name": "Routeindex_1pcgrc",
       "kind": "query",
-      "hash": "6f472eb65236244016e5300af787fe3251a5bb5e7f7b775b47985113f42937b2",
+      "hash": "66009c9a9b793109f2e554c4f01e97cc15b1f21c9f18c0f725a5e633b6117027",
       "file": "artifacts/Routeindex_1pcgrc.ts",
       "sources": [
         ".flamme/composed/Routeindex_1pcgrc.composed.gql"
@@ -106,10 +106,37 @@
     {
       "name": "Routelibrary_n8fr6o",
       "kind": "query",
-      "hash": "b697adc2f5d1fa980efe7568cf7d60eaa16cbbe4768bb36d8fd3099fdf74a9f7",
+      "hash": "67dc63ec3e184844f30e7e6987886d9808b694dc4feed3b4e68fca03493b9430",
       "file": "artifacts/Routelibrary_n8fr6o.ts",
       "sources": [
         ".flamme/composed/Routelibrary_n8fr6o.composed.gql"
+      ]
+    },
+    {
+      "name": "SiteIndex",
+      "kind": "query",
+      "hash": "7fb7b54bfede40e111ec0a09a316ffb2057ee864c3cdeada25e15172859d759e",
+      "file": "artifacts/SiteIndex.ts",
+      "sources": [
+        "src/pages/+layout.gql"
+      ]
+    },
+    {
+      "name": "Stars",
+      "kind": "query",
+      "hash": "5b273334f9cc8fee1cc74842127547be68ea12e864b186cd731be90f56997f6e",
+      "file": "artifacts/Stars.ts",
+      "sources": [
+        "src/documents/Stars.gql"
+      ]
+    },
+    {
+      "name": "ToggleFavourite",
+      "kind": "mutation",
+      "hash": "6efdc37016e1f75df8e3c3c8a30cc1909aea5be14cd788a6653faedd0c559258",
+      "file": "artifacts/ToggleFavourite.ts",
+      "sources": [
+        "src/documents/ToggleFavourite.gql"
       ]
     }
   ],

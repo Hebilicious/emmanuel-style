@@ -1,7 +1,20 @@
+# The front page: the site's facts, and the latest dispatch with its plate.
 query Home {
 	site {
 		name
 		tagline
+	}
+	posts {
+		slug
+		title
+		description
 		date
+		tags
+		blocks {
+			id
+			kind
+			image
+			caption
+		}
 	}
 }

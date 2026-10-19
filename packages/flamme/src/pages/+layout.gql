@@ -1,7 +1,37 @@
-query Chrome {
-	site {
-		name
-		tagline
+# Everything the prompt and the WebMCP tools can name: the articles with their
+# text, the repositories and the roles. It is the layout's document, so every
+# route's loader composes it and the prompt has its index before the first paint.
+# All of it is content, answered from the bundle, so the prompt works offline.
+query SiteIndex {
+	posts {
+		slug
+		title
+		description
 		date
+		tags
+		blocks {
+			id
+			text
+		}
+	}
+	shelves {
+		slug
+		label
+		repositories {
+			name
+			description
+			language
+			url
+			homepage
+			archived
+		}
+	}
+	roles {
+		id
+		title
+		company
+		start
+		end
+		summary
 	}
 }

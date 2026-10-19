@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Library",
     "kind": "query",
-    "hash": "73997aa786d13ee8bbf70fe6c47e4bc0a7d4d8edbca05d48ada8eb48c8a9fb03",
+    "hash": "cd4fbc8a748d7a0c3c58d6c9bba10c7c5101f2978dd3671c93517822a271c0eb",
     "raw": `query Library {
     shelves {
         __typename
@@ -18,7 +18,6 @@ const artifact = {
             homepage
             language
             name
-            stars
             url
         }
         slug
@@ -109,14 +108,6 @@ const artifact = {
                                         "visible": true,
                                     },
 
-                                    "stars": {
-                                        "type": "Int",
-                                        "modifiers": "Int",
-                                        "keyRaw": "stars",
-                                        "nullable": true,
-                                        "visible": true,
-                                    },
-
                                     "url": {
                                         "type": "String",
                                         "modifiers": "String!",
@@ -173,7 +164,6 @@ export type Library$result = {
 			readonly homepage: string | null;
 			readonly archived: boolean;
 			readonly category: string;
-			readonly stars: number | null;
 		}> | null;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -195,7 +185,6 @@ export type Library$unmasked = {
 			readonly homepage: string | null;
 			readonly archived: boolean;
 			readonly category: string;
-			readonly stars: number | null;
 		}> | null;
 	}> | null;
 };

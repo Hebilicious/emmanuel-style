@@ -1,0 +1,9 @@
+# Favourite an article for this reader, or take it back. The worker keys the toggle
+# on the `x-reader-id` header, so a replay from the local queue lands on the same
+# state instead of counting twice.
+mutation ToggleFavourite($slug: String!) {
+	toggleFavourite(slug: $slug) {
+		slug
+		count
+	}
+}
