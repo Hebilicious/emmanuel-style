@@ -15,6 +15,7 @@ import { type InjectionKey, inject, reactive } from "vue"
 export type Dialog =
 	| { readonly kind: "gate" }
 	| { readonly kind: "zoom"; readonly src: string; readonly caption: string }
+	| { readonly kind: "project"; readonly name: string }
 
 /** What a pager registers so the keyboard and the dock can turn it. */
 export interface Turner {
@@ -48,6 +49,13 @@ export interface Shell {
 	 * new page is captured laid out rather than empty.
 	 */
 	layouts: number
+	/**
+	 * The project the dialog has drawn, once its text is there, or `null`. The zoom
+	 * into the dialog waits for it, so the dialog is captured full rather than empty.
+	 */
+	projectShown: string | null
+	/** What the open project dialog answers: `n` and `p` for the next and previous project, Esc. */
+	project: { next(): void; previous(): void; close(): void } | null
 }
 
 const SHELL_KEY: InjectionKey<Shell> = Symbol("shell")
@@ -84,7 +92,9 @@ export const createShell = (): Shell =>
 		theme: readTheme(),
 		dialog: null,
 		turner: null,
-		layouts: 0
+		layouts: 0,
+		projectShown: null,
+		project: null
 	})
 
 export const SHELL = SHELL_KEY

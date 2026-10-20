@@ -17,6 +17,7 @@ export const cacheKeys: Readonly<Record<string, readonly string[]>> = {
   "School": ["id"],
   "Shelf": ["slug"],
   "Site": ["name"],
+  "Skill": ["name"],
 }
 
 export const defaultKeys: readonly string[] = ["id"]

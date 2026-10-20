@@ -32,6 +32,7 @@ export default defineConfig({
 		Note: { keys: ["id"] },
 		Role: { keys: ["id"] },
 		School: { keys: ["id"] },
+		Skill: { keys: ["name"] },
 		Favourite: { keys: ["slug"] }
 	},
 	plugins: [flammeRoutesPlugin()]

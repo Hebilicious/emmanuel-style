@@ -2,10 +2,13 @@
 /**
  * The front page.
  *
- * Laid out as a front page is: the identity and a quote in the left column, the
- * index of the sections and the latest dispatch in the right one. It goes through
- * the pager like every other route, so on a phone, or a screen too short for the
- * whole of it, it becomes pages instead of being cut off at the dock.
+ * Laid out as a front page is. On a spread, the left-hand page carries the
+ * identity, a quote and the latest dispatch; the right-hand page leads with the
+ * Library, the story of the edition, set large with its covers and the way in,
+ * which is where the cursor starts; the index of the other sections is under it.
+ * On a phone the Library comes straight after the identity, and the quote, kept
+ * small, comes last. It goes through the pager like every other route, so a screen
+ * too short for the whole of it becomes pages instead of being cut off at the dock.
  *
  * When the whole page fits one screen, `n` and `p` step the quote instead, as the
  * dock says; with more than one screen they turn the page.
@@ -14,6 +17,7 @@ import { useMediaQuery } from "@vueuse/core"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { RouterLink } from "vue-router"
 import { usePageQuery } from "$flamme/records/index"
+import Cover from "../components/Cover.vue"
 import Icon from "../components/Icon.vue"
 import Pager from "../components/Pager.vue"
 import type { PagerHandle, PagerItem } from "../components/pager.js"
@@ -60,14 +64,23 @@ const links = [
 	}
 ]
 
+/** The Library, as the front page leads with it: its featured covers, and its figures. */
+const projects = computed(() =>
+	(data.value?.shelves ?? []).flatMap((shelf) => shelf.projects ?? [])
+)
+const featured = computed(() =>
+	projects.value
+		.filter((project) => project.featured !== null)
+		.sort((a, b) => (a.featured ?? 0) - (b.featured ?? 0))
+)
+const merged = computed(() =>
+	projects.value.reduce((sum, project) => sum + (project.contributions ?? 0), 0)
+)
+const own = computed(
+	() => projects.value.filter((project) => project.kind === "project").length
+)
+
 const sections = [
-	{
-		href: "/library",
-		label: "library",
-		key: "l",
-		blurb:
-			"The work: projects, Nuxt modules, tools, and what was merged upstream."
-	},
 	{
 		href: "/blog",
 		label: "blog",
@@ -79,6 +92,12 @@ const sections = [
 		label: "experience",
 		key: "e",
 		blurb: "Roles, education and the ledger of what came before."
+	},
+	{
+		href: "/skills",
+		label: "skills",
+		key: "s",
+		blurb: "What can be asked for, written as agent skills."
 	}
 ]
 
@@ -175,12 +194,36 @@ onBeforeUnmount(() => {
  */
 const spread = useMediaQuery("(min-width: 60rem)")
 
-const items = computed<PagerItem[]>(() => [
-	{ id: "identity", atomic: true },
-	{ id: "quote", atomic: true, grow: true },
-	{ id: "index", opens: spread.value, atomic: true },
-	...(latest.value ? [{ id: "latest", atomic: true, grow: true }] : [])
-])
+/*
+ * A spread: the identity and the index of the edition on the left page, the index
+ * growing into it; the Library opening the right page and growing into it, and
+ * the quote under it. The latest dispatch is the blog's row of the index there. A
+ * phone: the Library straight after the identity, the latest dispatch with its
+ * plate after the index, the quote last. On a short screen it is the quote that
+ * goes over to a second spread, never the Library.
+ */
+const items = computed<PagerItem[]>(() =>
+	spread.value
+		? [
+				{ id: "identity", atomic: true },
+				{ id: "index", atomic: true, grow: true },
+				{ id: "library", opens: true, atomic: true, grow: true },
+				{ id: "quote", atomic: true }
+			]
+		: [
+				{ id: "identity", atomic: true },
+				{ id: "library", atomic: true },
+				{ id: "index", atomic: true },
+				...(latest.value ? [{ id: "latest", atomic: true }] : []),
+				{ id: "quote", atomic: true }
+			]
+)
+
+/** The blog's row of the index names the latest dispatch. */
+const blurbOf = (section: (typeof sections)[number]) =>
+	section.href === "/blog" && latest.value
+		? `Latest: ${latest.value.title}`
+		: section.blurb
 </script>
 
 <template>
@@ -231,6 +274,8 @@ const items = computed<PagerItem[]>(() => [
         aria-live="polite">
         <p class="Overline label">
           <span>quote</span>
+          <span class="Next" aria-hidden="true"><span class="Key">n</span><span
+              class="Key">p</span> another</span>
           <span class="Count">{{ String(quote + 1).padStart(2, "0") }} / {{
               quotes.length
             }}</span>
@@ -251,9 +296,47 @@ const items = computed<PagerItem[]>(() => [
             <footer class="Author">— {{ entry.author }}</footer>
           </blockquote>
         </div>
-        <p class="Next" aria-hidden="true">
-          <span class="Key">n</span><span class="Key">p</span> another quote
+      </section>
+
+      <section
+        v-else-if='item.id === "library"'
+        class="Library"
+        aria-label="The Library">
+        <p class="Overline label">
+          <span>the story of the edition</span>
+          <span class="Count">{{ projects.length }} entries</span>
         </p>
+        <div class="Covers" aria-hidden="true">
+          <span
+            v-for="(project, index) of featured.slice(0, 5)"
+            :key="project.name"
+            class="CoverCell"
+            :class="{ First: index === 0 }">
+            <Cover
+              :motif="project.cover"
+              :seed="project.name"
+              :activity="project.activity"
+              :count="project.contributions"
+              :ratio="index === 0 ? 16 / 7 : 16 / 10"
+            />
+          </span>
+        </div>
+        <h2 class="LibraryTitle display">The Library</h2>
+        <p class="LibraryStandfirst">
+          {{ own }} projects built end to end, Nuxt modules, tools, and {{
+            merged
+          }}
+          pull requests merged into other people's code.
+        </p>
+        <RouterLink
+          class="Open"
+          to="/library"
+          data-row
+          data-cursor-home
+          data-label="open the library">
+          <span>Open the Library</span>
+          <span class="OpenArrow" aria-hidden="true">→</span>
+        </RouterLink>
       </section>
 
       <nav v-else-if='item.id === "index"' class="Index" aria-label="Sections">
@@ -266,7 +349,7 @@ const items = computed<PagerItem[]>(() => [
           data-row
           :data-label="section.label">
           <span class="Label">[{{ section.label }}]</span>
-          <span class="Blurb">{{ section.blurb }}</span>
+          <span class="Blurb">{{ blurbOf(section) }}</span>
           <span class="Shortcut" aria-hidden="true"><span
               class="Key">g</span><span class="Key">{{
               section.key
@@ -407,12 +490,21 @@ const items = computed<PagerItem[]>(() => [
 .Quote {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing_fluid-tight-space-tight-m);
-  padding: var(--spacing_fluid-tight-space-tight-l)
-    var(--spacing_fluid-flow-space-s);
-  border: var(--spacing-size-hairline) solid var(--rule);
+  gap: var(--spacing_fluid-tight-space-tight-xs);
+  padding: var(--spacing_fluid-tight-space-tight-s)
+    var(--spacing_fluid-tight-space-tight-m);
   border-left: var(--spacing-size-rule) solid var(--accent);
   background: var(--surface);
+}
+
+.Quote .Overline {
+  display: flex;
+  align-items: baseline;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+}
+
+.Quote .Next {
+  margin-left: auto;
 }
 
 .Count {
@@ -421,16 +513,15 @@ const items = computed<PagerItem[]>(() => [
 }
 
 /*
- * The quote shares the left-hand page with the identity, and takes what is left of
- * it. The quotes are out of the flow, so the block is measured at its smallest and
- * the pager does not push it, and the whole front page, onto a second spread on a
- * short screen; then it grows into the column, and the words are set to the room
- * they get (`cqh` is the height of the stack, `cqi` its width).
+ * The quote is a small thing on this page, a strip of two lines. The quotes are
+ * out of the flow, all in one box, so the strip keeps its height while they
+ * rotate, and the words are set to the room it has (`cqh` is its height, `cqi`
+ * its width).
  */
 .Stack {
   position: relative;
   flex: 1 1 auto;
-  min-height: 7.5rem;
+  min-height: 4.6rem;
   container-type: size;
 }
 
@@ -460,10 +551,11 @@ const items = computed<PagerItem[]>(() => [
 .Words {
   position: absolute;
   inset: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: var(--spacing_fluid-tight-space-tight-m);
+  gap: 0.2rem;
   margin: 0;
   visibility: hidden;
   opacity: 0;
@@ -483,10 +575,11 @@ const items = computed<PagerItem[]>(() => [
 
 .Text {
   color: var(--ink);
+  /* Three lines and the author fit the strip whatever the quote: about five lines of height. */
   font-size: clamp(
-    1rem,
-    min(5.6cqi, 12cqh),
-    var(--typography_fluid-content-font-size-2xl)
+    0.8rem,
+    min(3.6cqi, 19cqh),
+    var(--typography_fluid-content-font-size-m)
   );
   line-height: 1.35;
   text-wrap: balance;
@@ -494,9 +587,104 @@ const items = computed<PagerItem[]>(() => [
 
 .Author {
   color: var(--muted);
-  font-size: var(--typography_fluid-micro-font-size-micro-l);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+/*
+ * The Library leads the edition: its covers in a strip, the lead project's widest,
+ * its name in the display face, its figures, and the way in, which is where the
+ * cursor starts. On a spread it grows into the right-hand page, the covers taking
+ * the room.
+ */
+.Library {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+}
+
+.Library .Overline {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: var(--spacing_fluid-tight-space-tight-xs);
+  border-bottom: var(--spacing-size-rule) double var(--rule-strong);
+}
+
+.Covers {
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--spacing_fluid-tight-space-tight-s);
+  min-height: 9rem;
+}
+
+.CoverCell {
+  position: relative;
+  overflow: hidden;
+  border: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.CoverCell :deep(svg) {
+  position: absolute;
+  inset: 0;
+}
+
+.CoverCell.First {
+  grid-column: 1 / -1;
+  border-color: var(--accent);
+}
+
+.LibraryTitle {
+  font-size: var(--typography_fluid-display-font-size-display-l);
+  line-height: 1;
+}
+
+.LibraryStandfirst {
+  color: var(--ink);
+  font-size: var(--typography_fluid-content-font-size-l);
+  line-height: 1.4;
+  text-wrap: pretty;
+}
+
+.Open {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing_fluid-tight-space-tight-m)
+    var(--spacing_fluid-flow-space-s);
+  border: var(--spacing-size-rule) solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--typography_fluid-content-font-size-l);
+  font-weight: var(--typography-weight-body-bold);
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.OpenArrow {
+  font-size: 1.4em;
+  line-height: 1;
+  transition: transform 200ms ease;
+}
+
+.Open[data-cursor="true"] {
+  background: var(--paper);
+  box-shadow: none;
+  color: var(--accent);
+}
+
+.Open[data-cursor="true"] .OpenArrow {
+  transform: translateX(0.3em);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .Open[data-cursor="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
 }
 
 /* The index of the edition: one row per section, with its shortcut. */
@@ -510,17 +698,28 @@ const items = computed<PagerItem[]>(() => [
   border-bottom: var(--spacing-size-rule) double var(--rule-strong);
 }
 
+/* On a spread the index grows into the left-hand page, its rows sharing the height. */
 .Entry {
   display: grid;
+  flex: 1 1 auto;
   grid-template-columns: 12ch minmax(0, 1fr) auto;
+  align-content: center;
   align-items: baseline;
   gap: var(--spacing_fluid-tight-space-tight-l);
   padding: var(--spacing_fluid-tight-space-tight-l) 0.6rem;
   border-bottom: var(--spacing-size-hairline) solid var(--rule);
 }
 
-/* A laptop's screen is short: the index tightens, so the front page stays one spread. */
+/* A laptop's screen is short: the index and the Library tighten, so the front page stays one spread. */
 @media (min-width: 60rem) and (max-height: 52rem) {
+  .Covers {
+    min-height: 5rem;
+  }
+
+  .LibraryStandfirst {
+    font-size: var(--typography_fluid-content-font-size-m);
+  }
+
   .Entry {
     padding-block: var(--spacing_fluid-tight-space-tight-s);
   }
@@ -643,6 +842,18 @@ const items = computed<PagerItem[]>(() => [
 }
 
 @media (max-width: 60rem) {
+  .LibraryTitle {
+    font-size: var(--typography_fluid-display-font-size-display-m);
+  }
+
+  .LibraryStandfirst {
+    font-size: var(--typography_fluid-content-font-size-m);
+  }
+
+  .Covers {
+    min-height: 8rem;
+  }
+
   .Identity {
     gap: var(--spacing_fluid-tight-space-tight-m)
       var(--spacing_fluid-tight-space-tight-l);

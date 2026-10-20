@@ -88,6 +88,28 @@ export interface ShelfShape {
 	projects: ProjectShape[]
 }
 
+/**
+ * One skill, written the way an agent skill is (a `SKILL.md`): a name, a
+ * description that says when to load it, and what it does once loaded. Each cites
+ * the projects in the Library that are its evidence.
+ */
+export interface SkillShape {
+	/** The skill's name, kebab-case, as a `SKILL.md` front matter has it. */
+	name: string
+	title: string
+	/** "Use when …": the line an agent reads to decide whether to load the skill. */
+	description: string
+	/** The situations to call it for, a line each. */
+	whenToUse: string[]
+	/** How it runs, in order. */
+	steps: string[]
+	tools: string[]
+	/** The names of the Library projects that prove it. */
+	evidence: string[]
+	/** A request it answers, as someone would write it. */
+	example: string
+}
+
 /** One role, as the Experience page reads it. */
 export interface RoleShape {
 	id: string
@@ -186,6 +208,7 @@ const builder = new SchemaBuilder<{
 		Shelf: ShelfShape
 		Role: RoleShape
 		School: SchoolShape
+		Skill: SkillShape
 		Favourite: { slug: string; count: number }
 	}
 }>({})
@@ -337,6 +360,20 @@ builder.objectType("Role", {
 	})
 })
 
+builder.objectType("Skill", {
+	description: "One skill, written as an agent skill.",
+	fields: (t) => ({
+		name: t.exposeID("name", { nullable: false }),
+		title: t.exposeString("title", { nullable: false }),
+		description: t.exposeString("description", { nullable: false }),
+		whenToUse: t.exposeStringList("whenToUse", { nullable: false }),
+		steps: t.exposeStringList("steps", { nullable: false }),
+		tools: t.exposeStringList("tools", { nullable: false }),
+		evidence: t.exposeStringList("evidence", { nullable: false }),
+		example: t.exposeString("example", { nullable: false })
+	})
+})
+
 builder.objectType("School", {
 	description: "One education entry.",
 	fields: (t) => ({
@@ -406,6 +443,13 @@ builder.queryType({
 			type: ["Role"],
 			resolve: () => {
 				throw new Error("roles is resolved by the app, not by the schema")
+			}
+		}),
+		skills: t.field({
+			type: ["Skill"],
+			description: "The skills, in the order the Skills section reads them.",
+			resolve: () => {
+				throw new Error("skills is resolved by the app, not by the schema")
 			}
 		}),
 		schools: t.field({

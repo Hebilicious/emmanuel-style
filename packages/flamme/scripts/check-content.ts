@@ -18,7 +18,7 @@
 import { readFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
-import type { BlockShape, PostShape, ProjectShape } from "@emmanuel/schema"
+import type { BlockShape, PostShape, ProjectShape, SkillShape } from "@emmanuel/schema"
 import { MOTIFS } from "../src/components/cover.ts"
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -29,6 +29,7 @@ interface Bundle {
 	shelves: { slug: string; projects: ProjectShape[] }[]
 	roles: unknown[]
 	schools: unknown[]
+	skills: SkillShape[]
 }
 
 const failures: string[] = []
@@ -38,14 +39,14 @@ const check = (condition: boolean, message: string) => {
 
 const load = async (): Promise<Bundle> => {
 	const source = await readFile(join(flamme, ".content", "content.ts"), "utf8")
-	const { posts, shelves, roles, schools } = (await import(
+	const { posts, shelves, roles, schools, skills } = (await import(
 		`data:text/javascript;base64,${Buffer.from(
 			// The module is plain data and type-only imports, so dropping the type
 			// import is enough to load it without a compiler.
 			source.replace(/^import type .*$/gm, "")
 		).toString("base64")}`
 	)) as Bundle
-	return { posts, shelves, roles, schools }
+	return { posts, shelves, roles, schools, skills }
 }
 
 const citedBy = (block: BlockShape) => block.noteIds
@@ -175,6 +176,26 @@ const verifyLibrary = (shelves: Bundle["shelves"]) => {
 	)
 }
 
+/** Every skill cites real work: the projects it names are in the Library. */
+const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"]) => {
+	const names = new Set(shelves.flatMap((shelf) => shelf.projects.map((project) => project.name)))
+	for (const skill of skills) {
+		check(/^[a-z0-9][a-z0-9-]*$/.test(skill.name), `skills: ${skill.name} is not a skill name`)
+		check(
+			skill.description.startsWith("Use when"),
+			`skills: ${skill.name}'s description does not say when to use it`
+		)
+		check(skill.evidence.length > 0, `skills: ${skill.name} cites no evidence`)
+		for (const project of skill.evidence) {
+			check(
+				names.has(project),
+				`skills: ${skill.name} cites "${project}", which is not in the Library`
+			)
+		}
+	}
+	console.log(`skills: ${skills.length}, each citing the Library`)
+}
+
 const main = async () => {
 	const bundle = await load()
 
@@ -185,6 +206,7 @@ const main = async () => {
 
 	for (const post of bundle.posts) verifyPost(post)
 	verifyLibrary(bundle.shelves)
+	verifySkills(bundle.skills, bundle.shelves)
 
 	// Every footnote in the article is reachable from a block, and the page's
 	// block list is what the layout paginates, so an empty body is a failure too.

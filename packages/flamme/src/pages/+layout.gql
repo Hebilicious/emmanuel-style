@@ -27,6 +27,14 @@ query SiteIndex {
 			archived
 		}
 	}
+	skills {
+		name
+		title
+		description
+		whenToUse
+		steps
+		evidence
+	}
 	roles {
 		id
 		title

@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeindex_1pcgrc",
     "kind": "query",
-    "hash": "faef8d5829cb662d6c4d3f41e4c50cd39834a3142742827c37773cda4c1bad06",
+    "hash": "b52880dd0379b6b8d7bdaab38306292f3d5c5fecd9c318f937d9507d4b3e9a65",
     "raw": `query Routeindex_1pcgrc {
     posts {
         __typename
@@ -37,8 +37,13 @@ const artifact = {
         label
         projects {
             __typename
+            activity
             archived
+            contributions
+            cover
+            featured
             homepage
+            kind
             language
             name
             tagline
@@ -51,6 +56,15 @@ const artifact = {
         __typename
         name
         tagline
+    }
+    skills {
+        __typename
+        description
+        evidence
+        name
+        steps
+        title
+        whenToUse
     }
 }
 `,
@@ -263,10 +277,40 @@ const artifact = {
                                         "keyRaw": "__typename",
                                     },
 
+                                    "activity": {
+                                        "type": "String",
+                                        "modifiers": "[String!]!",
+                                        "keyRaw": "activity",
+                                        "visible": true,
+                                    },
+
                                     "archived": {
                                         "type": "Boolean",
                                         "modifiers": "Boolean!",
                                         "keyRaw": "archived",
+                                        "visible": true,
+                                    },
+
+                                    "contributions": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "contributions",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "cover": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "cover",
+                                        "visible": true,
+                                    },
+
+                                    "featured": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "featured",
+                                        "nullable": true,
                                         "visible": true,
                                     },
 
@@ -275,6 +319,13 @@ const artifact = {
                                         "modifiers": "String",
                                         "keyRaw": "homepage",
                                         "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "kind": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "kind",
                                         "visible": true,
                                     },
 
@@ -359,6 +410,66 @@ const artifact = {
                 },
                 "visible": true,
             },
+
+            "skills": {
+                "type": "Skill",
+                "modifiers": "[Skill!]",
+                "keyRaw": "skills",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "description": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "description",
+                            "visible": true,
+                        },
+
+                        "evidence": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "evidence",
+                            "visible": true,
+                        },
+
+                        "name": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "name",
+                            "visible": true,
+                        },
+
+                        "steps": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "steps",
+                            "visible": true,
+                        },
+
+                        "title": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "title",
+                            "visible": true,
+                        },
+
+                        "whenToUse": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "whenToUse",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
         },
     },
 
@@ -409,7 +520,21 @@ export type Routeindex_1pcgrc$result = {
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
+			readonly kind: string;
+			readonly featured: number | null;
+			readonly contributions: number | null;
+			readonly activity: ReadonlyArray<string>;
+			readonly cover: string;
 		}>;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 	readonly roles: ReadonlyArray<{
@@ -460,7 +585,21 @@ export type Routeindex_1pcgrc$unmasked = {
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
+			readonly kind: string;
+			readonly featured: number | null;
+			readonly contributions: number | null;
+			readonly activity: ReadonlyArray<string>;
+			readonly cover: string;
 		}>;
+	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly __typename: "Skill";
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly __typename: "Role";

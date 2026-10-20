@@ -5,11 +5,14 @@
  *
  * Three sizes. `lead` is the story the Library opens with, across most of a page,
  * with the first paragraph of its text; `feature` is one of the stories beside it;
- * `card` is an entry on a shelf. The whole card is the link to the project's page,
- * and a row for the cursor.
+ * `card` is an entry on a shelf. The whole card is a row for the cursor and opens
+ * the project over the page it is on (`?open=<name>`): the card is lifted off the
+ * page into the dialog (`shell/project.ts`). It is still a real link, so it can be
+ * copied or opened in a new tab.
  */
 import { computed } from "vue"
-import { RouterLink } from "vue-router"
+import { useRouter } from "vue-router"
+import { openProject, projectHref } from "../shell/project.js"
 import Cover from "./Cover.vue"
 
 export interface CardProject {
@@ -56,19 +59,26 @@ const outside = computed(() => props.project.kind !== "project")
 const ratio = computed(() =>
 	props.size === "lead" ? 16 / 8.2 : props.size === "feature" ? 16 / 7 : 16 / 6
 )
+const router = useRouter()
+const href = computed(() => projectHref(router, props.project.name))
+const open = () => void openProject(router, props.project.name)
+
 const compact = (count: number) =>
 	count >= 1000 ? `${(count / 1000).toFixed(1)}k` : String(count)
 </script>
 
 <template>
-  <RouterLink
-    :to="`/library/${project.name}`"
+  <a
+    :href
     class="Card"
     :class="[size, { Fill: fill }]"
     data-row
-    :data-label="project.title">
+    :data-label="project.title"
+    :data-project="project.name"
+    @click.exact.prevent="open">
     <div
       class="Plate"
+      data-project-plate
       :style="fill ? undefined : { aspectRatio: String(ratio) }">
       <Cover
         :motif="project.cover"
@@ -104,7 +114,7 @@ const compact = (count: number) =>
       <span v-if="project.homepage" class="Site">site</span>
       <span class="Read" aria-hidden="true">read →</span>
     </p>
-  </RouterLink>
+  </a>
 </template>
 
 <style scoped>

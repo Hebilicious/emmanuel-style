@@ -60,13 +60,13 @@ declare module '*/Post.graphql' {
 	export default document
 }
 
-declare module '*/Project.gql' {
-	const document: typeof import('./artifacts/Project')['default']
+declare module '*/ProjectDetail.gql' {
+	const document: typeof import('./artifacts/ProjectDetail')['default']
 	export default document
 }
 
-declare module '*/Project.graphql' {
-	const document: typeof import('./artifacts/Project')['default']
+declare module '*/ProjectDetail.graphql' {
+	const document: typeof import('./artifacts/ProjectDetail')['default']
 	export default document
 }
 
@@ -77,6 +77,16 @@ declare module '*/SiteIndex.gql' {
 
 declare module '*/SiteIndex.graphql' {
 	const document: typeof import('./artifacts/SiteIndex')['default']
+	export default document
+}
+
+declare module '*/Skills.gql' {
+	const document: typeof import('./artifacts/Skills')['default']
+	export default document
+}
+
+declare module '*/Skills.graphql' {
+	const document: typeof import('./artifacts/Skills')['default']
 	export default document
 }
 

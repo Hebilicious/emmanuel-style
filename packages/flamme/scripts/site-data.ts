@@ -14,9 +14,10 @@
  *     it `qualification`.
  */
 
-import type { ProjectShape, RoleShape, SchoolShape, ShelfShape } from "@emmanuel/schema"
+import type { ProjectShape, RoleShape, SchoolShape, ShelfShape, SkillShape } from "@emmanuel/schema"
 import { education, roles } from "./data/experience.ts"
 import { type PortfolioEntry, portfolio, shelves as shelfList } from "./data/portfolio.ts"
+import { skills as skillList } from "./data/skills.ts"
 
 const project = (entry: PortfolioEntry): ProjectShape => ({
 	name: entry.name,
@@ -83,4 +84,16 @@ export const schools: SchoolShape[] = education.map((entry) => ({
 	start: entry.start,
 	end: entry.end,
 	summary: entry.summary
+}))
+
+/** The skills, in the order the Skills section reads them. */
+export const skills: SkillShape[] = skillList.map((skill) => ({
+	name: skill.name,
+	title: skill.title,
+	description: skill.description,
+	whenToUse: [...skill.whenToUse],
+	steps: [...skill.steps],
+	tools: [...skill.tools],
+	evidence: [...skill.evidence],
+	example: skill.example
 }))

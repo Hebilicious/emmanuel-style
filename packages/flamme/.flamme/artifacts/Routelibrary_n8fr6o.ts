@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routelibrary_n8fr6o",
     "kind": "query",
-    "hash": "ed1898041ac6ec50ebbaf76266a7086a2229e036f3a3ae0b75820e462b997eeb",
+    "hash": "e105dc1ae89696fb68f4a60aabea5c7fc9c8be841a7e0c534cb2e0ba04e1834c",
     "raw": `query Routelibrary_n8fr6o {
     posts {
         __typename
@@ -54,6 +54,15 @@ const artifact = {
             url
         }
         slug
+    }
+    skills {
+        __typename
+        description
+        evidence
+        name
+        steps
+        title
+        whenToUse
     }
 }
 `,
@@ -388,6 +397,66 @@ const artifact = {
                 },
                 "visible": true,
             },
+
+            "skills": {
+                "type": "Skill",
+                "modifiers": "[Skill!]",
+                "keyRaw": "skills",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "description": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "description",
+                            "visible": true,
+                        },
+
+                        "evidence": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "evidence",
+                            "visible": true,
+                        },
+
+                        "name": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "name",
+                            "visible": true,
+                        },
+
+                        "steps": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "steps",
+                            "visible": true,
+                        },
+
+                        "title": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "title",
+                            "visible": true,
+                        },
+
+                        "whenToUse": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "whenToUse",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
         },
     },
 
@@ -449,6 +518,15 @@ export type Routelibrary_n8fr6o$result = {
 		readonly blurb: string;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly id: string;
 		readonly title: string;
@@ -501,6 +579,15 @@ export type Routelibrary_n8fr6o$unmasked = {
 			readonly cover: string;
 		}>;
 		readonly blurb: string;
+	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly __typename: "Skill";
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly __typename: "Role";

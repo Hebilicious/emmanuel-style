@@ -256,7 +256,7 @@ const shortDate = computed(() =>
  * is short rather than narrow, so the height counts too: three rows there left a
  * page of a few lines.
  */
-@media (max-width: 84rem), (max-height: 32rem) {
+@media (max-width: 110rem), (max-height: 32rem) {
   .Bar {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     grid-template-areas:
@@ -337,6 +337,14 @@ const shortDate = computed(() =>
 
   .Section {
     padding-block: 0.35rem;
+    letter-spacing: 0.05em;
+  }
+}
+
+/* A touch screen has no keys to press: the shortcuts beside the sections go. */
+@media (hover: none) and (pointer: coarse) {
+  .Keys {
+    display: none;
   }
 }
 </style>
