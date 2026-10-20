@@ -13,15 +13,19 @@
  * order in the leaf. A row is wherever one of its twins shows; the highlight is
  * drawn on both, so it shows whichever half the row is on, and focus goes to the
  * left twin, the one assistive technology reads (the right leaf is hidden from it).
+ * A route can also put rows outside the pager (the ledger's progress bar); they
+ * are rows like the others, in the order of the page.
+ *
+ * While a dialog that holds rows is open (a project, `[data-cursor-scope]`), the
+ * cursor moves inside it and nowhere else.
  */
 
 /** What the cursor can land on. */
-const SELECTABLE = [
-	"[data-row]",
-	".Page .Prose a[href]",
-	".Page figure.Plate",
-	".Page .Notes a[href]"
-].join(",")
+const SELECTABLE = ["[data-row]", ".Prose a[href]", "figure.Plate", ".Notes a[href]"].join(",")
+
+/** Where the rows are: an open dialog that holds some, or the reading pane. */
+const scopeOf = (root: ParentNode): HTMLElement | null =>
+	root.querySelector<HTMLElement>("[data-cursor-scope]") ?? root.querySelector<HTMLElement>(".Page")
 
 export interface Row {
 	/** The copy that takes focus and is followed with Enter. */
@@ -71,18 +75,21 @@ const union = (a: DOMRect, b: DOMRect): DOMRect => {
 
 /** The rows of the current screen, in reading order: the left page, then the right. */
 export const rows = (root: ParentNode = document): Row[] => {
-	const pane = root.querySelector<HTMLElement>(".Page")
+	const pane = scopeOf(root)
 	if (pane === null) return []
 	const leaves = Array.from(pane.querySelectorAll<HTMLElement>("[data-leaf]"))
+	const copies = leaves.map((leaf) => Array.from(leaf.querySelectorAll<HTMLElement>(SELECTABLE)))
 	const groups: HTMLElement[][] = []
-	if (leaves.length === 0) {
-		for (const element of pane.querySelectorAll<HTMLElement>(SELECTABLE)) groups.push([element])
-	} else {
-		const copies = leaves.map((leaf) => Array.from(leaf.querySelectorAll<HTMLElement>(SELECTABLE)))
-		const first = copies[0] ?? []
-		first.forEach((element, index) => {
-			groups.push([element, ...copies.slice(1).flatMap((copy) => copy[index] ?? [])])
-		})
+	for (const element of pane.querySelectorAll<HTMLElement>(SELECTABLE)) {
+		const leaf = element.closest<HTMLElement>("[data-leaf]")
+		if (leaf === null) {
+			groups.push([element])
+			continue
+		}
+		// A row in a leaf is grouped with its twins once, from the first leaf.
+		if (leaf !== leaves[0]) continue
+		const index = copies[0]?.indexOf(element) ?? -1
+		groups.push([element, ...copies.slice(1).flatMap((copy) => copy[index] ?? [])])
 	}
 
 	const seen = new Set<string>()
@@ -160,6 +167,28 @@ export const placeCursor = (
 	}
 	return describe(row.element)
 }
+
+/**
+ * The copy of a row that is on screen, for a transition that starts from it (a
+ * project's card zooming into its dialog): the twin that is clipped away would be
+ * captured as nothing.
+ */
+export const visibleTwin = (element: HTMLElement): HTMLElement => {
+	const row = rowOf(element)
+	return row?.twins.find((twin) => shown(twin) !== null) ?? element
+}
+
+/**
+ * Where the cursor starts on a screen: the row the page marks as its way on
+ * (`data-cursor-home`: a landing page's call to action, the Library on the front
+ * page), or the first row of the reading pane, or the row that marks where the
+ * reader is (`aria-current`: the ledger's progress bar), or the first row at all.
+ */
+export const homeRow = (list: readonly Row[]): Row | undefined =>
+	list.find((row) => row.element.hasAttribute("data-cursor-home")) ??
+	list.find((row) => row.element.closest("[data-leaf]") !== null) ??
+	list.find((row) => row.element.hasAttribute("aria-current")) ??
+	list[0]
 
 /** The row the cursor is on, if it is still on screen. */
 export const cursorRow = (list: readonly Row[] = rows()): Row | undefined =>

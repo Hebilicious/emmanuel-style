@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeblog_1j1hl4",
     "kind": "query",
-    "hash": "8f91a081274f75e06e04a420b6066b05b475b5c22be01579215e963254a675e2",
+    "hash": "a7eeb5b5cf7a07777135d2156a9cea1fc77d65322a4f7dc0a517939866de8daa",
     "raw": `query Routeblog_1j1hl4 {
     posts {
         __typename
@@ -46,6 +46,15 @@ const artifact = {
             url
         }
         slug
+    }
+    skills {
+        __typename
+        description
+        evidence
+        name
+        steps
+        title
+        whenToUse
     }
 }
 `,
@@ -322,6 +331,66 @@ const artifact = {
                 },
                 "visible": true,
             },
+
+            "skills": {
+                "type": "Skill",
+                "modifiers": "[Skill!]",
+                "keyRaw": "skills",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "description": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "description",
+                            "visible": true,
+                        },
+
+                        "evidence": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "evidence",
+                            "visible": true,
+                        },
+
+                        "name": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "name",
+                            "visible": true,
+                        },
+
+                        "steps": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "steps",
+                            "visible": true,
+                        },
+
+                        "title": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "title",
+                            "visible": true,
+                        },
+
+                        "whenToUse": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "whenToUse",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
         },
     },
 
@@ -375,6 +444,15 @@ export type Routeblog_1j1hl4$result = {
 		}>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly id: string;
 		readonly title: string;
@@ -419,6 +497,15 @@ export type Routeblog_1j1hl4$unmasked = {
 			readonly homepage: string | null;
 			readonly archived: boolean;
 		}>;
+	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly __typename: "Skill";
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{
 		readonly __typename: "Role";

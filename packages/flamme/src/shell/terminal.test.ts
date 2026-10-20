@@ -24,6 +24,16 @@ const index: TerminalIndex = {
 			shelf: "Tooling"
 		}
 	],
+	skills: [
+		{
+			name: "edge-native-backends",
+			title: "Edge-native backends",
+			description: "Use when an API has to answer close to its readers.",
+			whenToUse: ["An API that is slow far from its region"],
+			steps: ["Put the API on Workers"],
+			evidence: ["cssforge"]
+		}
+	],
 	roles: [
 		{
 			id: "acme-2020-01",
@@ -44,7 +54,7 @@ describe("terminal", () => {
 	})
 
 	it("lists directories and opens sections", () => {
-		expect(run("ls", "/", index).output).toBe("blog/\nexperience/\nhome/\nlibrary/")
+		expect(run("ls", "/", index).output).toBe("blog/\nexperience/\nhome/\nlibrary/\nskills/")
 		expect(run("ls blog", "/", index).output).toBe("hyper-anabasis.md")
 		expect(run("cd library", "/", index)).toMatchObject({
 			cwd: "/library",
@@ -66,8 +76,19 @@ describe("terminal", () => {
 		})
 		expect(run("open cssforge", "/", index).action).toEqual({
 			kind: "go",
-			href: "/library/cssforge"
+			href: "/library?open=cssforge"
 		})
+	})
+
+	it("prints a skill as the SKILL.md it is written as", () => {
+		const output = run("cat skills/edge-native-backends.md", "/", index).output
+		expect(output.split("\n").slice(0, 4)).toEqual([
+			"---",
+			"name: edge-native-backends",
+			"description: Use when an API has to answer close to its readers.",
+			"---"
+		])
+		expect(output).toContain("library/cssforge.txt")
 	})
 
 	it("searches article text, projects and roles", () => {

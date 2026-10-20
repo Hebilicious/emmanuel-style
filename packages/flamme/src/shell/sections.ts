@@ -52,6 +52,15 @@ export const SECTIONS: readonly Section[] = [
 		dateline: "the ledger",
 		title: "Experience · Emmanuel",
 		match: (path) => path.startsWith("/experience")
+	},
+	{
+		label: "skills",
+		href: "/skills",
+		key: "s",
+		plate: "Skills",
+		dateline: "for hire",
+		title: "Skills · Emmanuel",
+		match: (path) => path.startsWith("/skills")
 	}
 ]
 

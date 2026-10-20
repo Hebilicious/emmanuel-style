@@ -1,4 +1,5 @@
-# The front page: the site's facts, and the latest dispatch with its plate.
+# The front page: the site's facts, the Library it leads with, and the latest
+# dispatch with its plate.
 query Home {
 	site {
 		name
@@ -15,6 +16,18 @@ query Home {
 			kind
 			image
 			caption
+		}
+	}
+	shelves {
+		slug
+		projects {
+			name
+			title
+			kind
+			featured
+			contributions
+			activity
+			cover
 		}
 	}
 }

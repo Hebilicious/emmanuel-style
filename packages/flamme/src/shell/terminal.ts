@@ -11,7 +11,8 @@
  *   help · clear · exit
  *
  * The directories are the sections; the files are the articles (`blog/<slug>.md`),
- * the projects (`library/<name>.txt`) and the roles (`experience/<id>.txt`).
+ * the projects (`library/<name>.txt`), the roles (`experience/<id>.txt`) and the
+ * skills (`skills/<name>.md`, each printed as the `SKILL.md` it is written as).
  * Everything is answered from the index the layout reads through Flamme, which is
  * the bundle, so the prompt works with the network off.
  *
@@ -40,6 +41,15 @@ export interface IndexProject {
 	readonly shelf: string
 }
 
+export interface IndexSkill {
+	readonly name: string
+	readonly title: string
+	readonly description: string
+	readonly whenToUse: readonly string[]
+	readonly steps: readonly string[]
+	readonly evidence: readonly string[]
+}
+
 export interface IndexRole {
 	readonly id: string
 	readonly title: string
@@ -53,6 +63,7 @@ export interface TerminalIndex {
 	readonly articles: readonly IndexArticle[]
 	readonly projects: readonly IndexProject[]
 	readonly roles: readonly IndexRole[]
+	readonly skills: readonly IndexSkill[]
 }
 
 export type Action =
@@ -74,7 +85,8 @@ const DIRECTORIES: Record<string, { href: string; about: string }> = {
 	home: { href: "/", about: "the front page" },
 	library: { href: "/library", about: "the work, by shelf" },
 	blog: { href: "/blog", about: "every article" },
-	experience: { href: "/experience", about: "roles and education" }
+	experience: { href: "/experience", about: "roles and education" },
+	skills: { href: "/skills", about: "what can be asked for, as agent skills" }
 }
 
 export const COMMANDS = [
@@ -130,6 +142,7 @@ const entries = (index: TerminalIndex, directory: string): string[] | null => {
 	if (clean === "blog") return index.articles.map((article) => `${article.slug}.md`)
 	if (clean === "library") return index.projects.map((project) => `${project.name}.txt`)
 	if (clean === "experience") return index.roles.map(roleFile)
+	if (clean === "skills") return index.skills.map((skill) => `${skill.name}.md`)
 	return null
 }
 
@@ -152,6 +165,8 @@ const lookup = (index: TerminalIndex, cwd: string, target: string) => {
 	if (article && (anywhere || directory === "blog")) return { kind: "article" as const, article }
 	const project = index.projects.find((candidate) => candidate.name === name)
 	if (project && (anywhere || directory === "library")) return { kind: "project" as const, project }
+	const skill = index.skills.find((candidate) => candidate.name === name)
+	if (skill && (anywhere || directory === "skills")) return { kind: "skill" as const, skill }
 	const role = index.roles.find((candidate) => candidate.id === name)
 	if (role && (anywhere || directory === "experience")) return { kind: "role" as const, role }
 	return null
@@ -190,6 +205,22 @@ const cat = (index: TerminalIndex, cwd: string, target: string): string => {
 				"",
 				`open library/${project.name}.txt to read it`
 			].join("\n")
+		}
+		case "skill": {
+			const { skill } = found
+			return clip([
+				"---",
+				`name: ${skill.name}`,
+				`description: ${skill.description}`,
+				"---",
+				`# ${skill.title}`,
+				"## When to use",
+				...skill.whenToUse.map((line) => `- ${line}`),
+				"## Steps",
+				...skill.steps.map((line, number) => `${number + 1}. ${line}`),
+				"## Evidence",
+				skill.evidence.map((name) => `library/${name}.txt`).join("  ")
+			])
 		}
 		case "role": {
 			const { role } = found
@@ -240,6 +271,19 @@ const grep = (index: TerminalIndex, args: readonly string[]): string => {
 		if (!expression.test(text)) continue
 		hits.push(
 			namesOnly ? `library/${project.name}.txt` : `library/${project.name}.txt: ${project.tagline}`
+		)
+	}
+	for (const skill of index.skills) {
+		const text = [
+			skill.name,
+			skill.title,
+			skill.description,
+			...skill.whenToUse,
+			...skill.steps
+		].join(" ")
+		if (!expression.test(text)) continue
+		hits.push(
+			namesOnly ? `skills/${skill.name}.md` : `skills/${skill.name}.md: ${skill.description}`
 		)
 	}
 	for (const role of index.roles) {
@@ -316,12 +360,14 @@ export const run = (line: string, cwd: string, index: TerminalIndex): Result => 
 					}
 				case "project":
 					return {
-						output: `→ /library/${found.project.name}`,
+						output: `→ /library?open=${found.project.name}`,
 						cwd,
-						action: { kind: "go", href: `/library/${found.project.name}` }
+						action: { kind: "go", href: `/library?open=${found.project.name}` }
 					}
 				case "role":
 					return { output: "→ /experience", cwd, action: { kind: "go", href: "/experience" } }
+				case "skill":
+					return { output: "→ /skills", cwd, action: { kind: "go", href: "/skills" } }
 				default:
 					return { output: "", cwd }
 			}
@@ -376,7 +422,8 @@ export const complete = (line: string, cwd: string, index: TerminalIndex): strin
 	const files = [
 		...index.articles.map((article) => `blog/${article.slug}.md`),
 		...index.projects.map((project) => `library/${project.name}.txt`),
-		...index.roles.map((role) => `experience/${roleFile(role)}`)
+		...index.roles.map((role) => `experience/${roleFile(role)}`),
+		...index.skills.map((skill) => `skills/${skill.name}.md`)
 	]
 	const here = cwd.replace(/^\/+|\/+$/g, "")
 	const local =

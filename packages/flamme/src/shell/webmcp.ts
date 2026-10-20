@@ -156,7 +156,7 @@ export const registerWebMcp = (shell: Shell, router: Router, index: () => Termin
 		},
 		{
 			name: "open_project",
-			description: "Open a project's page in the Library by its name, as list_projects prints it.",
+			description: "Open a project in the Library by its name, as list_projects prints it.",
 			inputSchema: {
 				type: "object",
 				properties: { name: { type: "string", description: "The project's name." } },
@@ -167,7 +167,7 @@ export const registerWebMcp = (shell: Shell, router: Router, index: () => Termin
 					(candidate) => candidate.name === String(args["name"])
 				)
 				if (project === undefined) return text(`No project named "${String(args["name"])}".`)
-				await router.push(`/library/${project.name}`)
+				await router.push(`/library?open=${project.name}`)
 				return text(`Opened ${project.title}`)
 			}
 		},

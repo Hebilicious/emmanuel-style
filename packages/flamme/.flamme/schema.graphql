@@ -97,6 +97,9 @@ type Query {
   shelves: [Shelf!]
   site: Site
 
+  """The skills, in the order the Skills section reads them."""
+  skills: [Skill!]
+
   """Repositories with their star counts, for the Library."""
   stars(names: [String!]!): [Repository!]
 }
@@ -151,6 +154,18 @@ type Site {
   name: String!
   sections: [Shelf!]
   tagline: String!
+}
+
+"""One skill, written as an agent skill."""
+type Skill {
+  description: String!
+  evidence: [String!]!
+  example: String!
+  name: ID!
+  steps: [String!]!
+  title: String!
+  tools: [String!]!
+  whenToUse: [String!]!
 }
 
 directive @loading(count: Int, cascade: Boolean) on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD

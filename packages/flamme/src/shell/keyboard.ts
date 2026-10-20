@@ -5,13 +5,14 @@
  * One listener owns every key, because splitting them across modules is what
  * once left a `g` armed in one closure and its second key delivered to another.
  *
- *   g h · g l · g b · g e    home, library, blog, experience (marked in the bar)
+ *   g h · g l · g b · g e · g s   home, library, blog, experience, skills (in the bar)
  *   g t · t                  switch the theme
  *   ← ↓ ↑ → · h j k l        move the cursor across the screen; past its edge, turn
  *   n · p                    next and previous page (also PageDown PageUp, Space)
  *   g g · G                  first and last row
  *   Home · End               first and last page
  *   Enter                    follow the row: open a link, a project, a figure
+ *   n · p · Esc              in an open project: the next, the previous, close
  *   / · : · ?                open the prompt (? prints the help)
  *   Ctrl+`                   open or close the prompt
  *   Esc                      close whatever is open
@@ -34,6 +35,7 @@ import {
 	cursorRow,
 	describe,
 	type Heading,
+	homeRow,
 	nearest,
 	nearestOnSide,
 	placeCursor,
@@ -104,7 +106,10 @@ export const useKeyboard = (
 			requestAnimationFrame(() => {
 				const list = rows()
 				if (land?.at === "side") place(nearestOnSide(list, land.side, land.y), list)
-				else place(land?.at === "last" ? list.at(-1) : list[0], list)
+				else if (land?.at === "last") place(list.at(-1), list)
+				else if (land?.at === "first")
+					place(list.find((row) => row.element.closest("[data-leaf]")) ?? list[0], list)
+				else place(homeRow(list), list)
 			})
 		)
 	}
@@ -113,7 +118,8 @@ export const useKeyboard = (
 	const turnFrom = (heading: Heading, from: Row | undefined) => {
 		const turner = shell.turner
 		const position = shell.position
-		if (turner === null || position === null) return
+		// The pages under an open dialog stay where they are.
+		if (turner === null || position === null || shell.dialog !== null) return
 		const forward = heading === "down" || heading === "right"
 		if (forward ? position.current >= position.total : position.current <= 1) return
 		const y = from?.box.top ?? 0
@@ -177,6 +183,25 @@ export const useKeyboard = (
 			event.preventDefault()
 			if (shell.prompt) prompt.close()
 			else prompt.open()
+			return
+		}
+
+		/*
+		 * An open project is read like a page: the arrows and Enter reach its links,
+		 * `n` and `p` go to the next and previous project, Esc sets it back down. Tab
+		 * is left to the browser, which keeps the focus inside the dialog's links.
+		 */
+		if (shell.dialog?.kind === "project") {
+			if (event.metaKey || event.ctrlKey || event.altKey || typing(event.target)) return
+			const key = event.key
+			const heading = ARROWS[key]
+			if (heading !== undefined) move(heading)
+			else if (key === "Enter") follow()
+			else if (key === "n") shell.project?.next()
+			else if (key === "p") shell.project?.previous()
+			else if (key === "Escape" || key === "q") shell.project?.close()
+			else return
+			event.preventDefault()
 			return
 		}
 

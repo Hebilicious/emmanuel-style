@@ -1,0 +1,14 @@
+# The Skills section: every skill, written as an agent skill, with the names of
+# the Library projects that are its evidence.
+query Skills {
+	skills {
+		name
+		title
+		description
+		whenToUse
+		steps
+		tools
+		evidence
+		example
+	}
+}

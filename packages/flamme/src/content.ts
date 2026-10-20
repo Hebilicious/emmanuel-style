@@ -19,7 +19,8 @@ import type {
 	RoleShape,
 	SchoolShape,
 	ShelfShape,
-	SiteShape
+	SiteShape,
+	SkillShape
 } from "@emmanuel/schema"
 import generated from "../.content/content.ts"
 
@@ -29,6 +30,7 @@ export interface ContentModule {
 	readonly posts: PostShape[]
 	readonly roles: RoleShape[]
 	readonly schools: SchoolShape[]
+	readonly skills: SkillShape[]
 	/** A hash of the content, which changes whenever any of it does. */
 	readonly version: string
 }
@@ -43,6 +45,7 @@ export const projects: ProjectShape[] = shelves.flatMap((shelf) => shelf.project
 export const posts: PostShape[] = content.posts
 export const roles: RoleShape[] = content.roles
 export const schools: SchoolShape[] = content.schools
+export const skills: SkillShape[] = content.skills
 export const contentVersion: string = content.version
 
 /** One project by its name, or `null`. */

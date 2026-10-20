@@ -254,6 +254,13 @@ let generation = 0
  */
 const measureAll = async () => {
 	const run = (generation += 1)
+	/*
+	 * Where the reader is, taken before anything moves: once the new geometry is
+	 * read, the screens are recomputed from the old heights at the new size, and the
+	 * block at the top of the "current" screen is not the one the reader was on.
+	 */
+	const fresh = !ready.value
+	const anchor = fresh ? null : anchorOf()
 	readGeometry()
 	await nextTick()
 	/*
@@ -330,8 +337,6 @@ const measureAll = async () => {
 		noteGap.value = px(getComputedStyle(list).rowGap)
 	}
 
-	const fresh = !ready.value
-	const anchor = fresh ? null : anchorOf()
 	noteHeights.value = heights
 	fitScale.value = scales
 	measured.value = next

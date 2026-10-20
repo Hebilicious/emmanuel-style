@@ -370,18 +370,161 @@
 }
 
 /*
- * A page turn does not change the masthead, so the nameplate and the section mark
- * are shown as they are. Left to the default cross-fade, two identical snapshots
- * blended halfway dim the title in WebKit, which does not add them back up.
+ * A page turn does not change the masthead, and a zoom changes neither the masthead
+ * nor the pages under the dialog, so those are shown as they are. Left to the
+ * default cross-fade, two identical snapshots blended halfway dim in WebKit, which
+ * does not add them back up.
  */
 :root[data-turn-kind="page"]::view-transition-old(plate),
-:root[data-turn-kind="page"]::view-transition-old(section-mark) {
+:root[data-turn-kind="page"]::view-transition-old(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-old(plate),
+:root[data-turn-kind="zoom"]::view-transition-old(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-old(ledger-progress),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-left),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-right),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-single) {
   display: none;
 }
 
 :root[data-turn-kind="page"]::view-transition-new(plate),
-:root[data-turn-kind="page"]::view-transition-new(section-mark) {
+:root[data-turn-kind="page"]::view-transition-new(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-new(plate),
+:root[data-turn-kind="zoom"]::view-transition-new(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-new(ledger-progress),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-left),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-right),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-single) {
   animation: none;
+}
+
+/* ------------------------------------------------------------------ zoom */
+
+/*
+ * A project opens from its card: the card is lifted off the page and grows into
+ * the dialog, its plate travelling to the plate's place in the dialog, while the
+ * page behind dims. Closing sets it back down where it came from. With no card to
+ * come from (a link straight to `?open=`) the dialog rises from the middle of the
+ * page; with no card to return to, it sinks back into it.
+ */
+:root[data-turn-kind="zoom"] {
+  --zoom-duration: 620ms;
+  --zoom-ease: cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project),
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
+  animation-duration: var(--zoom-duration);
+  animation-timing-function: var(--zoom-ease);
+}
+
+/* Both snapshots fill the box as it grows, rather than keeping their own height. */
+:root[data-turn-kind="zoom"]::view-transition-old(project),
+:root[data-turn-kind="zoom"]::view-transition-new(project),
+:root[data-turn-kind="zoom"]::view-transition-old(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-new(project-plate) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+  animation-duration: var(--zoom-duration);
+  animation-timing-function: var(--zoom-ease);
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project) {
+  animation-name: zoom-card-out;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project) {
+  animation-name: zoom-card-in;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
+  z-index: 2;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project):only-child {
+  animation-name: zoom-rise;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project):only-child {
+  animation-name: zoom-sink;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-old(project-backdrop) {
+  animation-duration: calc(var(--zoom-duration) * 0.8);
+  animation-timing-function: linear;
+}
+
+/* One project for the next: the old one slides off, the next comes in after it. */
+:root[data-turn="swap"]::view-transition-group(project) {
+  animation: none;
+}
+
+:root[data-turn="swap"]::view-transition-old(project) {
+  animation: swap-out 320ms var(--turn-lift) both;
+}
+
+:root[data-turn="swap"]::view-transition-new(project) {
+  animation: swap-in 420ms var(--turn-land) both;
+}
+
+:root[data-turn="swap"]::view-transition-old(project-plate),
+:root[data-turn="swap"]::view-transition-new(project-plate) {
+  animation-duration: 420ms;
+}
+
+@keyframes zoom-card-out {
+  0% {
+    opacity: 1;
+  }
+  32%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-card-in {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  60%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-rise {
+  from {
+    opacity: 0;
+    transform: translateY(3%) scale(0.94);
+  }
+}
+
+@keyframes zoom-sink {
+  to {
+    opacity: 0;
+    transform: translateY(3%) scale(0.94);
+  }
+}
+
+@keyframes swap-out {
+  to {
+    opacity: 0;
+    transform: translateX(-4%);
+  }
+}
+
+@keyframes swap-in {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(4%);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* The marker under the current section slides to the new one. */

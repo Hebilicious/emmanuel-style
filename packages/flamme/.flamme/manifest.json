@@ -2,7 +2,7 @@
   "version": 1,
   "compiler": "0.0.0",
   "runtime": "0.0.0",
-  "schemaHash": "35af685651600fba8729abd0725cccc4baac2582078c188853b37e568ae9a1ea",
+  "schemaHash": "f89c13f1e424ae9d44e3e61f654ef8df09c5c704a05c9981b80ae2c57fef3892",
   "documents": [
     {
       "name": "Blog",
@@ -34,7 +34,7 @@
     {
       "name": "Home",
       "kind": "query",
-      "hash": "5b9a6816a8140330f8371be38a638c6c4446649bea655974dd40e9720efd168b",
+      "hash": "8e9ec4c371b9202e4a362f458344aae8d6177bdf909622fedac80c032ca26ef9",
       "file": "artifacts/Home.ts",
       "sources": [
         "src/pages/index/+page.gql"
@@ -59,18 +59,18 @@
       ]
     },
     {
-      "name": "Project",
+      "name": "ProjectDetail",
       "kind": "query",
-      "hash": "d6b50631b059ee813bd9523d16af40ee093054341f0a01bd6f8f7f2619a1f432",
-      "file": "artifacts/Project.ts",
+      "hash": "516618497b4ff2aebd9b0ecb2a631c96e41214f8539ed7c800f7713cfb82bd8f",
+      "file": "artifacts/ProjectDetail.ts",
       "sources": [
-        "src/pages/library/[name]/+page.gql"
+        "src/documents/ProjectDetail.gql"
       ]
     },
     {
       "name": "Route_layout_oy84b0",
       "kind": "query",
-      "hash": "9bd57c1d307623009697c1ebdf294c2800d67cb998ffb98a49fd7460476ca3f8",
+      "hash": "c6348839d572727f8211ba13f9c287b930ae7a76d4283f4178cd99644506b3be",
       "file": "artifacts/Route_layout_oy84b0.ts",
       "sources": [
         ".flamme/composed/Route_layout_oy84b0.composed.gql"
@@ -79,7 +79,7 @@
     {
       "name": "Routeblog_1j1hl4",
       "kind": "query",
-      "hash": "8f91a081274f75e06e04a420b6066b05b475b5c22be01579215e963254a675e2",
+      "hash": "a7eeb5b5cf7a07777135d2156a9cea1fc77d65322a4f7dc0a517939866de8daa",
       "file": "artifacts/Routeblog_1j1hl4.ts",
       "sources": [
         ".flamme/composed/Routeblog_1j1hl4.composed.gql"
@@ -88,7 +88,7 @@
     {
       "name": "Routeblog__slug__1gn4ng",
       "kind": "query",
-      "hash": "488cbab39b5b9939517effb2303da9f305cd662e9c6f3ed73dbea514b9d96c0e",
+      "hash": "ddea2e9dd902b9eded05ce076c5a7e5455a465be1ac5e00c80a77b3d2085fe02",
       "file": "artifacts/Routeblog__slug__1gn4ng.ts",
       "sources": [
         ".flamme/composed/Routeblog__slug__1gn4ng.composed.gql"
@@ -97,7 +97,7 @@
     {
       "name": "Routeexperience_fpods0",
       "kind": "query",
-      "hash": "425e92dab7004eddc0bee8a9c4ad9583f8749c88a9705ee147deaa5a22c8ac57",
+      "hash": "94561059d38ea4a40225bf0dfc4515c08689950df2fbb4add0e3322fd5f6a4e4",
       "file": "artifacts/Routeexperience_fpods0.ts",
       "sources": [
         ".flamme/composed/Routeexperience_fpods0.composed.gql"
@@ -106,37 +106,46 @@
     {
       "name": "Routeindex_1pcgrc",
       "kind": "query",
-      "hash": "faef8d5829cb662d6c4d3f41e4c50cd39834a3142742827c37773cda4c1bad06",
+      "hash": "b52880dd0379b6b8d7bdaab38306292f3d5c5fecd9c318f937d9507d4b3e9a65",
       "file": "artifacts/Routeindex_1pcgrc.ts",
       "sources": [
         ".flamme/composed/Routeindex_1pcgrc.composed.gql"
       ]
     },
     {
-      "name": "Routelibrary__name__2wenng",
-      "kind": "query",
-      "hash": "801417c86464c85c2c0e41ce85920ea65b947e3ad471083efa9c68f7c1b69b5c",
-      "file": "artifacts/Routelibrary__name__2wenng.ts",
-      "sources": [
-        ".flamme/composed/Routelibrary__name__2wenng.composed.gql"
-      ]
-    },
-    {
       "name": "Routelibrary_n8fr6o",
       "kind": "query",
-      "hash": "ed1898041ac6ec50ebbaf76266a7086a2229e036f3a3ae0b75820e462b997eeb",
+      "hash": "e105dc1ae89696fb68f4a60aabea5c7fc9c8be841a7e0c534cb2e0ba04e1834c",
       "file": "artifacts/Routelibrary_n8fr6o.ts",
       "sources": [
         ".flamme/composed/Routelibrary_n8fr6o.composed.gql"
       ]
     },
     {
+      "name": "Routeskills_rdiloo",
+      "kind": "query",
+      "hash": "b6827e51b34d34cb39df1649d237c0c9c9f3b9e247a56ea74c2e278e256a5e4c",
+      "file": "artifacts/Routeskills_rdiloo.ts",
+      "sources": [
+        ".flamme/composed/Routeskills_rdiloo.composed.gql"
+      ]
+    },
+    {
       "name": "SiteIndex",
       "kind": "query",
-      "hash": "e7aef8824630bb776709d6adf4e38b187e29aa8f3e36eea553b907325d8453bf",
+      "hash": "a77bc0e2dc38a160addaa2f716128b1b824b5ff451220a00304dd366e4c681f3",
       "file": "artifacts/SiteIndex.ts",
       "sources": [
         "src/pages/+layout.gql"
+      ]
+    },
+    {
+      "name": "Skills",
+      "kind": "query",
+      "hash": "c44e406481b3f05278f7fae7cc685bc84c61de030d1d2503a45cbb3a37868ebe",
+      "file": "artifacts/Skills.ts",
+      "sources": [
+        "src/pages/skills/+page.gql"
       ]
     },
     {

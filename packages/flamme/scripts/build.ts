@@ -35,25 +35,23 @@ const walk = async (dir: string): Promise<string[]> => {
 /**
  * The routes to prerender, one directory each.
  *
- * The article and project routes come from the generated content module itself, so a
- * new post or project is prerendered without this list changing. Reading the module rather than scanning its
+ * The article routes come from the generated content module itself, so a new post is
+ * prerendered without this list changing. A project is not a route of its own: it
+ * opens over the Library (`?open=<name>`). Reading the module rather than scanning its
  * text matters: a regex over the file also matches a shelf's slug, which produced
  * `/blog/modules` and friends, routes that do not exist.
  */
 const routes = async (): Promise<string[]> => {
 	const content = (await import("../.content/content.ts")) as {
 		posts: readonly { slug: string }[]
-		shelves: readonly { projects: readonly { name: string }[] }[]
 	}
 	return [
 		"/",
 		"/library",
 		"/blog",
 		"/experience",
-		...content.posts.map((post) => `/blog/${post.slug}`),
-		...content.shelves.flatMap((shelf) =>
-			shelf.projects.map((project) => `/library/${project.name}`)
-		)
+		"/skills",
+		...content.posts.map((post) => `/blog/${post.slug}`)
 	]
 }
 

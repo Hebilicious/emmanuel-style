@@ -16,6 +16,7 @@ import { RouterView, useRoute, useRouter } from "vue-router"
 import Bar from "../components/Bar.vue"
 import Dock from "../components/Dock.vue"
 import MouseGate from "../components/MouseGate.vue"
+import ProjectDialog from "../components/ProjectDialog.vue"
 import Zoom from "../components/Zoom.vue"
 import { useFootnotes } from "../shell/footnotes.js"
 import { useKeyboard } from "../shell/keyboard.js"
@@ -100,6 +101,7 @@ watch(
     <Dock ref="dock" />
 
     <MouseGate />
+    <ProjectDialog />
     <Zoom />
   </div>
 </template>

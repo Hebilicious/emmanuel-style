@@ -12,10 +12,16 @@
  * One transition runs at a time. Starting a second one skips the first, which is
  * what made quick turns look broken, so a caller that turns often (the pager)
  * waits for `finished` before it starts the next.
+ *
+ * Opening a project is not a turn: the pages stay where they are and the card is
+ * lifted off the page into a dialog (`zoom`). The card and the dialog carry the
+ * same transition name, so the one grows into the other.
  */
 
 export type Direction = "forward" | "back"
-export type TurnKind = "page" | "route"
+export type TurnKind = "page" | "route" | "zoom"
+/** What a zoom does: open a card into its dialog, close it back, or swap one project for the next. */
+export type Zoom = "open" | "close" | "swap"
 
 interface ViewTransitionLike {
 	readonly finished: Promise<void>
@@ -44,7 +50,7 @@ let active: ViewTransitionLike | null = null
  * reader still gets the page, only without the animation.
  */
 export const turn = async (
-	direction: Direction,
+	direction: Direction | Zoom,
 	update: () => Promise<void> | void,
 	kind: TurnKind = "page",
 	/** Riffled: more turns are waiting behind this one, so it is quicker. */
@@ -62,6 +68,9 @@ export const turn = async (
 	else delete root.dataset["turnQuick"]
 	const transition = doc.startViewTransition(update)
 	active = transition
+	// A transition overtaken by the next one rejects these; the page is updated either way.
+	transition.ready.catch(() => undefined)
+	transition.updateCallbackDone.catch(() => undefined)
 	try {
 		await transition.finished
 	} catch {
@@ -77,8 +86,12 @@ export const turn = async (
 	}
 }
 
+/** Run `update` as a zoom: a card lifted into its dialog, or set back down. */
+export const zoom = (mode: Zoom, update: () => Promise<void> | void): Promise<void> =>
+	turn(mode, update, "zoom")
+
 /** Where a path sits in the paper, for the direction of a turn between two routes. */
-const SECTION_ORDER = ["/", "/library", "/blog", "/experience"]
+const SECTION_ORDER = ["/", "/library", "/blog", "/experience", "/skills"]
 
 export const rankOf = (path: string): number => {
 	const clean = path.replace(/\/+$/, "") || "/"

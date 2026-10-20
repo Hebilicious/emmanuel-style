@@ -33,6 +33,14 @@ export const useSiteIndex = (): ComputedRef<TerminalIndex> => {
 				shelf: shelf.label
 			}))
 		),
+		skills: (data.value?.skills ?? []).map((skill) => ({
+			name: skill.name,
+			title: skill.title,
+			description: skill.description,
+			whenToUse: skill.whenToUse,
+			steps: skill.steps,
+			evidence: skill.evidence
+		})),
 		roles: (data.value?.roles ?? []).map((role) => ({
 			id: role.id,
 			title: role.title,

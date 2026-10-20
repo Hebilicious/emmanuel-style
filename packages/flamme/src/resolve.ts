@@ -28,6 +28,7 @@ import {
 	projects as allProjects,
 	roles as allRoles,
 	schools as allSchools,
+	skills as allSkills,
 	shelves as allShelves,
 	site as siteContent
 } from "./content.js"
@@ -165,6 +166,9 @@ const resolveRoot = (
 				break
 			case "School":
 				value = allSchools
+				break
+			case "Skill":
+				value = allSkills
 				break
 			default:
 				// Not a content field. `transport.ts` sends those to the worker, so
