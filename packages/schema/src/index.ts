@@ -8,7 +8,7 @@
  *   - the site (`@emmanuel/flamme`) compiles its documents against it, so a
  *     document that asks for a field that does not exist fails at build time.
  *
- * The content types (`Site`, `DocPage`, `Shelf`, `Repository`, `Role`) are in the
+ * The content types (`Site`, `Post`, `Shelf`, `Project`, `Role`) are in the
  * same schema on purpose. The markdown pipeline answers them from the bundle, so a
  * page renders with the network off, and the site reads its own content through
  * the same cache, fragments and local-first layer as the data that does come from
@@ -20,7 +20,7 @@
 
 import SchemaBuilder from "@pothos/core"
 
-/** A repository published on GitHub, as the Library lists it. */
+/** A repository published on GitHub, as the worker reports its star count. */
 export interface RepositoryShape {
 	name: string
 	description: string
@@ -33,11 +33,81 @@ export interface RepositoryShape {
 	stars: number | null
 }
 
-/** One shelf of the Library: a named group of repositories. */
+/** A link worth following from a project: a pull request, a page. */
+export interface LinkShape {
+	label: string
+	url: string
+	/** The month it is from, `YYYY-MM`, when it has one. */
+	date: string | null
+}
+
+/**
+ * One piece of work in the Library: a project of its own, or a body of work in
+ * someone else's repository (`kind: "upstream"` or `"work"`), read through the pull
+ * requests merged there.
+ */
+export interface ProjectShape {
+	/** The address of its page, `/library/<name>`. */
+	name: string
+	title: string
+	tagline: string
+	/** What it does and why, a paragraph each. */
+	body: string[]
+	/** What is worth knowing about it, a line each. */
+	points: string[]
+	kind: "project" | "upstream" | "work"
+	/** The slug of its shelf. */
+	shelf: string
+	language: string
+	stack: string[]
+	url: string
+	homepage: string | null
+	archived: boolean
+	/** The repository under the site's GitHub account, for its star count; `null` for outside work. */
+	repo: string | null
+	started: number
+	/** The year it stopped, `null` while it is maintained. */
+	ended: number | null
+	/** Its place on the Library's front page, `null` when it is not there. */
+	featured: number | null
+	/** The merged pull requests, for outside work; `null` for a project of its own. */
+	contributions: number | null
+	/** The month of each merged pull request, `YYYY-MM`, oldest first. */
+	activity: string[]
+	links: LinkShape[]
+	/** The picture its cover draws. */
+	cover: string
+}
+
+/** One shelf of the Library. */
 export interface ShelfShape {
 	slug: string
 	label: string
-	repositories: RepositoryShape[]
+	/** The line under the shelf's title. */
+	blurb: string
+	projects: ProjectShape[]
+}
+
+/**
+ * One skill, written the way an agent skill is (a `SKILL.md`): a name, a
+ * description that says when to load it, and what it does once loaded. Each cites
+ * the projects in the Library that are its evidence.
+ */
+export interface SkillShape {
+	/** The skill's name, kebab-case, as a `SKILL.md` front matter has it. */
+	name: string
+	title: string
+	/** "Use when …": the line an agent reads to decide whether to load the skill. */
+	description: string
+	/** The situations to call it for, a line each. */
+	whenToUse: string[]
+	/** How it runs, in order. */
+	steps: string[]
+	tools: string[]
+	/** The names of the Library projects that prove it. */
+	evidence: string[]
+	/** A request it answers, as someone would write it. */
+	example: string
 }
 
 /** One role, as the Experience page reads it. */
@@ -133,9 +203,12 @@ const builder = new SchemaBuilder<{
 		Block: BlockShape
 		Note: NoteShape
 		Repository: RepositoryShape
+		Project: ProjectShape
+		Link: LinkShape
 		Shelf: ShelfShape
 		Role: RoleShape
 		School: SchoolShape
+		Skill: SkillShape
 		Favourite: { slug: string; count: number }
 	}
 }>({})
@@ -185,14 +258,55 @@ builder.objectType(Repository, {
 	})
 })
 
+builder.objectType("Link", {
+	description: "A link worth following from a project.",
+	fields: (t) => ({
+		label: t.exposeString("label", { nullable: false }),
+		url: t.exposeString("url", { nullable: false }),
+		date: t.exposeString("date", { nullable: true })
+	})
+})
+
+builder.objectType("Project", {
+	description: "One piece of work in the Library.",
+	fields: (t) => ({
+		name: t.exposeID("name", { nullable: false }),
+		title: t.exposeString("title", { nullable: false }),
+		tagline: t.exposeString("tagline", { nullable: false }),
+		body: t.exposeStringList("body", { nullable: false }),
+		points: t.exposeStringList("points", { nullable: false }),
+		kind: t.exposeString("kind", { nullable: false }),
+		shelf: t.exposeString("shelf", { nullable: false }),
+		language: t.exposeString("language", { nullable: false }),
+		stack: t.exposeStringList("stack", { nullable: false }),
+		url: t.exposeString("url", { nullable: false }),
+		homepage: t.exposeString("homepage", { nullable: true }),
+		archived: t.exposeBoolean("archived", { nullable: false }),
+		repo: t.exposeString("repo", { nullable: true }),
+		started: t.exposeInt("started", { nullable: false }),
+		ended: t.exposeInt("ended", { nullable: true }),
+		featured: t.exposeInt("featured", { nullable: true }),
+		contributions: t.exposeInt("contributions", { nullable: true }),
+		activity: t.exposeStringList("activity", { nullable: false }),
+		links: t.field({
+			type: ["Link"],
+			nullable: false,
+			resolve: (project) => project.links
+		}),
+		cover: t.exposeString("cover", { nullable: false })
+	})
+})
+
 builder.objectType("Shelf", {
-	description: "A named group of repositories.",
+	description: "One shelf of the Library.",
 	fields: (t) => ({
 		slug: t.exposeID("slug", { nullable: false }),
 		label: t.exposeString("label", { nullable: false }),
-		repositories: t.field({
-			type: [Repository],
-			resolve: (shelf) => shelf.repositories
+		blurb: t.exposeString("blurb", { nullable: false }),
+		projects: t.field({
+			type: ["Project"],
+			nullable: false,
+			resolve: (shelf) => shelf.projects
 		})
 	})
 })
@@ -246,6 +360,20 @@ builder.objectType("Role", {
 	})
 })
 
+builder.objectType("Skill", {
+	description: "One skill, written as an agent skill.",
+	fields: (t) => ({
+		name: t.exposeID("name", { nullable: false }),
+		title: t.exposeString("title", { nullable: false }),
+		description: t.exposeString("description", { nullable: false }),
+		whenToUse: t.exposeStringList("whenToUse", { nullable: false }),
+		steps: t.exposeStringList("steps", { nullable: false }),
+		tools: t.exposeStringList("tools", { nullable: false }),
+		evidence: t.exposeStringList("evidence", { nullable: false }),
+		example: t.exposeString("example", { nullable: false })
+	})
+})
+
 builder.objectType("School", {
 	description: "One education entry.",
 	fields: (t) => ({
@@ -296,10 +424,32 @@ builder.queryType({
 				throw new Error("shelves is resolved by the app, not by the schema")
 			}
 		}),
+		projects: t.field({
+			type: ["Project"],
+			description: "Every piece of work in the Library, shelf by shelf.",
+			resolve: () => {
+				throw new Error("projects is resolved by the app, not by the schema")
+			}
+		}),
+		project: t.field({
+			type: "Project",
+			nullable: true,
+			args: { name: t.arg.string({ required: true }) },
+			resolve: () => {
+				throw new Error("project is resolved by the app, not by the schema")
+			}
+		}),
 		roles: t.field({
 			type: ["Role"],
 			resolve: () => {
 				throw new Error("roles is resolved by the app, not by the schema")
+			}
+		}),
+		skills: t.field({
+			type: ["Skill"],
+			description: "The skills, in the order the Skills section reads them.",
+			resolve: () => {
+				throw new Error("skills is resolved by the app, not by the schema")
 			}
 		}),
 		schools: t.field({

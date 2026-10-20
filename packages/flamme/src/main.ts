@@ -31,6 +31,7 @@ import "./styles/fonts.css"
 import "./styles/cssforge.css"
 import "./styles/global.css"
 import "./styles/shell.css"
+import "./styles/turns.css"
 
 const start = async (): Promise<void> => {
 	const flamme = createSiteClient()
@@ -45,6 +46,19 @@ const start = async (): Promise<void> => {
 	app.use(flamme.plugin)
 	app.use(DataLoaderPlugin, dataLoader())
 	app.use(router)
+
+	/*
+	 * A new build retires the old one's chunks. A tab still running the old build
+	 * then fails to load a route it has not visited yet: the new service worker has
+	 * replaced the cache, and the server no longer has the file. Loading the target as
+	 * a page instead brings in the new build, which does have it.
+	 */
+	router.onError((error: unknown, to) => {
+		const message = error instanceof Error ? error.message : String(error)
+		if (/dynamically imported module|module script failed|loading chunk|preload/i.test(message)) {
+			window.location.assign(to.fullPath)
+		}
+	})
 
 	await router.isReady()
 	app.mount("#app")

@@ -36,7 +36,8 @@ const walk = async (dir: string): Promise<string[]> => {
  * The routes to prerender, one directory each.
  *
  * The article routes come from the generated content module itself, so a new post is
- * prerendered without this list changing. Reading the module rather than scanning its
+ * prerendered without this list changing. A project is not a route of its own: it
+ * opens over the Library (`?open=<name>`). Reading the module rather than scanning its
  * text matters: a regex over the file also matches a shelf's slug, which produced
  * `/blog/modules` and friends, routes that do not exist.
  */
@@ -49,6 +50,7 @@ const routes = async (): Promise<string[]> => {
 		"/library",
 		"/blog",
 		"/experience",
+		"/skills",
 		...content.posts.map((post) => `/blog/${post.slug}`)
 	]
 }
@@ -76,23 +78,48 @@ const main = async (): Promise<void> => {
 	}
 
 	const files = await walk(dist)
-	const urls = files.map((file) => `/${file}`).filter((url) => url !== "/precache-manifest.json")
 
 	/*
-	 * The cache name carries a hash of the file list, so a new build installs a new
-	 * cache and the activate step deletes the previous one. Without it a returning
-	 * reader keeps last build's HTML against this build's chunks.
+	 * What the worker precaches: every file the build wrote, except the source maps
+	 * (they are for a debugger, and they were half the bytes), the manifest itself,
+	 * and the worker, which the browser fetches on its own.
+	 */
+	const precached = files
+		.filter(
+			(file) => !file.endsWith(".map") && file !== "precache-manifest.json" && file !== "sw.js"
+		)
+		.sort()
+	const urls = precached.map((file) => `/${file}`)
+
+	/*
+	 * The cache is named after a hash of what it holds, contents and names both, so
+	 * a build that changes anything (a chunk, an image re-encoded under the same name)
+	 * installs a new cache, and the activate step deletes the previous one.
 	 */
 	const { createHash } = await import("node:crypto")
-	const cache = `emmanuel-${createHash("sha256").update(files.join("\n")).digest("hex").slice(0, 12)}`
+	const hash = createHash("sha256")
+	for (const file of precached) {
+		hash.update(file)
+		hash.update(await readFile(join(dist, file)))
+	}
+	const version = hash.digest("hex").slice(0, 12)
+	const cache = `emmanuel-${version}`
 
 	await writeFile(
 		join(dist, "precache-manifest.json"),
 		`${JSON.stringify({ cache, urls }, null, "\t")}\n`
 	)
 
-	const total = (await Promise.all(files.map(async (file) => (await stat(join(dist, file))).size)))
-		.reduce((sum, size) => sum + size, 0)
+	// The worker carries the version, so the browser sees a new worker for a new build.
+	const placeholder = 'const VERSION = "__BUILD__"'
+	const worker = await readFile(join(dist, "sw.js"), "utf8")
+	if (!worker.includes(placeholder))
+		throw new Error(`dist/sw.js has no \`${placeholder}\` to version`)
+	await writeFile(join(dist, "sw.js"), worker.replace(placeholder, `const VERSION = "${version}"`))
+
+	const total = (
+		await Promise.all(precached.map(async (file) => (await stat(join(dist, file))).size))
+	).reduce((sum, size) => sum + size, 0)
 
 	console.log(
 		`prerendered ${all.length} routes, precached ${urls.length} files ` +

@@ -5,13 +5,66 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeindex_1pcgrc",
     "kind": "query",
-    "hash": "6f472eb65236244016e5300af787fe3251a5bb5e7f7b775b47985113f42937b2",
+    "hash": "b52880dd0379b6b8d7bdaab38306292f3d5c5fecd9c318f937d9507d4b3e9a65",
     "raw": `query Routeindex_1pcgrc {
+    posts {
+        __typename
+        blocks {
+            __typename
+            caption
+            id
+            image
+            kind
+            text
+        }
+        date
+        description
+        slug
+        tags
+        title
+    }
+    roles {
+        __typename
+        company
+        end
+        id
+        start
+        summary
+        title
+    }
+    shelves {
+        __typename
+        label
+        projects {
+            __typename
+            activity
+            archived
+            contributions
+            cover
+            featured
+            homepage
+            kind
+            language
+            name
+            tagline
+            title
+            url
+        }
+        slug
+    }
     site {
         __typename
-        date
         name
         tagline
+    }
+    skills {
+        __typename
+        description
+        evidence
+        name
+        steps
+        title
+        whenToUse
     }
 }
 `,
@@ -21,6 +74,311 @@ const artifact = {
 
     "selection": {
         "fields": {
+            "posts": {
+                "type": "Post",
+                "modifiers": "[Post!]",
+                "keyRaw": "posts",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "blocks": {
+                            "type": "Block",
+                            "modifiers": "[Block!]",
+                            "keyRaw": "blocks",
+                            "nullable": true,
+
+                            "selection": {
+                                "fields": {
+                                    "__typename": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "__typename",
+                                    },
+
+                                    "caption": {
+                                        "type": "String",
+                                        "modifiers": "String",
+                                        "keyRaw": "caption",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "id": {
+                                        "type": "ID",
+                                        "modifiers": "ID!",
+                                        "keyRaw": "id",
+                                        "visible": true,
+                                    },
+
+                                    "image": {
+                                        "type": "String",
+                                        "modifiers": "String",
+                                        "keyRaw": "image",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "kind": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "kind",
+                                        "visible": true,
+                                    },
+
+                                    "text": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "text",
+                                        "visible": true,
+                                    },
+                                },
+                            },
+                            "visible": true,
+                        },
+
+                        "date": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "date",
+                            "visible": true,
+                        },
+
+                        "description": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "description",
+                            "visible": true,
+                        },
+
+                        "slug": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "slug",
+                            "visible": true,
+                        },
+
+                        "tags": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "tags",
+                            "visible": true,
+                        },
+
+                        "title": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "title",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
+
+            "roles": {
+                "type": "Role",
+                "modifiers": "[Role!]",
+                "keyRaw": "roles",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "company": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "company",
+                            "visible": true,
+                        },
+
+                        "end": {
+                            "type": "String",
+                            "modifiers": "String",
+                            "keyRaw": "end",
+                            "nullable": true,
+                            "visible": true,
+                        },
+
+                        "id": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "id",
+                            "visible": true,
+                        },
+
+                        "start": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "start",
+                            "visible": true,
+                        },
+
+                        "summary": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "summary",
+                            "visible": true,
+                        },
+
+                        "title": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "title",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
+
+            "shelves": {
+                "type": "Shelf",
+                "modifiers": "[Shelf!]",
+                "keyRaw": "shelves",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "label": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "label",
+                            "visible": true,
+                        },
+
+                        "projects": {
+                            "type": "Project",
+                            "modifiers": "[Project!]!",
+                            "keyRaw": "projects",
+
+                            "selection": {
+                                "fields": {
+                                    "__typename": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "__typename",
+                                    },
+
+                                    "activity": {
+                                        "type": "String",
+                                        "modifiers": "[String!]!",
+                                        "keyRaw": "activity",
+                                        "visible": true,
+                                    },
+
+                                    "archived": {
+                                        "type": "Boolean",
+                                        "modifiers": "Boolean!",
+                                        "keyRaw": "archived",
+                                        "visible": true,
+                                    },
+
+                                    "contributions": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "contributions",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "cover": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "cover",
+                                        "visible": true,
+                                    },
+
+                                    "featured": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "featured",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "homepage": {
+                                        "type": "String",
+                                        "modifiers": "String",
+                                        "keyRaw": "homepage",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "kind": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "kind",
+                                        "visible": true,
+                                    },
+
+                                    "language": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "language",
+                                        "visible": true,
+                                    },
+
+                                    "name": {
+                                        "type": "ID",
+                                        "modifiers": "ID!",
+                                        "keyRaw": "name",
+                                        "visible": true,
+                                    },
+
+                                    "tagline": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "tagline",
+                                        "visible": true,
+                                    },
+
+                                    "title": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "title",
+                                        "visible": true,
+                                    },
+
+                                    "url": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "url",
+                                        "visible": true,
+                                    },
+                                },
+                            },
+                            "visible": true,
+                        },
+
+                        "slug": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "slug",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
+
             "site": {
                 "type": "Site",
                 "modifiers": "Site",
@@ -35,13 +393,6 @@ const artifact = {
                             "keyRaw": "__typename",
                         },
 
-                        "date": {
-                            "type": "String",
-                            "modifiers": "String!",
-                            "keyRaw": "date",
-                            "visible": true,
-                        },
-
                         "name": {
                             "type": "String",
                             "modifiers": "String!",
@@ -53,6 +404,66 @@ const artifact = {
                             "type": "String",
                             "modifiers": "String!",
                             "keyRaw": "tagline",
+                            "visible": true,
+                        },
+                    },
+                },
+                "visible": true,
+            },
+
+            "skills": {
+                "type": "Skill",
+                "modifiers": "[Skill!]",
+                "keyRaw": "skills",
+                "nullable": true,
+
+                "selection": {
+                    "fields": {
+                        "__typename": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "__typename",
+                        },
+
+                        "description": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "description",
+                            "visible": true,
+                        },
+
+                        "evidence": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "evidence",
+                            "visible": true,
+                        },
+
+                        "name": {
+                            "type": "ID",
+                            "modifiers": "ID!",
+                            "keyRaw": "name",
+                            "visible": true,
+                        },
+
+                        "steps": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "steps",
+                            "visible": true,
+                        },
+
+                        "title": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "title",
+                            "visible": true,
+                        },
+
+                        "whenToUse": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "whenToUse",
                             "visible": true,
                         },
                     },
@@ -83,10 +494,61 @@ export type Routeindex_1pcgrc$artifact = typeof artifact
 export type Routeindex_1pcgrc = Artifact<'query', Routeindex_1pcgrc$result, Routeindex_1pcgrc$input, never>
 
 export type Routeindex_1pcgrc$result = {
+	readonly posts: ReadonlyArray<{
+		readonly slug: string;
+		readonly title: string;
+		readonly description: string;
+		readonly date: string;
+		readonly tags: ReadonlyArray<string>;
+		readonly blocks: ReadonlyArray<{
+			readonly id: string;
+			readonly text: string;
+			readonly kind: string;
+			readonly image: string | null;
+			readonly caption: string | null;
+		}> | null;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
+	readonly shelves: ReadonlyArray<{
+		readonly slug: string;
+		readonly label: string;
+		readonly projects: ReadonlyArray<{
+			readonly name: string;
+			readonly title: string;
+			readonly tagline: string;
+			readonly language: string;
+			readonly url: string;
+			readonly homepage: string | null;
+			readonly archived: boolean;
+			readonly kind: string;
+			readonly featured: number | null;
+			readonly contributions: number | null;
+			readonly activity: ReadonlyArray<string>;
+			readonly cover: string;
+		}>;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
+	readonly roles: ReadonlyArray<{
+		readonly id: string;
+		readonly title: string;
+		readonly company: string;
+		readonly start: string;
+		readonly end: string | null;
+		readonly summary: string;
+		readonly " $loadingFrame"?: undefined;
+	}> | null;
 	readonly site: {
 		readonly name: string;
 		readonly tagline: string;
-		readonly date: string;
 		readonly " $loadingFrame"?: undefined;
 	} | null;
 };
@@ -94,11 +556,64 @@ export type Routeindex_1pcgrc$result = {
 export type Routeindex_1pcgrc$input = Record<string, never>;
 
 export type Routeindex_1pcgrc$unmasked = {
+	readonly posts: ReadonlyArray<{
+		readonly __typename: "Post";
+		readonly slug: string;
+		readonly title: string;
+		readonly description: string;
+		readonly date: string;
+		readonly tags: ReadonlyArray<string>;
+		readonly blocks: ReadonlyArray<{
+			readonly __typename: "Block";
+			readonly id: string;
+			readonly text: string;
+			readonly kind: string;
+			readonly image: string | null;
+			readonly caption: string | null;
+		}> | null;
+	}> | null;
+	readonly shelves: ReadonlyArray<{
+		readonly __typename: "Shelf";
+		readonly slug: string;
+		readonly label: string;
+		readonly projects: ReadonlyArray<{
+			readonly __typename: "Project";
+			readonly name: string;
+			readonly title: string;
+			readonly tagline: string;
+			readonly language: string;
+			readonly url: string;
+			readonly homepage: string | null;
+			readonly archived: boolean;
+			readonly kind: string;
+			readonly featured: number | null;
+			readonly contributions: number | null;
+			readonly activity: ReadonlyArray<string>;
+			readonly cover: string;
+		}>;
+	}> | null;
+	readonly skills: ReadonlyArray<{
+		readonly __typename: "Skill";
+		readonly name: string;
+		readonly title: string;
+		readonly description: string;
+		readonly whenToUse: ReadonlyArray<string>;
+		readonly steps: ReadonlyArray<string>;
+		readonly evidence: ReadonlyArray<string>;
+	}> | null;
+	readonly roles: ReadonlyArray<{
+		readonly __typename: "Role";
+		readonly id: string;
+		readonly title: string;
+		readonly company: string;
+		readonly start: string;
+		readonly end: string | null;
+		readonly summary: string;
+	}> | null;
 	readonly site: {
 		readonly __typename: "Site";
 		readonly name: string;
 		readonly tagline: string;
-		readonly date: string;
 	} | null;
 };
 

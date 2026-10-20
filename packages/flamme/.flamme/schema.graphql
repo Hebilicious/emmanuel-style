@@ -23,6 +23,13 @@ type Favourite {
   slug: ID!
 }
 
+"""A link worth following from a project."""
+type Link {
+  date: String
+  label: String!
+  url: String!
+}
+
 type Mutation {
   """Favourite an article for this reader, or take the favourite back."""
   toggleFavourite(slug: String!): Favourite
@@ -50,6 +57,30 @@ type Post {
   title: String!
 }
 
+"""One piece of work in the Library."""
+type Project {
+  activity: [String!]!
+  archived: Boolean!
+  body: [String!]!
+  contributions: Int
+  cover: String!
+  ended: Int
+  featured: Int
+  homepage: String
+  kind: String!
+  language: String!
+  links: [Link!]!
+  name: ID!
+  points: [String!]!
+  repo: String
+  shelf: String!
+  stack: [String!]!
+  started: Int!
+  tagline: String!
+  title: String!
+  url: String!
+}
+
 type Query {
   """The favourite count of one article."""
   favourites(slug: String!): Favourite
@@ -57,10 +88,17 @@ type Query {
 
   """Every article, newest first, for the blog index."""
   posts: [Post!]
+  project(name: String!): Project
+
+  """Every piece of work in the Library, shelf by shelf."""
+  projects: [Project!]
   roles: [Role!]
   schools: [School!]
   shelves: [Shelf!]
   site: Site
+
+  """The skills, in the order the Skills section reads them."""
+  skills: [Skill!]
 
   """Repositories with their star counts, for the Library."""
   stars(names: [String!]!): [Repository!]
@@ -102,10 +140,11 @@ type School {
   summary: String!
 }
 
-"""A named group of repositories."""
+"""One shelf of the Library."""
 type Shelf {
+  blurb: String!
   label: String!
-  repositories: [Repository!]
+  projects: [Project!]!
   slug: ID!
 }
 
@@ -115,6 +154,18 @@ type Site {
   name: String!
   sections: [Shelf!]
   tagline: String!
+}
+
+"""One skill, written as an agent skill."""
+type Skill {
+  description: String!
+  evidence: [String!]!
+  example: String!
+  name: ID!
+  steps: [String!]!
+  title: String!
+  tools: [String!]!
+  whenToUse: [String!]!
 }
 
 directive @loading(count: Int, cascade: Boolean) on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD

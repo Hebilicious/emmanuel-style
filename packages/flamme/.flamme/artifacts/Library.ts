@@ -5,20 +5,30 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Library",
     "kind": "query",
-    "hash": "73997aa786d13ee8bbf70fe6c47e4bc0a7d4d8edbca05d48ada8eb48c8a9fb03",
+    "hash": "e5f777b5bd466d8363cacec70fcadcb1d4824417404bba58ed93330a3276d0a9",
     "raw": `query Library {
     shelves {
         __typename
+        blurb
         label
-        repositories {
+        projects {
             __typename
+            activity
             archived
-            category
-            description
+            body
+            contributions
+            cover
+            ended
+            featured
             homepage
+            kind
             language
             name
-            stars
+            repo
+            shelf
+            started
+            tagline
+            title
             url
         }
         slug
@@ -45,6 +55,13 @@ const artifact = {
                             "keyRaw": "__typename",
                         },
 
+                        "blurb": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "blurb",
+                            "visible": true,
+                        },
+
                         "label": {
                             "type": "String",
                             "modifiers": "String!",
@@ -52,11 +69,10 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "repositories": {
-                            "type": "Repository",
-                            "modifiers": "[Repository!]",
-                            "keyRaw": "repositories",
-                            "nullable": true,
+                        "projects": {
+                            "type": "Project",
+                            "modifiers": "[Project!]!",
+                            "keyRaw": "projects",
 
                             "selection": {
                                 "fields": {
@@ -66,6 +82,13 @@ const artifact = {
                                         "keyRaw": "__typename",
                                     },
 
+                                    "activity": {
+                                        "type": "String",
+                                        "modifiers": "[String!]!",
+                                        "keyRaw": "activity",
+                                        "visible": true,
+                                    },
+
                                     "archived": {
                                         "type": "Boolean",
                                         "modifiers": "Boolean!",
@@ -73,17 +96,41 @@ const artifact = {
                                         "visible": true,
                                     },
 
-                                    "category": {
+                                    "body": {
                                         "type": "String",
-                                        "modifiers": "String!",
-                                        "keyRaw": "category",
+                                        "modifiers": "[String!]!",
+                                        "keyRaw": "body",
                                         "visible": true,
                                     },
 
-                                    "description": {
+                                    "contributions": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "contributions",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "cover": {
                                         "type": "String",
                                         "modifiers": "String!",
-                                        "keyRaw": "description",
+                                        "keyRaw": "cover",
+                                        "visible": true,
+                                    },
+
+                                    "ended": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "ended",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "featured": {
+                                        "type": "Int",
+                                        "modifiers": "Int",
+                                        "keyRaw": "featured",
+                                        "nullable": true,
                                         "visible": true,
                                     },
 
@@ -95,6 +142,13 @@ const artifact = {
                                         "visible": true,
                                     },
 
+                                    "kind": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "kind",
+                                        "visible": true,
+                                    },
+
                                     "language": {
                                         "type": "String",
                                         "modifiers": "String!",
@@ -103,17 +157,45 @@ const artifact = {
                                     },
 
                                     "name": {
-                                        "type": "String",
-                                        "modifiers": "String!",
+                                        "type": "ID",
+                                        "modifiers": "ID!",
                                         "keyRaw": "name",
                                         "visible": true,
                                     },
 
-                                    "stars": {
-                                        "type": "Int",
-                                        "modifiers": "Int",
-                                        "keyRaw": "stars",
+                                    "repo": {
+                                        "type": "String",
+                                        "modifiers": "String",
+                                        "keyRaw": "repo",
                                         "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "shelf": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "shelf",
+                                        "visible": true,
+                                    },
+
+                                    "started": {
+                                        "type": "Int",
+                                        "modifiers": "Int!",
+                                        "keyRaw": "started",
+                                        "visible": true,
+                                    },
+
+                                    "tagline": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "tagline",
+                                        "visible": true,
+                                    },
+
+                                    "title": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "title",
                                         "visible": true,
                                     },
 
@@ -165,16 +247,26 @@ export type Library$result = {
 	readonly shelves: ReadonlyArray<{
 		readonly slug: string;
 		readonly label: string;
-		readonly repositories: ReadonlyArray<{
+		readonly blurb: string;
+		readonly projects: ReadonlyArray<{
 			readonly name: string;
-			readonly description: string;
+			readonly title: string;
+			readonly tagline: string;
+			readonly body: ReadonlyArray<string>;
+			readonly kind: string;
+			readonly shelf: string;
 			readonly language: string;
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
-			readonly category: string;
-			readonly stars: number | null;
-		}> | null;
+			readonly repo: string | null;
+			readonly started: number;
+			readonly ended: number | null;
+			readonly featured: number | null;
+			readonly contributions: number | null;
+			readonly activity: ReadonlyArray<string>;
+			readonly cover: string;
+		}>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 };
@@ -186,17 +278,27 @@ export type Library$unmasked = {
 		readonly __typename: "Shelf";
 		readonly slug: string;
 		readonly label: string;
-		readonly repositories: ReadonlyArray<{
-			readonly __typename: "Repository";
+		readonly blurb: string;
+		readonly projects: ReadonlyArray<{
+			readonly __typename: "Project";
 			readonly name: string;
-			readonly description: string;
+			readonly title: string;
+			readonly tagline: string;
+			readonly body: ReadonlyArray<string>;
+			readonly kind: string;
+			readonly shelf: string;
 			readonly language: string;
 			readonly url: string;
 			readonly homepage: string | null;
 			readonly archived: boolean;
-			readonly category: string;
-			readonly stars: number | null;
-		}> | null;
+			readonly repo: string | null;
+			readonly started: number;
+			readonly ended: number | null;
+			readonly featured: number | null;
+			readonly contributions: number | null;
+			readonly activity: ReadonlyArray<string>;
+			readonly cover: string;
+		}>;
 	}> | null;
 };
 

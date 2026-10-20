@@ -11,11 +11,13 @@ export const cacheKeys: Readonly<Record<string, readonly string[]>> = {
   "Favourite": ["slug"],
   "Note": ["id"],
   "Post": ["slug"],
+  "Project": ["name"],
   "Repository": ["name"],
   "Role": ["id"],
   "School": ["id"],
   "Shelf": ["slug"],
   "Site": ["name"],
+  "Skill": ["name"],
 }
 
 export const defaultKeys: readonly string[] = ["id"]

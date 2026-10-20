@@ -1,24 +1,22 @@
-import vue from "@vitejs/plugin-vue"
+import vize from "@vizejs/vite-plugin"
 import { defineConfig } from "vite"
 import { flamme } from "@flamme/vite"
 
 /**
  * The Vite config for the Flamme build of emmanuel.style.
  *
- * `flamme()` must precede the Vue compiler: its transform is `enforce: 'pre'`, and
- * it rewrites the document surfaces (the `graphql()` tag and `.gql` imports) to
- * artifact imports before anything else sees them.
+ * Vize compiles the SFCs. Its plugin is `enforce: 'pre'` and serves every `.vue`
+ * file as its own compiled module, `<abs>.vue.ts?vue&vize`, so Flamme never sees
+ * the SFC source. Flamme handles that id on its secondary path: it rewrites the
+ * `graphql()` tags and `.gql` imports inside the compiled module instead, with the
+ * same artifact index. `@vitejs/plugin-vue` is not in the list at all, because it
+ * would try to read `<abs>.vue.ts` as an SFC and fail with ENOENT.
  *
- * `@vitejs/plugin-vue` compiles the SFCs, and Vize is used as the analyzer rather
- * than as the compiler. Flamme's own note says why: `@vizejs/vite-plugin` is also
- * `enforce: 'pre'` and resolves every `.vue` request to its own compiled module
- * `<abs>.vue.ts?vue&vize`, so with `vize()` in the plugin list the Vue plugin later
- * tries to read `experience.vue.ts` as an SFC and fails with ENOENT.
- * `@flamme/vite` picks Vize's native analyzer up automatically when
- * `@vizejs/native` resolves, so the Rust toolchain is still what parses the SFCs.
+ * With `vize()` in the list, Flamme also picks Vize's native analyzer for its own
+ * SFC scan, so the Rust toolchain parses the components end to end.
  */
 export default defineConfig({
-	plugins: [flamme(), vue()],
+	plugins: [vize(), flamme()],
 	resolve: {
 		/*
 		 * One instance of Vue and its router in the bundle.

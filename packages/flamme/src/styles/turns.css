@@ -1,0 +1,542 @@
+/*
+ * Page turns.
+ *
+ * A spread is two leaves, `leaf-left` and `leaf-right`, each a View Transition
+ * group of its own (the pager names them; on a phone there is one, `leaf-single`).
+ * A turn is what a newspaper does under the hand:
+ *
+ *   forward  the right-hand page lifts off the spread and folds over the spine.
+ *            For the first half of the turn it rises, darkening as it tips away
+ *            from the light; at the spine it shows its back, which is the next
+ *            left-hand page, and that settles flat over the old one. The next
+ *            right-hand page has been underneath all along, in the shadow of the
+ *            lifted leaf until the light comes back to it.
+ *   back     the same, mirrored: the left-hand page lifts and folds to the right.
+ *
+ * On a phone a page is a leaf of a book: going forward it lifts away about its
+ * left edge and shows the next page under it; going back the previous page comes
+ * down over the one being read.
+ *
+ * `data-turn` on the root says which way; `turns.ts` sets it for the length of the
+ * transition. The rest of the shell (the bar, the dock) does not move: the root
+ * snapshot is shown as it is, with no cross-fade.
+ */
+
+:root {
+  --turn-duration: 720ms;
+  --turn-lift: cubic-bezier(0.42, 0, 0.78, 0.6);
+  --turn-land: cubic-bezier(0.22, 0.6, 0.36, 1);
+  --turn-depth: 3600px;
+}
+
+:root[data-turn-kind="route"] {
+  --turn-duration: 820ms;
+}
+
+/* Pages riffled: the wheel or the keys asked for several, so each turn is quicker. */
+:root[data-turn-quick] {
+  --turn-duration: 380ms;
+}
+
+:root[data-turn]::view-transition-old(root),
+:root[data-turn]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* The leaves are painted over the shell, and each pair keeps its own stacking. */
+:root[data-turn]::view-transition-group(leaf-left),
+:root[data-turn]::view-transition-group(leaf-right),
+:root[data-turn]::view-transition-group(leaf-single) {
+  animation-duration: var(--turn-duration);
+}
+
+:root[data-turn]::view-transition-image-pair(leaf-left),
+:root[data-turn]::view-transition-image-pair(leaf-right),
+:root[data-turn]::view-transition-image-pair(leaf-single) {
+  isolation: isolate;
+}
+
+:root[data-turn]::view-transition-old(leaf-left),
+:root[data-turn]::view-transition-new(leaf-left),
+:root[data-turn]::view-transition-old(leaf-right),
+:root[data-turn]::view-transition-new(leaf-right),
+:root[data-turn]::view-transition-old(leaf-single),
+:root[data-turn]::view-transition-new(leaf-single) {
+  mix-blend-mode: normal;
+  backface-visibility: hidden;
+  animation-duration: var(--turn-duration);
+  animation-fill-mode: both;
+}
+
+/* ---------------------------------------------------------------- forward */
+
+/* The lifting leaf is above everything else in the turn. */
+:root[data-turn="forward"]::view-transition-group(leaf-right) {
+  z-index: 3;
+}
+
+:root[data-turn="forward"]::view-transition-group(leaf-left) {
+  z-index: 2;
+}
+
+:root[data-turn="forward"]::view-transition-old(leaf-right) {
+  z-index: 2;
+  transform-origin: left center;
+  animation-name: leaf-rise-from-right;
+}
+
+:root[data-turn="forward"]::view-transition-new(leaf-right) {
+  z-index: 1;
+  animation-name: leaf-in-shadow;
+  animation-timing-function: var(--turn-land);
+}
+
+:root[data-turn="forward"]::view-transition-old(leaf-left) {
+  z-index: 1;
+  animation-name: leaf-hold;
+  animation-timing-function: linear;
+}
+
+:root[data-turn="forward"]::view-transition-new(leaf-left) {
+  z-index: 2;
+  transform-origin: right center;
+  animation-name: leaf-fall-to-left;
+}
+
+/* ------------------------------------------------------------------- back */
+
+:root[data-turn="back"]::view-transition-group(leaf-left) {
+  z-index: 3;
+}
+
+:root[data-turn="back"]::view-transition-group(leaf-right) {
+  z-index: 2;
+}
+
+:root[data-turn="back"]::view-transition-old(leaf-left) {
+  z-index: 2;
+  transform-origin: right center;
+  animation-name: leaf-rise-from-left;
+}
+
+:root[data-turn="back"]::view-transition-new(leaf-left) {
+  z-index: 1;
+  animation-name: leaf-in-shadow;
+  animation-timing-function: var(--turn-land);
+}
+
+:root[data-turn="back"]::view-transition-old(leaf-right) {
+  z-index: 1;
+  animation-name: leaf-hold;
+  animation-timing-function: linear;
+}
+
+:root[data-turn="back"]::view-transition-new(leaf-right) {
+  z-index: 2;
+  transform-origin: left center;
+  animation-name: leaf-fall-to-right;
+}
+
+/* --------------------------------------------------------------- a phone */
+
+:root[data-turn="forward"]::view-transition-old(leaf-single) {
+  z-index: 2;
+  transform-origin: left center;
+  animation-name: leaf-lift-away;
+  animation-timing-function: var(--turn-lift);
+}
+
+:root[data-turn="forward"]::view-transition-new(leaf-single) {
+  z-index: 1;
+  animation-name: leaf-in-shadow;
+  animation-timing-function: var(--turn-land);
+}
+
+:root[data-turn="back"]::view-transition-old(leaf-single) {
+  z-index: 1;
+  animation-name: leaf-go-under;
+  animation-timing-function: linear;
+}
+
+:root[data-turn="back"]::view-transition-new(leaf-single) {
+  z-index: 2;
+  transform-origin: left center;
+  animation-name: leaf-come-down;
+  animation-timing-function: var(--turn-land);
+}
+
+/* ------------------------------------------------------------- keyframes */
+
+/*
+ * The right-hand leaf rises about the spine. It accelerates as it lifts (the hand
+ * pulls it over), and darkens as it turns its face away from the light. At the
+ * spine it is edge-on and disappears; its back is the next left-hand page.
+ */
+@keyframes leaf-rise-from-right {
+  0% {
+    transform: perspective(var(--turn-depth)) rotateY(0deg);
+    filter: brightness(1);
+    animation-timing-function: var(--turn-lift);
+  }
+  50% {
+    transform: perspective(var(--turn-depth)) rotateY(-90deg);
+    filter: brightness(0.62);
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    transform: perspective(var(--turn-depth)) rotateY(-90deg);
+    opacity: 0;
+  }
+}
+
+/* The back of the turning leaf: the next left-hand page, coming down flat. */
+@keyframes leaf-fall-to-left {
+  0%,
+  49.99% {
+    transform: perspective(var(--turn-depth)) rotateY(90deg);
+    opacity: 0;
+  }
+  50% {
+    transform: perspective(var(--turn-depth)) rotateY(90deg);
+    filter: brightness(0.7);
+    opacity: 1;
+    animation-timing-function: var(--turn-land);
+  }
+  100% {
+    transform: perspective(var(--turn-depth)) rotateY(0deg);
+    filter: brightness(1);
+    opacity: 1;
+  }
+}
+
+@keyframes leaf-rise-from-left {
+  0% {
+    transform: perspective(var(--turn-depth)) rotateY(0deg);
+    filter: brightness(1);
+    animation-timing-function: var(--turn-lift);
+  }
+  50% {
+    transform: perspective(var(--turn-depth)) rotateY(90deg);
+    filter: brightness(0.62);
+    opacity: 1;
+  }
+  50.01%,
+  100% {
+    transform: perspective(var(--turn-depth)) rotateY(90deg);
+    opacity: 0;
+  }
+}
+
+@keyframes leaf-fall-to-right {
+  0%,
+  49.99% {
+    transform: perspective(var(--turn-depth)) rotateY(-90deg);
+    opacity: 0;
+  }
+  50% {
+    transform: perspective(var(--turn-depth)) rotateY(-90deg);
+    filter: brightness(0.7);
+    opacity: 1;
+    animation-timing-function: var(--turn-land);
+  }
+  100% {
+    transform: perspective(var(--turn-depth)) rotateY(0deg);
+    filter: brightness(1);
+    opacity: 1;
+  }
+}
+
+/* The page underneath, in the shadow of the lifted leaf until the light returns. */
+@keyframes leaf-in-shadow {
+  0% {
+    filter: brightness(0.78);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+/* The page that stays put until the turning leaf covers it. */
+@keyframes leaf-hold {
+  0%,
+  99.99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* A phone's page lifting away about its left edge, showing the next under it. */
+@keyframes leaf-lift-away {
+  0% {
+    transform: perspective(var(--turn-depth)) rotateY(0deg);
+    filter: brightness(1);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(var(--turn-depth)) rotateY(-95deg);
+    filter: brightness(0.55);
+    opacity: 0;
+  }
+}
+
+@keyframes leaf-come-down {
+  0% {
+    transform: perspective(var(--turn-depth)) rotateY(-95deg);
+    filter: brightness(0.55);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: perspective(var(--turn-depth)) rotateY(0deg);
+    filter: brightness(1);
+    opacity: 1;
+  }
+}
+
+@keyframes leaf-go-under {
+  0% {
+    filter: brightness(1);
+    opacity: 1;
+  }
+  99.99% {
+    filter: brightness(0.78);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * The nameplate, when the section changes: the old title is pulled up out of the
+ * frame and the new one set in under it, the way a masthead changes between the
+ * sections of a paper.
+ */
+::view-transition-group(plate) {
+  animation-duration: var(--turn-duration);
+  animation-timing-function: var(--turn-land);
+}
+
+/*
+ * Each title at its own size, centred in the slot, rather than both stretched to
+ * the width of the slot as it grows or shrinks from one title to the other.
+ */
+::view-transition-old(plate),
+::view-transition-new(plate) {
+  inline-size: auto;
+  inset-inline: 0;
+  margin-inline: auto;
+}
+
+:root[data-turn-kind="route"]::view-transition-old(plate) {
+  animation: plate-out var(--turn-duration) var(--turn-lift) both;
+}
+
+:root[data-turn-kind="route"]::view-transition-new(plate) {
+  animation: plate-in var(--turn-duration) var(--turn-land) both;
+}
+
+@keyframes plate-out {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  45%,
+  100% {
+    transform: translateY(-55%);
+    opacity: 0;
+  }
+}
+
+@keyframes plate-in {
+  0%,
+  40% {
+    transform: translateY(55%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/*
+ * A page turn does not change the masthead, and a zoom changes neither the masthead
+ * nor the pages under the dialog, so those are shown as they are. Left to the
+ * default cross-fade, two identical snapshots blended halfway dim in WebKit, which
+ * does not add them back up.
+ */
+:root[data-turn-kind="page"]::view-transition-old(plate),
+:root[data-turn-kind="page"]::view-transition-old(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-old(plate),
+:root[data-turn-kind="zoom"]::view-transition-old(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-old(ledger-progress),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-left),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-right),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-single) {
+  display: none;
+}
+
+:root[data-turn-kind="page"]::view-transition-new(plate),
+:root[data-turn-kind="page"]::view-transition-new(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-new(plate),
+:root[data-turn-kind="zoom"]::view-transition-new(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-new(ledger-progress),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-left),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-right),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-single) {
+  animation: none;
+}
+
+/* ------------------------------------------------------------------ zoom */
+
+/*
+ * A project opens from its card: the card is lifted off the page and grows into
+ * the dialog, its plate travelling to the plate's place in the dialog, while the
+ * page behind dims. Closing sets it back down where it came from. With no card to
+ * come from (a link straight to `?open=`) the dialog rises from the middle of the
+ * page; with no card to return to, it sinks back into it.
+ */
+:root[data-turn-kind="zoom"] {
+  --zoom-duration: 620ms;
+  --zoom-ease: cubic-bezier(0.32, 0.72, 0.24, 1);
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project),
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
+  animation-duration: var(--zoom-duration);
+  animation-timing-function: var(--zoom-ease);
+}
+
+/* Both snapshots fill the box as it grows, rather than keeping their own height. */
+:root[data-turn-kind="zoom"]::view-transition-old(project),
+:root[data-turn-kind="zoom"]::view-transition-new(project),
+:root[data-turn-kind="zoom"]::view-transition-old(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-new(project-plate) {
+  height: 100%;
+  object-fit: cover;
+  overflow: clip;
+  animation-duration: var(--zoom-duration);
+  animation-timing-function: var(--zoom-ease);
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project) {
+  animation-name: zoom-card-out;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project) {
+  animation-name: zoom-card-in;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
+  z-index: 2;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project):only-child {
+  animation-name: zoom-rise;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project):only-child {
+  animation-name: zoom-sink;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-old(project-backdrop) {
+  animation-duration: calc(var(--zoom-duration) * 0.8);
+  animation-timing-function: linear;
+}
+
+/* One project for the next: the old one slides off, the next comes in after it. */
+:root[data-turn="swap"]::view-transition-group(project) {
+  animation: none;
+}
+
+:root[data-turn="swap"]::view-transition-old(project) {
+  animation: swap-out 320ms var(--turn-lift) both;
+}
+
+:root[data-turn="swap"]::view-transition-new(project) {
+  animation: swap-in 420ms var(--turn-land) both;
+}
+
+:root[data-turn="swap"]::view-transition-old(project-plate),
+:root[data-turn="swap"]::view-transition-new(project-plate) {
+  animation-duration: 420ms;
+}
+
+@keyframes zoom-card-out {
+  0% {
+    opacity: 1;
+  }
+  32%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-card-in {
+  0%,
+  12% {
+    opacity: 0;
+  }
+  60%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-rise {
+  from {
+    opacity: 0;
+    transform: translateY(3%) scale(0.94);
+  }
+}
+
+@keyframes zoom-sink {
+  to {
+    opacity: 0;
+    transform: translateY(3%) scale(0.94);
+  }
+}
+
+@keyframes swap-out {
+  to {
+    opacity: 0;
+    transform: translateX(-4%);
+  }
+}
+
+@keyframes swap-in {
+  0%,
+  30% {
+    opacity: 0;
+    transform: translateX(4%);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The marker under the current section slides to the new one. */
+::view-transition-group(section-mark) {
+  animation-duration: var(--turn-duration);
+  animation-timing-function: var(--turn-land);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+  }
+}
