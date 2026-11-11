@@ -25,6 +25,8 @@ const canvas = ref<HTMLCanvasElement | null>(null)
 /** How long each kind of turn lasts, as `styles/turns.css` sets them. */
 const DURATION = { page: 720, route: 820 } as const
 const QUICK = 380
+/** How long after the reader's last move the press slows down. */
+const CALM_AFTER = 2500
 /** How long the print head takes to cross the edition when the press starts. */
 const INTRO = 1300
 let startedAt = Number.NEGATIVE_INFINITY
@@ -132,17 +134,30 @@ const measure = (now: number): PressFrame => {
 	}
 }
 
+/** When the reader last did something the press answers: moved the pointer, the cursor, a page. */
+let stirredAt = 0
+let lastLamp = ""
+let odd = false
+
 const tick = (now: number) => {
 	if (stopped || press === null) return
 	frame = requestAnimationFrame(tick)
 	if (document.hidden) return
-	press.draw(measure(now), now / 1000)
+	const page = measure(now)
+	const lamp = page.lamp === null ? "" : `${page.lamp.x},${page.lamp.y}`
+	if (lamp !== lastLamp || page.turn !== null) stirredAt = now
+	lastLamp = lamp
+	// A sheet nobody is touching is drawn at half the rate: the drift reads the same.
+	odd = !odd
+	if (now - stirredAt > CALM_AFTER && odd && press.reliefShown === false) return
+	press.draw(page, now / 1000)
 	const root = document.documentElement
 	if (press.reliefShown) root.dataset["reliefShown"] = ""
 	else delete root.dataset["reliefShown"]
 }
 
 const onPointerMove = (event: PointerEvent) => {
+	stirredAt = performance.now()
 	if (event.pointerType === "touch") return
 	pointer.x = event.clientX
 	pointer.y = event.clientY

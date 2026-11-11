@@ -341,16 +341,24 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 
 		const box = reliefBox
 		let pokeTarget = 0
+		// Left alone, the plate sways. Otherwise it turns to face what the reader is on:
+		// the pointer, or with the keyboard the row under the cursor.
 		let tiltX = Math.sin(time * 0.31) * 0.2
 		let tiltY = Math.sin(time * 0.23 + 1.3) * 0.07
-		if (frame.pointer !== null) {
-			const px = (frame.pointer.x - box.x) / box.w
-			const py = (frame.pointer.y - box.y) / box.h
-			// Near the plate, the picture turns to face away from the pointer, as if pressed.
-			const reach = Math.max(0, 1 - Math.hypot(px - 0.5, py - 0.5) / 2.2)
-			tiltX = tiltX * (1 - reach) + (px - 0.5) * 0.75 * reach
-			tiltY = tiltY * (1 - reach) + (py - 0.5) * 0.5 * reach
-			if (px > 0 && px < 1 && py > 0 && py < 1) {
+		const watched =
+			frame.pointer ??
+			(frame.lamp === null
+				? null
+				: { x: frame.lamp.x + frame.lamp.w / 2, y: frame.lamp.y + frame.lamp.h / 2 })
+		if (watched !== null) {
+			const px = (watched.x - box.x) / box.w
+			const py = (watched.y - box.y) / box.h
+			// The nearer it is, the more the plate gives up its sway to face it.
+			const reach = Math.max(0, 1 - Math.hypot(px - 0.5, py - 0.5) / 4.5)
+			const clamp = (value: number, most: number) => Math.max(-most, Math.min(most, value))
+			tiltX = tiltX * (1 - reach) + clamp((px - 0.5) * 0.32, 0.6) * reach
+			tiltY = tiltY * (1 - reach) + clamp((py - 0.5) * 0.22, 0.35) * reach
+			if (frame.pointer !== null && px > 0 && px < 1 && py > 0 && py < 1) {
 				pokeTarget = 1
 				r.uPoke.value.x = px
 				r.uPoke.value.y = py
