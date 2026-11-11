@@ -192,6 +192,17 @@ const to = (segment: Segment) => ({
 
 /* A phone has room for the numbers, not the names. */
 @media (max-width: 40rem) {
+  /* Every segment the same width: sized by their length, the short ones ran together. */
+  .Dense .Slot {
+    min-width: 0;
+    flex-grow: 1 !important;
+  }
+
+  .Dense .Segment {
+    padding-inline: 0;
+    letter-spacing: 0;
+  }
+
   .Label {
     display: none;
   }
