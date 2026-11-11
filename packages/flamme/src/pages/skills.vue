@@ -407,6 +407,14 @@ const open = (name: string) => void openProject(router, name)
   color: var(--accent-ink);
 }
 
+/* A phone has no cursor to draw (see `global.css`). */
+@media (hover: none) and (pointer: coarse) {
+  .Chip[data-cursor="true"] {
+    background: none;
+    color: var(--accent);
+  }
+}
+
 @media (max-width: 60rem) {
   .Title {
     font-size: var(--typography_fluid-display-font-size-display-s);

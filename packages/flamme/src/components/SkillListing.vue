@@ -23,14 +23,15 @@ const PROFILE = "https://www.linkedin.com/in/emmanuel-donnet"
         <span class="Sigil" aria-hidden="true">$</span> ls skills/
       </p>
       <RouterLink
-        v-for="skill of skills"
+        v-for="(skill, index) of skills"
         :key="skill.name"
         class="File"
         :to="to(skill.name)"
         data-row
-        :data-label="skill.name">
-        <span class="FileName">{{ skill.name }}/</span>
+        :data-label="skill.title">
+        <span class="FileNumber">{{ String(index + 1).padStart(2, "0") }}</span>
         <span class="FileLine">{{ skill.title }}</span>
+        <span class="FileName">{{ skill.name }}/</span>
       </RouterLink>
     </nav>
     <section class="Hire" aria-label="Get in touch">
@@ -79,9 +80,11 @@ const PROFILE = "https://www.linkedin.com/in/emmanuel-donnet"
   color: var(--accent);
 }
 
+/* A row of the listing: its number, what the skill is, and the directory it is filed in. */
 .File {
   display: grid;
-  grid-template-columns: minmax(0, 14em) minmax(0, 1fr);
+  grid-template-columns: auto minmax(0, auto) minmax(0, 1fr);
+  align-items: baseline;
   gap: var(--spacing_fluid-tight-space-tight-m);
   padding: 0.3rem 0.4rem;
   margin-inline: -0.4rem;
@@ -90,16 +93,23 @@ const PROFILE = "https://www.linkedin.com/in/emmanuel-donnet"
   text-decoration: none;
 }
 
-.FileName {
-  overflow: hidden;
+.FileNumber {
   color: var(--accent);
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
 }
 
 .FileLine {
   overflow: hidden;
-  color: var(--muted);
+  color: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.FileName {
+  overflow: hidden;
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  text-align: end;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -136,8 +146,11 @@ const PROFILE = "https://www.linkedin.com/in/emmanuel-donnet"
 
 @media (max-width: 60rem) {
   .File {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 0;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .FileName {
+    display: none;
   }
 
   .Hire {

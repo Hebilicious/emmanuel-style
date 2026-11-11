@@ -29,6 +29,8 @@ const QUICK = 380
 const INTRO = 1300
 let startedAt = Number.NEGATIVE_INFINITY
 
+const touch = window.matchMedia("(hover: none) and (pointer: coarse)")
+
 let press: Press | null = null
 let frame = 0
 let stopped = false
@@ -122,7 +124,8 @@ const measure = (now: number): PressFrame => {
 		accent,
 		pointer:
 			pointer.over && shell.mouse ? { x: pointer.x, y: pointer.y } : null,
-		lamp: boxOf(cursorBox()),
+		// A touch screen has no reading cursor to light.
+		lamp: touch.matches ? null : boxOf(cursorBox()),
 		pane: pane === null ? null : boxOf(pane.getBoundingClientRect()),
 		relief: reliefOf(),
 		turn: turnOf(now)
@@ -151,6 +154,8 @@ const onPointerLeave = () => {
 
 const start = async () => {
 	if (stopped || canvas.value === null || reducedMotion()) return
+	// Asked on a scratch canvas first, so a browser without WebGL never fetches the engine.
+	if (document.createElement("canvas").getContext("webgl2") === null) return
 	const { createPress } = await import("../press/engine.js")
 	if (stopped || canvas.value === null) return
 	press = createPress(canvas.value)

@@ -84,8 +84,9 @@ export interface Press {
 	dispose(): void
 }
 
-/** How many motes of ink drift in the sheet. */
-const MOTES = 760
+/** The most motes of ink that drift in the sheet, and the area of sheet to each. */
+const MOTES = 900
+const MOTE_AREA = 1900
 /** Dots along one side of the relief. */
 const RELIEF_SIDE = 84
 const RELIEF_FOV = 28
@@ -276,6 +277,11 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 			size = wanted
 			renderer.setPixelRatio(dpr)
 			renderer.setSize(frame.width, frame.height, false)
+			// As much ink as the sheet is large: a phone's has a quarter of a desk's.
+			moteGeometry.setDrawRange(
+				0,
+				Math.min(MOTES, Math.round((frame.width * frame.height) / MOTE_AREA))
+			)
 		}
 
 		const turning = frame.turn !== null
