@@ -7,6 +7,7 @@
  * screen, contained rather than cropped; Esc, Enter or a click closes it.
  */
 import { computed } from "vue"
+import { closeFigure } from "../shell/figure.js"
 import { useShell } from "../shell/shell.js"
 
 const shell = useShell()
@@ -22,7 +23,7 @@ const figure = computed(() =>
     role="dialog"
     aria-modal="true"
     :aria-label='figure.caption || "Figure"'
-    @click="shell.dialog = null">
+    @click="closeFigure(shell)">
     <img class="Shot" :src="figure.src" :alt="figure.caption" />
     <p v-if="figure.caption" class="Caption">
       <span class="Label">fig.</span>
@@ -44,7 +45,8 @@ const figure = computed(() =>
   padding: var(--spacing_fluid-flow-space-s)
     var(--spacing_fluid-gutter-space-gutter-s);
   background: color-mix(in oklab, black 92%, transparent);
-  animation: zoom-in 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  /* Its own group in the zoom, so the dark comes up behind the picture rather than snapping. */
+  view-transition-name: figure-backdrop;
 }
 
 .Shot {
@@ -54,6 +56,8 @@ const figure = computed(() =>
   height: auto;
   object-fit: contain;
   box-shadow: 0 1.5rem 4rem rgb(0 0 0 / 60%);
+  /* The plate on the page grows into this, and back (`shell/figure.ts`). */
+  view-transition-name: figure;
 }
 
 .Caption {
@@ -80,12 +84,5 @@ const figure = computed(() =>
 .Key {
   padding: 0 0.35em;
   border: var(--spacing-size-hairline) solid oklch(50% 0.01 90);
-}
-
-@keyframes zoom-in {
-  from {
-    opacity: 0;
-    transform: scale(0.985);
-  }
 }
 </style>

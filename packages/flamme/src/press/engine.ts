@@ -68,6 +68,7 @@ export interface PressFrame {
 	readonly dark: boolean
 	readonly ink: Rgb
 	readonly accent: Rgb
+	readonly paper: Rgb
 	/** The pointer, when a mouse is over the page. */
 	readonly pointer: { readonly x: number; readonly y: number } | null
 	/** The row under the reading cursor. */
@@ -92,7 +93,15 @@ export interface PressFrame {
 		readonly places: readonly number[]
 	} | null
 	/** A page turn in progress: which way it goes and how far along it is, 0 to 1. */
-	readonly turn: { readonly forward: boolean; readonly progress: number } | null
+	readonly turn: {
+		readonly forward: boolean
+		readonly progress: number
+		/**
+		 * The fold of the turning leaf: where it is across the screen, where the leaf's
+		 * free edge has got to, and whether the press paints the leaf's back.
+		 */
+		readonly fold: { readonly x: number; readonly edge: number; readonly back: boolean } | null
+	} | null
 }
 
 export interface Press {
@@ -163,7 +172,10 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 		uPane: { value: new Vector4(0, 0, 1, 1) },
 		uSweep: { value: 0 },
 		uSweepOn: { value: 0 },
-		uSweepDir: { value: 1 }
+		uSweepDir: { value: 1 },
+		/** The fold: its x, the leaf's free edge, how present it is, whether the back is painted. */
+		uFold: { value: new Vector4(0, 0, 0, 0) },
+		uPaper: { value: new Vector3(0, 0, 0) }
 	}
 	const sheetScene = new Scene()
 	const sheet = new Mesh(
@@ -470,6 +482,10 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 			u.uSweepDir.value = frame.turn.forward ? -1 : 1
 		}
 		u.uSweepOn.value = sweepOn
+		const fold = frame.turn?.fold ?? null
+		if (fold === null) u.uFold.value.z = 0
+		else u.uFold.value.set(fold.x, fold.edge, 1, fold.back ? 1 : 0)
+		u.uPaper.value.set(...frame.paper)
 
 		renderer.setScissorTest(false)
 		renderer.setViewport(0, 0, frame.width, frame.height)

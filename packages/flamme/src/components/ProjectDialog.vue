@@ -104,8 +104,11 @@ const pageLinks = (delta: number) => {
 
 const label = computed(() => project.value?.title ?? "Project")
 const close = () => void closeProject(router)
-const go = (target: { name: string } | null) => {
-	if (target) void swapProject(router, target.name)
+const go = (
+	target: { name: string } | null,
+	direction: "next" | "previous"
+) => {
+	if (target) void swapProject(router, target.name, direction)
 }
 
 /* --------------------------------------------------------------- the shell */
@@ -148,8 +151,8 @@ watch(
 
 onMounted(() => {
 	shell.project = {
-		next: () => go(next.value),
-		previous: () => go(previous.value),
+		next: () => go(next.value, "next"),
+		previous: () => go(previous.value, "previous"),
 		page: pageLinks,
 		close
 	}
@@ -360,7 +363,7 @@ const fit = () => {
           data-row
           data-steady
           :data-label="`previous: ${previous.title}`"
-          @click="go(previous)">
+          @click='go(previous, "previous")'>
           <span class="Key">p</span>
           <span class="NeighbourName">← {{ previous.title }}</span>
         </button>
@@ -372,7 +375,7 @@ const fit = () => {
           data-row
           data-steady
           :data-label="`next: ${next.title}`"
-          @click="go(next)">
+          @click='go(next, "next")'>
           <span class="NeighbourName">{{ next.title }} →</span>
           <span class="Key">n</span>
         </button>
@@ -499,6 +502,8 @@ const fit = () => {
 }
 
 .Plate {
+  /* The card's plate travels to here when the project opens, and back (`shell/project.ts`). */
+  view-transition-name: project-plate;
   aspect-ratio: 2;
   overflow: hidden;
   border: var(--spacing-size-hairline) solid var(--rule);

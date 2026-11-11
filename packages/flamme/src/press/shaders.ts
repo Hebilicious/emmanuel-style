@@ -20,6 +20,8 @@ uniform vec4 uPane;
 uniform float uSweep;
 uniform float uSweepOn;
 uniform float uSweepDir;
+uniform vec4 uFold;
+uniform vec3 uPaper;
 
 float hash(vec2 p) {
 	vec3 q = fract(vec3(p.xyx) * 0.1031);
@@ -77,6 +79,8 @@ void main() {
 	// All of it is light through a halftone screen, so it reads as print, not as glow.
 	vec2 cell = mat2(0.7071, -0.7071, 0.7071, 0.7071) * p / 4.5;
 	float screen = smoothstep(0.5, 0.18, length(fract(cell) - 0.5));
+	// A real turn is shaded as a fold (below); the band is the press's own first pass.
+	head *= 1.0 - uFold.z;
 	float light = lamp * 0.085 + torch * 0.05 + head * 0.2;
 	light *= mix(0.45, 1.0, screen);
 	// On light paper the same light is a tint of ink, and less of it reads as much.
@@ -88,8 +92,43 @@ void main() {
 
 	vec3 tint = mix(uAccent, uInk, 0.25);
 	float alpha = clamp(light + speck, 0.0, 1.0);
-	vec3 colour = (tint * light + uInk * speck) / max(alpha, 1e-4);
-	gl_FragColor = vec4(colour * alpha, alpha);
+	vec4 sheet = vec4(tint * light + uInk * speck, alpha);
+
+	/*
+	 * The fold of a turning leaf. The browser moves the pages; what makes it paper
+	 * is the light: the leaf curves up to the fold, so it darkens toward it and
+	 * catches a line of light along it; it throws a shadow on the page it is leaving
+	 * behind it, and another, past its free edge, on the page it is coming down on.
+	 */
+	float fold = uFold.x;
+	float tip = uFold.y;
+	float side = sign(tip - fold);            // which side of the fold the leaf lies on
+	float width = abs(tip - fold);
+	float fromFold = (p.x - fold) * side;      // positive on the leaf's side
+	float onLeaf = step(0.0, fromFold) * step(fromFold, width);
+	float grown = smoothstep(0.0, 28.0, width) * uFold.z * inPane;
+
+	float bend = onLeaf * (0.34 * exp(-fromFold / (width * 0.22 + 10.0)) + 0.1 * smoothstep(width - 26.0, width, fromFold));
+	float behind = step(fromFold, 0.0) * 0.5 * exp(fromFold / 34.0);
+	float thrown = step(width, fromFold) * 0.46 * exp(-(fromFold - width) / 26.0);
+	float shade = clamp((bend + behind + thrown) * grown, 0.0, 0.8);
+	float glint = onLeaf * exp(-fromFold / 2.2) * 0.55 * grown;
+
+	// On a phone the leaf's back is not a page of its own: the press paints it as paper.
+	float back = onLeaf * uFold.w * uFold.z * inPane;
+	vec4 leaf = vec4(mix(uPaper, uInk, 0.07) * back, back);
+	// Shade over the leaf, then the line of light.
+	leaf = vec4(leaf.rgb * (1.0 - shade), shade + leaf.a * (1.0 - shade));
+	// On dark paper a shadow does not show, so the leaf is told from the page under it
+	// by light instead: it is lifted toward the lamp, most where it curves at the fold,
+	// and its free edge is drawn.
+	float lifted = onLeaf * (0.035 + 0.11 * exp(-fromFold / (width * 0.3 + 14.0))) * grown * uDark;
+	float rim = exp(-abs(fromFold - width) / 1.1) * 0.5 * grown;
+	vec3 lampLight = mix(vec3(1.0), uAccent, 0.35);
+	leaf.rgb += lampLight * (glint + lifted) + mix(uInk, uAccent, 0.5) * rim * 0.6;
+	leaf.a = max(leaf.a, max(glint, max(lifted, rim * 0.6)));
+
+	gl_FragColor = leaf + sheet * (1.0 - leaf.a);
 }
 `
 
