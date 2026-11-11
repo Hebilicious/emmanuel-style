@@ -466,6 +466,18 @@ const roleLink = (company: string) => {
   color: var(--ink);
 }
 
+.Chip.Job[data-cursor="true"] {
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .Chip.Job[data-cursor="true"] {
+    border-color: var(--rule-strong);
+    color: var(--ink);
+  }
+}
+
 .EvidenceLabel {
   min-width: 7.5em;
   align-self: center;
