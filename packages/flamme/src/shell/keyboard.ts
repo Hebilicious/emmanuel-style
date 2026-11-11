@@ -25,8 +25,19 @@
  *
  * Every shortcut is a plain key with no modifier, so none of them collides with a
  * browser binding, and a key with Ctrl, Alt or Meta held is left to the browser.
- * While a dialog is open it owns the keyboard; while the prompt has focus, typing
- * goes to the prompt.
+ *
+ * Which keys mean what depends on the mode the keyboard is in, and it is in exactly
+ * one (`modeOf`):
+ *
+ *   typing    the prompt (or any field) has the focus: keys are text
+ *   project   a project is open: arrows and Enter reach its links, n p Esc act on it
+ *   gate      the mouse question is up: y, n, Esc
+ *   figure    a figure is open: any closing key closes it
+ *   leader    `g` was pressed: the next key picks a section, the theme, or the top
+ *   reading   everything else: the table above
+ *
+ * Each mode has its own handler in `HANDLERS`, so a key can only do what its mode
+ * lists; nothing reaches the reading keys while a dialog is open.
  */
 import { nextTick, onBeforeUnmount, onMounted } from "vue"
 import type { Router } from "vue-router"
@@ -42,6 +53,7 @@ import {
 	type Row,
 	rows
 } from "./cursor.js"
+import { createMachine } from "./machine.js"
 import { SECTIONS } from "./sections.js"
 import { type Shell, setMouse, toggleTheme } from "./shell.js"
 
@@ -63,6 +75,9 @@ type Landing =
 	| { readonly at: "last" }
 	| { readonly at: "side"; readonly side: "left" | "right"; readonly y: number }
 
+/** The mode the keyboard is in: which table of keys applies. */
+export type KeyMode = "typing" | "project" | "gate" | "figure" | "leader" | "reading"
+
 const ARROWS: Readonly<Record<string, Heading>> = {
 	ArrowLeft: "left",
 	ArrowRight: "right",
@@ -81,9 +96,13 @@ export const useKeyboard = (
 ): Keyboard => {
 	/** The place in reading order of the row last placed, for when it has gone. */
 	let index = 0
-	let armed = false
 	let landing: Landing | null = null
 
+	/** The `g` prefix: armed by `g`, spent by the next key whatever it is. */
+	const leader = createMachine<"idle" | "armed", { type: "ARM" } | { type: "SPEND" }>("idle", {
+		idle: { ARM: "armed" },
+		armed: { SPEND: "idle" }
+	})
 	const place = (row: Row | undefined, list: readonly Row[]) => {
 		if (row === undefined) {
 			clearCursor()
@@ -158,24 +177,112 @@ export const useKeyboard = (
 		row?.element.click()
 	}
 
-	const dialogKeys = (event: KeyboardEvent): boolean => {
+	const modeOf = (event: KeyboardEvent): KeyMode => {
+		if (typing(event.target)) return "typing"
 		const dialog = shell.dialog
-		if (dialog === null) return false
-		const key = event.key
-		if (dialog.kind === "gate") {
-			if (key === "y" || key === "Y" || key === "Enter") {
-				setMouse(shell, true)
-				shell.dialog = null
-			} else if (key === "n" || key === "N") {
-				setMouse(shell, false)
-				shell.dialog = null
-			} else if (key === "Escape") shell.dialog = null
-			else return true
-		} else if (key === "Escape" || key === "Enter" || key === " " || key === "q") {
+		if (dialog !== null) return dialog.kind === "zoom" ? "figure" : dialog.kind
+		return leader.is("armed") ? "leader" : "reading"
+	}
+
+	/** A handler says whether it used the key; a used key is kept from the browser. */
+	const HANDLERS: Readonly<Record<KeyMode, (key: string, event: KeyboardEvent) => boolean>> = {
+		typing: () => false,
+
+		/*
+		 * An open project is read like a page: the arrows and Enter reach its links,
+		 * `n` and `p` go to the next and previous project, Esc sets it back down. Tab
+		 * is left to the browser, which keeps the focus inside the dialog's links.
+		 */
+		project: (key) => {
+			const heading = ARROWS[key]
+			if (heading !== undefined) move(heading)
+			else if (key === "Enter") follow()
+			else if (key === "n") shell.project?.next()
+			else if (key === "p") shell.project?.previous()
+			else if (key === "Escape" || key === "q") shell.project?.close()
+			else return false
+			return true
+		},
+
+		gate: (key) => {
+			if (key === "y" || key === "Y" || key === "Enter") setMouse(shell, true)
+			else if (key === "n" || key === "N") setMouse(shell, false)
+			else if (key !== "Escape") return true
 			shell.dialog = null
-		} else return true
-		event.preventDefault()
-		return true
+			return true
+		},
+
+		figure: (key) => {
+			if (key === "Escape" || key === "Enter" || key === " " || key === "q") shell.dialog = null
+			return true
+		},
+
+		leader: (key, event) => {
+			leader.send({ type: "SPEND" })
+			const section = SECTIONS.find((candidate) => candidate.key === key)
+			if (section !== undefined) void router.push(section.href)
+			else if (key === "t") toggleTheme(shell)
+			else if (key === "g") placeAt(0)
+			else {
+				// Any other key cancels the sequence and is handled as itself.
+				const row = cursorRow()
+				shell.focus = row ? describe(row.element) : ""
+				return HANDLERS.reading(key, event)
+			}
+			return true
+		},
+
+		reading: (key, event) => {
+			const heading = ARROWS[key]
+			if (heading !== undefined) {
+				move(heading)
+				return true
+			}
+			switch (key) {
+				case "g":
+					leader.send({ type: "ARM" })
+					shell.focus = "g …"
+					return true
+				case "t":
+					toggleTheme(shell)
+					return true
+				case "/":
+				case ":":
+					prompt.open()
+					return true
+				case "?":
+					prompt.open("help")
+					return true
+				case "G":
+					placeAt(Number.MAX_SAFE_INTEGER)
+					return true
+				case "n":
+				case "PageDown":
+					shell.turner?.turn(1)
+					return true
+				case "p":
+				case "PageUp":
+					shell.turner?.turn(-1)
+					return true
+				case " ":
+					shell.turner?.turn(event.shiftKey ? -1 : 1)
+					return true
+				case "Home":
+					shell.turner?.go(0)
+					return true
+				case "End":
+					shell.turner?.go(Number.MAX_SAFE_INTEGER)
+					return true
+				case "Enter":
+					follow()
+					return true
+				case "Escape":
+					if (shell.prompt) prompt.close()
+					return false
+				default:
+					return false
+			}
+		}
 	}
 
 	const onKey = (event: KeyboardEvent) => {
@@ -185,120 +292,11 @@ export const useKeyboard = (
 			else prompt.open()
 			return
 		}
-
-		/*
-		 * An open project is read like a page: the arrows and Enter reach its links,
-		 * `n` and `p` go to the next and previous project, Esc sets it back down. Tab
-		 * is left to the browser, which keeps the focus inside the dialog's links.
-		 */
-		if (shell.dialog?.kind === "project") {
-			if (event.metaKey || event.ctrlKey || event.altKey || typing(event.target)) return
-			const key = event.key
-			const heading = ARROWS[key]
-			if (heading !== undefined) move(heading)
-			else if (key === "Enter") follow()
-			else if (key === "n") shell.project?.next()
-			else if (key === "p") shell.project?.previous()
-			else if (key === "Escape" || key === "q") shell.project?.close()
-			else return
-			event.preventDefault()
-			return
-		}
-
-		if (shell.dialog !== null) {
-			if (dialogKeys(event)) event.preventDefault()
-			return
-		}
-
-		if (typing(event.target)) return
-		if (event.metaKey || event.ctrlKey || event.altKey) return
-
-		const key = event.key
-
-		if (armed) {
-			armed = false
-			const section = SECTIONS.find((candidate) => candidate.key === key)
-			if (section !== undefined) {
-				event.preventDefault()
-				void router.push(section.href)
-				return
-			}
-			if (key === "t") {
-				event.preventDefault()
-				toggleTheme(shell)
-				return
-			}
-			if (key === "g") {
-				event.preventDefault()
-				placeAt(0)
-				return
-			}
-			// Any other key cancels the sequence and is handled as itself.
-			const row = cursorRow()
-			shell.focus = row ? describe(row.element) : ""
-		}
-
-		const heading = ARROWS[key]
-		if (heading !== undefined) {
-			event.preventDefault()
-			move(heading)
-			return
-		}
-
-		switch (key) {
-			case "g":
-				event.preventDefault()
-				armed = true
-				shell.focus = "g …"
-				return
-			case "t":
-				event.preventDefault()
-				toggleTheme(shell)
-				return
-			case "/":
-			case ":":
-				event.preventDefault()
-				prompt.open()
-				return
-			case "?":
-				event.preventDefault()
-				prompt.open("help")
-				return
-			case "G":
-				event.preventDefault()
-				placeAt(Number.MAX_SAFE_INTEGER)
-				return
-			case "n":
-			case "PageDown":
-				event.preventDefault()
-				shell.turner?.turn(1)
-				return
-			case "p":
-			case "PageUp":
-				event.preventDefault()
-				shell.turner?.turn(-1)
-				return
-			case " ":
-				event.preventDefault()
-				shell.turner?.turn(event.shiftKey ? -1 : 1)
-				return
-			case "Home":
-				event.preventDefault()
-				shell.turner?.go(0)
-				return
-			case "End":
-				event.preventDefault()
-				shell.turner?.go(Number.MAX_SAFE_INTEGER)
-				return
-			case "Enter":
-				event.preventDefault()
-				follow()
-				return
-			case "Escape":
-				if (shell.prompt) prompt.close()
-				return
-			default:
-		}
+		const mode = modeOf(event)
+		// A key with a modifier held is the browser's, except where a dialog owns every key.
+		const modified = event.metaKey || event.ctrlKey || event.altKey
+		if (modified && mode !== "gate" && mode !== "figure") return
+		if (HANDLERS[mode](event.key, event)) event.preventDefault()
 	}
 
 	onMounted(() => document.addEventListener("keydown", onKey))
