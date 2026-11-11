@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeblog__slug__1gn4ng",
     "kind": "query",
-    "hash": "ddea2e9dd902b9eded05ce076c5a7e5455a465be1ac5e00c80a77b3d2085fe02",
+    "hash": "c826900d25cb61cfbafaba6deb19b9843a28abd6900d0e7b52615880f9fd70e1",
     "raw": `query Routeblog__slug__1gn4ng($slug: String!) {
     post(slug: $slug) {
         __typename
@@ -75,9 +75,11 @@ const artifact = {
         description
         evidence
         name
-        steps
+        practice
+        record
+        summary
         title
-        whenToUse
+        tools
     }
 }
 `,
@@ -542,10 +544,24 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "steps": {
+                        "practice": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "steps",
+                            "keyRaw": "practice",
+                            "visible": true,
+                        },
+
+                        "record": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "record",
+                            "visible": true,
+                        },
+
+                        "summary": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "summary",
                             "visible": true,
                         },
 
@@ -556,10 +572,10 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "whenToUse": {
+                        "tools": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "whenToUse",
+                            "keyRaw": "tools",
                             "visible": true,
                         },
                     },
@@ -622,8 +638,10 @@ export type Routeblog__slug__1gn4ng$result = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
+		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -700,8 +718,10 @@ export type Routeblog__slug__1gn4ng$unmasked = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
+		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{

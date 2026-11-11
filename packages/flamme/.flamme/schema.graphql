@@ -160,12 +160,12 @@ type Site {
 type Skill {
   description: String!
   evidence: [String!]!
-  example: String!
   name: ID!
-  steps: [String!]!
+  practice: [String!]!
+  record: [String!]!
+  summary: String!
   title: String!
   tools: [String!]!
-  whenToUse: [String!]!
 }
 
 directive @loading(count: Int, cascade: Boolean) on QUERY | MUTATION | SUBSCRIPTION | FIELD | FRAGMENT_DEFINITION | FRAGMENT_SPREAD

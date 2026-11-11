@@ -5,18 +5,18 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Skills",
     "kind": "query",
-    "hash": "c44e406481b3f05278f7fae7cc685bc84c61de030d1d2503a45cbb3a37868ebe",
+    "hash": "edd416bf35b50109fb3828cf30f88f46587a3a7c63301ab71bbb8924d0c3c112",
     "raw": `query Skills {
     skills {
         __typename
         description
         evidence
-        example
         name
-        steps
+        practice
+        record
+        summary
         title
         tools
-        whenToUse
     }
 }
 `,
@@ -54,13 +54,6 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "example": {
-                            "type": "String",
-                            "modifiers": "String!",
-                            "keyRaw": "example",
-                            "visible": true,
-                        },
-
                         "name": {
                             "type": "ID",
                             "modifiers": "ID!",
@@ -68,10 +61,24 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "steps": {
+                        "practice": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "steps",
+                            "keyRaw": "practice",
+                            "visible": true,
+                        },
+
+                        "record": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "record",
+                            "visible": true,
+                        },
+
+                        "summary": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "summary",
                             "visible": true,
                         },
 
@@ -86,13 +93,6 @@ const artifact = {
                             "type": "String",
                             "modifiers": "[String!]!",
                             "keyRaw": "tools",
-                            "visible": true,
-                        },
-
-                        "whenToUse": {
-                            "type": "String",
-                            "modifiers": "[String!]!",
-                            "keyRaw": "whenToUse",
                             "visible": true,
                         },
                     },
@@ -127,11 +127,11 @@ export type Skills$result = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
-		readonly example: string;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 };
@@ -144,11 +144,11 @@ export type Skills$unmasked = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
-		readonly example: string;
 	}> | null;
 };
 

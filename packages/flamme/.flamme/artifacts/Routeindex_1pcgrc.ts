@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeindex_1pcgrc",
     "kind": "query",
-    "hash": "b52880dd0379b6b8d7bdaab38306292f3d5c5fecd9c318f937d9507d4b3e9a65",
+    "hash": "a3d6ea94e319c1b548f8b9d0e804f5c412d2c00a251446d2ae0018e1babf0ce7",
     "raw": `query Routeindex_1pcgrc {
     posts {
         __typename
@@ -62,9 +62,11 @@ const artifact = {
         description
         evidence
         name
-        steps
+        practice
+        record
+        summary
         title
-        whenToUse
+        tools
     }
 }
 `,
@@ -446,10 +448,24 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "steps": {
+                        "practice": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "steps",
+                            "keyRaw": "practice",
+                            "visible": true,
+                        },
+
+                        "record": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "record",
+                            "visible": true,
+                        },
+
+                        "summary": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "summary",
                             "visible": true,
                         },
 
@@ -460,10 +476,10 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "whenToUse": {
+                        "tools": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "whenToUse",
+                            "keyRaw": "tools",
                             "visible": true,
                         },
                     },
@@ -532,8 +548,10 @@ export type Routeindex_1pcgrc$result = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
+		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -597,8 +615,10 @@ export type Routeindex_1pcgrc$unmasked = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
+		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{

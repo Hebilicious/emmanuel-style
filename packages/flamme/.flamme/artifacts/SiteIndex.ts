@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "SiteIndex",
     "kind": "query",
-    "hash": "a77bc0e2dc38a160addaa2f716128b1b824b5ff451220a00304dd366e4c681f3",
+    "hash": "2967065df9e086276ca90613287edffb419ac3e09d1a84efc38460b4245c027d",
     "raw": `query SiteIndex {
     posts {
         __typename
@@ -49,9 +49,11 @@ const artifact = {
         description
         evidence
         name
-        steps
+        practice
+        record
+        summary
         title
-        whenToUse
+        tools
     }
 }
 `,
@@ -341,10 +343,24 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "steps": {
+                        "practice": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "steps",
+                            "keyRaw": "practice",
+                            "visible": true,
+                        },
+
+                        "record": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "record",
+                            "visible": true,
+                        },
+
+                        "summary": {
+                            "type": "String",
+                            "modifiers": "String!",
+                            "keyRaw": "summary",
                             "visible": true,
                         },
 
@@ -355,10 +371,10 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "whenToUse": {
+                        "tools": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "whenToUse",
+                            "keyRaw": "tools",
                             "visible": true,
                         },
                     },
@@ -419,8 +435,10 @@ export type SiteIndex$result = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
+		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -471,8 +489,10 @@ export type SiteIndex$unmasked = {
 		readonly name: string;
 		readonly title: string;
 		readonly description: string;
-		readonly whenToUse: ReadonlyArray<string>;
-		readonly steps: ReadonlyArray<string>;
+		readonly summary: string;
+		readonly record: ReadonlyArray<string>;
+		readonly practice: ReadonlyArray<string>;
+		readonly tools: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{

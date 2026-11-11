@@ -2,12 +2,13 @@
 /**
  * Skills: what can be asked for, written as agent skills.
  *
- * An agent skill is a `SKILL.md`: front matter with a name and a description that
- * says when to load it, then what to do once it is loaded. Each skill here is set
- * as that file, open on its own page: the front matter, when to use it, the steps
- * it follows, the tools, and the evidence, the projects in the Library that prove
- * it, each opening over the page like a card in the Library does. The prompt has
- * them too: `cat skills/<name>.md`.
+ * An agent skill is a `SKILL.md`: front matter with a name, a description that says
+ * when to load it and the tools it may use, then the body. Each skill here is set
+ * as that file, open on its own page, but it is written for a person deciding whom
+ * to hire: what he does, in the first person; his record with it; how he works;
+ * and the evidence, the projects in the Library that prove it, each opening over
+ * the page like a card in the Library does. The prompt has them too:
+ * `cat skills/<name>.md`.
  *
  * The first spread is the section's landing: what this is, the way in, and the
  * listing of `skills/` beside it, with where to get in touch.
@@ -15,6 +16,7 @@
 import { computed, ref } from "vue"
 import { useRouter } from "vue-router"
 import { usePageQuery } from "$flamme/records/skills"
+import Inline from "../components/Inline.vue"
 import Pager from "../components/Pager.vue"
 import SectionLanding from "../components/SectionLanding.vue"
 import SkillListing from "../components/SkillListing.vue"
@@ -99,7 +101,7 @@ const cta = computed(() => {
 	}
 })
 const standfirst =
-	"What can be asked for, written the way an agent reads a skill: a description that says when to load it, the steps it follows, and the work in the Library that proves it."
+	"What I am good at, filed the way an agent files a skill: when to load it, what I have done with it, how I work. The format is for fun. The record is not: every line of it is in the Library."
 
 const open = (name: string) => void openProject(router, name)
 </script>
@@ -146,6 +148,10 @@ const open = (name: string) => void openProject(router, name)
           <span><span class="Key">description:</span> {{
               item.skill.description
             }}</span>
+          <span class="Allowed"><span class="Key">allowed-tools:</span>
+            <span v-for="tool of item.skill.tools" :key="tool" class="Tool">{{
+              tool
+            }}</span></span>
           <span class="Fence">---</span>
         </div>
 
@@ -154,38 +160,34 @@ const open = (name: string) => void openProject(router, name)
             class="display">{{ item.skill.title }}</span>
         </h2>
 
+        <p class="Summary">{{ item.skill.summary }}</p>
+
         <section class="Part">
           <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> When to use
+            <span class="Hash" aria-hidden="true">##</span> Track record
           </h3>
           <ul class="Bullets">
-            <li v-for="line of item.skill.whenToUse" :key="line">{{ line }}</li>
+            <li v-for="line of item.skill.record" :key="line">
+              <Inline :text="line" />
+            </li>
           </ul>
         </section>
 
         <section class="Part">
           <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> Steps
+            <span class="Hash" aria-hidden="true">##</span> How I work
           </h3>
-          <ol class="Steps">
-            <li v-for="line of item.skill.steps" :key="line">{{ line }}</li>
-          </ol>
+          <ul class="Bullets Plain">
+            <li v-for="line of item.skill.practice" :key="line">
+              <Inline :text="line" />
+            </li>
+          </ul>
         </section>
 
-        <section class="Part">
-          <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> Tools
-          </h3>
-          <p class="Tools">
-            <span v-for="tool of item.skill.tools" :key="tool" class="Tool">{{
-              tool
-            }}</span>
-          </p>
-        </section>
-
-        <section class="Part">
+        <section class="Part Proof">
           <h3 class="Heading">
             <span class="Hash" aria-hidden="true">##</span> Evidence
+            <span class="Aside">in the Library</span>
           </h3>
           <p class="Evidence">
             <a
@@ -201,12 +203,6 @@ const open = (name: string) => void openProject(router, name)
             }}</a>
           </p>
         </section>
-
-        <blockquote class="Example">
-          <span class="Sigil" aria-hidden="true">&gt;</span> {{
-            item.skill.example
-          }}
-        </blockquote>
       </article>
     </template>
   </Pager>
@@ -286,6 +282,39 @@ const open = (name: string) => void openProject(router, name)
   font-family: var(--font-monaspace);
   font-size: 0.5em;
   font-weight: normal;
+}
+
+/* What he does: the one paragraph a person reads, set as the lede. */
+.Summary {
+  max-width: 62ch;
+  color: var(--ink);
+  font-size: var(--typography_fluid-content-font-size-l);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.Allowed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.4rem;
+}
+
+.Aside {
+  color: var(--faint);
+  font-weight: var(--typography-weight-body-regular);
+  letter-spacing: 0.08em;
+}
+
+/* The evidence sits at the foot of the file. */
+.Proof {
+  margin-top: auto;
+  padding-top: var(--spacing_fluid-tight-space-tight-m);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.Bullets.Plain li::before {
+  content: "·";
 }
 
 .Part {
@@ -376,22 +405,6 @@ const open = (name: string) => void openProject(router, name)
   background: var(--accent);
   box-shadow: none;
   color: var(--accent-ink);
-}
-
-.Sigil {
-  color: var(--accent);
-}
-
-.Example {
-  margin: auto 0 0;
-  padding: var(--spacing_fluid-tight-space-tight-s)
-    var(--spacing_fluid-tight-space-tight-m);
-  border-left: var(--spacing-size-rule) solid var(--accent);
-  background: var(--sunk);
-  color: var(--muted);
-  font-size: var(--typography_fluid-content-font-size-s);
-  font-style: italic;
-  line-height: 1.5;
 }
 
 @media (max-width: 60rem) {

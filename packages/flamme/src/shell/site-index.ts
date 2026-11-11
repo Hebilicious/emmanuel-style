@@ -37,8 +37,10 @@ export const useSiteIndex = (): ComputedRef<TerminalIndex> => {
 			name: skill.name,
 			title: skill.title,
 			description: skill.description,
-			whenToUse: skill.whenToUse,
-			steps: skill.steps,
+			summary: skill.summary,
+			record: skill.record,
+			practice: skill.practice,
+			tools: skill.tools,
 			evidence: skill.evidence
 		})),
 		roles: (data.value?.roles ?? []).map((role) => ({

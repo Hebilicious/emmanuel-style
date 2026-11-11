@@ -31,8 +31,10 @@ query SiteIndex {
 		name
 		title
 		description
-		whenToUse
-		steps
+		summary
+		record
+		practice
+		tools
 		evidence
 	}
 	roles {

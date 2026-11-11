@@ -5,10 +5,10 @@ query Skills {
 		name
 		title
 		description
-		whenToUse
-		steps
+		summary
+		record
+		practice
 		tools
 		evidence
-		example
 	}
 }
