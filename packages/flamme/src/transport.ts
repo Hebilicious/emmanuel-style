@@ -27,13 +27,18 @@ import { resolveLocally } from "./resolve.js"
  * `VITE_API_BASE` names it when it is on another origin, as it is in development
  * (`wrangler dev` on port 8787) and on a preview. Unset, a production build talks to
  * its own origin, which is where the worker's `/api/*` route is mounted, and a dev
- * server talks to the local worker.
+ * server talks to the worker beside it.
  */
 const configured = import.meta.env["VITE_API_BASE"] as string | undefined
-const BASE = (configured ?? (import.meta.env.DEV ? "http://localhost:8787" : "")).replace(
-	/\/+$/,
-	""
-)
+/**
+ * In development the worker is on port 8787 of whatever host the page was opened
+ * on: `localhost` on this machine, the machine's own name from another device.
+ */
+const local = (): string =>
+	typeof location === "undefined"
+		? "http://localhost:8787"
+		: `${location.protocol}//${location.hostname}:8787`
+const BASE = (configured ?? (import.meta.env.DEV ? local() : "")).replace(/\/+$/, "")
 
 /**
  * The reader's stable id, so a favourite toggle is idempotent per reader and the

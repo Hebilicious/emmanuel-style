@@ -17,6 +17,15 @@ import { flamme } from "@flamme/vite"
  */
 export default defineConfig({
 	plugins: [vize(), flamme()],
+	server: {
+		/*
+		 * `DEV_HMR=off` serves the dev build without Vite's live connection, for
+		 * reading it on a phone. Vite's client reloads the page whenever that
+		 * connection drops and comes back, and a phone drops it every time the browser
+		 * goes to the background, so coming back to the tab reloaded the site.
+		 */
+		...(process.env["DEV_HMR"] === "off" ? { hmr: false, ws: false } : {})
+	},
 	resolve: {
 		/*
 		 * One instance of Vue and its router in the bundle.

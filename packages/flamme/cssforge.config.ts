@@ -14,6 +14,24 @@ import { accents, neutrals } from "../astro/palette.generated"
  */
 
 /** cssforge wants `{ hex }` leaves keyed by variant name. */
+/**
+ * Gold: the accent at night. A lamp's colour on a dark page, where the aqua it
+ * replaces read as a screen's. Written here rather than derived with the coolors
+ * anchors: it is this build's own. Gold 300 on the dark paper is 11.9:1.
+ */
+const gold = {
+	"100": "#fff0c4",
+	"200": "#ffdf8f",
+	"300": "#f6c453",
+	"400": "#dfa52a",
+	"500": "#b88316",
+	"600": "#8e640e",
+	"700": "#6a4a09",
+	"800": "#463006",
+	"900": "#281b03",
+	"950": "#120b01"
+}
+
 const palette = (ramp: Record<string, string>) =>
 	Object.fromEntries(Object.entries(ramp).map(([step, hex]) => [step, { hex }]))
 
@@ -141,6 +159,7 @@ export default defineConfig({
 				neutral: { value: palette(neutrals) },
 				/** The five coolors anchors, expanded. Accents only. */
 				aqua: { value: palette(accents.aqua) },
+				gold: { value: palette(gold) },
 				frost: { value: palette(accents.frost) },
 				peri: { value: palette(accents.peri) },
 				pink: { value: palette(accents.pink) },
@@ -206,9 +225,9 @@ export default defineConfig({
 							"rule-strong": "var(--palette-neutral-400)",
 							surface: "var(--palette-neutral-900)",
 							sunk: "var(--palette-neutral-800)",
-							accent: "var(--palette-aqua-300)",
+							accent: "var(--palette-gold-300)",
 							"accent-ink": "var(--palette-neutral-950)",
-							"accent-soft": "var(--palette-aqua-800)",
+							"accent-soft": "var(--palette-gold-800)",
 							secondary: "var(--palette-peri-200)",
 							tertiary: "var(--palette-pink-200)",
 							link: "var(--palette-frost-200)",
@@ -228,9 +247,9 @@ export default defineConfig({
 							"rule-strong": "palette.neutral.400",
 							surface: "palette.neutral.900",
 							sunk: "palette.neutral.800",
-							accent: "palette.aqua.300",
+							accent: "palette.gold.300",
 							"accent-ink": "palette.neutral.950",
-							"accent-soft": "palette.aqua.800",
+							"accent-soft": "palette.gold.800",
 							secondary: "palette.peri.200",
 							tertiary: "palette.pink.200",
 							link: "palette.frost.200"

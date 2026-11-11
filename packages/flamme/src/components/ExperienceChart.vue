@@ -400,12 +400,29 @@ const rows = computed(() =>
     height: 1.8rem;
   }
 
+  /* Fifteen roles on a phone's page: each row is its name and dates, with its bar close under. */
+  .Dense .Rows {
+    gap: 0.15rem;
+  }
+
+  .Dense .Row {
+    gap: 0;
+  }
+
+  .Dense .Who {
+    line-height: 1.15;
+  }
+
   .Dense .Track {
-    height: 1rem;
+    height: 0.85rem;
   }
 
   .Dense .Bar {
-    height: 0.6rem;
+    height: 0.5rem;
+  }
+
+  .Dense .Span {
+    font-size: 0.62rem;
   }
 
   .Bar {
