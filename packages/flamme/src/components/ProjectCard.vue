@@ -133,7 +133,10 @@ const compact = (count: number) =>
   overflow: hidden;
   border: var(--spacing-size-hairline) solid var(--rule);
   background: var(--sunk);
-  transition: border-color 160ms linear;
+  transition:
+    border-color 160ms linear,
+    transform 320ms cubic-bezier(0.22, 0.6, 0.36, 1),
+    box-shadow 320ms cubic-bezier(0.22, 0.6, 0.36, 1);
 }
 
 /* One line, always: on a narrow card the facts are cut rather than wrapped. */
@@ -270,8 +273,13 @@ const compact = (count: number) =>
     box-shadow: 0 0 0 0.45rem var(--sunk);
   }
 
+  /* The plate lifts off the page toward the reader, and its light falls on the paper. */
   .Card[data-cursor="true"] .Plate {
     border-color: var(--accent);
+    transform: perspective(60rem) rotateX(2.5deg) scale(0.985);
+    box-shadow:
+      0 1.1rem 1.6rem -1rem color-mix(in oklab, var(--accent) 55%, transparent),
+      0 0 0 var(--spacing-size-hairline) var(--accent);
   }
 
   .Card[data-cursor="true"] .Title {

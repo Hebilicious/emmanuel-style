@@ -37,6 +37,15 @@
   border-block: var(--spacing-size-hairline) solid var(--rule-strong);
 }
 
+/* The pane and the sheet's margins around it, where the furniture is set. */
+.Desk {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 /*
  * The reading pane. `view-transition-name` is not set here: the pager names
  * itself for the page turn, and naming the pane too makes two elements claim the

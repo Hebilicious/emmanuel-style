@@ -26,6 +26,7 @@
 		"@hebilicious/cssforge": "catalog:astro",
 		"@vueuse/core": "catalog:astro",
 		"graphql": "16.14.2",
+		"three": "0.187.0",
 		"vue": "catalog:astro",
 		"vue-router": "5.3.1"
 	},
@@ -35,6 +36,7 @@
 		"@types/hast": "3.0.4",
 		"@types/mdast": "4.0.4",
 		"@types/node": "24.13.5",
+		"@types/three": "0.187.0",
 		"@vizejs/vite-plugin": "0.424.10",
 		"hast-util-from-html": "2.0.3",
 		"hast-util-to-html": "9.0.5",

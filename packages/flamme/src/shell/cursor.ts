@@ -40,7 +40,7 @@ export interface Row {
  * The part of an element left on screen once every clipping box around it (a
  * page cut out of a block, the leaf it is drawn on) has cut it, or `null`.
  */
-const shown = (element: HTMLElement): DOMRect | null => {
+export const shown = (element: HTMLElement): DOMRect | null => {
 	if (element.closest("[data-measure], [hidden], [inert]")) return null
 	const box = element.getBoundingClientRect()
 	if (box.width === 0 || box.height === 0) return null
@@ -193,6 +193,18 @@ export const homeRow = (list: readonly Row[]): Row | undefined =>
 /** The row the cursor is on, if it is still on screen. */
 export const cursorRow = (list: readonly Row[] = rows()): Row | undefined =>
 	list.find((row) => row.twins.some((twin) => twin.hasAttribute("data-cursor")))
+
+/**
+ * Where the cursor is on screen, or `null`: the part of the highlighted row that
+ * shows. Cheap enough to ask every frame (the press lights the row).
+ */
+export const cursorBox = (): DOMRect | null => {
+	for (const element of document.querySelectorAll<HTMLElement>("[data-cursor]")) {
+		const box = shown(element)
+		if (box !== null) return box
+	}
+	return null
+}
 
 /* ------------------------------------------------------------- moving it */
 

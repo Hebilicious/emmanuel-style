@@ -34,7 +34,7 @@
     {
       "name": "Home",
       "kind": "query",
-      "hash": "8e9ec4c371b9202e4a362f458344aae8d6177bdf909622fedac80c032ca26ef9",
+      "hash": "a0c69ee3b932418ab7fa33383625f85b822b8cc8cf79fc47c119596131b71c0b",
       "file": "artifacts/Home.ts",
       "sources": [
         "src/pages/index/+page.gql"

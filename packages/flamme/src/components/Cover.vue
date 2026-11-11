@@ -9,6 +9,10 @@
  * seeded by the project's name, so a cover is the same on every visit and no two
  * covers of one motif are alike. It is ink and accent on the paper's sunk tone,
  * over a halftone screen, so it sits in either theme like the rest of the page.
+ *
+ * A plate in this paper is not still. Its lines are drawn in when the page it is
+ * on arrives, one after the other, and drawn again when the reading cursor (or the
+ * mouse, which carries it) lands on its card.
  */
 import { computed } from "vue"
 
@@ -859,6 +863,10 @@ const fill = (kind: string | undefined) =>
 				? kind
 				: "none"
 
+/** A stroked line with no dash pattern of its own is drawn in; washes and dashed rules fade in. */
+const drawn = (path: Path) =>
+	path.kind !== "accent-fill" && path.kind !== "fill" && path.dash === undefined
+
 const boxStroke = (kind: string | undefined) =>
 	kind === "accent"
 		? "var(--accent)"
@@ -908,6 +916,9 @@ const boxStroke = (kind: string | undefined) =>
       :stroke='path.kind === "accent-fill" || path.kind === "fill" ? "none" : stroke(path.kind)'
       :stroke-width="path.width ?? 1"
       :stroke-dasharray="path.dash"
+      :pathLength="drawn(path) ? 1 : undefined"
+      :class='drawn(path) ? "Line" : "Wash"'
+      :style='{ "--order": index }'
       stroke-linecap="round"
       stroke-linejoin="round">
     </path>
@@ -917,6 +928,7 @@ const boxStroke = (kind: string | undefined) =>
       :cx="dot.x"
       :cy="dot.y"
       :r="dot.r"
+      class="Dot"
       :fill='dot.kind === "accent" ? "var(--accent)" : "var(--muted)"'>
     </circle>
     <text
@@ -952,6 +964,66 @@ const boxStroke = (kind: string | undefined) =>
 
 .Screen {
   fill: color-mix(in oklab, var(--ink) 9%, transparent);
+}
+
+/*
+ * Lines are drawn in when the plate arrives: each has a length of 1 (`pathLength`),
+ * so a dash of 1 offset by 1 hides it and the offset running to 0 draws it. The
+ * arrival is a transition from `@starting-style`, so it runs once, when the page
+ * the plate is on is set. The cursor landing on the card draws them again.
+ */
+.Line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1100ms cubic-bezier(0.3, 0.6, 0.2, 1);
+  transition-delay: calc(120ms + var(--order, 0) * 45ms);
+}
+
+.Wash,
+.Dot {
+  transition: opacity 700ms linear 500ms;
+}
+
+@starting-style {
+  .Line {
+    stroke-dashoffset: 1;
+  }
+
+  .Wash,
+  .Dot {
+    opacity: 0;
+  }
+}
+
+:global([data-cursor="true"]) .Line {
+  animation: cover-draw 900ms cubic-bezier(0.3, 0.6, 0.2, 1) both;
+  animation-delay: calc(var(--order, 0) * 30ms);
+}
+
+:global([data-cursor="true"]) .Dot {
+  animation: cover-dot 900ms ease-out both;
+}
+
+@keyframes cover-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes cover-dot {
+  0%,
+  60% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Line,
+  .Wash,
+  .Dot {
+    transition: none;
+    animation: none !important;
+  }
 }
 
 /* Nabla, in the ink palette the nameplate uses, as `.display` sets it. */

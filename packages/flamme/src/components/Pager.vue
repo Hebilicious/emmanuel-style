@@ -957,6 +957,29 @@ const vars = computed(() => ({
   overflow: clip;
 }
 
+/*
+ * A page arrives still wet: its blocks are set faint and soft and the ink settles
+ * in the half second after. It is a transition from `@starting-style`, so it runs
+ * once for each block as its page is put on show, and the words can be read from
+ * the first frame.
+ */
+.Spread .Slice {
+  transition: opacity 520ms linear 80ms, filter 520ms linear 80ms;
+}
+
+@starting-style {
+  .Spread .Slice {
+    opacity: 0.25;
+    filter: blur(3px) contrast(1.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Spread .Slice {
+    transition: none;
+  }
+}
+
 .SliceBody {
   display: flow-root;
 }

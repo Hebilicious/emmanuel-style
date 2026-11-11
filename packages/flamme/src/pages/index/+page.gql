@@ -23,6 +23,7 @@ query Home {
 		projects {
 			name
 			title
+			tagline
 			kind
 			featured
 			contributions
