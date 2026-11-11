@@ -2,7 +2,7 @@
   "version": 1,
   "compiler": "0.0.0",
   "runtime": "0.0.0",
-  "schemaHash": "a507f8c45453aa419fcd4ab8a2b8b85e992c4959997cc42af07f4e778df16d03",
+  "schemaHash": "d8bf1bff559180555085006d01a779b034cc5f626042d9d0c2f5e21274f5536d",
   "documents": [
     {
       "name": "Blog",
@@ -16,7 +16,7 @@
     {
       "name": "Experience",
       "kind": "query",
-      "hash": "53c16505d633c0f76aa040d8a2be1c5954c89a1dcbdb8588eb15737bdfa6a7de",
+      "hash": "753f0ef41adf74aa2c0a993a87403fdfcc0e67435b69e042d4232952eae8e4d3",
       "file": "artifacts/Experience.ts",
       "sources": [
         "src/pages/experience/+page.gql"
@@ -70,7 +70,7 @@
     {
       "name": "Route_layout_oy84b0",
       "kind": "query",
-      "hash": "fd50fd41e57c64177ed56ed17c195119331bc18ab3ee46b3a7b8aa2f6d8c527c",
+      "hash": "20127a970c078a783e5480811e271d17ca178f1dfbaf2b240637ac31eb542b66",
       "file": "artifacts/Route_layout_oy84b0.ts",
       "sources": [
         ".flamme/composed/Route_layout_oy84b0.composed.gql"
@@ -79,7 +79,7 @@
     {
       "name": "Routeblog_1j1hl4",
       "kind": "query",
-      "hash": "70300efde24797dd522547611793a1f03cfd974ef0c20ac21e7cc1e6da886218",
+      "hash": "fd4526e77495f1854570e3160db7e46d61535e99870bf9ae57a3a10b1de7536d",
       "file": "artifacts/Routeblog_1j1hl4.ts",
       "sources": [
         ".flamme/composed/Routeblog_1j1hl4.composed.gql"
@@ -88,7 +88,7 @@
     {
       "name": "Routeblog__slug__1gn4ng",
       "kind": "query",
-      "hash": "c826900d25cb61cfbafaba6deb19b9843a28abd6900d0e7b52615880f9fd70e1",
+      "hash": "1047c00fc3af959b42b669a4071d74b79aa19e5520d73d5ea9b882c90d9b4335",
       "file": "artifacts/Routeblog__slug__1gn4ng.ts",
       "sources": [
         ".flamme/composed/Routeblog__slug__1gn4ng.composed.gql"
@@ -97,7 +97,7 @@
     {
       "name": "Routeexperience_fpods0",
       "kind": "query",
-      "hash": "35c8ee88d77e9275d2c44601447254c37a860abf5afcbe5166af8ffb89e566ab",
+      "hash": "0e3cca9c58dd5673044c37932fbabd6ebe900c074e45ba099bfec68498d01c41",
       "file": "artifacts/Routeexperience_fpods0.ts",
       "sources": [
         ".flamme/composed/Routeexperience_fpods0.composed.gql"
@@ -106,7 +106,7 @@
     {
       "name": "Routeindex_1pcgrc",
       "kind": "query",
-      "hash": "a3d6ea94e319c1b548f8b9d0e804f5c412d2c00a251446d2ae0018e1babf0ce7",
+      "hash": "0b8b81af51e1e4728924d3345c35b8cb92be65e2d0beacef157a32737aacc2df",
       "file": "artifacts/Routeindex_1pcgrc.ts",
       "sources": [
         ".flamme/composed/Routeindex_1pcgrc.composed.gql"
@@ -115,7 +115,7 @@
     {
       "name": "Routelibrary_n8fr6o",
       "kind": "query",
-      "hash": "af5ca64fb3b027d17e35a7f857e01829be3392588f6ebfcb6829d091cf8fa845",
+      "hash": "63be25d37196f86945e136467a7fbb2258c2822257ce7831411dd20103ddf82a",
       "file": "artifacts/Routelibrary_n8fr6o.ts",
       "sources": [
         ".flamme/composed/Routelibrary_n8fr6o.composed.gql"
@@ -124,7 +124,7 @@
     {
       "name": "Routeskills_rdiloo",
       "kind": "query",
-      "hash": "6487f2ff0f16cb41750377b4c1271231ac5b26f9959cb474213022bf75a7f9d8",
+      "hash": "8e6ed35cc73015ad61205738c3b78b92771ff80507dc25a3654e0073fd33f512",
       "file": "artifacts/Routeskills_rdiloo.ts",
       "sources": [
         ".flamme/composed/Routeskills_rdiloo.composed.gql"
@@ -133,7 +133,7 @@
     {
       "name": "SiteIndex",
       "kind": "query",
-      "hash": "2967065df9e086276ca90613287edffb419ac3e09d1a84efc38460b4245c027d",
+      "hash": "ae6c7cc726274de02a1d2039c2768e3dce2fcac98575c2cd8a4a7b34b594fcbd",
       "file": "artifacts/SiteIndex.ts",
       "sources": [
         "src/pages/+layout.gql"
@@ -142,7 +142,7 @@
     {
       "name": "Skills",
       "kind": "query",
-      "hash": "edd416bf35b50109fb3828cf30f88f46587a3a7c63301ab71bbb8924d0c3c112",
+      "hash": "5f7fe0e2bdbf4d9a72f58ad76dcd2d9c06d1734dbaf97e62a6e4b00123a02855",
       "file": "artifacts/Skills.ts",
       "sources": [
         "src/pages/skills/+page.gql"

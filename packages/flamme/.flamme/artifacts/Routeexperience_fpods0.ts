@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeexperience_fpods0",
     "kind": "query",
-    "hash": "35c8ee88d77e9275d2c44601447254c37a860abf5afcbe5166af8ffb89e566ab",
+    "hash": "0e3cca9c58dd5673044c37932fbabd6ebe900c074e45ba099bfec68498d01c41",
     "raw": `query Routeexperience_fpods0 {
     posts {
         __typename
@@ -26,6 +26,7 @@ const artifact = {
         end
         highlights
         id
+        library
         location
         stack
         start
@@ -64,6 +65,7 @@ const artifact = {
         name
         practice
         record
+        roles
         summary
         title
         tools
@@ -201,6 +203,13 @@ const artifact = {
                             "type": "ID",
                             "modifiers": "ID!",
                             "keyRaw": "id",
+                            "visible": true,
+                        },
+
+                        "library": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "library",
                             "visible": true,
                         },
 
@@ -459,6 +468,13 @@ const artifact = {
                             "visible": true,
                         },
 
+                        "roles": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "roles",
+                            "visible": true,
+                        },
+
                         "summary": {
                             "type": "String",
                             "modifiers": "String!",
@@ -541,6 +557,7 @@ export type Routeexperience_fpods0$result = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -554,6 +571,7 @@ export type Routeexperience_fpods0$result = {
 		readonly location: string;
 		readonly highlights: ReadonlyArray<string>;
 		readonly stack: ReadonlyArray<string>;
+		readonly library: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 	readonly schools: ReadonlyArray<{
@@ -608,6 +626,7 @@ export type Routeexperience_fpods0$unmasked = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{
@@ -621,6 +640,7 @@ export type Routeexperience_fpods0$unmasked = {
 		readonly location: string;
 		readonly highlights: ReadonlyArray<string>;
 		readonly stack: ReadonlyArray<string>;
+		readonly library: ReadonlyArray<string>;
 	}> | null;
 	readonly schools: ReadonlyArray<{
 		readonly __typename: "School";

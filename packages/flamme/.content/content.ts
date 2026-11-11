@@ -979,499 +979,6 @@ export const site = {
 			]
 		},
 		{
-			"slug": "upstream",
-			"label": "Upstream",
-			"blurb": "Pull requests merged into the frameworks and libraries the work above is built on.",
-			"projects": [
-				{
-					"name": "nitro",
-					"title": "Nitro",
-					"tagline": "The server engine under Nuxt: deploy presets, prerendering, cookies and runtime config.",
-					"body": [
-						"Nineteen pull requests from May to October 2023, mostly where Nitro meets the platforms it deploys to: the static Cloudflare Pages preset and its detection, export conditions for workers, binary bodies and cookies on AWS and Netlify Lambda, cookies split correctly, retries and redirects in the prerenderer, and the documentation and tests for runtime config and environment variables."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "TypeScript",
-					"stack": [
-						"Nitro",
-						"Cloudflare",
-						"AWS Lambda",
-						"Netlify"
-					],
-					"url": "https://github.com/nitrojs/nitro/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
-					"homepage": "https://nitro.build",
-					"archived": false,
-					"repo": null,
-					"started": 2023,
-					"ended": 2023,
-					"featured": null,
-					"contributions": 19,
-					"activity": [
-						"2023-05",
-						"2023-06",
-						"2023-06",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-08",
-						"2023-08",
-						"2023-08",
-						"2023-08",
-						"2023-08",
-						"2023-09",
-						"2023-09",
-						"2023-10"
-					],
-					"links": [
-						{
-							"label": "Prerender: support retry and retryDelay",
-							"url": "https://github.com/nitrojs/nitro/pull/1534",
-							"date": "2023-10"
-						},
-						{
-							"label": "AWS and Netlify Lambda: binary body v2 and cookies v1",
-							"url": "https://github.com/nitrojs/nitro/pull/1683",
-							"date": "2023-09"
-						},
-						{
-							"label": "Cloudflare Pages: detect the static preset",
-							"url": "https://github.com/nitrojs/nitro/pull/1659",
-							"date": "2023-08"
-						},
-						{
-							"label": "Support exportConditions, with defaults for workers",
-							"url": "https://github.com/nitrojs/nitro/pull/1401",
-							"date": "2023-07"
-						},
-						{
-							"label": "Split cookie headers",
-							"url": "https://github.com/nitrojs/nitro/pull/1452",
-							"date": "2023-07"
-						},
-						{
-							"label": "Prerender: skip redirects",
-							"url": "https://github.com/nitrojs/nitro/pull/1448",
-							"date": "2023-07"
-						},
-						{
-							"label": "Add the cloudflare-pages-static preset",
-							"url": "https://github.com/nitrojs/nitro/pull/1310",
-							"date": "2023-06"
-						},
-						{
-							"label": "Document runtime config and environment variables",
-							"url": "https://github.com/nitrojs/nitro/pull/1550",
-							"date": "2023-08"
-						}
-					],
-					"cover": "timeline"
-				},
-				{
-					"name": "nuxt",
-					"title": "Nuxt",
-					"tagline": "The framework itself: a kit helper, the reproduction bot, documentation, and the modules list.",
-					"body": [
-						"`addTypeTemplate` in Nuxt Kit, for modules to register type templates; less reliance on `event.node`; the bot that asks issues for a reproduction; and a run of documentation, from the experimental features to styling. In the modules list, the entries for the modules on the Nuxt shelf."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "TypeScript",
-					"stack": [
-						"Nuxt",
-						"Nuxt Kit"
-					],
-					"url": "https://github.com/nuxt/nuxt/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
-					"homepage": "https://nuxt.com",
-					"archived": false,
-					"repo": null,
-					"started": 2023,
-					"ended": 2024,
-					"featured": null,
-					"contributions": 21,
-					"activity": [
-						"2023-05",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-06",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-08",
-						"2023-08",
-						"2023-08",
-						"2023-08",
-						"2023-08",
-						"2023-09",
-						"2024-09"
-					],
-					"links": [
-						{
-							"label": "Kit: addTypeTemplate, with auto-registration",
-							"url": "https://github.com/nuxt/nuxt/pull/21331",
-							"date": "2023-06"
-						},
-						{
-							"label": "Reduce the usage of event.node",
-							"url": "https://github.com/nuxt/nuxt/pull/22539",
-							"date": "2023-08"
-						},
-						{
-							"label": "Add the issue reproduction bot",
-							"url": "https://github.com/nuxt/nuxt/pull/22495",
-							"date": "2023-08"
-						},
-						{
-							"label": "Document the experimental features",
-							"url": "https://github.com/nuxt/nuxt/pull/21617",
-							"date": "2023-06"
-						},
-						{
-							"label": "Document styling",
-							"url": "https://github.com/nuxt/nuxt/pull/21525",
-							"date": "2023-06"
-						},
-						{
-							"label": "Tell $fetch from the fetch composables",
-							"url": "https://github.com/nuxt/nuxt/pull/21228",
-							"date": "2023-05"
-						},
-						{
-							"label": "List authjs-nuxt on nuxt.com",
-							"url": "https://github.com/nuxt/modules/pull/668",
-							"date": "2023-06"
-						},
-						{
-							"label": "List server-block-nuxt on nuxt.com",
-							"url": "https://github.com/nuxt/modules/pull/703",
-							"date": "2023-07"
-						}
-					],
-					"cover": "timeline"
-				},
-				{
-					"name": "h3",
-					"title": "h3",
-					"tagline": "The HTTP framework under Nitro: form data, headers and cookies on web responses.",
-					"body": [
-						"Seven pull requests in July 2023: `readFormData`, `event.method` and `event.headers`, utilities to remove and clear response headers, `set-cookie` values split and appended correctly on web responses, and the readme split into sections with the missing helpers documented."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "TypeScript",
-					"stack": [
-						"h3"
-					],
-					"url": "https://github.com/h3js/h3/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
-					"homepage": "https://h3.dev",
-					"archived": false,
-					"repo": null,
-					"started": 2023,
-					"ended": 2023,
-					"featured": null,
-					"contributions": 7,
-					"activity": [
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07"
-					],
-					"links": [
-						{
-							"label": "Add readFormData",
-							"url": "https://github.com/h3js/h3/pull/421",
-							"date": "2023-07"
-						},
-						{
-							"label": "Add event.method and event.headers",
-							"url": "https://github.com/h3js/h3/pull/429",
-							"date": "2023-07"
-						},
-						{
-							"label": "Add removeResponseHeader and clearResponseHeaders",
-							"url": "https://github.com/h3js/h3/pull/427",
-							"date": "2023-07"
-						},
-						{
-							"label": "Append set-cookie headers in web responses",
-							"url": "https://github.com/h3js/h3/pull/453",
-							"date": "2023-07"
-						},
-						{
-							"label": "Split set-cookie values in web responses",
-							"url": "https://github.com/h3js/h3/pull/445",
-							"date": "2023-07"
-						}
-					],
-					"cover": "timeline"
-				},
-				{
-					"name": "unjs",
-					"title": "UnJS",
-					"tagline": "unstorage, db0, ofetch and unenv: batching, libSQL, retries and headers.",
-					"body": [
-						"Experimental operation batching and a fix for R2's metadata in unstorage, libSQL support in db0, `retryDelay` in ofetch, and numeric headers preserved in unenv."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "TypeScript",
-					"stack": [
-						"unstorage",
-						"db0",
-						"ofetch",
-						"unenv"
-					],
-					"url": "https://github.com/search?q=org%3Aunjs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
-					"homepage": "https://unjs.io",
-					"archived": false,
-					"repo": null,
-					"started": 2023,
-					"ended": 2023,
-					"featured": null,
-					"contributions": 7,
-					"activity": [
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-07",
-						"2023-08",
-						"2023-08"
-					],
-					"links": [
-						{
-							"label": "unstorage: experimental operation batching",
-							"url": "https://github.com/unjs/unstorage/pull/240",
-							"date": "2023-07"
-						},
-						{
-							"label": "db0: add libSQL support",
-							"url": "https://github.com/unjs/db0/pull/25",
-							"date": "2023-07"
-						},
-						{
-							"label": "ofetch: support retryDelay",
-							"url": "https://github.com/unjs/ofetch/pull/262",
-							"date": "2023-08"
-						},
-						{
-							"label": "unstorage: R2 binding for getMeta",
-							"url": "https://github.com/unjs/unstorage/pull/272",
-							"date": "2023-07"
-						},
-						{
-							"label": "unenv: keep numeric header types in setHeader",
-							"url": "https://github.com/unjs/unenv/pull/119",
-							"date": "2023-08"
-						}
-					],
-					"cover": "timeline"
-				},
-				{
-					"name": "proto",
-					"title": "proto",
-					"tagline": "The toolchain manager: the OCaml and Nushell plugins in its registry.",
-					"body": [
-						"The plugins on the Tools shelf, entered in proto's registry so that `proto install ocaml` works out of the box, and their locators kept current as they moved to the TOML format."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "Rust",
-					"stack": [
-						"proto",
-						"moon"
-					],
-					"url": "https://github.com/moonrepo/proto/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
-					"homepage": "https://moonrepo.dev/proto",
-					"archived": false,
-					"repo": null,
-					"started": 2026,
-					"ended": null,
-					"featured": null,
-					"contributions": 4,
-					"activity": [
-						"2026-04",
-						"2026-05",
-						"2026-06",
-						"2026-10"
-					],
-					"links": [
-						{
-							"label": "Add the OCaml plugin to the registry",
-							"url": "https://github.com/moonrepo/proto/pull/976",
-							"date": "2026-04"
-						},
-						{
-							"label": "Add the Nushell plugin to the registry",
-							"url": "https://github.com/moonrepo/proto/pull/1013",
-							"date": "2026-05"
-						},
-						{
-							"label": "Move the hk and Nushell locators to TOML plugins",
-							"url": "https://github.com/moonrepo/proto/pull/1142",
-							"date": "2026-10"
-						}
-					],
-					"cover": "timeline"
-				},
-				{
-					"name": "lucia",
-					"title": "Lucia",
-					"tagline": "The authentication library: an unstorage adapter, then expiry for it.",
-					"body": [
-						"An adapter that stores Lucia's sessions in any unstorage driver, and time-to-live support for it."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "TypeScript",
-					"stack": [
-						"Lucia",
-						"unstorage"
-					],
-					"url": "https://github.com/lucia-auth/lucia/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
-					"homepage": null,
-					"archived": false,
-					"repo": null,
-					"started": 2023,
-					"ended": 2023,
-					"featured": null,
-					"contributions": 2,
-					"activity": [
-						"2023-07",
-						"2023-09"
-					],
-					"links": [
-						{
-							"label": "Add the unstorage adapter",
-							"url": "https://github.com/lucia-auth/lucia/pull/662",
-							"date": "2023-07"
-						},
-						{
-							"label": "unstorage: add TTL support",
-							"url": "https://github.com/lucia-auth/lucia/pull/970",
-							"date": "2023-09"
-						}
-					],
-					"cover": "timeline"
-				},
-				{
-					"name": "patches",
-					"title": "Patches",
-					"tagline": "Single fixes and features across the ecosystem, from Vike and Houdini to Vize.",
-					"body": [
-						"Where a tool in use needed one change: a config helper in Vike, `using` declarations in Houdini, streaming in the Vercel AI SDK's Nuxt example, export conditions in Postgres.js, the cache directory in Vize's Vite plugin, a fix in VueUse, releases of the NATS client on opam, and, in 2017, Rogue profiles and APL tweaks for SimulationCraft."
-					],
-					"points": [],
-					"kind": "upstream",
-					"shelf": "upstream",
-					"language": "TypeScript",
-					"stack": [
-						"Vike",
-						"Houdini",
-						"Vercel AI",
-						"Postgres.js",
-						"Vize",
-						"VueUse",
-						"SimulationCraft"
-					],
-					"url": "https://github.com/search?q=author%3AHebilicious+is%3Apr+is%3Amerged+-user%3AHebilicious&type=pullrequests",
-					"homepage": null,
-					"archived": false,
-					"repo": null,
-					"started": 2015,
-					"ended": null,
-					"featured": null,
-					"contributions": 20,
-					"activity": [
-						"2015-10",
-						"2017-01",
-						"2017-01",
-						"2017-01",
-						"2017-01",
-						"2017-01",
-						"2019-05",
-						"2022-05",
-						"2023-07",
-						"2023-08",
-						"2023-09",
-						"2023-10",
-						"2024-01",
-						"2024-03",
-						"2024-03",
-						"2024-04",
-						"2024-04",
-						"2026-04",
-						"2026-04",
-						"2026-10"
-					],
-					"links": [
-						{
-							"label": "Vize: find optimised Vue under Vite's cacheDir",
-							"url": "https://github.com/ubugeeei-prod/vize/pull/8618",
-							"date": "2026-10"
-						},
-						{
-							"label": "Vike: add defineVikeConfig",
-							"url": "https://github.com/vikejs/vike/pull/1157",
-							"date": "2023-10"
-						},
-						{
-							"label": "Houdini: support the using keyword",
-							"url": "https://github.com/HoudiniGraphql/houdini/pull/1286",
-							"date": "2024-03"
-						},
-						{
-							"label": "Vercel AI: streaming in the Nuxt example",
-							"url": "https://github.com/vercel/ai/pull/295",
-							"date": "2023-08"
-						},
-						{
-							"label": "Postgres.js: update the export conditions",
-							"url": "https://github.com/porsager/postgres/pull/819",
-							"date": "2024-04"
-						},
-						{
-							"label": "VueUse: update useElementBounding on mount",
-							"url": "https://github.com/vueuse/vueuse/pull/1541",
-							"date": "2022-05"
-						},
-						{
-							"label": "opam: release nats-client 0.0.10",
-							"url": "https://github.com/ocaml/opam-repository/pull/29816",
-							"date": "2026-04"
-						},
-						{
-							"label": "SimulationCraft: Rogue APL tweaks",
-							"url": "https://github.com/simulationcraft/simc/pull/3471",
-							"date": "2017-01"
-						}
-					],
-					"cover": "timeline"
-				}
-			]
-		},
-		{
 			"slug": "work",
 			"label": "Work",
 			"blurb": "Public codebases written for clients and employers, read through their pull requests.",
@@ -1586,44 +1093,384 @@ export const site = {
 					],
 					"links": [
 						{
-							"label": "Prepare the monorepo",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/1",
-							"date": "2024-11"
+							"label": "fix: preserve versioned CDN uploads",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/186",
+							"date": "2026-03"
 						},
 						{
-							"label": "A versioning system for the contract CDN",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/49",
-							"date": "2025-03"
+							"label": "fix: validate CDN bundles before upload",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/185",
+							"date": "2026-03"
 						},
 						{
-							"label": "Pools, the token service and the CDN",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/71",
-							"date": "2025-05"
+							"label": "fix: signer promote",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/184",
+							"date": "2026-03"
 						},
 						{
-							"label": "Create and deploy the signer service",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/90",
-							"date": "2025-07"
+							"label": "fix: use ENVIRONMENT env var for signer network resolution",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/183",
+							"date": "2026-03"
 						},
 						{
-							"label": "Idiomatic XState and React",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/133",
-							"date": "2025-10"
+							"label": "feat: per-environment signer server + SDK routing",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/181",
+							"date": "2026-03"
 						},
 						{
-							"label": "Prove sequentially, compile once",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/137",
-							"date": "2025-10"
+							"label": "feat: mina-mainnet signer setup + runbook improvements (LUM-221)",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/180",
+							"date": "2026-03"
 						},
 						{
-							"label": "The SDK on mainnet",
+							"label": "fix: signer deploy pipeline — SSH lockout, lightweight CI deploys, NixOS modules",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/179",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat: NixOS signer rollout for zeko-testnet",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/178",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat: add NixOS signer rollout for new hosts",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/176",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix: fetch balance should use post",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/172",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: cdn-cache refactor",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/168",
+							"date": "2026-01"
+						},
+						{
+							"label": "fix: type regressions",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/154",
+							"date": "2025-12"
+						},
+						{
+							"label": "feat: sdk mainnet update",
 							"url": "https://github.com/Lumina-DEX/lumina/pull/152",
 							"date": "2025-12"
 						},
 						{
-							"label": "A signer server per environment, and SDK routing",
-							"url": "https://github.com/Lumina-DEX/lumina/pull/181",
-							"date": "2026-03"
+							"label": "chore: separate app server and node",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/146",
+							"date": "2025-10"
+						},
+						{
+							"label": "ci: re-deploy signer",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/143",
+							"date": "2025-10"
+						},
+						{
+							"label": "docs: add frontends section",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/138",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: prove sequentially and compile once",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/137",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: pool creation",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/136",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: upgrade to latest nextjs",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/135",
+							"date": "2025-10"
+						},
+						{
+							"label": "refactor: idiomatic xstate and react",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/133",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: batch sql insert",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/134",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: lumina landing",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/129",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: retry pool creation only 3 times",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/123",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: enable assist",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/122",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: configure formatter and linters correctly",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/121",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: transaction status",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/120",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: add sync workflows",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/119",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: docker errors in ci",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/117",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: migrate to moonrepo",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/115",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: add unsupported states",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/114",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: manual pool deploys",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/106",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: add revision header to signer graphql server",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/104",
+							"date": "2025-08"
+						},
+						{
+							"label": "chore: re-host beta.luminadex.com to cloudflare",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/103",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: add onError handlers to wallet machine",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/101",
+							"date": "2025-08"
+						},
+						{
+							"label": "chore: list o1js as peerDeps",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/98",
+							"date": "2025-08"
+						},
+						{
+							"label": "fix: signer factories should come from sdk",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/96",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: create and deploy signer service",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/90",
+							"date": "2025-07"
+						},
+						{
+							"label": "feat: add cloudflare container",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/92",
+							"date": "2025-07"
+						},
+						{
+							"label": "chore: update service tokens sdk to v0.18.0",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/91",
+							"date": "2025-07"
+						},
+						{
+							"label": "feat: rework contract compilation",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/83",
+							"date": "2025-06"
+						},
+						{
+							"label": "chore: update lumina tokens",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/82",
+							"date": "2025-05"
+						},
+						{
+							"label": "fix: dataclone error while loading contracts",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/74",
+							"date": "2025-05"
+						},
+						{
+							"label": "fix: properly return tokens",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/73",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: pools token service and cdn",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/71",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: implement pool fetching",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/69",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: add hash and url",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/66",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: add llms.txt to luminadocs",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/65",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: multiple token fetches",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/63",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: add sdk disclaimer",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/62",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: add bsl license",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/58",
+							"date": "2025-04"
+						},
+						{
+							"label": "fix: cdn zip url and cache",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/54",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: add cdn versioning system",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/49",
+							"date": "2025-03"
+						},
+						{
+							"label": "docs(sdk): add docs website",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/50",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat(sdk): update fees",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/47",
+							"date": "2025-03"
+						},
+						{
+							"label": "Revert \"Feat/fees\"",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/46",
+							"date": "2025-03"
+						},
+						{
+							"label": "ci: fix contracts docs build",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/44",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: create signer api",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/40",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: expose cache and network from sdk",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/38",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(sdk): swap settings",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/36",
+							"date": "2025-02"
+						},
+						{
+							"label": "chore: release sdk fix",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/32",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(sdk): mina devnet token balances",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/31",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat(sdk): updated chain information",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/29",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(cdn): token sync resets db",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/28",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(sdk): update signer and user0 for mina:testnet",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/26",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: contract o1js 2.2.0",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/24",
+							"date": "2025-01"
+						},
+						{
+							"label": "Revert \"Contract audited\"",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/23",
+							"date": "2025-01"
+						},
+						{
+							"label": "feat: add logs and debug features",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/21",
+							"date": "2025-01"
+						},
+						{
+							"label": "chore(sdk): add examples",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/18",
+							"date": "2025-01"
+						},
+						{
+							"label": "fix(sdk): replace SharedWorker with Worker",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/16",
+							"date": "2025-01"
+						},
+						{
+							"label": "fix(sdk): fetch balance",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/14",
+							"date": "2025-01"
+						},
+						{
+							"label": "fix(sdk): devnet support",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/12",
+							"date": "2025-01"
+						},
+						{
+							"label": "feat(sdk): track pool deploys",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/10",
+							"date": "2024-12"
+						},
+						{
+							"label": "feat: add cdn",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/7",
+							"date": "2024-12"
+						},
+						{
+							"label": "chore: export constant and wallet actors",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/5",
+							"date": "2024-12"
+						},
+						{
+							"label": "feat: publish to npm",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/3",
+							"date": "2024-12"
+						},
+						{
+							"label": "feat: prepare monorepo",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/1",
+							"date": "2024-11"
 						}
 					],
 					"cover": "timeline"
@@ -1631,9 +1478,10 @@ export const site = {
 				{
 					"name": "zeko",
 					"title": "Zeko",
-					"tagline": "A zero-knowledge rollup on Mina: its explorer, its event stream, a zkVerify proof of concept.",
+					"tagline": "A zero-knowledge rollup: its bridge, its faucet, its indexers and its documentation, with the SDKs and CLIs around them.",
 					"body": [
-						"The explorer, from the spikes that settled its design (bridge correlation between the layers, zkApp state and events, cursor pagination, the L1 watcher, data-availability attestations) to the monorepo, the shared NATS event schemas and the SurrealDB read model. In the protocol, the JetStream publish contract the explorer reads from; beside it, a zkVerify pipeline with a Nuxt proof explorer, and a range query for zkApp commands in Mina's archive API."
+						"The rollup's whole web platform, in one monorepo, from its first commit. The bridge between the two layers as an SDK, a web app and a command line written for agents first. The faucet, with its own CLI, rate limiting and automatic bans. The documentation site. The leaderboard with its indexer, its API and its admin. And the actions indexer and API the bridge reads its history from, with a diagnostics CLI and a status dashboard.",
+						"Around it: the monorepo on moon, previews and deploys on Cloudflare with the build configuration kept in the repository, Sentry triage tied to the Linear board, and a published agent skill for building on Zeko. In the protocol, the JetStream publish contract; beside it, a zkVerify proof of concept and a range query for zkApp commands in Mina's archive API."
 					],
 					"points": [],
 					"kind": "work",
@@ -1641,28 +1489,149 @@ export const site = {
 					"language": "TypeScript",
 					"stack": [
 						"TypeScript",
-						"OCaml",
-						"NATS JetStream",
-						"SurrealDB",
 						"Nuxt",
-						"Mina"
+						"Cloudflare Workers",
+						"o1js",
+						"Mina",
+						"moon",
+						"OCaml",
+						"NATS JetStream"
 					],
 					"url": "https://github.com/search?q=org%3Azeko-labs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
 					"homepage": "https://zeko.io",
 					"archived": false,
 					"repo": null,
-					"started": 2025,
+					"started": 2024,
 					"ended": null,
 					"featured": null,
-					"contributions": 23,
+					"contributions": 165,
 					"activity": [
+						"2024-11",
 						"2025-01",
 						"2025-02",
 						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-05",
+						"2025-05",
+						"2025-05",
+						"2025-06",
+						"2025-06",
+						"2025-06",
+						"2025-06",
+						"2025-06",
+						"2025-07",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-12",
+						"2025-12",
+						"2026-01",
+						"2026-01",
+						"2026-01",
+						"2026-01",
 						"2026-02",
 						"2026-02",
-						"2026-04",
-						"2026-04",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
 						"2026-05",
 						"2026-05",
 						"2026-05",
@@ -1676,48 +1645,2103 @@ export const site = {
 						"2026-05",
 						"2026-05",
 						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
 						"2026-06",
 						"2026-06",
 						"2026-09"
 					],
 					"links": [
 						{
-							"label": "Scaffold the explorer monorepo",
-							"url": "https://github.com/zeko-labs/zeko-explorer/pull/9",
+							"label": "Add zkApp command range query",
+							"url": "https://github.com/o1-labs/Archive-Node-API/pull/162",
+							"date": "2026-09"
+						},
+						{
+							"label": "fix(bridge-ui): surface bridge errors and fees",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/226",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge): restore pending bridge finalization",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/220",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(bridge-ui): add mock backend debug mode",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/219",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge): surface finality degradation",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/218",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge-validator): use sandbox process api",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/217",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge): report and fix withdrawal finality stalls",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/215",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge-ui): refresh stale clients and clarify network labels",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/214",
+							"date": "2026-06"
+						},
+						{
+							"label": "ci(changesets): ignore actions dashboard",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/213",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(actions-dashboard): add unified status dashboard",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/196",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(faucet): pin container build toolchain",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/212",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix: filter orphaned archive blocks in actions-indexer and bridge-sdk",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/210",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(networks): update Zeko network nomenclature",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/208",
+							"date": "2026-06"
+						},
+						{
+							"label": "docs(bridge-cli): clarify agent bridge command default",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/209",
+							"date": "2026-06"
+						},
+						{
+							"label": "ci: record Linear mainnet promotions",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/203",
+							"date": "2026-06"
+						},
+						{
+							"label": "test(cloudflare-build-config): guard workflow moon run usage",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/202",
+							"date": "2026-06"
+						},
+						{
+							"label": "docs(agents): document linear pr closing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/200",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge-validator): run both scheduled routes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/199",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(endpoints): use zeko mina gateways",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/198",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(cloudflare-build-config): automate Workers Build config sync",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/195",
+							"date": "2026-06"
+						},
+						{
+							"label": "ci(bridge-validator): add workers build trigger",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/193",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(bridge-validator): add cloudflare e2e worker",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/150",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(actions-indexer): self-heal sparse action indexes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/191",
+							"date": "2026-06"
+						},
+						{
+							"label": "docs: clean up mainnet WIP pages",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/187",
+							"date": "2026-06"
+						},
+						{
+							"label": "release(bridge): add missing changeset",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/189",
 							"date": "2026-05"
 						},
 						{
-							"label": "Shared NATS event schemas",
-							"url": "https://github.com/zeko-labs/zeko-explorer/pull/11",
+							"label": "fix(actions-api): target testnet workers builds",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/188",
 							"date": "2026-05"
 						},
 						{
-							"label": "The SurrealDB read model",
-							"url": "https://github.com/zeko-labs/zeko-explorer/pull/12",
+							"label": "feat(bridge): prepare mainnet deployment",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/183",
 							"date": "2026-05"
 						},
 						{
-							"label": "Spike: bridge correlation between L1 and L2",
-							"url": "https://github.com/zeko-labs/zeko-explorer/pull/1",
-							"date": "2026-04"
+							"label": "fix(bridge): harden CLI signing and deposit queue handling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/184",
+							"date": "2026-05"
 						},
 						{
-							"label": "Implement the JetStream publish contract",
+							"label": "refactor(bridge-sdk): split Bridge into functional modules",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/171",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(bridge): filter legacy bridge operations",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/176",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat(bridge-ui): separate cancellation queue from main recovery",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/159",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: implement Zeko JetStream publish contract",
 							"url": "https://github.com/zeko-labs/zeko/pull/407",
 							"date": "2026-05"
 						},
 						{
-							"label": "zkVerify: the end-to-end pipeline",
+							"label": "fix(bridge): harden resume flow and status handling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/163",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(bridge-sdk): fallback when live action cursor is missing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/174",
+							"date": "2026-05"
+						},
+						{
+							"label": "refactor(bridge-cli): restore bridge state machine",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/173",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(actions-indexer): batch canonical promotion updates",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/172",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: use zeko proxy devnet endpoints",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/170",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: integrate bridge UI and CLI with SDK signing changes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/169",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix: docs format and zeko-skills",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/168",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(faucet-ui): tighten faucet rpc type generation",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/162",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-ui): harden operation timestamps and root capture",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/160",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(zeko-skills): publish Zeko skill on skills.sh",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/158",
+							"date": "2026-03"
+						},
+						{
+							"label": "ci(release): separate bridge-cli mirror flow",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/156",
+							"date": "2026-03"
+						},
+						{
+							"label": "ci(workflows): move ubuntu jobs to warpbuild runners",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/155",
+							"date": "2026-03"
+						},
+						{
+							"label": "ci(release): standardize simple package workflows",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/154",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-sdk): expose per-deposit cancellability",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/153",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(use-zeko): add public use-zeko skill",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/144",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(bridge): fee withdrawl errors and sdk improvements",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/152",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-ui): package observability tooling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/149",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(bridge-cli): add agent-first bridge cli",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/139",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(bridge-ui): reconcile Sentry triage with Linear board",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/148",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-ui): optimize Sentry sampling and triage errors",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/147",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): restore bridge history progression",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/145",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): improve operational cli and control reliability",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/143",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(ataski): upgrade skill and reconcile board",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/142",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): remove worker timeout regression",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/141",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): harden live diagnostics and long-running worker processing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/137",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(actions-indexer): add diagnostics cli and responsive health",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/136",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(bridge-sdk): open-source sdk publishing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/129",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(faucet): fix healthcheck endpoint returning 500",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/135",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-api): stabilize hyperdrive db client initialization",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/134",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): promote debug logs to info and add handleFork visibility",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/133",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(cloudflare): extend build config tooling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/131",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(faucet): finalize cloudflare build recovery",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/130",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(ci): move changesets + releases to monorepo",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/127",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore: migrate moon v1 to v2",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/126",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(faucet): add public claim api and cli",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/124",
+							"date": "2026-03"
+						},
+						{
+							"label": "test(docs): harden link check retries",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/125",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: docs update",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/123",
+							"date": "2026-02"
+						},
+						{
+							"label": "ci(faucet-cli): add sync and publish workflows",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/122",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(faucet-ui): adapt faucet turnstile proxy",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/121",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(faucet-cli): add public faucet cli package",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/120",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(faucet): refactor worker claim api",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/119",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(ui): add Nuxt SPA proof explorer for PoC",
+							"url": "https://github.com/zeko-labs/zk-verify-poc/pull/2",
+							"date": "2026-02"
+						},
+						{
+							"label": "chore(biome): update to 2.4.2 and enable vue linting",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/118",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: zkVerify PoC end-to-end pipeline",
 							"url": "https://github.com/zeko-labs/zk-verify-poc/pull/1",
 							"date": "2026-02"
 						},
 						{
-							"label": "Archive API: a range query for zkApp commands",
-							"url": "https://github.com/o1-labs/Archive-Node-API/pull/162",
-							"date": "2026-09"
+							"label": "fix(bridge-ui): correct cancellation progress and final status",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/113",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: add metrics tracking to bridge",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/109",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: publish to bridge.zeko.io",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/112",
+							"date": "2026-02"
+						},
+						{
+							"label": "fix: qa issues",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/108",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: allow all origins for mina proxies",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/111",
+							"date": "2026-02"
+						},
+						{
+							"label": "ci: actions indexer migrations",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/110",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: add monitoring endpoints",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/107",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: cancel deposits and bridge messages updates",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/101",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: add end of contest popup",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/106",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: bridge fee retries",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/103",
+							"date": "2026-01"
+						},
+						{
+							"label": "fix: leaderboard indexer block overfetch",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/100",
+							"date": "2025-12"
+						},
+						{
+							"label": "fix: filtering issue",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/96",
+							"date": "2025-12"
+						},
+						{
+							"label": "fix: off-by-one leaderboard bug",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/94",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: actions url",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/93",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: disable staketab proxy",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/92",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: optimise queries and add db tests",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/91",
+							"date": "2025-11"
+						},
+						{
+							"label": "ci: build actions indexer",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/90",
+							"date": "2025-11"
+						},
+						{
+							"label": "ci: deploy actions api",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/89",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: implement actions",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/88",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: actions services",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/85",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: implement automatic faucet ip bans",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/84",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: faucet ip-rate limiting",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/81",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: bridge mina proxies",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/80",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: add cors header to zeko mina proxies",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/79",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: indexer should batch insert actions",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/78",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: enter faucet page content on widescreen displays",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/77",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: improve faucet ui error messages",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/76",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: leaderboard query errors",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/75",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: improve faucet-ui error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/74",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: update bridge confirmation text to reflect longer wait times",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/73",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: add turnstile to faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/72",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: indexer startBlocks",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/71",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: number animations",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/69",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: total points",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/68",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: manual adjustements",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/67",
+							"date": "2025-11"
+						},
+						{
+							"label": "chore: remove old landing page",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/66",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: search results ordering",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/65",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: parse lumina events",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/64",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: new faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/63",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: search and paginate",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/62",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: leaderboard points breakdown",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/61",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: leaderboard ui update",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/60",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: withdrawal parsing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/59",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: transaction count",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/58",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: leaderboard ui desktop",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/54",
+							"date": "2025-11"
+						},
+						{
+							"label": "ci: deploy lb-admin",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/53",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: leadearboard admin ui",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/52",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: deploy leaderboard backend",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/51",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: leaderboard api & indexer",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/24",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: improve bridge messages",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/49",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: desktop bridge-ui alpha v2",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/47",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: update bridge descriptive texts",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/45",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: enable flag for mobile version",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/43",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: wallet connection errors",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/42",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: update cssforge",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/41",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat(bridge): disable mobile page",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/40",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: fetchTransactionStatus should use transaction zkAppId",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/39",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: restructure monorepo and ci with moonrepo",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/38",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: enable sentry features",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/37",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: working bridge ui",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/31",
+							"date": "2025-09"
+						},
+						{
+							"label": "docs: update developer getting-started",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/30",
+							"date": "2025-08"
+						},
+						{
+							"label": "refactor: bridge-sdk",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/29",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: setup bridge ui",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/28",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: integrate bridge sdk to monorepo",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/26",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: simplify monitoring",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/23",
+							"date": "2025-07"
+						},
+						{
+							"label": "fix: faucet double claim error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/21",
+							"date": "2025-06"
+						},
+						{
+							"label": "feat: add zk faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/20",
+							"date": "2025-06"
+						},
+						{
+							"label": "fix: faucet transaction fee error",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/19",
+							"date": "2025-06"
+						},
+						{
+							"label": "docs: publish to zeko.io",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/18",
+							"date": "2025-06"
+						},
+						{
+							"label": "feat: implement zeko docs",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/14",
+							"date": "2025-06"
+						},
+						{
+							"label": "chore: update telegram link",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/17",
+							"date": "2025-05"
+						},
+						{
+							"label": "fix: faucet page link is too wide",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/16",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: faucet design changes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/15",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: add better succesful transaction feedback to the faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/13",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: faucet copy changes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/12",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: clean-up error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/11",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: use secret store and improve faucet error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/10",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: change text to Get Wallet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/9",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: change button text size",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/8",
+							"date": "2025-03"
+						},
+						{
+							"label": "fix: env variables are not properly selected with useRuntimeConfig",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/7",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: update og-image size",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/6",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: website text updates",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/5",
+							"date": "2025-03"
+						},
+						{
+							"label": "ci: add preview and deploy workflows",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/4",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: mobile layout",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/3",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: website refresh",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/2",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: remove send page, add 404, remove litepaper link",
+							"url": "https://github.com/zeko-labs/zeko-landing-new/pull/3",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: change favicon, telegram link and meta description",
+							"url": "https://github.com/zeko-labs/zeko-landing-new/pull/2",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix: darwin dependencies",
+							"url": "https://github.com/zeko-labs/zeko/pull/245",
+							"date": "2025-01"
+						},
+						{
+							"label": "feat: implement sdk",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/1",
+							"date": "2024-11"
 						}
 					],
 					"cover": "timeline"
+				}
+			]
+		},
+		{
+			"slug": "upstream",
+			"label": "Upstream",
+			"blurb": "Every pull request merged into somebody else's project, from a framework's internals to a typo in a readme.",
+			"projects": [
+				{
+					"name": "nitro",
+					"title": "Nitro",
+					"tagline": "The server engine under Nuxt: deploy presets, prerendering, cookies and runtime config.",
+					"body": [
+						"Nineteen pull requests from May to October 2023, mostly where Nitro meets the platforms it deploys to: the static Cloudflare Pages preset and its detection, export conditions for workers, binary bodies and cookies on AWS and Netlify Lambda, cookies split correctly, retries and redirects in the prerenderer, and the documentation and tests for runtime config and environment variables."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Nitro",
+						"Cloudflare",
+						"AWS Lambda",
+						"Netlify"
+					],
+					"url": "https://github.com/nitrojs/nitro/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://nitro.build",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 19,
+					"activity": [
+						"2023-05",
+						"2023-06",
+						"2023-06",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-09",
+						"2023-09",
+						"2023-10"
+					],
+					"links": [
+						{
+							"label": "feat(prerender): support `retry` and `retryDelay`",
+							"url": "https://github.com/nitrojs/nitro/pull/1534",
+							"date": "2023-10"
+						},
+						{
+							"label": "fix(aws-lambda,netlify-lambda): binary body v2 and cookies v1",
+							"url": "https://github.com/nitrojs/nitro/pull/1683",
+							"date": "2023-09"
+						},
+						{
+							"label": "test: update test for bun headers",
+							"url": "https://github.com/nitrojs/nitro/pull/1684",
+							"date": "2023-09"
+						},
+						{
+							"label": "fix(cloudflare-pages): autodetect static preset",
+							"url": "https://github.com/nitrojs/nitro/pull/1659",
+							"date": "2023-08"
+						},
+						{
+							"label": "test: add tests for environment variables and runtime config overrides",
+							"url": "https://github.com/nitrojs/nitro/pull/1549",
+							"date": "2023-08"
+						},
+						{
+							"label": "docs(cloudflare): add environment variables instructions",
+							"url": "https://github.com/nitrojs/nitro/pull/1547",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore(firebase): fix typos in warning message",
+							"url": "https://github.com/nitrojs/nitro/pull/1561",
+							"date": "2023-08"
+						},
+						{
+							"label": "docs(config): add runtime config and environment variables section",
+							"url": "https://github.com/nitrojs/nitro/pull/1550",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: typo in bug report template",
+							"url": "https://github.com/nitrojs/nitro/pull/1507",
+							"date": "2023-07"
+						},
+						{
+							"label": "chore: update starter with readme and `nitro.config`",
+							"url": "https://github.com/nitrojs/nitro/pull/1506",
+							"date": "2023-07"
+						},
+						{
+							"label": "chore: update github templates",
+							"url": "https://github.com/nitrojs/nitro/pull/1502",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix(prerender): skip redirects",
+							"url": "https://github.com/nitrojs/nitro/pull/1448",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix: split cookie headers",
+							"url": "https://github.com/nitrojs/nitro/pull/1452",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: add custom preset instructions",
+							"url": "https://github.com/nitrojs/nitro/pull/1409",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: add nitro plugins examples",
+							"url": "https://github.com/nitrojs/nitro/pull/1403",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: support `exportConditions` and add worker default conditions",
+							"url": "https://github.com/nitrojs/nitro/pull/1401",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix(rollup): replace `globalThis.process.` with `process.`",
+							"url": "https://github.com/nitrojs/nitro/pull/1360",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add cloudflare-pages-static",
+							"url": "https://github.com/nitrojs/nitro/pull/1310",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs(deploy): add deno-deploy docs",
+							"url": "https://github.com/nitrojs/nitro/pull/1193",
+							"date": "2023-05"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "nuxt",
+					"title": "Nuxt",
+					"tagline": "The framework itself: a kit helper, the reproduction bot, documentation, and the modules list.",
+					"body": [
+						"`addTypeTemplate` in Nuxt Kit, for modules to register type templates; less reliance on `event.node`; the bot that asks issues for a reproduction; and a run of documentation, from the experimental features to styling. In the modules list, the entries for the modules on the Nuxt shelf."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"Nuxt Kit"
+					],
+					"url": "https://github.com/nuxt/nuxt/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://nuxt.com",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 21,
+					"activity": [
+						"2023-05",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-09",
+						"2024-09"
+					],
+					"links": [
+						{
+							"label": "docs: fix postcss codeblock typo",
+							"url": "https://github.com/nuxt/nuxt/pull/28801",
+							"date": "2024-09"
+						},
+						{
+							"label": "feat: add website to form actions module",
+							"url": "https://github.com/nuxt/modules/pull/753",
+							"date": "2023-09"
+						},
+						{
+							"label": "docs: add info about dynamic nested routes",
+							"url": "https://github.com/nuxt/nuxt/pull/22862",
+							"date": "2023-08"
+						},
+						{
+							"label": "refactor: reduce usage of `event.node`",
+							"url": "https://github.com/nuxt/nuxt/pull/22539",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: increase stale bot limit to 300",
+							"url": "https://github.com/nuxt/nuxt/pull/22538",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: increase stale operations per run",
+							"url": "https://github.com/nuxt/nuxt/pull/22501",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: add issue reproduction bot",
+							"url": "https://github.com/nuxt/nuxt/pull/22495",
+							"date": "2023-08"
+						},
+						{
+							"label": "fix: vue-query is a monorepo",
+							"url": "https://github.com/nuxt/modules/pull/704",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add server-block-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/703",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: prefix internal links with `/`",
+							"url": "https://github.com/nuxt/nuxt/pull/22118",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: add experimental features page",
+							"url": "https://github.com/nuxt/nuxt/pull/21617",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: add info on extending the HTML template",
+							"url": "https://github.com/nuxt/nuxt/pull/21615",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: add full stop",
+							"url": "https://github.com/nuxt/nuxt/pull/21614",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: add styling section",
+							"url": "https://github.com/nuxt/nuxt/pull/21525",
+							"date": "2023-06"
+						},
+						{
+							"label": "fix: npm package link",
+							"url": "https://github.com/nuxt/modules/pull/669",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add authjs-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/668",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add vue-query-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/667",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add form-actions-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/666",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: fix `addTypeTemplate` typos",
+							"url": "https://github.com/nuxt/nuxt/pull/21520",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat(kit): `addTypeTemplate` helper with auto-registration",
+							"url": "https://github.com/nuxt/nuxt/pull/21331",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: distinguish between `$fetch` and fetch composables",
+							"url": "https://github.com/nuxt/nuxt/pull/21228",
+							"date": "2023-05"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "h3",
+					"title": "h3",
+					"tagline": "The HTTP framework under Nitro: form data, headers and cookies on web responses.",
+					"body": [
+						"Seven pull requests in July 2023: `readFormData`, `event.method` and `event.headers`, utilities to remove and clear response headers, `set-cookie` values split and appended correctly on web responses, and the readme split into sections with the missing helpers documented."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"h3"
+					],
+					"url": "https://github.com/h3js/h3/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://h3.dev",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 7,
+					"activity": [
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07"
+					],
+					"links": [
+						{
+							"label": "docs: improve nightly release usage section",
+							"url": "https://github.com/h3js/h3/pull/468",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add `removeResponseHeader` and `clearResponseHeaders` utils",
+							"url": "https://github.com/h3js/h3/pull/427",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix: append `set-cookie` headers in web reponse",
+							"url": "https://github.com/h3js/h3/pull/453",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add `readFormData` util",
+							"url": "https://github.com/h3js/h3/pull/421",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix: split `set-cookie` value when handling web responses",
+							"url": "https://github.com/h3js/h3/pull/445",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add `event.method` and `event.headers`",
+							"url": "https://github.com/h3js/h3/pull/429",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: split readme into subsection and document missing helpers",
+							"url": "https://github.com/h3js/h3/pull/428",
+							"date": "2023-07"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "unjs",
+					"title": "UnJS",
+					"tagline": "unstorage, db0, ofetch and unenv: batching, libSQL, retries and headers.",
+					"body": [
+						"Experimental operation batching, a fix for R2's metadata and a test for the GitHub driver in unstorage, libSQL support in db0, `retryDelay` in ofetch, numeric headers preserved in unenv, and the organisation's pull request template."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"unstorage",
+						"db0",
+						"ofetch",
+						"unenv"
+					],
+					"url": "https://github.com/search?q=org%3Aunjs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
+					"homepage": "https://unjs.io",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 7,
+					"activity": [
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-08",
+						"2023-08"
+					],
+					"links": [
+						{
+							"label": "feat: support `retryDelay`",
+							"url": "https://github.com/unjs/ofetch/pull/262",
+							"date": "2023-08"
+						},
+						{
+							"label": "fix(node): preserve http number header type with `setHeader`",
+							"url": "https://github.com/unjs/unenv/pull/119",
+							"date": "2023-08"
+						},
+						{
+							"label": "feat: add libsql support",
+							"url": "https://github.com/unjs/db0/pull/25",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix(cloudflare-r2-binding): get binding for r2 `getMeta`",
+							"url": "https://github.com/unjs/unstorage/pull/272",
+							"date": "2023-07"
+						},
+						{
+							"label": "test: add test for `github` driver",
+							"url": "https://github.com/unjs/unstorage/pull/259",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: experimental operation batching",
+							"url": "https://github.com/unjs/unstorage/pull/240",
+							"date": "2023-07"
+						},
+						{
+							"label": "add pull request template",
+							"url": "https://github.com/unjs/.github/pull/1",
+							"date": "2023-07"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "simulationcraft",
+					"title": "SimulationCraft",
+					"tagline": "The World of Warcraft simulator: Rogue profiles and action lists for the Nighthold raid.",
+					"body": [
+						"Five pull requests in January 2017, the oldest run of work on this shelf: Subtlety, Assassination and Outlaw gear profiles for the heroic and mythic Nighthold raid, a generator for them, and tweaks to the Rogue action priority lists."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "C++",
+					"stack": [
+						"SimulationCraft"
+					],
+					"url": "https://github.com/simulationcraft/simc/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://www.simulationcraft.org",
+					"archived": false,
+					"repo": null,
+					"started": 2017,
+					"ended": 2017,
+					"featured": null,
+					"contributions": 5,
+					"activity": [
+						"2017-01",
+						"2017-01",
+						"2017-01",
+						"2017-01",
+						"2017-01"
+					],
+					"links": [
+						{
+							"label": "[Rogue] Removing boots condition",
+							"url": "https://github.com/simulationcraft/simc/pull/3478",
+							"date": "2017-01"
+						},
+						{
+							"label": "Rogue APL tweaks",
+							"url": "https://github.com/simulationcraft/simc/pull/3471",
+							"date": "2017-01"
+						},
+						{
+							"label": "[Rogue] Updating Assasination and Outlaw gear in M and H Nighthold profiles",
+							"url": "https://github.com/simulationcraft/simc/pull/3411",
+							"date": "2017-01"
+						},
+						{
+							"label": "[Rogue] Adding a generate file for heroic nighthold profiles.",
+							"url": "https://github.com/simulationcraft/simc/pull/3389",
+							"date": "2017-01"
+						},
+						{
+							"label": "[Rogue] SubT19MNH improvements.",
+							"url": "https://github.com/simulationcraft/simc/pull/3388",
+							"date": "2017-01"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "proto",
+					"title": "proto",
+					"tagline": "The toolchain manager: the OCaml and Nushell plugins in its registry.",
+					"body": [
+						"The plugins on the Tools shelf, entered in proto's registry so that `proto install ocaml` works out of the box, and their locators kept current as they moved to the TOML format."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Rust",
+					"stack": [
+						"proto",
+						"moon"
+					],
+					"url": "https://github.com/moonrepo/proto/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://moonrepo.dev/proto",
+					"archived": false,
+					"repo": null,
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": 4,
+					"activity": [
+						"2026-04",
+						"2026-05",
+						"2026-06",
+						"2026-10"
+					],
+					"links": [
+						{
+							"label": "Update hk and nu plugin locators to TOML plugins",
+							"url": "https://github.com/moonrepo/proto/pull/1142",
+							"date": "2026-10"
+						},
+						{
+							"label": "Update proto plugin registry URLs",
+							"url": "https://github.com/moonrepo/proto/pull/1022",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat: add nu plugin to registry",
+							"url": "https://github.com/moonrepo/proto/pull/1013",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: add ocaml plugin to registry",
+							"url": "https://github.com/moonrepo/proto/pull/976",
+							"date": "2026-04"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "lucia",
+					"title": "Lucia",
+					"tagline": "The authentication library: an unstorage adapter, then expiry for it.",
+					"body": [
+						"An adapter that stores Lucia's sessions in any unstorage driver, and time-to-live support for it."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Lucia",
+						"unstorage"
+					],
+					"url": "https://github.com/lucia-auth/lucia/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2023-07",
+						"2023-09"
+					],
+					"links": [
+						{
+							"label": "feat(unstorage): add ttl support",
+							"url": "https://github.com/lucia-auth/lucia/pull/970",
+							"date": "2023-09"
+						},
+						{
+							"label": "feat: add unstorage adapter",
+							"url": "https://github.com/lucia-auth/lucia/pull/662",
+							"date": "2023-07"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vize",
+					"title": "Vize",
+					"tagline": "The Rust toolchain for Vue that compiles this site: two fixes.",
+					"body": [
+						"The Vite plugin finds optimised Vue under Vite's configured cache directory, and the type checker emits the instantiation of a generic component as valid TSX. Both were found building this paper."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Rust",
+					"stack": [
+						"Vize",
+						"Vite",
+						"Vue"
+					],
+					"url": "https://github.com/ubugeeei-prod/vize/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2026-10",
+						"2026-10"
+					],
+					"links": [
+						{
+							"label": "fix(canon): emit @vue-generic instantiation as valid TSX",
+							"url": "https://github.com/ubugeeei-prod/vize/pull/11052",
+							"date": "2026-10"
+						},
+						{
+							"label": "fix(vite-plugin): recognize optimized Vue under Vite's configured cacheDir",
+							"url": "https://github.com/ubugeeei-prod/vize/pull/8618",
+							"date": "2026-10"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "use-wagmi",
+					"title": "use-wagmi",
+					"tagline": "Vue composables for Ethereum: its Nuxt module.",
+					"body": [
+						"The Nuxt module rebuilt on the Nuxt module builder, and an option to leave chosen composables out of the auto-imports."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Vue",
+						"Nuxt",
+						"wagmi"
+					],
+					"url": "https://github.com/unicape/use-wagmi/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2023-08",
+						"2023-08"
+					],
+					"links": [
+						{
+							"label": "feat(nuxt): add excludeImports",
+							"url": "https://github.com/unicape/use-wagmi/pull/51",
+							"date": "2023-08"
+						},
+						{
+							"label": "refactor: use @nuxt/module-builder",
+							"url": "https://github.com/unicape/use-wagmi/pull/44",
+							"date": "2023-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "opam",
+					"title": "opam repository",
+					"tagline": "OCaml's package index: the releases of the NATS client.",
+					"body": [
+						"`nats-client` and `nats-client-async`, the NATS client on the Tools shelf, released to OCaml's package repository."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "OCaml",
+					"stack": [
+						"OCaml",
+						"opam"
+					],
+					"url": "https://github.com/ocaml/opam-repository/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2026-04",
+						"2026-04"
+					],
+					"links": [
+						{
+							"label": "[new release] nats-client (2 packages) (0.0.10)",
+							"url": "https://github.com/ocaml/opam-repository/pull/29816",
+							"date": "2026-04"
+						},
+						{
+							"label": "[new release] nats-client (2 packages) (0.0.7)",
+							"url": "https://github.com/ocaml/opam-repository/pull/29720",
+							"date": "2026-04"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "houdini",
+					"title": "Houdini",
+					"tagline": "The GraphQL client: support for the `using` keyword.",
+					"body": [
+						"Houdini's compiler understands `using` declarations, TypeScript's explicit resource management."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Houdini",
+						"GraphQL"
+					],
+					"url": "https://github.com/HoudiniGraphql/houdini/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-03"
+					],
+					"links": [
+						{
+							"label": "feat: add using keyword support",
+							"url": "https://github.com/HoudiniGraphql/houdini/pull/1286",
+							"date": "2024-03"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vike",
+					"title": "Vike",
+					"tagline": "The Vite framework: a `defineVikeConfig` helper.",
+					"body": [
+						"A helper that types a Vike configuration file, the way `defineConfig` does for Vite."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Vike",
+						"Vite"
+					],
+					"url": "https://github.com/vikejs/vike/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-10"
+					],
+					"links": [
+						{
+							"label": "feat: add defineVikeConfig helper",
+							"url": "https://github.com/vikejs/vike/pull/1157",
+							"date": "2023-10"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vercel-ai",
+					"title": "Vercel AI SDK",
+					"tagline": "The SDK's Nuxt example, streaming as it should.",
+					"body": [
+						"The Nuxt example updated so that a response reaches the page as it is generated, rather than all at once."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Vercel AI",
+						"Nuxt"
+					],
+					"url": "https://github.com/vercel/ai/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-08"
+					],
+					"links": [
+						{
+							"label": "feat: update nuxt example for proper streaming support",
+							"url": "https://github.com/vercel/ai/pull/295",
+							"date": "2023-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vueuse",
+					"title": "VueUse",
+					"tagline": "`useElementBounding` measures when the component mounts.",
+					"body": [
+						"`useElementBounding` calls `update` on mount, so the first read is the element's real box rather than zeros."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"VueUse",
+						"Vue"
+					],
+					"url": "https://github.com/vueuse/vueuse/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2022,
+					"ended": 2022,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2022-05"
+					],
+					"links": [
+						{
+							"label": "fix(useElementBounding): call `update` on mounted (#626)",
+							"url": "https://github.com/vueuse/vueuse/pull/1541",
+							"date": "2022-05"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "postgres-js",
+					"title": "Postgres.js",
+					"tagline": "The Postgres client for JavaScript: its export conditions.",
+					"body": [
+						"An update to the package's export conditions, which decide the build a runtime is given."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "JavaScript",
+					"stack": [
+						"Postgres.js"
+					],
+					"url": "https://github.com/porsager/postgres/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-04"
+					],
+					"links": [
+						{
+							"label": "chore: update export conditions",
+							"url": "https://github.com/porsager/postgres/pull/819",
+							"date": "2024-04"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "graphql-hive",
+					"title": "GraphQL Hive",
+					"tagline": "The schema registry's console: `crypto` by its `node:` specifier.",
+					"body": [
+						"`crypto` imported as `node:crypto`, which runtimes other than Node need in order to resolve it."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"GraphQL Hive"
+					],
+					"url": "https://github.com/graphql-hive/console/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-03"
+					],
+					"links": [
+						{
+							"label": "chore: use node import specifier for crypto",
+							"url": "https://github.com/graphql-hive/console/pull/4328",
+							"date": "2024-03"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "drizzle-docs",
+					"title": "Drizzle ORM docs",
+					"tagline": "Upserts with composite indexes, documented.",
+					"body": [
+						"A section of the documentation on upserting into a table whose conflict target is a composite index."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "MDX",
+					"stack": [
+						"Drizzle ORM"
+					],
+					"url": "https://github.com/drizzle-team/drizzle-orm-docs/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-01"
+					],
+					"links": [
+						{
+							"label": "docs: document upsert with composite indexes",
+							"url": "https://github.com/drizzle-team/drizzle-orm-docs/pull/194",
+							"date": "2024-01"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "nuxtr",
+					"title": "Nuxtr",
+					"tagline": "The Nuxt extension for VS Code: PostCSS as a style language.",
+					"body": [
+						"PostCSS added to the style languages the extension offers when it scaffolds a component."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"VS Code",
+						"Nuxt"
+					],
+					"url": "https://github.com/nuxtrdev/nuxtr-vscode/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-07"
+					],
+					"links": [
+						{
+							"label": "feat: add postcss to default style language enum",
+							"url": "https://github.com/nuxtrdev/nuxtr-vscode/pull/24",
+							"date": "2023-07"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "cardano-index",
+					"title": "Cardano open source index",
+					"tagline": "A list of Cardano's open source projects: formatting and readability.",
+					"body": [
+						"The index reformatted so that it reads as a list."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Cardano"
+					],
+					"url": "https://github.com/micahkendall/cardano-opensource-index/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-12"
+					],
+					"links": [
+						{
+							"label": "chore: formatting and readability",
+							"url": "https://github.com/micahkendall/cardano-opensource-index/pull/3",
+							"date": "2023-12"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "edge-logger",
+					"title": "Baselime edge logger",
+					"tagline": "A logger for edge runtimes: typos in the readme.",
+					"body": [
+						"Typos in the readme, fixed."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Baselime"
+					],
+					"url": "https://github.com/baselime/edge-logger/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-04"
+					],
+					"links": [
+						{
+							"label": "chore: fix some typos in the readme",
+							"url": "https://github.com/baselime/edge-logger/pull/5",
+							"date": "2024-04"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "firstcommit",
+					"title": "firstcommit.is",
+					"tagline": "Daniel Roe's first-commit finder: a typo in its description.",
+					"body": [
+						"A typo in the description the page gives to search engines and link previews, fixed."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt"
+					],
+					"url": "https://github.com/danielroe/firstcommit.is/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-09"
+					],
+					"links": [
+						{
+							"label": "fix: typo in server seo meta description/og description",
+							"url": "https://github.com/danielroe/firstcommit.is/pull/17",
+							"date": "2023-09"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "eslint-plugin-replyguy",
+					"title": "eslint-plugin-replyguy",
+					"tagline": "A joke ESLint plugin: a rule against classes.",
+					"body": [
+						"A `no-class` rule, for the reply guy who tells you not to use classes."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "JavaScript",
+					"stack": [
+						"ESLint"
+					],
+					"url": "https://github.com/jlengstorf/eslint-plugin-replyguy/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2020,
+					"ended": 2020,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2020-08"
+					],
+					"links": [
+						{
+							"label": "feat: add no class rule",
+							"url": "https://github.com/jlengstorf/eslint-plugin-replyguy/pull/6",
+							"date": "2020-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "ream",
+					"title": "Ream",
+					"tagline": "A Vue framework from 2020: typos in the readme.",
+					"body": [
+						"Typos in the readme, fixed."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Vue"
+					],
+					"url": "https://github.com/ream/ream/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2020,
+					"ended": 2020,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2020-08"
+					],
+					"links": [
+						{
+							"label": "hotfix: Typos in Readme",
+							"url": "https://github.com/ream/ream/pull/83",
+							"date": "2020-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "prisma",
+					"title": "Prisma 1",
+					"tagline": "The first Prisma: a correction to the introspection guide.",
+					"body": [
+						"A correction to the documentation of `prisma introspect`."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "MDX",
+					"stack": [
+						"Prisma"
+					],
+					"url": "https://github.com/prisma/prisma1/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2019,
+					"ended": 2019,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2019-05"
+					],
+					"links": [
+						{
+							"label": "Update prisma-introspect-xcv3.mdx",
+							"url": "https://github.com/prisma/prisma1/pull/4512",
+							"date": "2019-05"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vue-docs",
+					"title": "Vue.js documentation",
+					"tagline": "The first pull request here: an example in the Vue 1 guide, corrected in 2015.",
+					"body": [
+						"`this` for `self` in an example of the guide, in October 2015. The oldest merged pull request on the account."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Vue"
+					],
+					"url": "https://github.com/vuejs/v2.vuejs.org/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2015,
+					"ended": 2015,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2015-10"
+					],
+					"links": [
+						{
+							"label": "Changing this with self",
+							"url": "https://github.com/vuejs/v2.vuejs.org/pull/137",
+							"date": "2015-10"
+						}
+					],
+					"cover": "merge"
 				}
 			]
 		}
@@ -2573,357 +4597,618 @@ export const posts = [
 
 export const roles = [
 	{
-		"id": "lorem-ipsum-2022-03",
-		"title": "Senior Software Engineer",
-		"company": "Lorem Ipsum",
-		"location": "Earth",
-		"start": "2022-03",
+		"id": "self-employed-2026-06",
+		"title": "Independent Engineer",
+		"company": "Self-employed",
+		"location": "Remote",
+		"start": "2026-06",
 		"end": null,
-		"summary": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		"summary": "Building agentic systems, mostly closed source: home automation, trading bots, a personal finance manager, data pipelines and forecasting, all designed, built and operated with coding agents.",
 		"highlights": [
-			"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-			"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
-			"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia."
+			"Developing a lean, token-efficient agentic delivery process for small teams.",
+			"Agent-driven pipelines for video and 3D, where a brief goes in and finished work comes out: films generated entirely in code, and real-time 3D for the web on three.js and WebGPU.",
+			"Agents working in Blender, DaVinci Resolve and FreeCAD like an editor or a designer would. Some of it ends up on my 3D printer.",
+			"Open source on GitHub, and in the Library of this paper."
 		],
 		"stack": [
 			"TypeScript",
-			"Vue",
-			"Cloudflare Workers"
+			"Rust",
+			"Coding agents",
+			"MCP",
+			"three.js",
+			"WebGPU",
+			"Blender",
+			"Cloudflare"
+		],
+		"library": [
+			"fr2027-forecaster",
+			"acidcat",
+			"agris",
+			"heb-stack",
+			"xiaomi-aircon",
+			"bot-drop"
 		]
 	},
 	{
-		"id": "dolor-sit-2020-01",
-		"title": "Full Stack Engineer",
-		"company": "Dolor Sit",
-		"location": "Earth",
-		"start": "2020-01",
-		"end": "2022-02",
-		"summary": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
+		"id": "zeko-2024-11",
+		"title": "Principal Engineer",
+		"company": "Zeko",
+		"location": "Remote",
+		"start": "2024-11",
+		"end": "2026-06",
+		"summary": "Zero-knowledge rollup settling on Ethereum. A team of three engineers, each owning a large part of the stack. I designed, wrote and ran the entire web platform.",
 		"highlights": [
-			"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.",
-			"Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+			"Built the web apps, backends and APIs end to end.",
+			"Wrote and published the SDKs and CLIs developers use to bridge to and build on Zeko.",
+			"Designed the infrastructure and migrated it to Cloudflare.",
+			"Led the team's move to agentic development: Linear-based workflows from issue to merged PR, shared agent context, verification and review.",
+			"Set up Sentry error reporting and the bug triage loop.",
+			"Worked on OCaml protocol code, smart contracts and ZK circuits."
 		],
 		"stack": [
-			"Node.js",
+			"TypeScript",
+			"Nuxt",
+			"Cloudflare",
+			"OCaml",
+			"ZK circuits",
+			"Sentry",
+			"Linear"
+		],
+		"library": [
+			"zeko"
+		]
+	},
+	{
+		"id": "dcspark-2024-08",
+		"title": "Senior Software Engineer",
+		"company": "dcSpark",
+		"location": "Remote · Contract",
+		"start": "2024-08",
+		"end": "2025-01",
+		"summary": "Joined as a contractor. My main mission was Zeko, where I then moved full time.",
+		"highlights": [],
+		"stack": [],
+		"library": []
+	},
+	{
+		"id": "zeno-2023-11",
+		"title": "Head of Engineering",
+		"company": "Zeno",
+		"location": "Dubai · Remote",
+		"start": "2023-11",
+		"end": "2024-08",
+		"summary": "Head of engineering at an early-stage startup building a gamified, interactive video learning platform. Hands-on: I designed the architecture and wrote most of the core codebase.",
+		"highlights": [
+			"SvelteKit and GraphQL on Cloudflare (Pages, Workers, Durable Objects), with Postgres, Redis and KV.",
+			"Video delivery through Bunny Stream, and a custom CI on GitHub Actions and Fly.io.",
+			"Led the team, ran code and performance reviews, mentored junior developers and hired."
+		],
+		"stack": [
+			"SvelteKit",
 			"GraphQL",
-			"PostgreSQL"
+			"Cloudflare",
+			"Postgres",
+			"Redis",
+			"Bunny Stream",
+			"Fly.io"
+		],
+		"library": []
+	},
+	{
+		"id": "nuxt-2023-03",
+		"title": "Core Team",
+		"company": "Nuxt",
+		"location": "Remote · Part-time",
+		"start": "2023-03",
+		"end": null,
+		"summary": "Nuxt core team. Most of my work is on Nitro, the server engine that Nuxt and several other frameworks run on, and its integration with AWS, Azure, Cloudflare, Vercel and Netlify.",
+		"highlights": [
+			"Work at framework level reaches millions of developers and users.",
+			"I also author and maintain community modules for Auth.js, Vue Query, form actions and server blocks."
+		],
+		"stack": [
+			"Nuxt",
+			"Nitro",
+			"Vue",
+			"TypeScript"
+		],
+		"library": [
+			"nitro",
+			"nuxt",
+			"h3",
+			"unjs",
+			"authjs-nuxt",
+			"form-actions-nuxt",
+			"server-block-nuxt",
+			"vue-query-nuxt"
 		]
 	},
 	{
-		"id": "amet-consectetur-2018-06",
-		"title": "Frontend Engineer",
-		"company": "Amet Consectetur",
-		"location": "Earth",
-		"start": "2018-06",
-		"end": "2019-12",
-		"summary": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque.",
+		"id": "obelisk-auditing-2021-03",
+		"title": "Founder, Lead Engineer",
+		"company": "Obelisk Auditing",
+		"location": "Worldwide",
+		"start": "2021-03",
+		"end": "2024-08",
+		"summary": "I started Obelisk to protect people from the security risks in crypto. I taught myself Solidity and began auditing EVM smart contracts on my own, and others soon joined. It grew into a remote team of 12 that audited more than 50 Web3 projects.",
 		"highlights": [
-			"Et harum quidem rerum facilis est et expedita distinctio.",
-			"Temporibus autem quibusdam et aut officiis debitis aut rerum."
+			"Led the audits and the team, with new clients every month.",
+			"Built the company's web platform myself: website, blog and a monitoring tool that detects blockchain state changes.",
+			"Alongside the audits, built trading bots, Discord bots, DeFi applications and smart contracts for clients."
 		],
 		"stack": [
-			"JavaScript",
+			"Solidity",
+			"Foundry",
+			"Hardhat",
+			"Viem",
+			"Rust",
 			"React",
-			"Webpack"
-		]
+			"Vue",
+			"Cloudflare Workers",
+			"GraphQL",
+			"Postgres"
+		],
+		"library": []
 	},
 	{
-		"id": "adipiscing-elit-2016-09",
-		"title": "Software Engineer",
-		"company": "Adipiscing Elit",
-		"location": "Earth",
-		"start": "2016-09",
-		"end": "2018-05",
-		"summary": "Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat.",
+		"id": "deepcrawl-2020-08",
+		"title": "Senior Software Engineer",
+		"company": "DeepCrawl",
+		"location": "London",
+		"start": "2020-08",
+		"end": "2021-04",
+		"summary": "Technical SEO platform. Senior engineer across a TypeScript and GraphQL stack, working across several frontend teams.",
 		"highlights": [
-			"Omnis voluptas assumenda est, omnis dolor repellendus.",
-			"Itaque earum rerum hic tenetur a sapiente delectus."
+			"A React application replacing a legacy AngularJS one.",
+			"A Node.js backend on AWS, managed with the AWS CDK.",
+			"A strong testing culture: Testing Library, Cypress, and Cucumber for BDD."
 		],
 		"stack": [
-			"PHP",
-			"MySQL",
-			"jQuery"
-		]
+			"TypeScript",
+			"GraphQL",
+			"React",
+			"Node.js",
+			"AWS CDK",
+			"Cypress"
+		],
+		"library": []
+	},
+	{
+		"id": "powster-2019-11",
+		"title": "Full Stack Engineer",
+		"company": "POWSTER",
+		"location": "London · Contract",
+		"start": "2019-11",
+		"end": "2019-12",
+		"summary": "Agency work for well-known brands.",
+		"highlights": [
+			"The main project was a React application with an embedded WebAR game, backed by Node.js and Firebase, with queueing and email microservices, deployed to AWS with Terraform.",
+			"I also built a REST layer on AWS API Gateway over an internal API, Twilio automations and production web work."
+		],
+		"stack": [
+			"React",
+			"WebAR",
+			"Node.js",
+			"Firebase",
+			"AWS",
+			"Terraform",
+			"Twilio"
+		],
+		"library": []
+	},
+	{
+		"id": "tigerspike-2019-03",
+		"title": "Full Stack Engineer",
+		"company": "Tigerspike",
+		"location": "London",
+		"start": "2019-03",
+		"end": "2019-11",
+		"summary": "Digital consultancy. Two projects, both serverless on AWS.",
+		"highlights": [
+			"An IoT platform for one of the UK's main energy providers: device data over MQTT through AWS IoT Core, a fault-tolerant pipeline on SQS and Kinesis, a GraphQL API on Lambda and Apollo, a React frontend, and analytics in QuickSight.",
+			"A Vue PWA with Lambda and Fargate microservices on DynamoDB, and a phone IVR built on Amazon Connect and Lex.",
+			"Infrastructure in the AWS CDK, with a throwaway environment for every pull request."
+		],
+		"stack": [
+			"AWS Lambda",
+			"AWS IoT Core",
+			"Kinesis",
+			"GraphQL",
+			"React",
+			"Vue",
+			"DynamoDB",
+			"AWS CDK"
+		],
+		"library": []
+	},
+	{
+		"id": "yo-da-your-data-2019-02",
+		"title": "Full Stack Engineer",
+		"company": "Yo-Da (your data)",
+		"location": "London",
+		"start": "2019-02",
+		"end": "2019-04",
+		"summary": "Startup building a service that sends GDPR requests on a user's behalf. I led an overhaul of the whole architecture.",
+		"highlights": [
+			"A TypeScript and Express API built test-first, with Postgres through Prisma.",
+			"A React frontend, and Cognito for auth.",
+			"Everything on AWS (ECS Fargate, Aurora, CloudFront), defined as code with Terraform and CloudFormation."
+		],
+		"stack": [
+			"TypeScript",
+			"Express",
+			"Postgres",
+			"Prisma",
+			"React",
+			"AWS",
+			"Terraform"
+		],
+		"library": []
+	},
+	{
+		"id": "the-m-industries-2018-11",
+		"title": "Full Stack Engineer",
+		"company": "The M Industries",
+		"location": "London",
+		"start": "2018-11",
+		"end": "2022-03",
+		"summary": "My contracting company in London. Through it I delivered full-stack and cloud work for startups, agencies and consultancies, including Tigerspike, Powster and Yo-Da, each listed separately.",
+		"highlights": [],
+		"stack": [],
+		"library": []
+	},
+	{
+		"id": "cognitive-credit-2018-06",
+		"title": "Front-End Engineer",
+		"company": "Cognitive Credit",
+		"location": "London",
+		"start": "2018-06",
+		"end": "2018-12",
+		"summary": "Fintech startup using machine learning to read financial documents and turn them into structured data.",
+		"highlights": [
+			"I built the main web app, a Vue PWA on a GraphQL and Postgres API.",
+			"And a React back-office, inside a containerised AWS pipeline."
+		],
+		"stack": [
+			"Vue",
+			"React",
+			"GraphQL",
+			"Postgres",
+			"AWS"
+		],
+		"library": []
+	},
+	{
+		"id": "stack-industries-2015-12",
+		"title": "Full Stack Engineer",
+		"company": "Stack Industries",
+		"location": "Bordeaux",
+		"start": "2015-12",
+		"end": "2018-12",
+		"summary": "My contracting company in France. Through it I delivered full-stack web work for clients in and around Bordeaux, including Cohda, listed separately.",
+		"highlights": [],
+		"stack": [],
+		"library": []
+	},
+	{
+		"id": "cohda-2015-07",
+		"title": "Full Stack Developer",
+		"company": "Cohda",
+		"location": "Bordeaux",
+		"start": "2015-07",
+		"end": "2018-05",
+		"summary": "Built the company's intranet from nothing and ran it for three years, from renting and setting up the servers to the user experience. Used every day across the company.",
+		"highlights": [
+			"Laravel REST APIs behind Vue and React frontends.",
+			"Node.js realtime services over WebSockets.",
+			"Integrations with Google APIs."
+		],
+		"stack": [
+			"Laravel",
+			"Vue",
+			"React",
+			"Node.js",
+			"WebSockets",
+			"Linux"
+		],
+		"library": []
+	},
+	{
+		"id": "ityka-2013-06",
+		"title": "System Administrator",
+		"company": "Ityka",
+		"location": "France",
+		"start": "2013-06",
+		"end": "2015-06",
+		"summary": "Started as an internship during my studies. Ran the infrastructure of a small call centre end to end.",
+		"highlights": [
+			"Cabling, switches, routers and servers.",
+			"Linux, nginx and iptables configuration.",
+			"The Asterisk phone system, with PHP."
+		],
+		"stack": [
+			"Linux",
+			"nginx",
+			"iptables",
+			"Asterisk",
+			"PHP"
+		],
+		"library": []
 	}
 ]
 
 export const schools = [
 	{
-		"id": "supinfo-2011-09",
-		"qualification": "Master of Engineering, Computer Science",
+		"id": "supinfo-2013-09",
+		"qualification": "Computer science",
 		"school": "Supinfo",
-		"location": "Earth",
-		"start": "2011-09",
-		"end": "2016-06",
-		"summary": "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+		"location": "France",
+		"start": "2013-09",
+		"end": "2015-06",
+		"summary": "Computer science. My first job in the trade, at Ityka, started as an internship during these two years."
 	}
 ]
 
 export const skills = [
 	{
-		"name": "edge-native-backends",
-		"title": "Backends on the edge",
-		"description": "Load when the API should answer from the city the request came from and cost nothing while everyone is asleep.",
-		"summary": "I build backends that run on Cloudflare's edge rather than in one region: Workers for the code, Durable Objects for the state that has to be shared, R2 for the files. I decide how fresh each piece of data must be before I write any of it, and cache to that.",
+		"name": "frontend-engineering",
+		"title": "Frontend, from the pixel to the framework",
+		"description": "Load when the interface has to feel right on a phone, on a laptop and from the keyboard, and stay fast when the data grows.",
+		"summary": "I have built interfaces for a living since 2015: intranets, fintech dashboards, PWAs, a video learning platform, the bridge of a rollup. I work in whichever framework the product is in, Vue, React or Svelte, and I have worked on one from the inside, on the Nuxt core team. I care about how it feels: the keyboard path, the loading states, what happens offline.",
 		"record": [
-			"Agris: a federated GraphQL API on Workers where every field has its own freshness window, from seconds for an order book to days for an item's name",
-			"This site: pages answered from the bundle and readable offline, with favourites and star counts in Durable Objects behind the same cache",
-			"bot-drop: a private report store on one Worker and one R2 bucket, with no database, that fails closed when half configured",
-			"Nineteen pull requests merged into Nitro, most of them where it meets the platforms it deploys to: Cloudflare Pages, AWS and Netlify Lambda"
+			"Zeko: the bridge, the faucet, the leaderboard and the documentation site, designed and written alone, for desktop and mobile",
+			"Zeno: a gamified, interactive video learning platform in SvelteKit, most of the core codebase",
+			"DeepCrawl: a React application replacing a legacy AngularJS one, across several frontend teams",
+			"Cognitive Credit and Tigerspike: Vue PWAs and React applications on GraphQL APIs",
+			"This paper: nothing scrolls, every move is a page turn, it reads from the keyboard and works offline"
 		],
 		"practice": [
-			"State that has to be shared lives in a Durable Object, not in a database someone has to run",
-			"I batch the calls upstream and cache at the edge, field by field",
-			"I check the access token again inside the Worker, even when the platform already did"
-		],
-		"tools": [
-			"Cloudflare Workers",
-			"Durable Objects",
-			"R2",
-			"Cloudflare Access",
-			"Nitro",
-			"h3"
-		],
-		"evidence": [
-			"agris",
-			"emmanuel-style",
-			"bot-drop",
-			"wrangler-builds",
-			"nitro",
-			"h3"
-		]
-	},
-	{
-		"name": "nuxt-and-vue-internals",
-		"title": "Nuxt & Vue, from the inside",
-		"description": "Load when the framework does not do the thing yet and somebody has to open its source.",
-		"summary": "I know Vue and Nuxt from their source, not only from their documentation. When an application needs something the framework does not ship, I write it as a module; when the framework is wrong, I fix the framework.",
-		"record": [
-			"Auth.js for Nuxt: authentication that runs on edge runtimes, listed on nuxt.com and the most starred module I have written",
-			"Form Actions for Nuxt: form actions and server loaders, so a form works before the JavaScript does",
-			"Server Block: a `<server>` block in a page component, compiled into an API handler, with a Volar extension for its types",
-			"In Nuxt itself: `addTypeTemplate` in Nuxt Kit, the bot that asks an issue for a reproduction, and a run of documentation"
-		],
-		"practice": [
-			"I read the framework's code before I trust its documentation",
-			"Every module ships with a playground, a documentation site and its tests",
-			"What belongs upstream goes upstream, with the test that proves it"
+			"The keyboard path is designed first; the pointer follows it",
+			"Something that is in one state at a time is a state machine, not a set of flags",
+			"Design tokens generate the CSS, so a theme is a swap of values",
+			"Tested where it matters: unit, integration and end to end"
 		],
 		"tools": [
 			"Vue",
 			"Nuxt",
-			"Nuxt Kit",
-			"Nitro",
+			"React",
+			"Svelte",
+			"TypeScript",
+			"CSS",
 			"Vite",
-			"Volar",
-			"TanStack Query"
+			"Cypress"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"DeepCrawl",
+			"Cognitive Credit",
+			"Cohda"
 		],
 		"evidence": [
-			"authjs-nuxt",
+			"emmanuel-style",
+			"zeko",
+			"cssforge",
 			"form-actions-nuxt",
-			"server-block-nuxt",
-			"vue-query-nuxt",
 			"dom-snapshot-nuxt",
-			"nuxt"
+			"vue-switch-match"
 		]
 	},
 	{
-		"name": "graphql-systems",
-		"title": "GraphQL, schema to cache",
-		"description": "Load when five sources of data have to read as one typed graph, and the client keeps asking for the same thing twice.",
-		"summary": "I design GraphQL systems from both ends: the schema and the services behind a gateway, and the client and its cache. I start from the screens that will read the data, and I let resolvers look at what was actually asked for.",
+		"name": "backend-engineering",
+		"title": "Backends, APIs and data",
+		"description": "Load when the API has to stay correct under load, cost little when idle, and make sense to the next person who opens it.",
+		"summary": "I design and run the server side: APIs, data models, queues, pipelines and the services between them. GraphQL and REST, Postgres and key-value stores, serverless on AWS and on Cloudflare's edge. I have run a fault-tolerant pipeline for an energy provider's devices and the indexers of a blockchain, and I decide how fresh each piece of data has to be before I write any of it.",
 		"record": [
-			"Agris: undocumented, positional, Huffman-compressed rows from a game's trade servers, turned into a typed schema and federated behind Hive Gateway",
-			"ungraphql-parse-info: a resolve-info parser that runs on edge runtimes, so a resolver fetches only the fields selected",
-			"This site: every page is a GraphQL document, answered from the bundle through a normalised cache, over a Pothos schema",
-			"Zeko: a range query for zkApp commands, merged into Mina's archive API"
+			"Tigerspike: an IoT platform for one of the UK's main energy providers, with device data over MQTT through a fault-tolerant pipeline on SQS and Kinesis, behind a GraphQL API",
+			"Zeko: the indexers, APIs and proxies behind the bridge and the leaderboard",
+			"Zeno: GraphQL on Workers and Durable Objects, with Postgres, Redis and KV",
+			"Yo-Da: an Express API built test-first on Postgres, in an overhaul of the whole architecture",
+			"Agris: undocumented, positional rows from a game's trade servers, turned into a typed and federated GraphQL API"
 		],
 		"practice": [
 			"The schema is written for its clients, not copied from the database",
-			"Every object gets a cache key, so two documents share what they read",
-			"Services are federated behind a gateway rather than stitched together by hand"
+			"Every field has a freshness window, and the cache follows it",
+			"State that has to be shared has one owner"
 		],
 		"tools": [
+			"Node.js",
 			"GraphQL",
-			"GraphQL Federation",
-			"Hive Gateway",
-			"Pothos",
-			"Houdini"
+			"Postgres",
+			"Redis",
+			"Cloudflare Workers",
+			"Durable Objects",
+			"AWS Lambda",
+			"Rust"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"DeepCrawl",
+			"Tigerspike",
+			"Yo-Da (your data)"
 		],
 		"evidence": [
 			"agris",
+			"zeko",
 			"ungraphql-parse-info",
 			"graphql-crawler",
-			"emmanuel-style",
-			"zeko",
-			"patches"
+			"bot-drop",
+			"unjs"
 		]
 	},
 	{
-		"name": "forecasting-pipelines",
-		"title": "Forecasts that run themselves",
-		"description": "Load when the question needs a probability, and the probability has to still be right next Tuesday with nobody at the controls.",
-		"summary": "I build statistical pipelines end to end: collecting and checking the data, the model, the backtest that says whether to believe it, and the automation that keeps it published. I write the model in Rust and I can replay it at any past date.",
+		"name": "software-architecture",
+		"title": "Architecture, and owning a product end to end",
+		"description": "Load when one person has to hold the whole system in their head, or design it so that nobody needs to.",
+		"summary": "Across the stack I can own a product end to end: the web app, the API and data layer, the infrastructure it runs on, and the SDKs other developers build with. I have done it as the only web engineer of a rollup, as head of engineering at a startup and as the founder of a company. I design codebases with one source of truth, typed boundaries and guardrails enforced in CI.",
 		"record": [
-			"France 2027: a forecast of the French presidential election, refitted every hour by a pipeline no person is part of",
-			"A Kalman filter aggregates the polls by political bloc; a two-round Monte Carlo turns that into each candidate's chances",
-			"Backtested on the 2017 and 2022 elections, with its error settings fitted from replays of 2002 to 2022",
-			"A poll counts only once a second, blind run of the collector agrees on every number"
+			"Zeko: designed, wrote and ran the entire web platform, in a team of three engineers",
+			"Zeno: designed the architecture and wrote most of the core codebase",
+			"Yo-Da: led an overhaul of the whole architecture",
+			"Cohda: an intranet built from nothing and run for three years, from renting the servers to the user experience",
+			"AcidCat: a specification where an application says what it can do once, and every surface is generated from that"
 		],
 		"practice": [
-			"Every source is validated on the way in, and what fails is set aside with the reason",
-			"A forecast for a past date uses only what had been published by that date",
-			"Every decision the pipeline takes is logged with its source"
+			"One source of truth, and everything else generated from it",
+			"Boundaries are typed, and the types are checked when it builds",
+			"A rule nobody enforces is a comment; I make it a check"
 		],
 		"tools": [
+			"TypeScript",
 			"Rust",
-			"Kalman filters",
-			"Monte Carlo",
-			"GitHub Actions",
-			"Cloudflare Workers",
-			"Vue"
-		],
-		"evidence": [
-			"fr2027-forecaster"
-		]
-	},
-	{
-		"name": "agent-native-interfaces",
-		"title": "Software that agents can use",
-		"description": "Load when an agent should be able to do everything the interface can, without reading the screen to find the button.",
-		"summary": "I build applications that agents operate as well as people do. A capability is described once, with its input, its output and its failures, and every surface is generated from that description: the command line, the MCP server, the tools in the page, the typed API.",
-		"record": [
-			"AcidCat: a language-neutral specification for that one catalog, with bindings for TypeScript, Python, Go and Rust",
-			"heb-stack: a starter where one Effect computation is served to a page, WebMCP, a CLI, MCP and an RPC API",
-			"xiaomi-aircon: an air conditioner driven from the terminal, from Claude over MCP, or from the desktop bar",
-			"This site registers WebMCP tools, so an agent in the page can search it and turn its pages"
-		],
-		"practice": [
-			"The catalog is checked at build time, so a surface cannot drift from the code behind it",
-			"A capability's lifecycle is a state machine, not a set of flags",
-			"Agents get the same keyboard-first paths that people get"
-		],
-		"tools": [
-			"MCP",
-			"WebMCP",
-			"Effect",
+			"Go",
+			"Python",
+			"OCaml",
+			"GraphQL",
 			"XState",
-			"capnweb",
-			"Agent skills",
-			"JSON Schema"
+			"moon"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"Obelisk Auditing",
+			"Yo-Da (your data)",
+			"Cohda"
 		],
 		"evidence": [
 			"acidcat",
 			"heb-stack",
-			"xiaomi-aircon",
-			"emmanuel-style",
-			"ataski",
-			"skills"
-		]
-	},
-	{
-		"name": "zero-knowledge-applications",
-		"title": "Zero-knowledge applications",
-		"description": "Load when the application proves things on Mina and the proof takes a minute nobody wants to wait.",
-		"summary": "I build what a zero-knowledge application needs around its contracts: the SDK developers call, the infrastructure that serves compiled circuits, the signers, the indexers and the explorer. Most of this work is on Mina and the rollups built on it.",
-		"record": [
-			"Lumina DEX: seventy-six pull requests from the first commit of the monorepo, including the SDK published to npm and running on mainnet",
-			"A versioned CDN for the compiled contracts, so they are compiled once instead of in every browser",
-			"The signer service, first on Cloudflare containers, then rolled out to each network with NixOS",
-			"Zeko: the rollup's explorer, from the design spikes to the NATS event schemas and the SurrealDB read model"
-		],
-		"practice": [
-			"Wallets and transactions are state machines in XState, because that is what they are",
-			"Compile once, prove one after another, and serve the artefacts from a CDN",
-			"Infrastructure is declared, per environment, and rolled out the same way everywhere"
-		],
-		"tools": [
-			"o1js",
-			"Mina",
-			"XState",
-			"NATS JetStream",
-			"SurrealDB",
-			"NixOS",
-			"OCaml"
-		],
-		"evidence": [
-			"lumina",
 			"zeko",
-			"nats-ml"
-		]
-	},
-	{
-		"name": "developer-tooling",
-		"title": "Tools for the people who build",
-		"description": "Load when half the failures in CI are somebody's local version of Node.",
-		"summary": "I fix the day-to-day of a team: toolchains pinned in the repository, releases that run from one command, and the review comment everyone keeps writing turned into a check. When the problem is the tool, I write a plugin for it or fix it.",
-		"record": [
-			"proto plugins: OCaml as a Rust plugin compiled to WebAssembly, Nushell and hk as TOML plugins, all three in proto's own registry",
-			"Gommage: an authorship policy for git history, enforced in commit hooks, in CI and in pull request checks",
-			"wrangler-builds: Cloudflare's build triggers kept in step with a file in the repository",
-			"Reproduire: a GitHub Action that asks an incomplete issue for a reproduction, which Nuxt runs on its own tracker"
-		],
-		"practice": [
-			"The pinned version in the repository is the only way to get a tool",
-			"A rule nobody enforces is a comment; I make it a check",
-			"Monorepos run on moon, with every tool pinned by proto"
-		],
-		"tools": [
-			"proto",
-			"moon",
-			"pnpm",
-			"GitHub Actions",
-			"Rust",
-			"WebAssembly"
-		],
-		"evidence": [
-			"proto-plugins",
-			"proto",
-			"gommage",
-			"wrangler-builds",
-			"reproduire",
-			"nuxt-module-template"
-		]
-	},
-	{
-		"name": "design-systems-in-code",
-		"title": "Interfaces, designed in code",
-		"description": "Load when dark mode is a second stylesheet that nobody has opened since it was written.",
-		"summary": "I design in the browser. The visual language is a schema of tokens that generates the CSS, type and space scale fluidly between screen sizes, colours are chosen in OKLCH, and the keyboard path is designed before the pointer's.",
-		"record": [
-			"CSS Forge: design tokens to CSS custom properties at build time, with nothing shipped at run time",
-			"This site: every colour, size and gap is a CSS Forge token, and a theme is a swap of values",
-			"A paper that never scrolls: a pager measures each block and packs it into pages, and every move is a View Transition",
-			"Read from the keyboard like a terminal, with a prompt for everything else"
-		],
-		"practice": [
-			"Fluid scales between two screen sizes, rather than a jump at each breakpoint",
-			"A colour ramp is built in OKLCH so that its steps look even",
-			"If it cannot be reached from the keyboard, it is not finished"
-		],
-		"tools": [
-			"CSS Forge",
-			"OKLCH",
-			"CSS custom properties",
-			"View Transitions",
-			"Vue",
-			"SVG"
-		],
-		"evidence": [
-			"cssforge",
+			"lumina",
 			"emmanuel-style"
 		]
 	},
 	{
-		"name": "upstream-fixes",
-		"title": "Fixing it upstream",
-		"description": "Load when the bug is three dependencies down, in code that belongs to somebody else.",
-		"summary": "When a dependency is broken I do not patch around it: I find the bug, reproduce it in the smallest repository I can, and send the maintainers a fix they can merge. I have had pull requests merged across the Nuxt and UnJS ecosystem and beyond it.",
+		"name": "agentic-delivery",
+		"title": "Delivering with agents",
+		"description": "Load when the team wants coding agents to ship work it can trust, on a budget it can afford.",
+		"summary": "The job has moved from writing correct code to designing the systems that produce correct code: specs, context, architecture, tests, verification and review that let coding agents ship work a company can trust. I know what correct code looks like because I spent a decade writing it, reviewing it and fixing it in production. That is what I do now, and what I help companies do.",
 		"record": [
-			"Nitro, nineteen: deploy presets, the prerenderer, cookies and binary bodies on Lambda",
-			"h3, seven in one month: `readFormData`, `event.method` and `event.headers`, `set-cookie` handled correctly",
-			"UnJS: batching in unstorage, libSQL in db0, `retryDelay` in ofetch",
-			"And single fixes in Vike, Houdini, Postgres.js, the Vercel AI SDK, VueUse, Vize and Lucia"
+			"Zeko: led the team's move to agentic development, with Linear-based workflows from issue to merged PR, shared agent context, verification and review",
+			"A lean, token-efficient delivery process for small teams: agents working in parallel, verified with evidence, reviewed where it matters",
+			"Agentic systems that do real work: home automation, trading bots, a personal finance manager, data pipelines and forecasting",
+			"France 2027: an election forecast refitted every hour by a pipeline with nobody in it",
+			"AcidCat: one description of what an application can do, served to people and to agents alike"
+		],
+		"practice": [
+			"Agents work in codebases built for them: one source of truth, typed boundaries, guardrails in CI",
+			"Work is verified with evidence before anyone calls it done",
+			"People review where it matters, not everywhere"
+		],
+		"tools": [
+			"Coding agents",
+			"MCP",
+			"WebMCP",
+			"Agent skills",
+			"Linear",
+			"GitHub Actions"
+		],
+		"roles": [
+			"Self-employed",
+			"Zeko"
+		],
+		"evidence": [
+			"fr2027-forecaster",
+			"acidcat",
+			"heb-stack",
+			"ataski",
+			"skills",
+			"xiaomi-aircon"
+		]
+	},
+	{
+		"name": "security",
+		"title": "Security: contracts, infrastructure, agents",
+		"description": "Load when something of value is exposed: money in a contract, a network, or an agent holding the keys.",
+		"summary": "I founded a smart contract auditing firm and led it through more than 50 audits, and I started my career running networks and servers. The same habits apply to agents now: MCP servers, tool permissions, sandboxing, prompt injection and secrets.",
+		"record": [
+			"Obelisk Auditing: taught myself Solidity, audited EVM smart contracts on my own, then grew a remote team of 12 that audited more than 50 Web3 projects",
+			"A monitoring tool that detects blockchain state changes",
+			"Ityka: the infrastructure of a call centre end to end, from cabling and routers to Linux, nginx and iptables",
+			"bot-drop: a private store that checks the access token again inside the Worker, so a half-configured deployment fails closed",
+			"Gommage: an authorship policy for git history, enforced in hooks, in CI and in pull request checks"
+		],
+		"practice": [
+			"A half-configured system refuses, it does not allow",
+			"An agent gets the permissions the task needs and nothing else",
+			"A secret never passes through a context or a log"
+		],
+		"tools": [
+			"Solidity",
+			"Foundry",
+			"Hardhat",
+			"EVM",
+			"Linux",
+			"iptables",
+			"Cloudflare Access",
+			"MCP"
+		],
+		"roles": [
+			"Obelisk Auditing",
+			"Ityka",
+			"Self-employed"
+		],
+		"evidence": [
+			"bot-drop",
+			"gommage",
+			"authjs-nuxt",
+			"lucia",
+			"mnemonic-to-private-key"
+		]
+	},
+	{
+		"name": "cloud-infrastructure",
+		"title": "Cloud and infrastructure",
+		"description": "Load when it has to run somewhere, stay up, and not send a surprising invoice.",
+		"summary": "I have put products on AWS and on Cloudflare for ten years, with the infrastructure written as code and an environment for every pull request. I started as a system administrator, so I know what is under the abstraction.",
+		"record": [
+			"Zeko: designed the infrastructure and migrated it to Cloudflare, with Sentry error reporting and a bug triage loop",
+			"Tigerspike: serverless on AWS in the CDK, with a throwaway environment for every pull request",
+			"Yo-Da: ECS Fargate, Aurora and CloudFront, defined as code with Terraform and CloudFormation",
+			"Nitro: its integration with AWS, Azure, Cloudflare, Vercel and Netlify, on the Nuxt core team",
+			"Lumina: a signer service on Cloudflare containers, then rolled out to each network with NixOS"
+		],
+		"practice": [
+			"Infrastructure is code, and it is reviewed like code",
+			"Every branch gets an environment of its own",
+			"Errors are reported, triaged and tied to the board from the first deploy"
+		],
+		"tools": [
+			"Cloudflare",
+			"AWS",
+			"AWS CDK",
+			"Terraform",
+			"NixOS",
+			"GitHub Actions",
+			"Sentry",
+			"Linux"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"Tigerspike",
+			"Yo-Da (your data)",
+			"Ityka"
+		],
+		"evidence": [
+			"nitro",
+			"wrangler-builds",
+			"lumina",
+			"zeko",
+			"proto-plugins"
+		]
+	},
+	{
+		"name": "open-source",
+		"title": "Open source, at framework level",
+		"description": "Load when the bug is three dependencies down, in code that belongs to somebody else.",
+		"summary": "I am on the Nuxt core team, where most of my work is on Nitro, the server engine that Nuxt and several other frameworks run on. Work at that level reaches millions of developers and users. When a dependency is broken I do not patch around it: I reproduce it, fix it where it lives, and wait for the release.",
+		"record": [
+			"Pull requests merged into twenty-five open source projects, from Nitro, Nuxt and h3 to Houdini, VueUse and Vize",
+			"Nitro: nineteen of them, on deploy presets, the prerenderer, cookies and runtime config",
+			"Community modules for Nuxt that I author and maintain: Auth.js, Vue Query, form actions and server blocks",
+			"Plugins for the proto toolchain manager, in its own registry, and a NATS client for OCaml on opam"
 		],
 		"practice": [
 			"A reproduction comes first, in a repository with nothing else in it",
@@ -2931,27 +5216,143 @@ export const skills = [
 			"The fix arrives with its test and the documentation it changes"
 		],
 		"tools": [
-			"git",
-			"GitHub",
-			"Vitest",
+			"Nuxt",
+			"Nitro",
+			"h3",
+			"Vue",
+			"Vite",
 			"TypeScript",
 			"Rust",
 			"OCaml"
+		],
+		"roles": [
+			"Nuxt"
 		],
 		"evidence": [
 			"nitro",
 			"nuxt",
 			"h3",
 			"unjs",
-			"proto",
-			"lucia",
-			"patches"
+			"authjs-nuxt",
+			"form-actions-nuxt",
+			"server-block-nuxt",
+			"vue-query-nuxt",
+			"vize"
+		]
+	},
+	{
+		"name": "smart-contracts-and-zero-knowledge",
+		"title": "Smart contracts and zero knowledge",
+		"description": "Load when the application proves things on a chain, and the proof takes a minute nobody wants to wait.",
+		"summary": "I have worked in Web3 since 2021: auditing and writing EVM smart contracts, then building what a zero-knowledge rollup needs around its protocol. That means the SDKs, the bridge, the indexers and the signers, and some of the protocol itself, in OCaml and in circuits.",
+		"record": [
+			"Zeko: the SDKs and CLIs developers use to bridge to and build on the rollup, and work on OCaml protocol code, smart contracts and ZK circuits",
+			"Lumina DEX: seventy-six pull requests, from the SDK on mainnet to a versioned CDN for compiled contracts and the signer service",
+			"Obelisk: more than 50 audits, and trading bots, DeFi applications and smart contracts built for clients",
+			"The Plutus Pioneer Program, on Cardano"
+		],
+		"practice": [
+			"Wallets and transactions are state machines, because that is what they are",
+			"Compile once, prove one after another, and serve the artefacts from a CDN",
+			"An audit reads the contract the way an attacker would"
+		],
+		"tools": [
+			"Solidity",
+			"Foundry",
+			"Viem",
+			"o1js",
+			"OCaml",
+			"ZK circuits",
+			"XState",
+			"NATS"
+		],
+		"roles": [
+			"Zeko",
+			"dcSpark",
+			"Obelisk Auditing"
+		],
+		"evidence": [
+			"lumina",
+			"zeko",
+			"nats-ml",
+			"spacebudz-identity",
+			"plutus-guide",
+			"mnemonic-to-private-key"
+		]
+	},
+	{
+		"name": "leading-teams",
+		"title": "Leading a team, hands-on",
+		"description": "Load when the team needs someone who runs the room and still writes the core of the system.",
+		"summary": "I have led as a founder, as a head of engineering and as the senior engineer of a small team. Each time hands-on: I write the core of the system, and I run the reviews, the hiring and the process around it.",
+		"record": [
+			"Obelisk Auditing: founded the company and grew it into a remote team of 12, with new clients every month",
+			"Zeno: led the team, ran code and performance reviews, mentored junior developers and hired",
+			"Zeko: brought in the workflows the team ships with, from issue to merged PR, and the bug triage loop",
+			"The M Industries and Stack Industries: my own contracting companies, in London and in France"
+		],
+		"practice": [
+			"I write the core myself, and review the rest",
+			"A process is the smallest thing that keeps the work moving",
+			"A review teaches as much as it catches"
+		],
+		"tools": [
+			"Code review",
+			"Hiring",
+			"Mentoring",
+			"Linear",
+			"Sentry",
+			"GitHub"
+		],
+		"roles": [
+			"Obelisk Auditing",
+			"Zeno",
+			"Zeko",
+			"The M Industries",
+			"Stack Industries"
+		],
+		"evidence": [
+			"ataski",
+			"reproduire",
+			"gommage",
+			"nuxt-module-template"
+		]
+	},
+	{
+		"name": "video-and-3d",
+		"title": "Video and 3D, made with agents",
+		"description": "Load when a brief should go in and finished visual work should come out.",
+		"summary": "I build pipelines where agents take a brief to finished visual work: films made entirely in code, and real-time 3D on the web with three.js and WebGPU. Agents operate Blender, DaVinci Resolve, FFmpeg and FreeCAD the way an editor or a designer would. Some of it ends up on my 3D printer.",
+		"record": [
+			"Films generated entirely in code",
+			"Real-time 3D for the web, on three.js and WebGPU",
+			"Agents working in Blender, DaVinci Resolve and FreeCAD",
+			"This paper's press: a sheet drawn on the GPU, its ink simulated on WebGPU, its emblems modelled and rendered in Blender from a script, its portrait printed in relief"
+		],
+		"practice": [
+			"The brief is the interface: words go in, finished work comes out",
+			"Every asset can be made again from a script in the repository",
+			"Agents use the tools a professional uses, not a simpler copy of them"
+		],
+		"tools": [
+			"three.js",
+			"WebGPU",
+			"Blender",
+			"DaVinci Resolve",
+			"FFmpeg",
+			"FreeCAD"
+		],
+		"roles": [
+			"Self-employed"
+		],
+		"evidence": [
+			"emmanuel-style"
 		]
 	}
 ]
 
 /** A hash of everything above, so a cache written from older content can be told apart. */
-export const version = "77615178a4ac"
+export const version = "5855456737e3"
 
 export const content = { site, shelves, posts, roles, schools, skills, version }
 

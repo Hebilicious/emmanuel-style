@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Route_layout_oy84b0",
     "kind": "query",
-    "hash": "fd50fd41e57c64177ed56ed17c195119331bc18ab3ee46b3a7b8aa2f6d8c527c",
+    "hash": "20127a970c078a783e5480811e271d17ca178f1dfbaf2b240637ac31eb542b66",
     "raw": `query Route_layout_oy84b0 {
     posts {
         __typename
@@ -51,6 +51,7 @@ const artifact = {
         name
         practice
         record
+        roles
         summary
         title
         tools
@@ -357,6 +358,13 @@ const artifact = {
                             "visible": true,
                         },
 
+                        "roles": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "roles",
+                            "visible": true,
+                        },
+
                         "summary": {
                             "type": "String",
                             "modifiers": "String!",
@@ -439,6 +447,7 @@ export type Route_layout_oy84b0$result = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -493,6 +502,7 @@ export type Route_layout_oy84b0$unmasked = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{

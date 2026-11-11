@@ -28,7 +28,8 @@ export const MOTIFS = [
 	"tree",
 	"hook",
 	"list",
-	"timeline"
+	"timeline",
+	"merge"
 ] as const
 
 export type Motif = (typeof MOTIFS)[number]

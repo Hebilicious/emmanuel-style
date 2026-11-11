@@ -106,6 +106,8 @@ export interface SkillShape {
 	/** How he works, a line each. */
 	practice: string[]
 	tools: string[]
+	/** Where he did it: the companies of the ledger, by name. */
+	roles: string[]
 	/** The names of the Library projects that prove it. */
 	evidence: string[]
 }
@@ -121,6 +123,8 @@ export interface RoleShape {
 	summary: string
 	highlights: string[]
 	stack: string[]
+	/** The names of the Library projects that came out of the role. */
+	library: string[]
 }
 
 /** One education entry. */
@@ -356,7 +360,8 @@ builder.objectType("Role", {
 		end: t.exposeString("end", { nullable: true }),
 		summary: t.exposeString("summary", { nullable: false }),
 		highlights: t.exposeStringList("highlights", { nullable: false }),
-		stack: t.exposeStringList("stack", { nullable: false })
+		stack: t.exposeStringList("stack", { nullable: false }),
+		library: t.exposeStringList("library", { nullable: false })
 	})
 })
 
@@ -370,6 +375,7 @@ builder.objectType("Skill", {
 		record: t.exposeStringList("record", { nullable: false }),
 		practice: t.exposeStringList("practice", { nullable: false }),
 		tools: t.exposeStringList("tools", { nullable: false }),
+		roles: t.exposeStringList("roles", { nullable: false }),
 		evidence: t.exposeStringList("evidence", { nullable: false })
 	})
 })

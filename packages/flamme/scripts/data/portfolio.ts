@@ -23,10 +23,10 @@
  *   started    the year it began
  *   ended      the year it stopped, or none while it is maintained
  *   featured   its place on the Library's front page, or none
- *   links      the pull requests (or pages) worth reading, for outside work
+ *   repositories  for outside work, the repositories whose merged pull requests it is
+ *   links      pages worth reading, for a project of his own
  *   cover      the picture its cover draws (`components/Cover.vue`)
  */
-import { merged } from "./contributions.ts"
 
 export interface PortfolioLink {
 	readonly label: string
@@ -51,12 +51,16 @@ export interface PortfolioEntry {
 	readonly ended?: number
 	readonly featured?: number
 	readonly links?: readonly PortfolioLink[]
-	/** The months of the merged pull requests, for outside work. */
-	readonly activity?: readonly string[]
+	/**
+	 * The repositories whose merged pull requests are this entry, for outside work.
+	 * The pull requests themselves are in `contributions.ts`, and the entry lists
+	 * every one.
+	 */
+	readonly repositories?: readonly string[]
 	readonly cover: string
 }
 
-export type Shelf = "projects" | "nuxt" | "tools" | "upstream" | "work"
+export type Shelf = "projects" | "nuxt" | "tools" | "work" | "upstream"
 
 /** The shelves, in the order the Library reads them, each with the line under its title. */
 export const shelves: readonly { slug: Shelf; label: string; blurb: string }[] = [
@@ -77,25 +81,21 @@ export const shelves: readonly { slug: Shelf; label: string; blurb: string }[] =
 		blurb: "Design tokens, release hygiene, build plugins, agent skills and a few libraries."
 	},
 	{
-		slug: "upstream",
-		label: "Upstream",
-		blurb: "Pull requests merged into the frameworks and libraries the work above is built on."
-	},
-	{
 		slug: "work",
 		label: "Work",
 		blurb: "Public codebases written for clients and employers, read through their pull requests."
+	},
+	{
+		slug: "upstream",
+		label: "Upstream",
+		blurb:
+			"Every pull request merged into somebody else's project, from a framework's internals to a typo in a readme."
 	}
 ]
 
 const GH = "https://github.com/Hebilicious"
 const pulls = (repository: string) =>
 	`https://github.com/${repository}/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged`
-const pr = (repository: string, number: number, label: string, date: string): PortfolioLink => ({
-	label,
-	url: `https://github.com/${repository}/pull/${number}`,
-	date
-})
 
 export const portfolio: readonly PortfolioEntry[] = [
 	/* ---------------------------------------------------------------- projects */
@@ -683,185 +683,6 @@ export const portfolio: readonly PortfolioEntry[] = [
 		cover: "pages"
 	},
 
-	/* --------------------------------------------------------------- upstream */
-	{
-		name: "nitro",
-		title: "Nitro",
-		tagline:
-			"The server engine under Nuxt: deploy presets, prerendering, cookies and runtime config.",
-		body: [
-			"Nineteen pull requests from May to October 2023, mostly where Nitro meets the platforms it deploys to: the static Cloudflare Pages preset and its detection, export conditions for workers, binary bodies and cookies on AWS and Netlify Lambda, cookies split correctly, retries and redirects in the prerenderer, and the documentation and tests for runtime config and environment variables."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "TypeScript",
-		stack: ["Nitro", "Cloudflare", "AWS Lambda", "Netlify"],
-		url: pulls("nitrojs/nitro"),
-		homepage: "https://nitro.build",
-		started: 2023,
-		ended: 2023,
-		links: [
-			pr("nitrojs/nitro", 1534, "Prerender: support retry and retryDelay", "2023-10"),
-			pr("nitrojs/nitro", 1683, "AWS and Netlify Lambda: binary body v2 and cookies v1", "2023-09"),
-			pr("nitrojs/nitro", 1659, "Cloudflare Pages: detect the static preset", "2023-08"),
-			pr("nitrojs/nitro", 1401, "Support exportConditions, with defaults for workers", "2023-07"),
-			pr("nitrojs/nitro", 1452, "Split cookie headers", "2023-07"),
-			pr("nitrojs/nitro", 1448, "Prerender: skip redirects", "2023-07"),
-			pr("nitrojs/nitro", 1310, "Add the cloudflare-pages-static preset", "2023-06"),
-			pr("nitrojs/nitro", 1550, "Document runtime config and environment variables", "2023-08")
-		],
-		activity: merged.nitro,
-		cover: "timeline"
-	},
-	{
-		name: "nuxt",
-		title: "Nuxt",
-		tagline:
-			"The framework itself: a kit helper, the reproduction bot, documentation, and the modules list.",
-		body: [
-			"`addTypeTemplate` in Nuxt Kit, for modules to register type templates; less reliance on `event.node`; the bot that asks issues for a reproduction; and a run of documentation, from the experimental features to styling. In the modules list, the entries for the modules on the Nuxt shelf."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "TypeScript",
-		stack: ["Nuxt", "Nuxt Kit"],
-		url: pulls("nuxt/nuxt"),
-		homepage: "https://nuxt.com",
-		started: 2023,
-		ended: 2024,
-		links: [
-			pr("nuxt/nuxt", 21331, "Kit: addTypeTemplate, with auto-registration", "2023-06"),
-			pr("nuxt/nuxt", 22539, "Reduce the usage of event.node", "2023-08"),
-			pr("nuxt/nuxt", 22495, "Add the issue reproduction bot", "2023-08"),
-			pr("nuxt/nuxt", 21617, "Document the experimental features", "2023-06"),
-			pr("nuxt/nuxt", 21525, "Document styling", "2023-06"),
-			pr("nuxt/nuxt", 21228, "Tell $fetch from the fetch composables", "2023-05"),
-			pr("nuxt/modules", 668, "List authjs-nuxt on nuxt.com", "2023-06"),
-			pr("nuxt/modules", 703, "List server-block-nuxt on nuxt.com", "2023-07")
-		],
-		activity: merged.nuxt,
-		cover: "timeline"
-	},
-	{
-		name: "h3",
-		title: "h3",
-		tagline: "The HTTP framework under Nitro: form data, headers and cookies on web responses.",
-		body: [
-			"Seven pull requests in July 2023: `readFormData`, `event.method` and `event.headers`, utilities to remove and clear response headers, `set-cookie` values split and appended correctly on web responses, and the readme split into sections with the missing helpers documented."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "TypeScript",
-		stack: ["h3"],
-		url: pulls("h3js/h3"),
-		homepage: "https://h3.dev",
-		started: 2023,
-		ended: 2023,
-		links: [
-			pr("h3js/h3", 421, "Add readFormData", "2023-07"),
-			pr("h3js/h3", 429, "Add event.method and event.headers", "2023-07"),
-			pr("h3js/h3", 427, "Add removeResponseHeader and clearResponseHeaders", "2023-07"),
-			pr("h3js/h3", 453, "Append set-cookie headers in web responses", "2023-07"),
-			pr("h3js/h3", 445, "Split set-cookie values in web responses", "2023-07")
-		],
-		activity: merged.h3,
-		cover: "timeline"
-	},
-	{
-		name: "unjs",
-		title: "UnJS",
-		tagline: "unstorage, db0, ofetch and unenv: batching, libSQL, retries and headers.",
-		body: [
-			"Experimental operation batching and a fix for R2's metadata in unstorage, libSQL support in db0, `retryDelay` in ofetch, and numeric headers preserved in unenv."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "TypeScript",
-		stack: ["unstorage", "db0", "ofetch", "unenv"],
-		url: "https://github.com/search?q=org%3Aunjs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
-		homepage: "https://unjs.io",
-		started: 2023,
-		ended: 2023,
-		links: [
-			pr("unjs/unstorage", 240, "unstorage: experimental operation batching", "2023-07"),
-			pr("unjs/db0", 25, "db0: add libSQL support", "2023-07"),
-			pr("unjs/ofetch", 262, "ofetch: support retryDelay", "2023-08"),
-			pr("unjs/unstorage", 272, "unstorage: R2 binding for getMeta", "2023-07"),
-			pr("unjs/unenv", 119, "unenv: keep numeric header types in setHeader", "2023-08")
-		],
-		activity: merged.unjs,
-		cover: "timeline"
-	},
-	{
-		name: "proto",
-		title: "proto",
-		tagline: "The toolchain manager: the OCaml and Nushell plugins in its registry.",
-		body: [
-			"The plugins on the Tools shelf, entered in proto's registry so that `proto install ocaml` works out of the box, and their locators kept current as they moved to the TOML format."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "Rust",
-		stack: ["proto", "moon"],
-		url: pulls("moonrepo/proto"),
-		homepage: "https://moonrepo.dev/proto",
-		started: 2026,
-		links: [
-			pr("moonrepo/proto", 976, "Add the OCaml plugin to the registry", "2026-04"),
-			pr("moonrepo/proto", 1013, "Add the Nushell plugin to the registry", "2026-05"),
-			pr("moonrepo/proto", 1142, "Move the hk and Nushell locators to TOML plugins", "2026-10")
-		],
-		activity: merged.proto,
-		cover: "timeline"
-	},
-	{
-		name: "lucia",
-		title: "Lucia",
-		tagline: "The authentication library: an unstorage adapter, then expiry for it.",
-		body: [
-			"An adapter that stores Lucia's sessions in any unstorage driver, and time-to-live support for it."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "TypeScript",
-		stack: ["Lucia", "unstorage"],
-		url: pulls("lucia-auth/lucia"),
-		started: 2023,
-		ended: 2023,
-		links: [
-			pr("lucia-auth/lucia", 662, "Add the unstorage adapter", "2023-07"),
-			pr("lucia-auth/lucia", 970, "unstorage: add TTL support", "2023-09")
-		],
-		activity: merged.lucia,
-		cover: "timeline"
-	},
-	{
-		name: "patches",
-		title: "Patches",
-		tagline: "Single fixes and features across the ecosystem, from Vike and Houdini to Vize.",
-		body: [
-			"Where a tool in use needed one change: a config helper in Vike, `using` declarations in Houdini, streaming in the Vercel AI SDK's Nuxt example, export conditions in Postgres.js, the cache directory in Vize's Vite plugin, a fix in VueUse, releases of the NATS client on opam, and, in 2017, Rogue profiles and APL tweaks for SimulationCraft."
-		],
-		points: [],
-		shelf: "upstream",
-		language: "TypeScript",
-		stack: ["Vike", "Houdini", "Vercel AI", "Postgres.js", "Vize", "VueUse", "SimulationCraft"],
-		url: "https://github.com/search?q=author%3AHebilicious+is%3Apr+is%3Amerged+-user%3AHebilicious&type=pullrequests",
-		started: 2015,
-		links: [
-			pr("ubugeeei-prod/vize", 8618, "Vize: find optimised Vue under Vite's cacheDir", "2026-10"),
-			pr("vikejs/vike", 1157, "Vike: add defineVikeConfig", "2023-10"),
-			pr("HoudiniGraphql/houdini", 1286, "Houdini: support the using keyword", "2024-03"),
-			pr("vercel/ai", 295, "Vercel AI: streaming in the Nuxt example", "2023-08"),
-			pr("porsager/postgres", 819, "Postgres.js: update the export conditions", "2024-04"),
-			pr("vueuse/vueuse", 1541, "VueUse: update useElementBounding on mount", "2022-05"),
-			pr("ocaml/opam-repository", 29816, "opam: release nats-client 0.0.10", "2026-04"),
-			pr("simulationcraft/simc", 3471, "SimulationCraft: Rogue APL tweaks", "2017-01")
-		],
-		activity: merged.patches,
-		cover: "timeline"
-	},
-
 	/* ------------------------------------------------------------------- work */
 	{
 		name: "lumina",
@@ -880,49 +701,460 @@ export const portfolio: readonly PortfolioEntry[] = [
 		homepage: "https://luminadex.com",
 		started: 2024,
 		ended: 2026,
-		links: [
-			pr("Lumina-DEX/lumina", 1, "Prepare the monorepo", "2024-11"),
-			pr("Lumina-DEX/lumina", 49, "A versioning system for the contract CDN", "2025-03"),
-			pr("Lumina-DEX/lumina", 71, "Pools, the token service and the CDN", "2025-05"),
-			pr("Lumina-DEX/lumina", 90, "Create and deploy the signer service", "2025-07"),
-			pr("Lumina-DEX/lumina", 133, "Idiomatic XState and React", "2025-10"),
-			pr("Lumina-DEX/lumina", 137, "Prove sequentially, compile once", "2025-10"),
-			pr("Lumina-DEX/lumina", 152, "The SDK on mainnet", "2025-12"),
-			pr("Lumina-DEX/lumina", 181, "A signer server per environment, and SDK routing", "2026-03")
-		],
-		activity: merged.lumina,
+		repositories: ["Lumina-DEX/lumina"],
 		cover: "timeline"
 	},
 	{
 		name: "zeko",
 		title: "Zeko",
 		tagline:
-			"A zero-knowledge rollup on Mina: its explorer, its event stream, a zkVerify proof of concept.",
+			"A zero-knowledge rollup: its bridge, its faucet, its indexers and its documentation, with the SDKs and CLIs around them.",
 		body: [
-			"The explorer, from the spikes that settled its design (bridge correlation between the layers, zkApp state and events, cursor pagination, the L1 watcher, data-availability attestations) to the monorepo, the shared NATS event schemas and the SurrealDB read model. In the protocol, the JetStream publish contract the explorer reads from; beside it, a zkVerify pipeline with a Nuxt proof explorer, and a range query for zkApp commands in Mina's archive API."
+			"The rollup's whole web platform, in one monorepo, from its first commit. The bridge between the two layers as an SDK, a web app and a command line written for agents first. The faucet, with its own CLI, rate limiting and automatic bans. The documentation site. The leaderboard with its indexer, its API and its admin. And the actions indexer and API the bridge reads its history from, with a diagnostics CLI and a status dashboard.",
+			"Around it: the monorepo on moon, previews and deploys on Cloudflare with the build configuration kept in the repository, Sentry triage tied to the Linear board, and a published agent skill for building on Zeko. In the protocol, the JetStream publish contract; beside it, a zkVerify proof of concept and a range query for zkApp commands in Mina's archive API."
 		],
 		points: [],
 		shelf: "work",
 		language: "TypeScript",
-		stack: ["TypeScript", "OCaml", "NATS JetStream", "SurrealDB", "Nuxt", "Mina"],
+		stack: [
+			"TypeScript",
+			"Nuxt",
+			"Cloudflare Workers",
+			"o1js",
+			"Mina",
+			"moon",
+			"OCaml",
+			"NATS JetStream"
+		],
 		url: "https://github.com/search?q=org%3Azeko-labs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
 		homepage: "https://zeko.io",
-		started: 2025,
-		links: [
-			pr("zeko-labs/zeko-explorer", 9, "Scaffold the explorer monorepo", "2026-05"),
-			pr("zeko-labs/zeko-explorer", 11, "Shared NATS event schemas", "2026-05"),
-			pr("zeko-labs/zeko-explorer", 12, "The SurrealDB read model", "2026-05"),
-			pr("zeko-labs/zeko-explorer", 1, "Spike: bridge correlation between L1 and L2", "2026-04"),
-			pr("zeko-labs/zeko", 407, "Implement the JetStream publish contract", "2026-05"),
-			pr("zeko-labs/zk-verify-poc", 1, "zkVerify: the end-to-end pipeline", "2026-02"),
-			pr(
-				"o1-labs/Archive-Node-API",
-				162,
-				"Archive API: a range query for zkApp commands",
-				"2026-09"
-			)
+		started: 2024,
+		repositories: [
+			"zeko-labs/zeko-ui",
+			"zeko-labs/zeko",
+			"zeko-labs/zk-verify-poc",
+			"zeko-labs/zeko-landing-new",
+			"o1-labs/Archive-Node-API"
 		],
-		activity: merged.zeko,
 		cover: "timeline"
+	},
+
+	/* --------------------------------------------------------------- upstream */
+	{
+		name: "nitro",
+		title: "Nitro",
+		tagline:
+			"The server engine under Nuxt: deploy presets, prerendering, cookies and runtime config.",
+		body: [
+			"Nineteen pull requests from May to October 2023, mostly where Nitro meets the platforms it deploys to: the static Cloudflare Pages preset and its detection, export conditions for workers, binary bodies and cookies on AWS and Netlify Lambda, cookies split correctly, retries and redirects in the prerenderer, and the documentation and tests for runtime config and environment variables."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Nitro", "Cloudflare", "AWS Lambda", "Netlify"],
+		url: pulls("nitrojs/nitro"),
+		homepage: "https://nitro.build",
+		started: 2023,
+		ended: 2023,
+		repositories: ["nitrojs/nitro"],
+		cover: "timeline"
+	},
+	{
+		name: "nuxt",
+		title: "Nuxt",
+		tagline:
+			"The framework itself: a kit helper, the reproduction bot, documentation, and the modules list.",
+		body: [
+			"`addTypeTemplate` in Nuxt Kit, for modules to register type templates; less reliance on `event.node`; the bot that asks issues for a reproduction; and a run of documentation, from the experimental features to styling. In the modules list, the entries for the modules on the Nuxt shelf."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Nuxt", "Nuxt Kit"],
+		url: pulls("nuxt/nuxt"),
+		homepage: "https://nuxt.com",
+		started: 2023,
+		ended: 2024,
+		repositories: ["nuxt/nuxt", "nuxt/modules"],
+		cover: "timeline"
+	},
+	{
+		name: "h3",
+		title: "h3",
+		tagline: "The HTTP framework under Nitro: form data, headers and cookies on web responses.",
+		body: [
+			"Seven pull requests in July 2023: `readFormData`, `event.method` and `event.headers`, utilities to remove and clear response headers, `set-cookie` values split and appended correctly on web responses, and the readme split into sections with the missing helpers documented."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["h3"],
+		url: pulls("h3js/h3"),
+		homepage: "https://h3.dev",
+		started: 2023,
+		ended: 2023,
+		repositories: ["h3js/h3"],
+		cover: "timeline"
+	},
+	{
+		name: "unjs",
+		title: "UnJS",
+		tagline: "unstorage, db0, ofetch and unenv: batching, libSQL, retries and headers.",
+		body: [
+			"Experimental operation batching, a fix for R2's metadata and a test for the GitHub driver in unstorage, libSQL support in db0, `retryDelay` in ofetch, numeric headers preserved in unenv, and the organisation's pull request template."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["unstorage", "db0", "ofetch", "unenv"],
+		url: "https://github.com/search?q=org%3Aunjs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
+		homepage: "https://unjs.io",
+		started: 2023,
+		ended: 2023,
+		repositories: ["unjs/unstorage", "unjs/db0", "unjs/ofetch", "unjs/unenv", "unjs/.github"],
+		cover: "timeline"
+	},
+	{
+		name: "simulationcraft",
+		title: "SimulationCraft",
+		tagline:
+			"The World of Warcraft simulator: Rogue profiles and action lists for the Nighthold raid.",
+		body: [
+			"Five pull requests in January 2017, the oldest run of work on this shelf: Subtlety, Assassination and Outlaw gear profiles for the heroic and mythic Nighthold raid, a generator for them, and tweaks to the Rogue action priority lists."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "C++",
+		stack: ["SimulationCraft"],
+		url: pulls("simulationcraft/simc"),
+		homepage: "https://www.simulationcraft.org",
+		started: 2017,
+		ended: 2017,
+		repositories: ["simulationcraft/simc"],
+		cover: "timeline"
+	},
+	{
+		name: "proto",
+		title: "proto",
+		tagline: "The toolchain manager: the OCaml and Nushell plugins in its registry.",
+		body: [
+			"The plugins on the Tools shelf, entered in proto's registry so that `proto install ocaml` works out of the box, and their locators kept current as they moved to the TOML format."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "Rust",
+		stack: ["proto", "moon"],
+		url: pulls("moonrepo/proto"),
+		homepage: "https://moonrepo.dev/proto",
+		started: 2026,
+		repositories: ["moonrepo/proto"],
+		cover: "timeline"
+	},
+	{
+		name: "lucia",
+		title: "Lucia",
+		tagline: "The authentication library: an unstorage adapter, then expiry for it.",
+		body: [
+			"An adapter that stores Lucia's sessions in any unstorage driver, and time-to-live support for it."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Lucia", "unstorage"],
+		url: pulls("lucia-auth/lucia"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["lucia-auth/lucia"],
+		cover: "merge"
+	},
+	{
+		name: "vize",
+		title: "Vize",
+		tagline: "The Rust toolchain for Vue that compiles this site: two fixes.",
+		body: [
+			"The Vite plugin finds optimised Vue under Vite's configured cache directory, and the type checker emits the instantiation of a generic component as valid TSX. Both were found building this paper."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "Rust",
+		stack: ["Vize", "Vite", "Vue"],
+		url: pulls("ubugeeei-prod/vize"),
+		started: 2026,
+		repositories: ["ubugeeei-prod/vize"],
+		cover: "merge"
+	},
+	{
+		name: "use-wagmi",
+		title: "use-wagmi",
+		tagline: "Vue composables for Ethereum: its Nuxt module.",
+		body: [
+			"The Nuxt module rebuilt on the Nuxt module builder, and an option to leave chosen composables out of the auto-imports."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Vue", "Nuxt", "wagmi"],
+		url: pulls("unicape/use-wagmi"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["unicape/use-wagmi"],
+		cover: "merge"
+	},
+	{
+		name: "opam",
+		title: "opam repository",
+		tagline: "OCaml's package index: the releases of the NATS client.",
+		body: [
+			"`nats-client` and `nats-client-async`, the NATS client on the Tools shelf, released to OCaml's package repository."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "OCaml",
+		stack: ["OCaml", "opam"],
+		url: pulls("ocaml/opam-repository"),
+		started: 2026,
+		repositories: ["ocaml/opam-repository"],
+		cover: "merge"
+	},
+	{
+		name: "houdini",
+		title: "Houdini",
+		tagline: "The GraphQL client: support for the `using` keyword.",
+		body: [
+			"Houdini's compiler understands `using` declarations, TypeScript's explicit resource management."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Houdini", "GraphQL"],
+		url: pulls("HoudiniGraphql/houdini"),
+		started: 2024,
+		ended: 2024,
+		repositories: ["HoudiniGraphql/houdini"],
+		cover: "merge"
+	},
+	{
+		name: "vike",
+		title: "Vike",
+		tagline: "The Vite framework: a `defineVikeConfig` helper.",
+		body: ["A helper that types a Vike configuration file, the way `defineConfig` does for Vite."],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Vike", "Vite"],
+		url: pulls("vikejs/vike"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["vikejs/vike"],
+		cover: "merge"
+	},
+	{
+		name: "vercel-ai",
+		title: "Vercel AI SDK",
+		tagline: "The SDK's Nuxt example, streaming as it should.",
+		body: [
+			"The Nuxt example updated so that a response reaches the page as it is generated, rather than all at once."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Vercel AI", "Nuxt"],
+		url: pulls("vercel/ai"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["vercel/ai"],
+		cover: "merge"
+	},
+	{
+		name: "vueuse",
+		title: "VueUse",
+		tagline: "`useElementBounding` measures when the component mounts.",
+		body: [
+			"`useElementBounding` calls `update` on mount, so the first read is the element's real box rather than zeros."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["VueUse", "Vue"],
+		url: pulls("vueuse/vueuse"),
+		started: 2022,
+		ended: 2022,
+		repositories: ["vueuse/vueuse"],
+		cover: "merge"
+	},
+	{
+		name: "postgres-js",
+		title: "Postgres.js",
+		tagline: "The Postgres client for JavaScript: its export conditions.",
+		body: [
+			"An update to the package's export conditions, which decide the build a runtime is given."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "JavaScript",
+		stack: ["Postgres.js"],
+		url: pulls("porsager/postgres"),
+		started: 2024,
+		ended: 2024,
+		repositories: ["porsager/postgres"],
+		cover: "merge"
+	},
+	{
+		name: "graphql-hive",
+		title: "GraphQL Hive",
+		tagline: "The schema registry's console: `crypto` by its `node:` specifier.",
+		body: [
+			"`crypto` imported as `node:crypto`, which runtimes other than Node need in order to resolve it."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["GraphQL Hive"],
+		url: pulls("graphql-hive/console"),
+		started: 2024,
+		ended: 2024,
+		repositories: ["graphql-hive/console"],
+		cover: "merge"
+	},
+	{
+		name: "drizzle-docs",
+		title: "Drizzle ORM docs",
+		tagline: "Upserts with composite indexes, documented.",
+		body: [
+			"A section of the documentation on upserting into a table whose conflict target is a composite index."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "MDX",
+		stack: ["Drizzle ORM"],
+		url: pulls("drizzle-team/drizzle-orm-docs"),
+		started: 2024,
+		ended: 2024,
+		repositories: ["drizzle-team/drizzle-orm-docs"],
+		cover: "merge"
+	},
+	{
+		name: "nuxtr",
+		title: "Nuxtr",
+		tagline: "The Nuxt extension for VS Code: PostCSS as a style language.",
+		body: [
+			"PostCSS added to the style languages the extension offers when it scaffolds a component."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["VS Code", "Nuxt"],
+		url: pulls("nuxtrdev/nuxtr-vscode"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["nuxtrdev/nuxtr-vscode"],
+		cover: "merge"
+	},
+	{
+		name: "cardano-index",
+		title: "Cardano open source index",
+		tagline: "A list of Cardano's open source projects: formatting and readability.",
+		body: ["The index reformatted so that it reads as a list."],
+		points: [],
+		shelf: "upstream",
+		language: "Markdown",
+		stack: ["Cardano"],
+		url: pulls("micahkendall/cardano-opensource-index"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["micahkendall/cardano-opensource-index"],
+		cover: "merge"
+	},
+	{
+		name: "edge-logger",
+		title: "Baselime edge logger",
+		tagline: "A logger for edge runtimes: typos in the readme.",
+		body: ["Typos in the readme, fixed."],
+		points: [],
+		shelf: "upstream",
+		language: "Markdown",
+		stack: ["Baselime"],
+		url: pulls("baselime/edge-logger"),
+		started: 2024,
+		ended: 2024,
+		repositories: ["baselime/edge-logger"],
+		cover: "merge"
+	},
+	{
+		name: "firstcommit",
+		title: "firstcommit.is",
+		tagline: "Daniel Roe's first-commit finder: a typo in its description.",
+		body: ["A typo in the description the page gives to search engines and link previews, fixed."],
+		points: [],
+		shelf: "upstream",
+		language: "TypeScript",
+		stack: ["Nuxt"],
+		url: pulls("danielroe/firstcommit.is"),
+		started: 2023,
+		ended: 2023,
+		repositories: ["danielroe/firstcommit.is"],
+		cover: "merge"
+	},
+	{
+		name: "eslint-plugin-replyguy",
+		title: "eslint-plugin-replyguy",
+		tagline: "A joke ESLint plugin: a rule against classes.",
+		body: ["A `no-class` rule, for the reply guy who tells you not to use classes."],
+		points: [],
+		shelf: "upstream",
+		language: "JavaScript",
+		stack: ["ESLint"],
+		url: pulls("jlengstorf/eslint-plugin-replyguy"),
+		started: 2020,
+		ended: 2020,
+		repositories: ["jlengstorf/eslint-plugin-replyguy"],
+		cover: "merge"
+	},
+	{
+		name: "ream",
+		title: "Ream",
+		tagline: "A Vue framework from 2020: typos in the readme.",
+		body: ["Typos in the readme, fixed."],
+		points: [],
+		shelf: "upstream",
+		language: "Markdown",
+		stack: ["Vue"],
+		url: pulls("ream/ream"),
+		started: 2020,
+		ended: 2020,
+		repositories: ["ream/ream"],
+		cover: "merge"
+	},
+	{
+		name: "prisma",
+		title: "Prisma 1",
+		tagline: "The first Prisma: a correction to the introspection guide.",
+		body: ["A correction to the documentation of `prisma introspect`."],
+		points: [],
+		shelf: "upstream",
+		language: "MDX",
+		stack: ["Prisma"],
+		url: pulls("prisma/prisma1"),
+		started: 2019,
+		ended: 2019,
+		repositories: ["prisma/prisma1"],
+		cover: "merge"
+	},
+	{
+		name: "vue-docs",
+		title: "Vue.js documentation",
+		tagline: "The first pull request here: an example in the Vue 1 guide, corrected in 2015.",
+		body: [
+			"`this` for `self` in an example of the guide, in October 2015. The oldest merged pull request on the account."
+		],
+		points: [],
+		shelf: "upstream",
+		language: "Markdown",
+		stack: ["Vue"],
+		url: pulls("vuejs/v2.vuejs.org"),
+		started: 2015,
+		ended: 2015,
+		repositories: ["vuejs/v2.vuejs.org"],
+		cover: "merge"
 	}
 ]

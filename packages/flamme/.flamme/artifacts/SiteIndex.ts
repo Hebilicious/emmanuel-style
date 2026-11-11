@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "SiteIndex",
     "kind": "query",
-    "hash": "2967065df9e086276ca90613287edffb419ac3e09d1a84efc38460b4245c027d",
+    "hash": "ae6c7cc726274de02a1d2039c2768e3dce2fcac98575c2cd8a4a7b34b594fcbd",
     "raw": `query SiteIndex {
     posts {
         __typename
@@ -51,6 +51,7 @@ const artifact = {
         name
         practice
         record
+        roles
         summary
         title
         tools
@@ -357,6 +358,13 @@ const artifact = {
                             "visible": true,
                         },
 
+                        "roles": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "roles",
+                            "visible": true,
+                        },
+
                         "summary": {
                             "type": "String",
                             "modifiers": "String!",
@@ -439,6 +447,7 @@ export type SiteIndex$result = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -493,6 +502,7 @@ export type SiteIndex$unmasked = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 	readonly roles: ReadonlyArray<{

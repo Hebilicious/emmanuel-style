@@ -14,6 +14,7 @@
 		"cssforge": "tsx ./node_modules/@hebilicious/cssforge/src/cli.ts --prefix . --config ./cssforge.config.ts --mode all --css ./src/styles/cssforge.css --json ./.cssforge/output.json --ts ./.cssforge/output.ts",
 		"codegen": "flamme generate",
 		"images": "tsx ./scripts/optimize-images.ts",
+		"contributions": "tsx ./scripts/contributions.ts",
 		"fonts": "tsx ./scripts/fonts.ts"
 	},
 	"dependencies": {

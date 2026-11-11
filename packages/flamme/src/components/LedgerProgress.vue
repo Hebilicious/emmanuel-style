@@ -30,6 +30,9 @@ const props = defineProps<{
 	current: number
 }>()
 
+/** With more segments than this there is room for their numbers, not their names. */
+const DENSE_FROM = 9
+
 /** The segment being read: the last one that starts on or before the current page. */
 const active = computed(() => {
 	let found = 0
@@ -56,7 +59,10 @@ const to = (segment: Segment) => ({
 </script>
 
 <template>
-  <nav class="Progress" aria-label="The ledger, screen by screen">
+  <nav
+    class="Progress"
+    :class="{ Dense: segments.length > DENSE_FROM }"
+    aria-label="The ledger, screen by screen">
     <ol class="Track">
       <li
         v-for="(segment, index) of segments"
@@ -168,6 +174,20 @@ const to = (segment: Segment) => ({
   background: var(--accent);
   box-shadow: 0 0 0.6rem color-mix(in oklab, var(--accent) 50%, transparent);
   transition: width 420ms cubic-bezier(0.22, 0.6, 0.36, 1);
+}
+
+/* A long ledger: the numbers, not the names; the page itself names the role. */
+.Dense .Label {
+  display: none;
+}
+
+.Dense .Slot {
+  min-width: 1.9rem;
+}
+
+.Dense .Segment {
+  justify-content: center;
+  padding-inline: 0.2rem;
 }
 
 /* A phone has room for the numbers, not the names. */

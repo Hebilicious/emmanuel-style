@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Skills",
     "kind": "query",
-    "hash": "edd416bf35b50109fb3828cf30f88f46587a3a7c63301ab71bbb8924d0c3c112",
+    "hash": "5f7fe0e2bdbf4d9a72f58ad76dcd2d9c06d1734dbaf97e62a6e4b00123a02855",
     "raw": `query Skills {
     skills {
         __typename
@@ -14,6 +14,7 @@ const artifact = {
         name
         practice
         record
+        roles
         summary
         title
         tools
@@ -75,6 +76,13 @@ const artifact = {
                             "visible": true,
                         },
 
+                        "roles": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "roles",
+                            "visible": true,
+                        },
+
                         "summary": {
                             "type": "String",
                             "modifiers": "String!",
@@ -131,6 +139,7 @@ export type Skills$result = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
@@ -148,6 +157,7 @@ export type Skills$unmasked = {
 		readonly record: ReadonlyArray<string>;
 		readonly practice: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
+		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
 	}> | null;
 };

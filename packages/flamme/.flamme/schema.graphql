@@ -122,6 +122,7 @@ type Role {
   end: String
   highlights: [String!]!
   id: ID!
+  library: [String!]!
   location: String!
   stack: [String!]!
   start: String!
@@ -163,6 +164,7 @@ type Skill {
   name: ID!
   practice: [String!]!
   record: [String!]!
+  roles: [String!]!
   summary: String!
   title: String!
   tools: [String!]!
