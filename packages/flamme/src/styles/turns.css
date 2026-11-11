@@ -3,19 +3,27 @@
  *
  * A spread is two leaves, `leaf-left` and `leaf-right`, each a View Transition
  * group of its own (the pager names them; on a phone there is one, `leaf-single`).
- * A turn is what a newspaper does under the hand:
+ * A turn is a fold travelling across the paper, the way a page is turned by
+ * pulling its edge over:
  *
- *   forward  the right-hand page lifts off the spread and folds over the spine.
- *            For the first half of the turn it rises, darkening as it tips away
- *            from the light; at the spine it shows its back, which is the next
- *            left-hand page, and that settles flat over the old one. The next
- *            right-hand page has been underneath all along, in the shadow of the
- *            lifted leaf until the light comes back to it.
- *   back     the same, mirrored: the left-hand page lifts and folds to the right.
+ *   forward  the fold starts at the outer edge of the right-hand page and runs to
+ *            the spine. Behind it the next right-hand page is uncovered. Ahead of
+ *            it the part of the leaf already turned lies flat over the spread, as
+ *            wide as the page is turned: it is the leaf's back, which is the next
+ *            left-hand page, and it comes to rest over the old one.
+ *   back     the same, mirrored: the fold runs from the outer edge of the
+ *            left-hand page to the spine, and the leaf's back is the previous
+ *            right-hand page.
  *
- * On a phone a page is a leaf of a book: going forward it lifts away about its
- * left edge and shows the next page under it; going back the previous page comes
- * down over the one being read.
+ * On a phone the fold crosses the whole page: going forward the page being read
+ * is pulled away to the left, going back the previous one is laid over it.
+ *
+ * Each of those is two things moving in step: a page cut back to the fold
+ * (`clip-path`), and the leaf's back sliding in as fast again as the fold moves
+ * (`transform`), cut to what has been turned. Both run on one clock and one curve
+ * (`--turn-duration` and `--turn-ease`, which `shell/turns.ts` sets), so they stay
+ * in step. The light on the fold, its shadows and, on a phone, the back of the
+ * leaf are painted by the press on its canvas, on the same clock.
  *
  * `data-turn` on the root says which way; `turns.ts` sets it for the length of the
  * transition. The rest of the shell (the bar, the dock) does not move: the root
@@ -23,19 +31,10 @@
  */
 
 :root {
-  --turn-duration: 720ms;
+  --turn-duration: 640ms;
+  --turn-ease: cubic-bezier(0.33, 0.06, 0.18, 1);
   --turn-lift: cubic-bezier(0.42, 0, 0.78, 0.6);
   --turn-land: cubic-bezier(0.22, 0.6, 0.36, 1);
-  --turn-depth: 3600px;
-}
-
-:root[data-turn-kind="route"] {
-  --turn-duration: 820ms;
-}
-
-/* Pages riffled: the wheel or the keys asked for several, so each turn is quicker. */
-:root[data-turn-quick] {
-  --turn-duration: 380ms;
 }
 
 :root[data-turn]::view-transition-old(root),
@@ -44,11 +43,11 @@
   mix-blend-mode: normal;
 }
 
-/* The leaves are painted over the shell, and each pair keeps its own stacking. */
+/* The leaves do not move as boxes: only what is drawn in them does. */
 :root[data-turn]::view-transition-group(leaf-left),
 :root[data-turn]::view-transition-group(leaf-right),
 :root[data-turn]::view-transition-group(leaf-single) {
-  animation-duration: var(--turn-duration);
+  animation: none;
 }
 
 :root[data-turn]::view-transition-image-pair(leaf-left),
@@ -57,6 +56,7 @@
   isolation: isolate;
 }
 
+/* By default a page is simply there: the old one until the turn ends, the new one from its start. */
 :root[data-turn]::view-transition-old(leaf-left),
 :root[data-turn]::view-transition-new(leaf-left),
 :root[data-turn]::view-transition-old(leaf-right),
@@ -64,255 +64,157 @@
 :root[data-turn]::view-transition-old(leaf-single),
 :root[data-turn]::view-transition-new(leaf-single) {
   mix-blend-mode: normal;
-  backface-visibility: hidden;
-  animation-duration: var(--turn-duration);
-  animation-fill-mode: both;
+  animation: leaf-stay var(--turn-duration) linear both;
 }
 
 /* ---------------------------------------------------------------- forward */
 
-/* The lifting leaf is above everything else in the turn. */
-:root[data-turn="forward"]::view-transition-group(leaf-right) {
+/* The leaf's back crosses from the right-hand page, so its group is on top. */
+:root[data-turn="forward"]::view-transition-group(leaf-left) {
   z-index: 3;
 }
 
-:root[data-turn="forward"]::view-transition-group(leaf-left) {
+:root[data-turn="forward"]::view-transition-group(leaf-right) {
   z-index: 2;
 }
 
+/* The page being turned, cut back to the fold; the next one is under it. */
 :root[data-turn="forward"]::view-transition-old(leaf-right) {
   z-index: 2;
-  transform-origin: left center;
-  animation-name: leaf-rise-from-right;
+  animation: fold-away-left var(--turn-duration) var(--turn-ease) both;
 }
 
 :root[data-turn="forward"]::view-transition-new(leaf-right) {
   z-index: 1;
-  animation-name: leaf-in-shadow;
-  animation-timing-function: var(--turn-land);
 }
 
 :root[data-turn="forward"]::view-transition-old(leaf-left) {
   z-index: 1;
-  animation-name: leaf-hold;
-  animation-timing-function: linear;
 }
 
+/* The leaf's back: the next left-hand page, coming over from the right. */
 :root[data-turn="forward"]::view-transition-new(leaf-left) {
   z-index: 2;
-  transform-origin: right center;
-  animation-name: leaf-fall-to-left;
+  animation: back-from-right var(--turn-duration) var(--turn-ease) both;
 }
 
 /* ------------------------------------------------------------------- back */
 
-:root[data-turn="back"]::view-transition-group(leaf-left) {
+:root[data-turn="back"]::view-transition-group(leaf-right) {
   z-index: 3;
 }
 
-:root[data-turn="back"]::view-transition-group(leaf-right) {
+:root[data-turn="back"]::view-transition-group(leaf-left) {
   z-index: 2;
 }
 
 :root[data-turn="back"]::view-transition-old(leaf-left) {
   z-index: 2;
-  transform-origin: right center;
-  animation-name: leaf-rise-from-left;
+  animation: fold-away-right var(--turn-duration) var(--turn-ease) both;
 }
 
 :root[data-turn="back"]::view-transition-new(leaf-left) {
   z-index: 1;
-  animation-name: leaf-in-shadow;
-  animation-timing-function: var(--turn-land);
 }
 
 :root[data-turn="back"]::view-transition-old(leaf-right) {
   z-index: 1;
-  animation-name: leaf-hold;
-  animation-timing-function: linear;
 }
 
 :root[data-turn="back"]::view-transition-new(leaf-right) {
   z-index: 2;
-  transform-origin: left center;
-  animation-name: leaf-fall-to-right;
+  animation: back-from-left var(--turn-duration) var(--turn-ease) both;
 }
 
 /* --------------------------------------------------------------- a phone */
 
+/* Forward: the page is pulled away to the left, and the next is under it. */
 :root[data-turn="forward"]::view-transition-old(leaf-single) {
   z-index: 2;
-  transform-origin: left center;
-  animation-name: leaf-lift-away;
-  animation-timing-function: var(--turn-lift);
+  animation: fold-away-left var(--turn-duration) var(--turn-ease) both;
 }
 
 :root[data-turn="forward"]::view-transition-new(leaf-single) {
   z-index: 1;
-  animation-name: leaf-in-shadow;
-  animation-timing-function: var(--turn-land);
 }
 
+/* Back: the previous page is laid over the one being read, from the left. */
 :root[data-turn="back"]::view-transition-old(leaf-single) {
   z-index: 1;
-  animation-name: leaf-go-under;
-  animation-timing-function: linear;
 }
 
 :root[data-turn="back"]::view-transition-new(leaf-single) {
   z-index: 2;
-  transform-origin: left center;
-  animation-name: leaf-come-down;
-  animation-timing-function: var(--turn-land);
+  animation: lay-from-left var(--turn-duration) var(--turn-ease) both;
 }
 
 /* ------------------------------------------------------------- keyframes */
 
+@keyframes leaf-stay {
+  from,
+  to {
+    opacity: 1;
+  }
+}
+
+/* A page cut back to a fold that runs from its right edge to its left. */
+@keyframes fold-away-left {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes fold-away-right {
+  from {
+    clip-path: inset(0 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
 /*
- * The right-hand leaf rises about the spine. It accelerates as it lifts (the hand
- * pulls it over), and darkens as it turns its face away from the light. At the
- * spine it is edge-on and disappears; its back is the next left-hand page.
+ * The leaf's back. It starts two pages' width to the right of where it will lie
+ * and moves twice as fast as the fold, showing as much as has been turned, so that
+ * its edge is always on the fold.
+ *
+ * It is moved with `left`, not with a transform. A transform is animated by the
+ * compositor and a clip by the page, on two clocks, and for a frame or two the
+ * leaf's back was not where its cut was. `left`, the clips and the press's canvas
+ * are all drawn by the page, in the same frame.
  */
-@keyframes leaf-rise-from-right {
-  0% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    animation-timing-function: var(--turn-lift);
+@keyframes back-from-right {
+  from {
+    left: 200%;
+    clip-path: inset(0 100% 0 0);
   }
-  50% {
-    transform: perspective(var(--turn-depth)) rotateY(-90deg);
-    filter: brightness(0.62);
-    opacity: 1;
-  }
-  50.01%,
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(-90deg);
-    opacity: 0;
+  to {
+    left: 0;
+    clip-path: inset(0 0 0 0);
   }
 }
 
-/* The back of the turning leaf: the next left-hand page, coming down flat. */
-@keyframes leaf-fall-to-left {
-  0%,
-  49.99% {
-    transform: perspective(var(--turn-depth)) rotateY(90deg);
-    opacity: 0;
+@keyframes back-from-left {
+  from {
+    left: -200%;
+    clip-path: inset(0 0 0 100%);
   }
-  50% {
-    transform: perspective(var(--turn-depth)) rotateY(90deg);
-    filter: brightness(0.7);
-    opacity: 1;
-    animation-timing-function: var(--turn-land);
-  }
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    opacity: 1;
+  to {
+    left: 0;
+    clip-path: inset(0 0 0 0);
   }
 }
 
-@keyframes leaf-rise-from-left {
-  0% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    animation-timing-function: var(--turn-lift);
+/* A phone's previous page, uncovered from its left edge as the fold crosses. */
+@keyframes lay-from-left {
+  from {
+    clip-path: inset(0 100% 0 0);
   }
-  50% {
-    transform: perspective(var(--turn-depth)) rotateY(90deg);
-    filter: brightness(0.62);
-    opacity: 1;
-  }
-  50.01%,
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(90deg);
-    opacity: 0;
-  }
-}
-
-@keyframes leaf-fall-to-right {
-  0%,
-  49.99% {
-    transform: perspective(var(--turn-depth)) rotateY(-90deg);
-    opacity: 0;
-  }
-  50% {
-    transform: perspective(var(--turn-depth)) rotateY(-90deg);
-    filter: brightness(0.7);
-    opacity: 1;
-    animation-timing-function: var(--turn-land);
-  }
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    opacity: 1;
-  }
-}
-
-/* The page underneath, in the shadow of the lifted leaf until the light returns. */
-@keyframes leaf-in-shadow {
-  0% {
-    filter: brightness(0.78);
-  }
-  100% {
-    filter: brightness(1);
-  }
-}
-
-/* The page that stays put until the turning leaf covers it. */
-@keyframes leaf-hold {
-  0%,
-  99.99% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-/* A phone's page lifting away about its left edge, showing the next under it. */
-@keyframes leaf-lift-away {
-  0% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    opacity: 1;
-  }
-  80% {
-    opacity: 1;
-  }
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(-95deg);
-    filter: brightness(0.55);
-    opacity: 0;
-  }
-}
-
-@keyframes leaf-come-down {
-  0% {
-    transform: perspective(var(--turn-depth)) rotateY(-95deg);
-    filter: brightness(0.55);
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    opacity: 1;
-  }
-}
-
-@keyframes leaf-go-under {
-  0% {
-    filter: brightness(1);
-    opacity: 1;
-  }
-  99.99% {
-    filter: brightness(0.78);
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
+  to {
+    clip-path: inset(0 0 0 0);
   }
 }
 
@@ -415,7 +317,7 @@
 
 :root[data-turn-kind="theme"]::view-transition-new(root) {
   z-index: 2;
-  animation: theme-flood 900ms cubic-bezier(0.45, 0.1, 0.35, 1) both;
+  animation: theme-flood var(--turn-duration) cubic-bezier(0.45, 0.1, 0.35, 1) both;
 }
 
 @keyframes theme-flood {
@@ -451,95 +353,204 @@
 /* ------------------------------------------------------------------ zoom */
 
 /*
- * A project opens from its card: the card is lifted off the page and grows into
+ * A project opens from its card: the card is lifted off the page and unfolds into
  * the dialog, its plate travelling to the plate's place in the dialog, while the
- * page behind dims. Closing sets it back down where it came from. With no card to
- * come from (a link straight to `?open=`) the dialog rises from the middle of the
- * page; with no card to return to, it sinks back into it.
+ * page behind dims. The dialog is not scaled up from the card: it is shown at its
+ * own size from the first frame, through a frame that grows, the way a folded
+ * sheet is opened, so its text is never stretched. Closing folds it back down to
+ * where it came from. With no card to come from (a link straight to `?open=`) the
+ * dialog rises from the middle of the page; with none to return to, it sinks.
+ *
+ * A figure opens the same way, its plate growing into the viewer.
  */
 :root[data-turn-kind="zoom"] {
-  --zoom-duration: 620ms;
-  --zoom-ease: cubic-bezier(0.32, 0.72, 0.24, 1);
+  --zoom-ease: cubic-bezier(0.2, 0.85, 0.2, 1);
 }
 
 :root[data-turn-kind="zoom"]::view-transition-group(project),
-:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
-  animation-duration: var(--zoom-duration);
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-group(figure) {
+  animation-duration: var(--turn-duration);
   animation-timing-function: var(--zoom-ease);
 }
 
-/* Both snapshots fill the box as it grows, rather than keeping their own height. */
+/*
+ * What is lifted is above the page, and above the dimming behind it. The browser
+ * orders the groups by where their elements were painted before the change, and
+ * the card was painted inside the left-hand leaf: left alone, the right-hand leaf
+ * and the dimming were drawn over the opening dialog.
+ */
+:root[data-turn-kind="zoom"]::view-transition-group(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-group(figure-backdrop) {
+  z-index: 10;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project),
+:root[data-turn-kind="zoom"]::view-transition-group(figure) {
+  z-index: 11;
+}
+
+/* The sheet is lifted off the page: it carries a shadow as long as it is in the air. */
+:root[data-turn-kind="zoom"]::view-transition-group(project) {
+  overflow: clip;
+  box-shadow: 0 0 0 var(--spacing-size-hairline) var(--accent), 0 2.5rem 5rem -1rem rgb(0 0 0 / 70%);
+}
+
 :root[data-turn-kind="zoom"]::view-transition-old(project),
 :root[data-turn-kind="zoom"]::view-transition-new(project),
 :root[data-turn-kind="zoom"]::view-transition-old(project-plate),
 :root[data-turn-kind="zoom"]::view-transition-new(project-plate) {
+  width: 100%;
   height: 100%;
-  object-fit: cover;
   overflow: clip;
-  animation-duration: var(--zoom-duration);
-  animation-timing-function: var(--zoom-ease);
-}
-
-:root[data-turn-kind="zoom"]::view-transition-old(project) {
-  animation-name: zoom-card-out;
-}
-
-:root[data-turn-kind="zoom"]::view-transition-new(project) {
-  animation-name: zoom-card-in;
-}
-
-:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
-  z-index: 2;
-}
-
-:root[data-turn-kind="zoom"]::view-transition-new(project):only-child {
-  animation-name: zoom-rise;
-}
-
-:root[data-turn-kind="zoom"]::view-transition-old(project):only-child {
-  animation-name: zoom-sink;
-}
-
-:root[data-turn-kind="zoom"]::view-transition-new(project-backdrop),
-:root[data-turn-kind="zoom"]::view-transition-old(project-backdrop) {
-  animation-duration: calc(var(--zoom-duration) * 0.8);
+  animation-duration: var(--turn-duration);
   animation-timing-function: linear;
 }
 
-/* One project for the next: the old one slides off, the next comes in after it. */
-:root[data-turn="swap"]::view-transition-group(project) {
+/* The plates fill their frame as it changes shape. */
+:root[data-turn-kind="zoom"]::view-transition-old(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-new(project-plate) {
+  object-fit: cover;
+}
+
+/* The card and the dialog keep their own size and are seen through the frame, from its top left. */
+:root[data-turn-kind="zoom"]::view-transition-old(project),
+:root[data-turn-kind="zoom"]::view-transition-new(project) {
+  object-fit: none;
+  object-position: 0 0;
+}
+
+:root[data-turn="open"]::view-transition-old(project) {
+  animation-name: zoom-out-early;
+}
+
+:root[data-turn="open"]::view-transition-new(project) {
+  animation-name: zoom-in-early;
+}
+
+:root[data-turn="close"]::view-transition-old(project) {
+  animation-name: zoom-out-late;
+}
+
+:root[data-turn="close"]::view-transition-new(project) {
+  animation-name: zoom-in-late;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
+  z-index: 12;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project):only-child {
+  object-fit: fill;
+  animation: zoom-rise var(--turn-duration) var(--zoom-ease) both;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project):only-child {
+  object-fit: fill;
+  animation: zoom-sink calc(var(--turn-duration) * 0.6) var(--turn-lift) both;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-old(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-new(figure-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-old(figure-backdrop) {
+  animation-duration: calc(var(--turn-duration) * 0.7);
+  animation-timing-function: linear;
+}
+
+/* A figure: the same picture at both ends, so it only has to grow. */
+:root[data-turn-kind="zoom"]::view-transition-old(figure),
+:root[data-turn-kind="zoom"]::view-transition-new(figure) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: none;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(figure):not(:only-child) {
+  display: none;
+}
+
+/*
+ * One project for another: the sheet stays where it is and its contents change the
+ * way a page does, the old one leaving toward the side it came from. The next
+ * project comes in from the right, the previous from the left.
+ */
+:root[data-turn^="swap"]::view-transition-group(project) {
+  animation: none;
+  box-shadow: none;
+}
+
+:root[data-turn^="swap"]::view-transition-old(project),
+:root[data-turn^="swap"]::view-transition-new(project) {
+  object-fit: fill;
+}
+
+/* The dimming behind the sheet does not change in a swap, so it is shown as it is. */
+:root[data-turn^="swap"]::view-transition-old(project-backdrop) {
+  display: none;
+}
+
+:root[data-turn^="swap"]::view-transition-new(project-backdrop) {
   animation: none;
 }
 
 :root[data-turn="swap"]::view-transition-old(project) {
-  animation: swap-out 320ms var(--turn-lift) both;
+  animation: swap-out-left 240ms var(--turn-lift) both;
 }
 
 :root[data-turn="swap"]::view-transition-new(project) {
-  animation: swap-in 420ms var(--turn-land) both;
+  animation: swap-in-right 460ms var(--zoom-ease) both;
 }
 
-:root[data-turn="swap"]::view-transition-old(project-plate),
-:root[data-turn="swap"]::view-transition-new(project-plate) {
-  animation-duration: 420ms;
+:root[data-turn="swap-back"]::view-transition-old(project) {
+  animation: swap-out-right 240ms var(--turn-lift) both;
 }
 
-@keyframes zoom-card-out {
+:root[data-turn="swap-back"]::view-transition-new(project) {
+  animation: swap-in-left 460ms var(--zoom-ease) both;
+}
+
+:root[data-turn^="swap"]::view-transition-old(project-plate),
+:root[data-turn^="swap"]::view-transition-new(project-plate) {
+  animation-duration: 460ms;
+}
+
+@keyframes zoom-out-early {
   0% {
     opacity: 1;
   }
-  32%,
+  35%,
   100% {
     opacity: 0;
   }
 }
 
-@keyframes zoom-card-in {
-  0%,
-  12% {
+@keyframes zoom-in-early {
+  0% {
     opacity: 0;
   }
-  60%,
+  45%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-out-late {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-in-late {
+  0%,
+  60% {
+    opacity: 0;
+  }
   100% {
     opacity: 1;
   }
@@ -548,29 +559,48 @@
 @keyframes zoom-rise {
   from {
     opacity: 0;
-    transform: translateY(3%) scale(0.94);
+    transform: translateY(2.5%) scale(0.96);
   }
 }
 
 @keyframes zoom-sink {
   to {
     opacity: 0;
-    transform: translateY(3%) scale(0.94);
+    transform: translateY(2.5%) scale(0.96);
   }
 }
 
-@keyframes swap-out {
+@keyframes swap-out-left {
   to {
     opacity: 0;
-    transform: translateX(-4%);
+    transform: translateX(-3rem);
   }
 }
 
-@keyframes swap-in {
-  0%,
-  30% {
+@keyframes swap-out-right {
+  to {
     opacity: 0;
-    transform: translateX(4%);
+    transform: translateX(3rem);
+  }
+}
+
+@keyframes swap-in-right {
+  0%,
+  40% {
+    opacity: 0;
+    transform: translateX(4rem);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes swap-in-left {
+  0%,
+  40% {
+    opacity: 0;
+    transform: translateX(-4rem);
   }
   100% {
     opacity: 1;

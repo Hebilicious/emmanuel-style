@@ -19,7 +19,8 @@
  */
 import { nextTick, onBeforeUnmount, watch } from "vue"
 import type { Router } from "vue-router"
-import { cardOf, nameCard, openOf, shown } from "./project.js"
+import { figureOf, namePlate, plateOf } from "./figure.js"
+import { cardOf, nameCard, openOf, shown, swapDirection } from "./project.js"
 import type { Shell } from "./shell.js"
 import { directionOf, turn, zoom } from "./turns.js"
 
@@ -48,7 +49,12 @@ export const useRouteTurns = (shell: Shell, router: Router): void => {
 	const remove = router.beforeResolve((to, from) => {
 		// The first navigation renders the page; there is nothing to turn from.
 		if (from.matched.length === 0) return
-		if (to.path === from.path) return zoomFor(openOf(from.query), openOf(to.query))
+		if (to.path === from.path) {
+			return (
+				figureFor(figureOf(from.query), figureOf(to.query)) ??
+				zoomFor(openOf(from.query), openOf(to.query))
+			)
+		}
 		return new Promise<void>((captured) => {
 			const since = shell.layouts
 			void turn(
@@ -65,13 +71,41 @@ export const useRouteTurns = (shell: Shell, router: Router): void => {
 	onBeforeUnmount(remove)
 
 	/**
+	 * A figure opening, or closing with the back button (a key or a click closes it
+	 * through `closeFigure`, and by the time the address follows it is already shut).
+	 */
+	const figureFor = (before: string | null, after: string | null): Promise<void> | undefined => {
+		if (before === after) return undefined
+		if (after === null && shell.dialog?.kind !== "zoom") return undefined
+		const plate = plateOf(after ?? before ?? "")
+		return new Promise<void>((captured) => {
+			if (after !== null) namePlate(plate, true)
+			void zoom(after === null ? "close" : "open", async () => {
+				namePlate(plate, false)
+				captured()
+				// The article opens or shuts the viewer when it sees the address change.
+				await nextTick()
+				await nextTick()
+				if (after === null) namePlate(plate, true)
+			}).then(() => namePlate(plate, false))
+		})
+	}
+
+	/**
 	 * A project opening, closing, or giving way to the next, as a zoom. The old
 	 * screen is captured with the card named, the new one with the dialog named; on
 	 * the way back, the dialog first and the card it returns to after.
 	 */
 	const zoomFor = (before: string | null, after: string | null): Promise<void> | undefined => {
 		if (before === after) return undefined
-		const mode = before === null ? "open" : after === null ? "close" : "swap"
+		const mode =
+			before === null
+				? "open"
+				: after === null
+					? "close"
+					: swapDirection() === "next"
+						? "swap"
+						: "swap-back"
 		return new Promise<void>((captured) => {
 			const card = mode === "open" && after !== null ? cardOf(after) : null
 			nameCard(card, true)

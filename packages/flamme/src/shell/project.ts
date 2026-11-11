@@ -73,9 +73,18 @@ export const closeProject = async (router: Router): Promise<void> => {
 }
 
 /** Another project in the same dialog (`n`, `p`): replaced, so back still closes the dialog. */
-export const swapProject = async (router: Router, name: string): Promise<void> => {
+export const swapProject = async (
+	router: Router,
+	name: string,
+	direction: "next" | "previous" = "next"
+): Promise<void> => {
+	swapping = direction
 	await router.replace(queryWith(router, name))
 }
+
+/** Which way the last swap went, for the transition: the next project comes in from the right. */
+let swapping: "next" | "previous" = "next"
+export const swapDirection = (): "next" | "previous" => swapping
 
 /* ------------------------------------------------------- for the transition */
 
@@ -107,8 +116,13 @@ export const shown = (shell: Shell, name: string | null): Promise<void> =>
 
 /** The card of a project on the screen being read, the copy of it that shows, if there is one. */
 export const cardOf = (name: string): HTMLElement | null => {
-	const card = document.querySelector<HTMLElement>(`.Page [data-project="${CSS.escape(name)}"]`)
-	return card === null ? null : visibleTwin(card)
+	const selector = `.Page [data-project="${CSS.escape(name)}"]`
+	for (const card of document.querySelectorAll<HTMLElement>(selector)) {
+		// The pager's measuring pass has a copy of every card too; it is never drawn.
+		if (card.closest("[data-measure]") !== null) continue
+		return visibleTwin(card)
+	}
+	return null
 }
 
 /** Name a card (and its plate) for the zoom, or take the names off again. */

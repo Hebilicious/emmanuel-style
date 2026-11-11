@@ -176,6 +176,7 @@ watch(
           	{ "is-lede": item.lede }
           ]'
           :style="figureStyle(item)"
+          :data-figure="item.figure ?? undefined"
           @click="item.figure !== null ? zoom(item.figure) : undefined"
           v-html="item.block.html">
         </div>

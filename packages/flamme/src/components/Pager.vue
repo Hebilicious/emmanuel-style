@@ -958,50 +958,6 @@ const vars = computed(() => ({
 }
 
 /*
- * A page arrives still wet: its blocks are set faint and soft and the ink settles
- * in the half second after. It is a transition from `@starting-style`, so it runs
- * once for each block as its page is put on show, and the words can be read from
- * the first frame.
- */
-.Spread .Slice {
-  transition: opacity 520ms linear 80ms, filter 520ms linear 80ms;
-}
-
-@starting-style {
-  .Spread .Slice {
-    opacity: 0.35;
-    filter: blur(2px) contrast(1.4);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .Spread .Slice {
-    transition: none;
-  }
-}
-
-.SliceBody {
-  display: flow-root;
-}
-
-.Slice.Grow {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
-
-.Slice.Grow > .SliceBody,
-.Slice.Grow > .SliceBody > .Fit {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-}
-
-.Slice.Grow > .SliceBody > .Fit > :deep(*) {
-  flex: 1 1 auto;
-}
-
-/*
  * Notes belong to the page that cites them: pushed to the foot of the column by
  * the margin, behind a short rule, in the small face a printed page sets them in.
  */

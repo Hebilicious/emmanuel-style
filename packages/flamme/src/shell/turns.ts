@@ -25,8 +25,8 @@ import { createMachine, type Machine } from "./machine.js"
 
 export type Direction = "forward" | "back"
 export type TurnKind = "page" | "route" | "zoom" | "theme"
-/** What a zoom does: open a card into its dialog, close it back, or swap one project for the next. */
-export type Zoom = "open" | "close" | "swap"
+/** What a zoom does: open a card into its dialog, close it back, or swap one project for the next or the one before. */
+export type Zoom = "open" | "close" | "swap" | "swap-back"
 
 interface ViewTransitionLike {
 	readonly finished: Promise<void>
@@ -84,13 +84,92 @@ export const turning: Machine<TurnState, TurnEvent> = createMachine<TurnState, T
 	theme: { START: start, END: end }
 })
 
+/**
+ * How long each kind of turn takes, and how it is paced. Kept here, and handed to
+ * the stylesheet as custom properties when a turn starts, so that the press, which
+ * draws the fold's shading on its canvas, runs on exactly the same clock as the
+ * leaves the browser is moving.
+ */
+export const TURN_MS: Readonly<Record<TurnKind, number>> = {
+	page: 640,
+	route: 780,
+	zoom: 560,
+	theme: 900
+}
+/** A turn with more waiting behind it. */
+export const QUICK_MS = 300
+/** A page is pulled over quickly and laid down gently. */
+export const TURN_EASE = [0.33, 0.06, 0.18, 1] as const
+
+/**
+ * A CSS `cubic-bezier(x1, y1, x2, y2)` as a function of time, 0 to 1: the same
+ * curve the stylesheet is given, solved the way a browser solves it.
+ */
+export const bezier = (x1: number, y1: number, x2: number, y2: number) => {
+	const curve = (a: number, b: number, t: number) =>
+		3 * a * (1 - t) * (1 - t) * t + 3 * b * (1 - t) * t * t + t * t * t
+	return (x: number): number => {
+		if (x <= 0) return 0
+		if (x >= 1) return 1
+		let low = 0
+		let high = 1
+		for (let step = 0; step < 24; step += 1) {
+			const middle = (low + high) / 2
+			if (curve(x1, x2, middle) < x) low = middle
+			else high = middle
+		}
+		return curve(y1, y2, (low + high) / 2)
+	}
+}
+const pace = bezier(...TURN_EASE)
+
 /** The turn that is running, for whoever draws along with it (the press). */
 export interface TurnInfo {
 	readonly kind: TurnKind
 	readonly direction: Direction | Zoom
 	readonly quick: boolean
-	/** `performance.now()` when it started. */
-	readonly at: number
+	/** How long it lasts, in milliseconds. */
+	readonly duration: number
+	/**
+	 * `performance.now()` when the leaves started to move, or `null` while the new
+	 * page is still being laid out and nothing moves yet.
+	 */
+	at: number | null
+	/** The browser's own animation of a leaf, once it has one: the clock to follow. */
+	leaf?: Animation | null
+}
+
+/** The keyframes that move a leaf (`styles/turns.css`): any of them tells the time. */
+const LEAF_KEYFRAMES = new Set([
+	"fold-away-left",
+	"fold-away-right",
+	"back-from-right",
+	"back-from-left",
+	"lay-from-left"
+])
+
+/**
+ * How far along the running turn is, 0 to 1, as the stylesheet's easing paces it.
+ *
+ * The browser starts the leaves a frame or more after it says the transition is
+ * ready, so the time is read from its own animation of a leaf when there is one:
+ * the shading the press draws is then on the fold, not near it.
+ */
+export const turnProgress = (turn: TurnInfo, now: number): number => {
+	if (turn.at === null) return 0
+	if (turn.leaf === undefined || turn.leaf === null) {
+		turn.leaf =
+			document
+				.getAnimations()
+				.find(
+					(animation) =>
+						animation instanceof CSSAnimation && LEAF_KEYFRAMES.has(animation.animationName)
+				) ?? null
+	}
+	const time = turn.leaf?.currentTime
+	if (typeof time === "number") return pace(time / turn.duration)
+	// No leaf is moving yet: the fold has not started.
+	return turn.leaf === null && now - turn.at < 250 ? 0 : pace((now - turn.at) / turn.duration)
 }
 let info: TurnInfo | null = null
 export const currentTurn = (): TurnInfo | null => (turning.state === "idle" ? null : info)
@@ -98,6 +177,11 @@ export const currentTurn = (): TurnInfo | null => (turning.state === "idle" ? nu
 /** The root element says what is turning, for `styles/turns.css` to key on. */
 const mark = (running: TurnInfo | null): void => {
 	const data = document.documentElement.dataset
+	const style = document.documentElement.style
+	if (running !== null) {
+		style.setProperty("--turn-duration", `${running.duration}ms`)
+		style.setProperty("--turn-ease", `cubic-bezier(${TURN_EASE.join(", ")})`)
+	}
 	if (running === null) {
 		delete data["turn"]
 		delete data["turnKind"]
@@ -129,12 +213,24 @@ export const turn = async (
 		return
 	}
 	const token = {}
-	info = { kind, direction, quick, at: performance.now() }
+	const running: TurnInfo = {
+		kind,
+		direction,
+		quick,
+		duration: quick ? QUICK_MS : TURN_MS[kind],
+		at: null
+	}
+	info = running
 	mark(info)
 	turning.send({ type: "START", kind, direction, quick, owner: token })
 	const transition = doc.startViewTransition(update)
+	// The leaves start to move when the new page has been captured, not before.
 	// A transition overtaken by the next one rejects these; the page is updated either way.
-	transition.ready.catch(() => undefined)
+	transition.ready
+		.then(() => {
+			running.at = performance.now()
+		})
+		.catch(() => undefined)
 	transition.updateCallbackDone.catch(() => undefined)
 	try {
 		await transition.finished

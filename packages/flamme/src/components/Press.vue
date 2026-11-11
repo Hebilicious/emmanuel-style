@@ -19,15 +19,12 @@ import { deckOf } from "../press/deck.js"
 import type { Ink } from "../press/ink.js"
 import { cursorBox, shown } from "../shell/cursor.js"
 import { useShell } from "../shell/shell.js"
-import { currentTurn, reducedMotion } from "../shell/turns.js"
+import { currentTurn, reducedMotion, turnProgress } from "../shell/turns.js"
 
 const shell = useShell()
 const canvas = ref<HTMLCanvasElement | null>(null)
 const inkCanvas = ref<HTMLCanvasElement | null>(null)
 
-/** How long each kind of turn lasts, as `styles/turns.css` sets them. */
-const DURATION = { page: 720, route: 820 } as const
-const QUICK = 380
 /** How long after the reader's last move the press slows down. */
 const CALM_AFTER = 2500
 /** How long the print head takes to cross the edition when the press starts. */
@@ -49,6 +46,7 @@ let pixel: CanvasRenderingContext2D | null = null
 let coloursFor = ""
 let ink: Rgb = [1, 1, 1]
 let accent: Rgb = [0.3, 0.8, 0.8]
+let paper: Rgb = [0, 0, 0]
 
 /** A CSS colour as sRGB, whatever space the stylesheet wrote it in. */
 const rgbOf = (name: string): Rgb => {
@@ -66,6 +64,7 @@ const readColours = () => {
 	coloursFor = shell.theme
 	ink = rgbOf("--ink")
 	accent = rgbOf("--accent")
+	paper = rgbOf("--paper")
 }
 
 /* --------------------------------------------------------------- the page */
@@ -124,26 +123,49 @@ const deckOfPage = (): PressFrame["deck"] => {
 	return null
 }
 
-const turnOf = (now: number): PressFrame["turn"] => {
+/**
+ * The turn in progress, and where its fold is.
+ *
+ * A turning leaf is folded along a line that crosses the page (`styles/turns.css`):
+ * going forward on a spread it runs from the outer edge of the right-hand page to
+ * the spine, and the part of the leaf already turned lies over it, on the other
+ * side of the fold, as wide as the page is turned. On a phone the fold crosses the
+ * whole page and the leaf leaves the screen. The press shades the fold, so it is
+ * worked out here from the same progress the stylesheet is running on.
+ */
+const turnOf = (now: number, pane: Box | null): PressFrame["turn"] => {
 	const turn = currentTurn()
 	// The first thing the press does is run the print head across the edition once.
 	if (now - startedAt < INTRO) {
-		return { forward: false, progress: (now - startedAt) / INTRO }
+		return { forward: false, progress: (now - startedAt) / INTRO, fold: null }
 	}
 	if (turn === null || turn.kind === "zoom" || turn.kind === "theme")
 		return null
-	const length = turn.quick ? QUICK : DURATION[turn.kind]
-	// The free edge of a leaf turning about the spine crosses the page as a cosine does.
-	const along = Math.min(1, (now - turn.at) / length)
+	const forward = turn.direction !== "back"
+	const progress = turnProgress(turn, now)
+	if (pane === null) return { forward, progress, fold: null }
+	const spread =
+		document.querySelector(".Page .Pager")?.getAttribute("data-columns") !== "1"
+	// How far the fold travels: half the pane on a spread, all of it on a phone.
+	const reach = (spread ? pane.w / 2 : pane.w) * progress
+	const x = forward ? pane.x + pane.w - reach : pane.x + reach
 	return {
-		forward: turn.direction !== "back",
-		progress: 0.5 - 0.5 * Math.cos(Math.PI * along)
+		forward,
+		progress,
+		fold: {
+			x,
+			// The leaf's free edge, as far past the fold as the fold has come.
+			edge: forward ? x - reach : x + reach,
+			// On a phone the turned part is the back of the leaf, which the press paints.
+			back: !spread
+		}
 	}
 }
 
 const measure = (now: number): PressFrame => {
 	readColours()
-	const pane = document.querySelector<HTMLElement>(".Page .Pager")
+	const pager = document.querySelector<HTMLElement>(".Page .Pager")
+	const pane = pager === null ? null : boxOf(pager.getBoundingClientRect())
 	return {
 		width: window.innerWidth,
 		height: window.innerHeight,
@@ -154,10 +176,11 @@ const measure = (now: number): PressFrame => {
 			pointer.over && shell.mouse ? { x: pointer.x, y: pointer.y } : null,
 		// A touch screen has no reading cursor to light.
 		lamp: touch.matches ? null : boxOf(cursorBox()),
-		pane: pane === null ? null : boxOf(pane.getBoundingClientRect()),
+		pane,
+		paper,
 		relief: reliefOf(),
 		deck: deckOfPage(),
-		turn: turnOf(now)
+		turn: turnOf(now, pane)
 	}
 }
 

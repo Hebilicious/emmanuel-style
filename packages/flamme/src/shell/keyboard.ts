@@ -54,6 +54,7 @@ import {
 	type Row,
 	rows
 } from "./cursor.js"
+import { closeFigure } from "./figure.js"
 import { createMachine } from "./machine.js"
 import { SECTIONS } from "./sections.js"
 import { type Shell, setMouse, toggleTheme } from "./shell.js"
@@ -216,7 +217,7 @@ export const useKeyboard = (
 		},
 
 		figure: (key) => {
-			if (key === "Escape" || key === "Enter" || key === " " || key === "q") shell.dialog = null
+			if (key === "Escape" || key === "Enter" || key === " " || key === "q") closeFigure(shell)
 			return true
 		},
 
