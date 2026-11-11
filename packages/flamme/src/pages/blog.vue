@@ -104,6 +104,7 @@ const secondary = { label: "Browse every dispatch", to: { query: { page: 2 } } }
         :figures
         :cta
         :secondary
+        emblem="/images/emblems/blog.png"
         :wide>
         <figure v-if="wide && latest?.plate" class="LandingPlate">
           <img :src="latest.plate.src" alt="" decoding="async" />

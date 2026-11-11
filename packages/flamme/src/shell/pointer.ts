@@ -120,6 +120,10 @@ export const usePointer = (
 		if (row === undefined || row.element.hasAttribute("data-cursor")) return
 		placeCursor(row, { focus: false })
 		shell.focus = describe(row.element)
+		// The keyboard's focus ring does not stay behind on the row the cursor left.
+		const focused = document.activeElement
+		if (focused instanceof HTMLElement && focused !== row.element && rowOf(focused) !== undefined)
+			focused.blur()
 	}
 
 	/** The kind of input behind a click: `mouse`, `pen`, `touch`, or `""` for the keyboard. */

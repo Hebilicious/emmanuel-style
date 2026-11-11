@@ -247,6 +247,7 @@ const pageOf = (slug: string): number | null => {
         :figures
         :cta
         :secondary
+        emblem="/images/emblems/library.png"
         :wide>
         <section v-if="wide" class="Featured" aria-label="On the front page">
           <p class="Flag">

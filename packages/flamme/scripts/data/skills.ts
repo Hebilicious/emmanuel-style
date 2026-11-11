@@ -304,7 +304,7 @@ export const skills: readonly Skill[] = [
 			"Films generated entirely in code",
 			"Real-time 3D for the web, on three.js and WebGPU",
 			"Agents working in Blender, DaVinci Resolve and FreeCAD",
-			"This paper's press: a sheet drawn on the GPU, its ink simulated on WebGPU, its emblems modelled and rendered in Blender from a script, its portrait printed in relief"
+			"This paper's press: ink simulated on WebGPU, emblems modelled and rendered in Blender from a script, a portrait printed in relief, and a deck drawn from live HTML where the browser can"
 		],
 		practice: [
 			"The brief is the interface: words go in, finished work comes out",

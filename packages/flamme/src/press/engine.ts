@@ -22,6 +22,8 @@
 import {
 	BufferAttribute,
 	BufferGeometry,
+	CanvasTexture,
+	DoubleSide,
 	Group,
 	LinearFilter,
 	Mesh,
@@ -40,6 +42,8 @@ import {
 	WebGLRenderer
 } from "three"
 import {
+	DECK_FRAGMENT,
+	DECK_VERTEX,
 	MOTES_FRAGMENT,
 	MOTES_VERTEX,
 	RELIEF_FRAGMENT,
@@ -70,8 +74,23 @@ export interface PressFrame {
 	readonly lamp: Box | null
 	/** The reading pane, which the print head sweeps. */
 	readonly pane: Box | null
-	/** The plate the relief is drawn in, and the picture it is made from. */
-	readonly relief: (Box & { readonly src: string }) | null
+	/**
+	 * The plate the relief is drawn in, and the picture it is made from: a photograph,
+	 * raised by how light it is, or a `model`, a render whose alpha is how near each
+	 * pixel is, raised by that.
+	 */
+	readonly relief: (Box & { readonly src: string; readonly model: boolean }) | null
+	/**
+	 * The deck of plates, where the page could draw its HTML into a canvas: the stage
+	 * it stands in, the strip of plates, and each plate's place round the front one.
+	 */
+	readonly deck: {
+		readonly box: Box
+		readonly atlas: HTMLCanvasElement
+		readonly tiles: number
+		readonly version: number
+		readonly places: readonly number[]
+	} | null
 	/** A page turn in progress: which way it goes and how far along it is, 0 to 1. */
 	readonly turn: { readonly forward: boolean; readonly progress: number } | null
 }
@@ -81,14 +100,19 @@ export interface Press {
 	draw(frame: PressFrame, time: number): void
 	/** Whether the relief has a picture and is drawn: the page hides its flat copy then. */
 	readonly reliefShown: boolean
+	/** Whether the deck is drawn on the GPU: the page hides its HTML deck then. */
+	readonly deckShown: boolean
+	/** Draw the press's own motes, or leave the ink to the WebGPU simulation. */
+	setMotes(on: boolean): void
 	dispose(): void
 }
 
 /** The most motes of ink that drift in the sheet, and the area of sheet to each. */
 const MOTES = 900
 const MOTE_AREA = 1900
-/** Dots along one side of the relief. */
-const RELIEF_SIDE = 84
+/** The most dots along one side of the relief, and the width of plate to each. */
+const RELIEF_SIDE = 96
+const RELIEF_CELL = 3
 const RELIEF_FOV = 28
 
 /** Move `value` towards `target`, covering most of the way in about `seconds`. */
@@ -197,26 +221,25 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 		uPoke: { value: new Vector3(0.5, 0.5, 0) },
 		/** Pixels per unit of the plate at the plate's own depth. */
 		uScale: { value: 1 },
-		uCell: { value: 1 / RELIEF_SIDE },
+		/** Dots along one side of this plate, which depends on how large it is drawn. */
+		uSide: { value: RELIEF_SIDE },
+		/** 0 for a photograph, 1 for a model with its depth in the alpha. */
+		uModel: { value: 0 },
 		uDistance: { value: distance }
 	}
 	const count = RELIEF_SIDE * RELIEF_SIDE
-	const uvs = new Float32Array(count * 2)
+	// A dot knows its number; the shader works out its place on a grid of `uSide`.
+	const numbers = new Float32Array(count)
 	const jitter = new Float32Array(count * 3)
-	for (let row = 0; row < RELIEF_SIDE; row += 1) {
-		for (let column = 0; column < RELIEF_SIDE; column += 1) {
-			const index = row * RELIEF_SIDE + column
-			// Every other row is set half a cell over, the way a halftone screen is.
-			uvs[index * 2] = (column + (row % 2 === 0 ? 0.25 : 0.75)) / RELIEF_SIDE
-			uvs[index * 2 + 1] = (row + 0.5) / RELIEF_SIDE
-			jitter[index * 3] = rnd()
-			jitter[index * 3 + 1] = rnd()
-			jitter[index * 3 + 2] = rnd()
-		}
+	for (let index = 0; index < count; index += 1) {
+		numbers[index] = index
+		jitter[index * 3] = rnd()
+		jitter[index * 3 + 1] = rnd()
+		jitter[index * 3 + 2] = rnd()
 	}
 	const reliefGeometry = new BufferGeometry()
 	reliefGeometry.setAttribute("position", new BufferAttribute(new Float32Array(count * 3), 3))
-	reliefGeometry.setAttribute("aUv", new BufferAttribute(uvs, 2))
+	reliefGeometry.setAttribute("aIndex", new BufferAttribute(numbers, 1))
 	reliefGeometry.setAttribute("aRand", new BufferAttribute(jitter, 3))
 	const dots = new Points(
 		reliefGeometry,
@@ -235,6 +258,131 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 	plate.add(dots)
 	const reliefScene = new Scene()
 	reliefScene.add(plate)
+
+	/* -------------------------------------------------------------- the deck */
+
+	/** The most plates the deck draws. */
+	const SHEETS = 8
+	const deckCamera = new PerspectiveCamera(30, 1, 1, 20000)
+	const deckScene = new Scene()
+	const deckTexture = new CanvasTexture(document.createElement("canvas"))
+	deckTexture.colorSpace = NoColorSpace
+	deckTexture.minFilter = LinearFilter
+	deckTexture.generateMipmaps = false
+	const sheetGeometry = new PlaneGeometry(1, 1)
+	/** A plate, and its reflection in the floor under it. */
+	const sheets = Array.from({ length: SHEETS }, () => {
+		const make = (mirror: number) => {
+			const mesh = new Mesh(
+				sheetGeometry,
+				new ShaderMaterial({
+					uniforms: {
+						uAtlas: { value: deckTexture },
+						uTile: { value: 0 },
+						uTiles: { value: 1 },
+						uAlpha: { value: 0 },
+						uFront: { value: 0 },
+						uMirror: { value: mirror },
+						uAccent: { value: new Vector3(0, 1, 1) },
+						uLight: { value: new Vector2(0, 0) }
+					},
+					vertexShader: DECK_VERTEX,
+					fragmentShader: DECK_FRAGMENT,
+					// A reflection is the plate turned over, so both faces are drawn.
+					side: DoubleSide,
+					transparent: true,
+					premultipliedAlpha: true,
+					depthTest: false,
+					depthWrite: false
+				})
+			)
+			mesh.frustumCulled = false
+			deckScene.add(mesh)
+			return mesh
+		}
+		return { plate: make(0), mirror: make(1), place: 0, set: false }
+	})
+	let deckVersion = -1
+	let deckAlpha = 0
+	let deckAtlas: HTMLCanvasElement | null = null
+	const light = new Vector2(0, 0)
+
+	const drawDeck = (frame: PressFrame, dt: number, time: number) => {
+		const deck = frame.deck
+		const present = deck !== null && deck.version > 0 && frame.turn === null
+		deckAlpha = ease(deckAlpha, present ? 1 : 0, dt, present ? 0.35 : 0.08)
+		if (deck === null || deckAlpha < 0.01) return
+
+		if (deck.atlas !== deckAtlas || deck.version !== deckVersion) {
+			deckAtlas = deck.atlas
+			deckVersion = deck.version
+			deckTexture.image = deck.atlas
+			deckTexture.needsUpdate = true
+		}
+
+		const { box } = deck
+		// The plates stand in the upper part of the stage; the floor reflects them below.
+		const height = box.h * 0.7
+		const width = Math.min(height * (16 / 9), box.w * 0.5)
+		const tall = width * (9 / 16)
+		const floor = box.h / 2 - box.h * 0.05 - tall
+
+		// The light is where the pointer is, or drifts when there is none.
+		const wanted =
+			frame.pointer === null
+				? { x: Math.sin(time * 0.4) * 0.5, y: 0.3 }
+				: {
+						x: Math.max(-1.2, Math.min(1.2, (frame.pointer.x - (box.x + box.w / 2)) / box.w)),
+						y: Math.max(-1, Math.min(1, ((box.y + box.h / 2 - frame.pointer.y) / box.h) * 0.6))
+					}
+		light.set(ease(light.x, wanted.x, dt, 0.25), ease(light.y, wanted.y, dt, 0.25))
+
+		sheets.forEach((sheet, index) => {
+			const target = deck.places[index]
+			const shown = target !== undefined && index < deck.tiles
+			sheet.plate.visible = shown
+			sheet.mirror.visible = shown
+			if (!shown) return
+			sheet.place = sheet.set ? ease(sheet.place, target, dt, 0.28) : target
+			sheet.set = true
+			const away = Math.abs(sheet.place)
+			const x = sheet.place * width * 1.05
+			const z = -away * width * 0.55
+			const turn = -sheet.place * 0.75
+			const alpha = Math.max(0, Math.min(1, 1.15 - away * 0.5)) * deckAlpha
+			for (const [mesh, y, flip] of [
+				[sheet.plate, floor + tall / 2, 1],
+				[sheet.mirror, floor - tall / 2 - 3, -1]
+			] as const) {
+				mesh.position.set(x, y, z)
+				mesh.rotation.set(0, turn, 0)
+				mesh.scale.set(width, tall * flip, 1)
+				mesh.renderOrder = 100 - Math.round(away * 10)
+				const u = (mesh.material as ShaderMaterial).uniforms
+				u["uTile"]!.value = index
+				u["uTiles"]!.value = deck.tiles
+				u["uAlpha"]!.value = alpha
+				u["uFront"]!.value = Math.max(0, 1 - away)
+				;(u["uAccent"]!.value as Vector3).set(...frame.accent)
+				;(u["uLight"]!.value as Vector2).copy(light)
+			}
+		})
+
+		// The eye is close to the stage, so the plates turned away foreshorten.
+		const eye = Math.max(box.w * 0.9, 420)
+		deckCamera.fov = (2 * Math.atan(box.h / 2 / eye) * 180) / Math.PI
+		deckCamera.aspect = box.w / box.h
+		deckCamera.position.set(0, box.h * 0.06, eye)
+		deckCamera.lookAt(0, 0, 0)
+		deckCamera.updateProjectionMatrix()
+
+		const bottom = frame.height - (box.y + box.h)
+		renderer.setViewport(box.x, bottom, box.w, box.h)
+		renderer.setScissor(box.x, bottom, box.w, box.h)
+		renderer.setScissorTest(true)
+		renderer.render(deckScene, deckCamera)
+		renderer.setScissorTest(false)
+	}
 
 	/* ------------------------------------------------------------- its state */
 
@@ -328,11 +476,22 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 		renderer.clear()
 		renderer.render(sheetScene, flat)
 
+		drawDeck(frame, dt, time)
+
 		/* The relief: printed when its plate is on the page, dissolved when a page turns. */
 		const wantedRelief = frame.relief
 		if (wantedRelief !== null && wantedRelief.src !== photoSrc) loadPhoto(wantedRelief.src)
 		const present = wantedRelief !== null && photoReady && !turning
-		if (wantedRelief !== null) reliefBox = wantedRelief
+		if (wantedRelief !== null) {
+			reliefBox = wantedRelief
+			// A dot every few pixels, whatever the plate's size.
+			const side = Math.max(24, Math.min(RELIEF_SIDE, Math.round(wantedRelief.w / RELIEF_CELL)))
+			reliefUniforms.uSide.value = side
+			reliefUniforms.uModel.value = wantedRelief.model ? 1 : 0
+			// A model has room around it in its own picture, so the camera comes closer.
+			camera.position.z = wantedRelief.model ? distance * 0.9 : distance
+			reliefGeometry.setDrawRange(0, side * side)
+		}
 		const r = reliefUniforms
 		r.uPrint.value = present
 			? Math.min(1, r.uPrint.value + dt / 1.5)
@@ -389,11 +548,23 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 
 	return {
 		draw,
+		setMotes(on) {
+			motes.visible = on
+		},
+		get deckShown() {
+			return deckAlpha > 0.5
+		},
 		get reliefShown() {
 			return photoReady && reliefUniforms.uPrint.value > 0.02
 		},
 		dispose() {
 			reliefUniforms.uPhoto.value?.dispose()
+			deckTexture.dispose()
+			sheetGeometry.dispose()
+			for (const sheet of sheets) {
+				;(sheet.plate.material as ShaderMaterial).dispose()
+				;(sheet.mirror.material as ShaderMaterial).dispose()
+			}
 			moteGeometry.dispose()
 			reliefGeometry.dispose()
 			sheet.geometry.dispose()

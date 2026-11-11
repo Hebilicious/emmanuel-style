@@ -138,6 +138,7 @@ const roleLink = (company: string) => {
         :standfirst
         :figures
         :cta
+        emblem="/images/emblems/skills.png"
         :wide
         :aside="wide">
         <SkillListing

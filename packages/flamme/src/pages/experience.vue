@@ -228,6 +228,7 @@ const placement = (role: Role) => {
           :figures
           :cta
           :secondary
+          emblem="/images/emblems/experience.png"
           :wide
           :aside="wide">
           <ExperienceChart :roles />

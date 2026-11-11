@@ -6,7 +6,7 @@
 		"moduleResolution": "bundler",
 		"moduleDetection": "force",
 		"resolveJsonModule": true,
-		"types": ["vite/client", "node"],
+		"types": ["vite/client", "node", "@webgpu/types"],
 		"strict": true,
 		"noUncheckedIndexedAccess": true,
 		"exactOptionalPropertyTypes": true,

@@ -24,18 +24,29 @@ withDefaults(
 		/** Whether the screen is a spread, so the aside takes the right-hand page. */
 		wide: boolean
 		/**
+		 * The section's emblem: a render whose alpha is its depth (`scripts/blender`),
+		 * which the press prints as a relief beside the title.
+		 */
+		emblem?: string | undefined
+		/**
 		 * Whether to draw the aside. A page whose aside is too much for a phone's one page
 		 * (a chart, a long listing) turns it off there and sets it as a page of its own.
 		 */
 		aside?: boolean
 	}>(),
-	{ aside: true, secondary: undefined }
+	{ aside: true, secondary: undefined, emblem: undefined }
 )
 </script>
 
 <template>
   <section class="Landing" :class="{ Spread: wide }">
     <div class="LeftPage">
+      <figure v-if="emblem" class="Emblem" aria-hidden="true">
+        <span class="EmblemPlate" :data-relief="emblem" data-relief-model>
+          <img class="EmblemPicture" :src="emblem" alt="" decoding="async" />
+        </span>
+        <figcaption class="EmblemCaption">modelled in Blender</figcaption>
+      </figure>
       <p class="Kicker">
         <span class="Mark" aria-hidden="true">§</span> {{ kicker }}
       </p>
@@ -102,6 +113,65 @@ withDefaults(
   flex-direction: column;
   gap: var(--spacing_fluid-tight-space-tight-l);
   min-width: 0;
+}
+
+/*
+ * The emblem, at the head of the page beside the title. The press prints it as a
+ * relief that turns; the render itself is under it, for where there is no press.
+ */
+.LeftPage {
+  position: relative;
+}
+
+.Emblem {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  display: flex;
+  align-items: stretch;
+  gap: 0.3rem;
+  margin: 0;
+}
+
+.EmblemPlate {
+  display: block;
+  width: clamp(6rem, 9.5vw, 10rem);
+  aspect-ratio: 1;
+}
+
+.EmblemPicture {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.85;
+  transition: opacity 500ms linear;
+}
+
+/* The render is light on dark; on light paper it is printed dark. */
+:global(.LightTheme) .EmblemPicture {
+  filter: invert(1);
+}
+
+:global(:root[data-relief-shown]) .EmblemPicture {
+  opacity: 0;
+}
+
+/* Its credit runs up its outer edge, the way a plate's does. */
+.EmblemCaption {
+  writing-mode: vertical-rl;
+  text-align: center;
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* A phone's title takes the whole line; the emblem is left out. */
+@media (max-width: 60rem) {
+  .Emblem {
+    display: none;
+  }
 }
 
 .Kicker {
