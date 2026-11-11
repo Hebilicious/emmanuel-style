@@ -15,12 +15,15 @@
  */
 import { onBeforeUnmount, onMounted, ref } from "vue"
 import type { Box, Press, PressFrame, Rgb } from "../press/engine.js"
+import { deckOf } from "../press/deck.js"
+import type { Ink } from "../press/ink.js"
 import { cursorBox, shown } from "../shell/cursor.js"
 import { useShell } from "../shell/shell.js"
 import { currentTurn, reducedMotion } from "../shell/turns.js"
 
 const shell = useShell()
 const canvas = ref<HTMLCanvasElement | null>(null)
+const inkCanvas = ref<HTMLCanvasElement | null>(null)
 
 /** How long each kind of turn lasts, as `styles/turns.css` sets them. */
 const DURATION = { page: 720, route: 820 } as const
@@ -34,6 +37,7 @@ let startedAt = Number.NEGATIVE_INFINITY
 const touch = window.matchMedia("(hover: none) and (pointer: coarse)")
 
 let press: Press | null = null
+let simulation: Ink | null = null
 let frame = 0
 let stopped = false
 const pointer = { x: 0, y: 0, over: false }
@@ -92,7 +96,29 @@ const reliefOf = (): PressFrame["relief"] => {
 			y: rect.top,
 			w: rect.width,
 			h: rect.height,
-			src: element.dataset["relief"] ?? ""
+			src: element.dataset["relief"] ?? "",
+			model: element.hasAttribute("data-relief-model")
+		}
+	}
+	return null
+}
+
+/** The deck's stage on show, with the strip of plates the page drew for it. */
+const deckOfPage = (): PressFrame["deck"] => {
+	if (shell.dialog !== null) return null
+	for (const stage of document.querySelectorAll<HTMLElement>(
+		".Page [data-deck]"
+	)) {
+		const source = deckOf(stage)
+		const rect = shown(stage)
+		if (source === undefined || rect === null) continue
+		if (rect.width < stage.getBoundingClientRect().width - 1) continue
+		return {
+			box: { x: rect.left, y: rect.top, w: rect.width, h: rect.height },
+			atlas: source.atlas,
+			tiles: source.tiles,
+			version: source.version,
+			places: (stage.dataset["deckPlaces"] ?? "").split(" ").map(Number)
 		}
 	}
 	return null
@@ -130,6 +156,7 @@ const measure = (now: number): PressFrame => {
 		lamp: touch.matches ? null : boxOf(cursorBox()),
 		pane: pane === null ? null : boxOf(pane.getBoundingClientRect()),
 		relief: reliefOf(),
+		deck: deckOfPage(),
 		turn: turnOf(now)
 	}
 }
@@ -149,11 +176,20 @@ const tick = (now: number) => {
 	lastLamp = lamp
 	// A sheet nobody is touching is drawn at half the rate: the drift reads the same.
 	odd = !odd
-	if (now - stirredAt > CALM_AFTER && odd && press.reliefShown === false) return
+	if (
+		now - stirredAt > CALM_AFTER &&
+		odd &&
+		press.reliefShown === false &&
+		!press.deckShown
+	)
+		return
+	simulation?.draw(page, now / 1000)
 	press.draw(page, now / 1000)
 	const root = document.documentElement
 	if (press.reliefShown) root.dataset["reliefShown"] = ""
 	else delete root.dataset["reliefShown"]
+	if (press.deckShown) root.dataset["deckGpu"] = ""
+	else delete root.dataset["deckGpu"]
 }
 
 const onPointerMove = (event: PointerEvent) => {
@@ -186,6 +222,20 @@ const start = async () => {
 	document.documentElement.addEventListener("pointerleave", onPointerLeave)
 	startedAt = performance.now()
 	frame = requestAnimationFrame(tick)
+
+	// Where there is WebGPU the ink is a simulation of its own, and the press's motes rest.
+	if (inkCanvas.value === null) return
+	const { createInk } = await import("../press/ink.js")
+	const made = await createInk(inkCanvas.value)
+	if (stopped) {
+		made?.dispose()
+		return
+	}
+	simulation = made
+	if (simulation !== null) {
+		press.setMotes(false)
+		document.documentElement.dataset["ink"] = "webgpu"
+	}
 }
 
 onMounted(() => {
@@ -203,13 +253,18 @@ onBeforeUnmount(() => {
 	document.documentElement.removeEventListener("pointerleave", onPointerLeave)
 	delete document.documentElement.dataset["press"]
 	delete document.documentElement.dataset["reliefShown"]
+	delete document.documentElement.dataset["ink"]
+	delete document.documentElement.dataset["deckGpu"]
 	probe?.remove()
+	simulation?.dispose()
+	simulation = null
 	press?.dispose()
 	press = null
 })
 </script>
 
 <template>
+  <canvas ref="inkCanvas" class="Press Ink" aria-hidden="true"></canvas>
   <canvas ref="canvas" class="Press" aria-hidden="true"></canvas>
 </template>
 
@@ -227,5 +282,11 @@ onBeforeUnmount(() => {
   height: 100dvh;
   pointer-events: none;
   view-transition-name: press;
+}
+
+/* The ink's own canvas, under the press's: a canvas has one context, and this one is WebGPU. */
+.Ink {
+  z-index: 89;
+  view-transition-name: press-ink;
 }
 </style>

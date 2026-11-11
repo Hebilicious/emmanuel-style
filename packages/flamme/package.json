@@ -15,6 +15,7 @@
 		"codegen": "flamme generate",
 		"images": "tsx ./scripts/optimize-images.ts",
 		"contributions": "tsx ./scripts/contributions.ts",
+		"emblems": "blender --background --python ./scripts/blender/emblems.py -- ./public/images/emblems",
 		"fonts": "tsx ./scripts/fonts.ts"
 	},
 	"dependencies": {
@@ -39,6 +40,7 @@
 		"@types/node": "24.13.5",
 		"@types/three": "0.187.0",
 		"@vizejs/vite-plugin": "0.424.10",
+		"@webgpu/types": "0.1.74",
 		"hast-util-from-html": "2.0.3",
 		"hast-util-to-html": "9.0.5",
 		"hast-util-to-string": "3.0.1",

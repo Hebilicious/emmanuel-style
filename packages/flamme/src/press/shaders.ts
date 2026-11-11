@@ -167,22 +167,35 @@ uniform float uDark;
 uniform float uPrint;
 uniform vec3 uPoke;
 uniform float uScale;
-uniform float uCell;
+uniform float uSide;
+uniform float uModel;
 uniform float uDistance;
-attribute vec2 aUv;
+attribute float aIndex;
 attribute vec3 aRand;
 varying float vAlpha;
 varying float vGlow;
 varying float vTone;
 
 void main() {
-	float light = texture2D(uPhoto, vec2(aUv.x, 1.0 - aUv.y)).r;
+	// The dot's place on the screen: every other row half a cell over, as a halftone is.
+	float row = floor(aIndex / uSide);
+	float column = aIndex - row * uSide;
+	vec2 aUv = vec2((column + (mod(row, 2.0) < 0.5 ? 0.25 : 0.75)) / uSide, (row + 0.5) / uSide);
+	float uCell = 1.0 / uSide;
+
+	vec4 texel = texture2D(uPhoto, vec2(aUv.x, 1.0 - aUv.y));
+	float light = texel.r;
+	// A model has dots only where there is something; its alpha is how near that is.
+	float covered = mix(1.0, step(0.05, texel.a), uModel);
 	// On dark paper the lights are printed; on light paper, the shadows.
 	float tone = mix(1.0 - light, light, uDark);
 	tone = smoothstep(0.04, 0.96, tone);
+	// A render is mostly mid-greys: its tones are spread, so the form reads in the dots.
+	tone = mix(tone, 0.08 + 0.6 * pow(tone, 2.4), uModel);
 
-	// Each dot stands as high as it is light, so the face has relief.
-	vec3 at = vec3(aUv.x - 0.5, 0.5 - aUv.y, (light - 0.42) * 0.2);
+	// A photograph's dots stand as high as they are light; a model's, at its real depth.
+	float height = mix((light - 0.42) * 0.2, (texel.a - 0.62) * 0.75, uModel);
+	vec3 at = vec3(aUv.x - 0.5, 0.5 - aUv.y, height);
 	at.z += sin(aUv.y * 11.0 - uTime * 0.8 + aUv.x * 4.0) * 0.004;
 
 	// The pointer presses the dots under it up off the plate.
@@ -200,8 +213,9 @@ void main() {
 	float band = exp(-pow((aUv.x + aUv.y * 0.35 - fract(uTime * 0.07) * 2.2 + 0.4) / 0.07, 2.0));
 
 	vec4 view = modelViewMatrix * vec4(at, 1.0);
-	gl_Position = projectionMatrix * view;
-	float size = uCell * (0.12 + 0.86 * pow(tone, 1.15)) * (1.0 + pressed * 0.7);
+	// A dot with nothing to print is put off the plate: a point is never smaller than a pixel.
+	gl_Position = covered > 0.5 ? projectionMatrix * view : vec4(2.0, 2.0, 2.0, 1.0);
+	float size = uCell * (0.12 + 0.86 * pow(tone, 1.15)) * (1.0 + pressed * 0.7) * covered;
 	gl_PointSize = max(size * uScale * uDistance / -view.z, 0.0);
 
 	vTone = tone;
@@ -224,6 +238,56 @@ void main() {
 	float d = length(gl_PointCoord - 0.5) * 2.0;
 	float alpha = smoothstep(1.0, 0.78, d) * clamp(vAlpha, 0.0, 1.0);
 	vec3 colour = mix(uInk, uAccent, vGlow * 0.85);
+	gl_FragColor = vec4(colour * alpha, alpha);
+}
+`
+
+/* ------------------------------------------------------------------ the deck */
+
+export const DECK_VERTEX = /* glsl */ `
+varying vec2 vUv;
+varying vec3 vNormal;
+
+void main() {
+	vUv = uv;
+	vNormal = normalize(normalMatrix * vec3(0.0, 0.0, 1.0));
+	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}
+`
+
+export const DECK_FRAGMENT = /* glsl */ `
+precision highp float;
+uniform sampler2D uAtlas;
+uniform float uTile;
+uniform float uTiles;
+uniform float uAlpha;
+uniform float uFront;
+uniform float uMirror;
+uniform vec3 uAccent;
+uniform vec2 uLight;
+varying vec2 vUv;
+varying vec3 vNormal;
+
+void main() {
+	// The plate's tile of the strip.
+	vec4 plate = texture2D(uAtlas, vec2((uTile + vUv.x) / uTiles, vUv.y));
+
+	// Lit from where the pointer is: a plate turned to the light is brighter, and
+	// the light catches it in a band as it passes.
+	vec3 towards = normalize(vec3(uLight, 0.9));
+	vec3 normal = normalize(vNormal) * (gl_FrontFacing ? 1.0 : -1.0);
+	float lit = 0.5 + 0.6 * max(dot(normal, towards), 0.0);
+	float glint = pow(max(dot(normal, normalize(towards + vec3(0.0, 0.0, 1.0))), 0.0), 40.0);
+	vec3 colour = plate.rgb * lit + uAccent * glint * 0.25;
+
+	// Its frame, in the accent on the plate in front.
+	vec2 edge = min(vUv, 1.0 - vUv) * vec2(16.0 / 9.0, 1.0);
+	float frame = 1.0 - smoothstep(0.004, 0.012, min(edge.x, edge.y));
+	colour = mix(colour, uAccent, frame * (0.3 + 0.7 * uFront));
+
+	float alpha = uAlpha;
+	// The reflection is faint, and fades as it leaves the floor.
+	if (uMirror > 0.5) alpha *= 0.4 * pow(1.0 - vUv.y, 2.0);
 	gl_FragColor = vec4(colour * alpha, alpha);
 }
 `

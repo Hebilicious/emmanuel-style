@@ -10,7 +10,8 @@
  * It only draws; which plate is in front is the page's to say (`active`), because
  * the pager draws every block on both leaves and the copies have to agree.
  */
-import { computed } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref } from "vue"
+import { canDrawElements, captureDeck, TILE } from "../press/deck.js"
 import Cover from "./Cover.vue"
 import Inline from "./Inline.vue"
 
@@ -41,11 +42,61 @@ const places = computed(() => {
 })
 
 const front = computed(() => props.projects[props.active] ?? null)
+
+/*
+ * Where the browser can draw HTML into a canvas, the plates are laid out a second
+ * time inside a capture canvas, and the press draws the deck on the GPU from them
+ * (`press/deck.ts`). The canvas is kept painted but out of sight in a box one
+ * pixel across: a canvas that is hidden has nothing to draw from.
+ */
+const stage = ref<HTMLElement | null>(null)
+const capture = ref<HTMLCanvasElement | null>(null)
+const captured = ref(false)
+let release: (() => void) | null = null
+
+onMounted(() => {
+	captured.value = canDrawElements()
+	if (!captured.value) return
+	requestAnimationFrame(() => {
+		if (stage.value !== null && capture.value !== null)
+			release = captureDeck(stage.value, capture.value)
+	})
+})
+onBeforeUnmount(() => release?.())
 </script>
 
 <template>
   <div class="Deck" aria-hidden="true">
-    <div class="Stage">
+    <div
+      ref="stage"
+      class="Stage"
+      data-deck
+      :data-deck-places='places.join(" ")'>
+      <span v-if="captured" class="Capture">
+        <canvas
+          ref="capture"
+          layoutsubtree
+          :width="TILE.width * projects.length"
+          :height="TILE.height"
+          :style="{
+          	width: `${TILE.width * projects.length}px`,
+          	height: `${TILE.height}px`
+          }">
+          <span
+            v-for="project of projects"
+            :key="project.name"
+            class="Tile"
+            :style="{ width: `${TILE.width}px`, height: `${TILE.height}px` }">
+            <Cover
+              :motif="project.cover"
+              :seed="project.name"
+              :activity="project.activity"
+              :count="project.contributions"
+              :ratio="16 / 9"
+            />
+          </span>
+        </canvas>
+      </span>
       <div class="Room">
         <span
           v-for="(project, index) of projects"
@@ -111,6 +162,30 @@ const front = computed(() => props.projects[props.active] ?? null)
   inset: 0;
   perspective: 68rem;
   perspective-origin: 50% 38%;
+}
+
+/* Once the press has drawn the deck on the GPU, the HTML deck under it steps aside. */
+:global(:root[data-deck-gpu]) .Room {
+  visibility: hidden;
+}
+
+/* The capture canvas: painted, and out of sight in a box one pixel across. */
+.Capture {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.Tile {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  display: block;
+  background: var(--sunk);
 }
 
 /*

@@ -432,16 +432,19 @@
  * through a turn: its old snapshot is dropped and the new one, which is live, is
  * shown as it is, above the turning leaves.
  */
-::view-transition-group(press) {
+::view-transition-group(press),
+::view-transition-group(press-ink) {
   z-index: 20;
   animation: none;
 }
 
-::view-transition-old(press) {
+::view-transition-old(press),
+::view-transition-old(press-ink) {
   display: none;
 }
 
-::view-transition-new(press) {
+::view-transition-new(press),
+::view-transition-new(press-ink) {
   animation: none;
 }
 
