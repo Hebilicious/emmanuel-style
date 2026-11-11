@@ -16,7 +16,13 @@ import { useRoute, useRouter } from "vue-router"
 import { useQuery } from "@flamme/vue"
 import { ProjectDetail, Stars } from "$flamme"
 import { homeRow, placeCursor, rows } from "../shell/cursor.js"
-import { cardOf, closeProject, openOf, swapProject } from "../shell/project.js"
+import {
+	cardOf,
+	closeProject,
+	openOf,
+	swapProject,
+	syncProject
+} from "../shell/project.js"
 import { useShell } from "../shell/shell.js"
 import { useSiteIndex } from "../shell/site-index.js"
 import { formatMonth } from "../utils/format.js"
@@ -83,6 +89,7 @@ const go = (target: { name: string } | null) => {
 watch(
 	name,
 	(value) => {
+		syncProject(value)
 		if (value !== null) shell.dialog = { kind: "project", name: value }
 		else if (shell.dialog?.kind === "project") shell.dialog = null
 	},

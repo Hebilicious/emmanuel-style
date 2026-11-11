@@ -15,6 +15,7 @@
 import { watch } from "vue"
 import type { LocationQuery, Router } from "vue-router"
 import { visibleTwin } from "./cursor.js"
+import { createMachine } from "./machine.js"
 import type { Shell } from "./shell.js"
 
 /** The project a location has open, or `null`. */
@@ -23,8 +24,35 @@ export const openOf = (query: LocationQuery): string | null => {
 	return typeof value === "string" && value !== "" ? value : null
 }
 
-/** Whether this visit pushed the open project, so closing it steps back rather than adds an entry. */
-let pushed = false
+/**
+ * Whether a project is open, and how it came to be, which decides how it closes.
+ *
+ *   closed  no project is open
+ *   pushed  this visit opened it from a card: closing steps back in the history,
+ *           so the entry it pushed is not left behind
+ *   linked  the address already named it (a shared link, a reload, the forward
+ *           button): there is no entry of ours to step back to, so closing takes
+ *           `open` out of the address in place
+ *
+ * The address is the truth; the dialog reports it here (`ARRIVE`, `LEAVE`) whoever
+ * changed it, so a project closed with the back button is closed here too.
+ */
+export type ProjectState = "closed" | "pushed" | "linked"
+export type ProjectEvent = { type: "OPEN" } | { type: "ARRIVE" } | { type: "LEAVE" }
+
+export const createProjectMachine = () =>
+	createMachine<ProjectState, ProjectEvent>("closed", {
+		closed: { OPEN: "pushed", ARRIVE: "linked" },
+		pushed: { LEAVE: "closed" },
+		linked: { LEAVE: "closed" }
+	})
+
+const opened = createProjectMachine()
+
+/** The dialog reports the project the address names, or `null`. */
+export const syncProject = (name: string | null): void => {
+	opened.send({ type: name === null ? "LEAVE" : "ARRIVE" })
+}
 
 const queryWith = (router: Router, open: string | undefined) => ({
 	query: { ...router.currentRoute.value.query, open }
@@ -35,17 +63,13 @@ export const projectHref = (router: Router, name: string): string =>
 	router.resolve(queryWith(router, name)).href
 
 export const openProject = async (router: Router, name: string): Promise<void> => {
-	pushed = true
+	opened.send({ type: "OPEN" })
 	await router.push(queryWith(router, name))
 }
 
 export const closeProject = async (router: Router): Promise<void> => {
-	if (pushed) {
-		pushed = false
-		router.back()
-	} else {
-		await router.replace(queryWith(router, undefined))
-	}
+	if (opened.is("pushed")) router.back()
+	else await router.replace(queryWith(router, undefined))
 }
 
 /** Another project in the same dialog (`n`, `p`): replaced, so back still closes the dialog. */

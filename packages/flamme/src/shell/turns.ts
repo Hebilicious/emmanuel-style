@@ -18,6 +18,8 @@
  * same transition name, so the one grows into the other.
  */
 
+import { createMachine, type Machine } from "./machine.js"
+
 export type Direction = "forward" | "back"
 export type TurnKind = "page" | "route" | "zoom"
 /** What a zoom does: open a card into its dialog, close it back, or swap one project for the next. */
@@ -40,8 +42,69 @@ export const reducedMotion = (): boolean =>
 export const canTurn = (): boolean =>
 	typeof (document as ViewTransitionDocument).startViewTransition === "function"
 
-/** The transition in flight, so a later one can tell whether it still owns the root's attributes. */
-let active: ViewTransitionLike | null = null
+/**
+ * What the paper is doing: lying still, or in one of the three transitions.
+ *
+ * One transition runs at a time, so this is one machine for the whole shell. A
+ * `START` while another kind is running overtakes it (a section chosen while a page
+ * is still turning); the overtaken transition's `END` then belongs to nobody and is
+ * ignored, which is what `owner` is for.
+ */
+export type TurnState = "idle" | TurnKind
+
+export type TurnEvent =
+	| {
+			readonly type: "START"
+			readonly kind: TurnKind
+			readonly direction: Direction | Zoom
+			readonly quick: boolean
+			readonly owner: object
+	  }
+	| { readonly type: "END"; readonly owner: object }
+
+let owner: object | null = null
+const start = (event: Extract<TurnEvent, { type: "START" }>): TurnState => {
+	owner = event.owner
+	return event.kind
+}
+const end = (event: Extract<TurnEvent, { type: "END" }>): TurnState | undefined => {
+	if (event.owner !== owner) return undefined
+	owner = null
+	return "idle"
+}
+
+export const turning: Machine<TurnState, TurnEvent> = createMachine<TurnState, TurnEvent>("idle", {
+	idle: { START: start },
+	page: { START: start, END: end },
+	route: { START: start, END: end },
+	zoom: { START: start, END: end }
+})
+
+/** The turn that is running, for whoever draws along with it (the press). */
+export interface TurnInfo {
+	readonly kind: TurnKind
+	readonly direction: Direction | Zoom
+	readonly quick: boolean
+	/** `performance.now()` when it started. */
+	readonly at: number
+}
+let info: TurnInfo | null = null
+export const currentTurn = (): TurnInfo | null => (turning.state === "idle" ? null : info)
+
+/** The root element says what is turning, for `styles/turns.css` to key on. */
+const mark = (running: TurnInfo | null): void => {
+	const data = document.documentElement.dataset
+	if (running === null) {
+		delete data["turn"]
+		delete data["turnKind"]
+		delete data["turnQuick"]
+		return
+	}
+	data["turn"] = running.direction
+	data["turnKind"] = running.kind
+	if (running.quick) data["turnQuick"] = ""
+	else delete data["turnQuick"]
+}
 
 /**
  * Run `update` as a page turn and resolve once the turn has finished.
@@ -61,13 +124,11 @@ export const turn = async (
 		await update()
 		return
 	}
-	const root = document.documentElement
-	root.dataset["turn"] = direction
-	root.dataset["turnKind"] = kind
-	if (quick) root.dataset["turnQuick"] = ""
-	else delete root.dataset["turnQuick"]
+	const token = {}
+	info = { kind, direction, quick, at: performance.now() }
+	mark(info)
+	turning.send({ type: "START", kind, direction, quick, owner: token })
 	const transition = doc.startViewTransition(update)
-	active = transition
 	// A transition overtaken by the next one rejects these; the page is updated either way.
 	transition.ready.catch(() => undefined)
 	transition.updateCallbackDone.catch(() => undefined)
@@ -77,12 +138,7 @@ export const turn = async (
 		// A transition that cannot start (the update threw, or it was skipped) still
 		// leaves the page updated; nothing else to do.
 	} finally {
-		if (active === transition) {
-			delete root.dataset["turn"]
-			delete root.dataset["turnKind"]
-			delete root.dataset["turnQuick"]
-			active = null
-		}
+		if (turning.send({ type: "END", owner: token }) === "idle") mark(null)
 	}
 }
 

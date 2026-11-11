@@ -32,6 +32,7 @@ import {
 import { useRoute, useRouter } from "vue-router"
 import { useShell } from "../shell/shell.js"
 import { turn } from "../shell/turns.js"
+import { WHEEL_REST, wheelStep } from "../shell/wheel.js"
 import { SPREAD_QUERY } from "../shell/wide.js"
 import {
 	cutsFrom,
@@ -44,6 +45,14 @@ import {
 	type Slice
 } from "../utils/paginate.js"
 import { MIN_FIT, type PagerItem, type PagerNote } from "./pager.js"
+import {
+	hasRoom,
+	nextTurn,
+	PAGER_START,
+	type PagerEvent,
+	type PagerState,
+	pagerStep
+} from "./pager-machine.js"
 
 const props = withDefaults(
 	defineProps<{
@@ -122,7 +131,18 @@ const leadHeight = ref(0)
  * they do not have.
  */
 const leadExtra = ref(0)
-const ready = ref(false)
+
+/**
+ * Where the reader is and what the pager is doing about it: measuring, resting on
+ * a screen, or turning to the one asked for (`pager-machine.ts`).
+ */
+const state = shallowRef<PagerState>(PAGER_START)
+const send = (event: PagerEvent) => {
+	state.value = pagerStep(state.value, event)
+}
+const ready = computed(() => state.value.phase !== "measuring")
+/** The screen showing, counted from zero. */
+const current = computed(() => state.value.current)
 
 const byId = computed(() => new Map(props.items.map((item) => [item.id, item])))
 const notesById = computed(
@@ -154,7 +174,6 @@ const spread = computed<Screen[]>(() =>
 	screens(pages.value, geometry.value.columns, opensAScreen)
 )
 const total = computed(() => Math.max(1, spread.value.length))
-const current = ref(0)
 const screen = computed<Screen | null>(
 	() => spread.value[current.value] ?? null
 )
@@ -340,14 +359,14 @@ const measureAll = async () => {
 	noteHeights.value = heights
 	fitScale.value = scales
 	measured.value = next
-	if (anchor === null) {
-		// The first layout opens on the page the URL names.
-		current.value = Math.min(pageFromUrl(), total.value - 1)
-	} else {
-		restore(anchor)
-	}
-	target = current.value
-	ready.value = true
+	send({
+		type: "LAID_OUT",
+		// The first layout opens on the page the URL names; a later one keeps the reader's place.
+		screen:
+			anchor === null
+				? Math.min(pageFromUrl(), total.value - 1)
+				: restore(anchor)
+	})
 	if (fresh) {
 		// A route turn waits for this, so it captures the new page laid out.
 		await nextTick()
@@ -362,7 +381,7 @@ const anchorOf = (): { id: string; from: number } | null => {
 	return first === undefined ? null : { id: first.id, from: first.from }
 }
 
-const restore = (anchor: { id: string; from: number }) => {
+const restore = (anchor: { id: string; from: number }): number => {
 	const index = spread.value.findIndex((candidate) =>
 		candidate.pages.some((page) =>
 			page.slices.some(
@@ -373,8 +392,7 @@ const restore = (anchor: { id: string; from: number }) => {
 			)
 		)
 	)
-	current.value =
-		index === -1 ? Math.min(current.value, total.value - 1) : index
+	return index === -1 ? Math.min(current.value, total.value - 1) : index
 }
 
 /* --------------------------------------------------------------- the address */
@@ -422,66 +440,61 @@ watch(
 			return
 		}
 		const wanted = Math.min(pageFromUrl(), total.value - 1)
-		if (wanted !== target) go(wanted)
+		if (wanted !== state.value.target) go(wanted)
 	}
 )
 
 /* -------------------------------------------------------------------- turning */
 
-/** The screen the reader asked for; turns run one at a time until it is reached. */
-let target = 0
-let busy = false
-
-/** How far ahead of the page showing the reader can ask, a turn per step. */
-const QUEUE = 3
-
 /**
- * Turn until the target screen is showing.
+ * Turn until the screen asked for is showing.
  *
  * One turn at a time, each to the end: starting a View Transition while one runs
- * skips the first, and a skipped turn is a jump. While more turns wait behind one,
- * it is riffled, quicker. A target further away than the queue holds (the last
- * page, a shelf from the index) is reached in one turn rather than flicking
- * through every page between.
+ * skips the first, and a skipped turn is a jump. The machine says which turn is
+ * next (`nextTurn`): the neighbouring screen, riffled while more wait behind it, or
+ * a far target in one turn.
  */
 const pump = async () => {
-	if (busy) return
-	busy = true
+	if (state.value.phase !== "resting") return
+	send({ type: "BEGIN" })
 	try {
-		while (target !== current.value) {
-			const distance = target - current.value
-			const next =
-				Math.abs(distance) > QUEUE
-					? target
-					: current.value + Math.sign(distance)
-			const quick = next !== target
+		for (
+			let next = nextTurn(state.value);
+			next !== null;
+			next = nextTurn(state.value)
+		) {
+			const { to } = next
 			await turn(
-				next > current.value ? "forward" : "back",
+				next.direction,
 				async () => {
-					current.value = next
+					send({ type: "LANDED", screen: to })
 					await nextTick()
 				},
 				"page",
-				quick
+				next.quick
 			)
 		}
 	} finally {
-		busy = false
+		send({ type: "SETTLE" })
 	}
 }
 
-const clampScreen = (index: number) =>
-	Math.max(0, Math.min(index, total.value - 1))
-
 const go = (index: number) => {
-	target = clampScreen(index)
+	send({ type: "ASK", screen: index, total: total.value })
 	void pump()
 }
 
 /** Turn by `delta` screens, counted from the screen already asked for. */
-const step = (delta: number) => go((busy ? target : current.value) + delta)
+const step = (delta: number) => {
+	send({ type: "STEP", delta, total: total.value })
+	void pump()
+}
 
-const turner = { turn: step, go, turning: () => busy }
+const turner = {
+	turn: step,
+	go,
+	turning: () => state.value.phase === "turning"
+}
 
 watch(
 	[current, total, ready],
@@ -550,33 +563,10 @@ const onPointerUp = (event: PointerEvent) => {
 
 /*
  * The wheel turns pages: a turn per notch of a mouse wheel, a turn per flick of a
- * trackpad.
- *
- * A mouse wheel sends one event per notch, each the same large step; every notch
- * turns a page. Notches that come faster than the turns wait for them, up to
- * `QUEUE`, and the waiting turns are riffled quicker; a spin beyond that is not
- * stored up to run on after the wheel has stopped. *
- * A trackpad sends a stream: the flick itself, then its momentum, small deltas
- * that die away for a second or more. The stream is a gesture while it has no
- * pause longer than `GESTURE_GAP`; its first `WHEEL_START` pixels turn one page.
- * The momentum after that must not turn another, and it is told apart from a
- * second flick by its shape: momentum only slows down, a new flick speeds up. A
- * delta well above the recent ones (`ACCELERATION`) starts a new flick inside the
- * same stream, which turns the next page.
+ * trackpad. Which events count is `shell/wheel.ts`; here they are scaled to pixels
+ * and the turn asked for is run, while the queue has room for it.
  */
-const GESTURE_GAP = 180
-const WHEEL_START = 18
-const ACCELERATION = 1.8
-let wheelAt = 0
-let wheelSum = 0
-let wheelTurned = false
-let recent: number[] = []
-
-/** The same large step every time: a mouse wheel's notch rather than a trackpad's stream. */
-const isNotch = (size: number) =>
-	size >= 50 &&
-	recent.length > 0 &&
-	recent.every((value) => Math.abs(value - size) < 1)
+let wheel = WHEEL_REST
 
 const onWheel = (event: WheelEvent) => {
 	if (!shell.mouse || !over(event)) return
@@ -585,41 +575,10 @@ const onWheel = (event: WheelEvent) => {
 		(Math.abs(event.deltaY) >= Math.abs(event.deltaX)
 			? event.deltaY
 			: event.deltaX) * scale
-	if (delta === 0) return
-	const size = Math.abs(delta)
-	const direction = delta > 0 ? 1 : -1
-	const now = event.timeStamp
-	const fresh =
-		now - wheelAt > GESTURE_GAP || direction !== Math.sign(wheelSum || delta)
-	wheelAt = now
-	if (fresh) {
-		wheelSum = 0
-		wheelTurned = false
-		recent = []
-	}
-	const notch = (fresh && size >= 50) || isNotch(size)
-	const average =
-		recent.length === 0
-			? 0
-			: recent.reduce((sum, value) => sum + value, 0) / recent.length
-	const accelerating =
-		recent.length >= 3 && size > average * ACCELERATION && size > 6
-	recent = [...recent.slice(-4), size]
-	wheelSum += delta
-
-	// The queue holds a few turns; a spin beyond that is not stored up to run on after it stops.
-	const room = Math.abs(target - current.value) < QUEUE
-	if (notch) {
-		if (room) step(direction)
-		wheelTurned = true
-		return
-	}
-	if (!wheelTurned && Math.abs(wheelSum) >= WHEEL_START) {
-		wheelTurned = true
-		if (room) step(direction)
-	} else if (wheelTurned && accelerating && room) {
-		step(direction)
-	}
+	const asked = wheelStep(wheel, { delta, time: event.timeStamp })
+	wheel = asked.state
+	// A spin beyond what the queue holds is not stored up to run on after it stops.
+	if (asked.turn !== 0 && hasRoom(state.value)) step(asked.turn)
 }
 
 /* ------------------------------------------------------------------ lifecycle */
@@ -667,9 +626,7 @@ onBeforeUnmount(() => {
 watch(
 	() => [props.items, props.notes],
 	() => {
-		ready.value = false
-		current.value = 0
-		target = 0
+		send({ type: "RESET" })
 		void measureAll()
 	}
 )
