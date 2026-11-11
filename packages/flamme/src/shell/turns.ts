@@ -16,12 +16,15 @@
  * Opening a project is not a turn: the pages stay where they are and the card is
  * lifted off the page into a dialog (`zoom`). The card and the dialog carry the
  * same transition name, so the one grows into the other.
+ *
+ * Changing the theme is not a turn either: the other paper floods the screen from
+ * the switch (`theme`).
  */
 
 import { createMachine, type Machine } from "./machine.js"
 
 export type Direction = "forward" | "back"
-export type TurnKind = "page" | "route" | "zoom"
+export type TurnKind = "page" | "route" | "zoom" | "theme"
 /** What a zoom does: open a card into its dialog, close it back, or swap one project for the next. */
 export type Zoom = "open" | "close" | "swap"
 
@@ -77,7 +80,8 @@ export const turning: Machine<TurnState, TurnEvent> = createMachine<TurnState, T
 	idle: { START: start },
 	page: { START: start, END: end },
 	route: { START: start, END: end },
-	zoom: { START: start, END: end }
+	zoom: { START: start, END: end },
+	theme: { START: start, END: end }
 })
 
 /** The turn that is running, for whoever draws along with it (the press). */

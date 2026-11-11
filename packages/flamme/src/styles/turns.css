@@ -397,6 +397,36 @@
   animation: none;
 }
 
+/* ----------------------------------------------------------------- theme */
+
+/*
+ * The other theme floods the screen from the switch. For the length of it nothing
+ * on the page keeps a transition name of its own, so the whole screen is one
+ * picture, and the new one is uncovered over the old in a growing circle.
+ */
+:root[data-turn-kind="theme"] * {
+  view-transition-name: none !important;
+}
+
+:root[data-turn-kind="theme"]::view-transition-old(root) {
+  z-index: 1;
+  animation: none;
+}
+
+:root[data-turn-kind="theme"]::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-flood 900ms cubic-bezier(0.45, 0.1, 0.35, 1) both;
+}
+
+@keyframes theme-flood {
+  from {
+    clip-path: circle(0 at var(--flood-x, 100%) var(--flood-y, 0));
+  }
+  to {
+    clip-path: circle(var(--flood-reach, 150vmax) at var(--flood-x, 100%) var(--flood-y, 0));
+  }
+}
+
 /*
  * The press's canvas (`components/Press.vue`) is over the page and keeps drawing
  * through a turn: its old snapshot is dropped and the new one, which is live, is

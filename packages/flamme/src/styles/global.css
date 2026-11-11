@@ -136,6 +136,60 @@ a {
 }
 
 /*
+ * Type that stands off the page.
+ *
+ * Nabla is drawn extruded, and how far is an axis of the font (`EDPT`, 0 flat to
+ * 200), with the strength of its lit edge beside it (`EHLT`). Both are driven from
+ * two registered properties, so they can be transitioned: a headline is set flat
+ * and rises out of the paper as its page arrives (`@starting-style`), and the one
+ * under the reading cursor stands up further than the rest. The axes change how a
+ * letter is drawn and nothing about its size, so nothing moves around it.
+ */
+@property --depth {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 100;
+}
+
+@property --glint {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 12;
+}
+
+.display,
+.display-accent,
+.Prose h2 {
+  font-variation-settings: "EDPT" var(--depth, 100), "EHLT" var(--glint, 12);
+  transition: --depth 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 120ms, --glint 900ms linear 120ms;
+}
+
+@starting-style {
+  .display,
+  .display-accent,
+  .Prose h2 {
+    --depth: 0;
+    --glint: 0;
+  }
+}
+
+[data-cursor="true"] .display,
+.display[data-cursor="true"] {
+  --depth: 190;
+  --glint: 24;
+  transition-duration: 320ms;
+  transition-delay: 0ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .display,
+  .display-accent,
+  .Prose h2 {
+    transition: none;
+  }
+}
+
+/*
  * Where palettes are ignored (`NoPalette`, set in index.html), Nabla would be drawn
  * in its default yellow. The colour is corrected on the compositor instead: grayscale
  * turns the layers into a luminance ramp and a level shift maps it onto the ink,

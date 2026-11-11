@@ -22,9 +22,40 @@ import { onBeforeUnmount, onMounted } from "vue"
 import type { Router } from "vue-router"
 import { describe, placeCursor, rowOf } from "./cursor.js"
 import type { Shell } from "./shell.js"
+import { turning } from "./turns.js"
 
 /** Two clicks this close together ask the question. */
 const DOUBLE_CLICK_MS = 450
+
+/**
+ * The controls that are in the same place before, during and after a turn: the
+ * bar, the dock, the wire, and whatever a dialog marks `data-steady` (its close
+ * button, its next and previous).
+ */
+const STEADY = [
+	".Bar a[href]",
+	".Bar button",
+	".Dock button",
+	".Dock a[href]",
+	".Wire a[href]",
+	"[data-steady]"
+].join(",")
+
+/** The steady control under a point, the smallest one if several are. */
+const steadyAt = (x: number, y: number): HTMLElement | null => {
+	let found: HTMLElement | null = null
+	let area = Number.POSITIVE_INFINITY
+	for (const element of document.querySelectorAll<HTMLElement>(STEADY)) {
+		if (element.matches(":disabled")) continue
+		const box = element.getBoundingClientRect()
+		if (x < box.left || x > box.right || y < box.top || y > box.bottom) continue
+		if (box.width * box.height < area) {
+			area = box.width * box.height
+			found = element
+		}
+	}
+	return found
+}
 
 /** What a gated click is refused on: links, and the rows the cursor reaches. */
 const GATED = "a[href], [data-row], figure.Plate"
@@ -102,6 +133,25 @@ export const usePointer = (
 	}
 
 	/**
+	 * A click while a turn runs. The browser draws a transition over the page and
+	 * gives every click during it to the root element, so a second click on the
+	 * dock's arrow, or on a section while a leaf was still in the air, was lost. A
+	 * click that lands on a steady control is handed to it. The page itself is left
+	 * alone: what is under the pointer there is changing, and a click meant for the
+	 * old page should not open something on the new one.
+	 */
+	const onTurnClick = (event: MouseEvent) => {
+		if (!event.isTrusted || event.button !== 0) return
+		if (event.target !== document.documentElement || turning.is("idle")) return
+		const kind = pointerOf(event)
+		if (kind !== "touch" && kind !== "" && !shell.mouse) return
+		const control = steadyAt(event.clientX, event.clientY)
+		if (control === null) return
+		event.preventDefault()
+		control.click()
+	}
+
+	/**
 	 * Links the router does not already own: anchors in an article's markup, the
 	 * footnote references, and every external link.
 	 */
@@ -136,6 +186,7 @@ export const usePointer = (
 		document.addEventListener("pointerdown", onPointerDown, { capture: true })
 		document.addEventListener("pointerover", onPointerOver)
 		document.addEventListener("click", onGate, { capture: true })
+		document.addEventListener("click", onTurnClick, { capture: true })
 		document.addEventListener("click", onLink)
 		document.body.classList.toggle("mouse-enabled", shell.mouse)
 	})
@@ -144,6 +195,7 @@ export const usePointer = (
 		document.removeEventListener("pointerdown", onPointerDown, { capture: true })
 		document.removeEventListener("pointerover", onPointerOver)
 		document.removeEventListener("click", onGate, { capture: true })
+		document.removeEventListener("click", onTurnClick, { capture: true })
 		document.removeEventListener("click", onLink)
 	})
 }
