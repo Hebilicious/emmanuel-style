@@ -228,8 +228,8 @@ const items = computed<FrontItem[]>(() =>
 				}
 			]
 		: [
-				{ id: "identity", parts: ["identity"], atomic: true },
-				{ id: "library", parts: ["library"], atomic: true },
+				// The first page of a phone is who and the Library, set to fit it whatever its size.
+				{ id: "first", parts: ["identity", "library"], fit: true, grow: true },
 				{ id: "index", parts: ["index"], atomic: true },
 				...(latest.value
 					? [{ id: "latest", parts: ["latest"], atomic: true }]

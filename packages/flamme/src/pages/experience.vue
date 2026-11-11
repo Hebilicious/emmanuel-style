@@ -89,10 +89,13 @@ const stack = computed(() => {
 type LedgerItem =
 	| (PagerItem & { readonly kind: "chart" })
 	| (PagerItem & { readonly kind: "overview" })
+	| (PagerItem & { readonly kind: "stack" })
 	| (PagerItem & {
 			readonly kind: "role"
 			readonly role: Role
 			readonly number: number
+			/** Which of the role is on this page: all of it on a spread, a half on a phone. */
+			readonly part: "all" | "head" | "more"
 	  })
 	| (PagerItem & { readonly kind: "record" })
 
@@ -101,15 +104,38 @@ const items = computed<LedgerItem[]>(() => [
 	{ id: "chart", kind: "chart", screen: wide.value, fit: true },
 	...(wide.value
 		? []
-		: [{ id: "overview", kind: "overview" as const, fit: true }]),
-	...roles.value.map((role, index) => ({
-		id: `role-${role.id}`,
-		kind: "role" as const,
-		role,
-		number: index + 1,
-		screen: wide.value,
-		fit: true
-	})),
+		: [
+				{ id: "overview", kind: "overview" as const, opens: true, fit: true },
+				{ id: "stack", kind: "stack" as const, fit: true }
+			]),
+	/*
+	 * On a spread a role is one screen. A phone's page is too small for that: there a
+	 * role is two pages, each shown whole: what the role was (its title, its length,
+	 * its stack, its summary), then what was done in it. A role with nothing more to
+	 * say is one page.
+	 */
+	...roles.value.flatMap((role, index): LedgerItem[] => {
+		const base = { kind: "role" as const, role, number: index + 1 }
+		if (wide.value)
+			return [
+				{ ...base, id: `role-${role.id}`, part: "all", screen: true, fit: true }
+			]
+		const more = role.highlights.length > 0 || role.library.length > 0
+		return [
+			{ ...base, id: `role-${role.id}`, part: "head", opens: true, fit: true },
+			...(more
+				? [
+						{
+							...base,
+							id: `more-${role.id}`,
+							part: "more" as const,
+							opens: true,
+							fit: true
+						}
+					]
+				: [])
+		]
+	}),
 	{ id: "record", kind: "record", screen: wide.value, fit: true }
 ])
 
@@ -245,6 +271,8 @@ const placement = (role: Role) => {
         <!-- On a phone the chart and the stack are a page of their own, after the landing. -->
         <section v-else-if='item.kind === "overview"' class="Ledger Overview">
           <ExperienceChart :roles />
+        </section>
+        <section v-else-if='item.kind === "stack"' class="Ledger Overview">
           <div class="AllStack">
             <h2 class="Section">
               <span class="Accent" aria-hidden="true">#</span> the stack
@@ -261,7 +289,7 @@ const placement = (role: Role) => {
           class="Ledger Role"
           :class="{ Spread: wide }"
           :data-label="item.role.company">
-          <div class="LeftPage">
+          <div v-if='item.part !== "more"' class="LeftPage">
             <header class="Folio">
               <span class="Accent">role {{
                   String(item.number).padStart(2, "0")
@@ -277,7 +305,7 @@ const placement = (role: Role) => {
               </span>
             </header>
             <h2 class="Title display">{{ item.role.title }}</h2>
-            <div class="Measures">
+            <div class="Measures" data-atomic>
               <p class="Numeral display-accent" aria-hidden="true">
                 {{ String(item.number).padStart(2, "0") }}
               </p>
@@ -294,6 +322,7 @@ const placement = (role: Role) => {
             </div>
             <figure
               class="Career"
+              data-atomic
               :aria-label="`${item.role.company} on the whole career`">
               <span class="Track">
                 <span
@@ -309,6 +338,7 @@ const placement = (role: Role) => {
             <ul
               v-if="item.role.stack.length > 0"
               class="Stack"
+              data-atomic
               aria-label="Stack">
               <li v-for="tech of item.role.stack" :key="tech" class="Tech">
                 {{ tech }}
@@ -317,7 +347,7 @@ const placement = (role: Role) => {
           </div>
 
           <div class="RightPage">
-            <header class="Folio">
+            <header v-if='item.part !== "more"' class="Folio">
               <time :datetime="item.role.start">{{
                 formatMonth(item.role.start)
               }}</time>
@@ -328,13 +358,30 @@ const placement = (role: Role) => {
               <span v-else class="Accent">present</span>
               <span class="Rule" aria-hidden="true"></span>
             </header>
-            <p class="Summary">{{ item.role.summary }}</p>
-            <ul v-if="item.role.highlights.length > 0" class="Highlights">
+            <p v-if='item.part !== "more"' class="Summary">
+              {{ item.role.summary }}
+            </p>
+            <header v-if='item.part === "more"' class="Folio">
+              <span class="Accent">role {{
+                  String(item.number).padStart(2, "0")
+                }}</span>
+              <span class="Faint">continued</span>
+              <span class="Rule" aria-hidden="true"></span>
+              <span class="Company Inline">
+                <span class="Name">{{ item.role.company }}</span>
+              </span>
+            </header>
+            <ul
+              v-if='item.role.highlights.length > 0 && item.part !== "head"'
+              class="Highlights">
               <li v-for="highlight of item.role.highlights" :key="highlight">
                 {{ highlight }}
               </li>
             </ul>
-            <p v-if="item.role.library.length > 0" class="Shelf">
+            <p
+              v-if='item.role.library.length > 0 && item.part !== "head"'
+              class="Shelf"
+              data-atomic>
               <span class="ShelfLabel">in the Library</span>
               <a
                 v-for="name of item.role.library"
@@ -817,6 +864,20 @@ const placement = (role: Role) => {
     gap: var(--spacing_fluid-tight-space-tight-l);
   }
 
+  /* The folio breaks between its parts, never inside one. */
+  .Folio {
+    flex-wrap: wrap;
+    row-gap: 0.15rem;
+    white-space: nowrap;
+  }
+
+  .Folio .Company {
+    flex-wrap: nowrap;
+    margin-left: auto;
+    white-space: normal;
+    text-align: end;
+  }
+
   .Title {
     font-size: var(--typography_fluid-display-font-size-display-m);
   }
@@ -840,7 +901,13 @@ const placement = (role: Role) => {
   }
 
   .Highlights li {
-    font-size: var(--typography_fluid-content-font-size-s);
+    font-size: var(--typography_fluid-content-font-size-m);
+  }
+
+  /* The second page of a role starts at its own folio, with no rule above the list. */
+  .Highlights {
+    padding-top: 0;
+    border-top: 0;
   }
 
   .AllStack,

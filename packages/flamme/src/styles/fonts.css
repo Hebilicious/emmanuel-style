@@ -61,7 +61,7 @@
  * yellow corrected afterwards by a filter. That also works where a filter cannot
  * reach, such as a drop cap's `::first-letter`.
  *
- * The values are the sRGB forms of the cssforge ramps (`neutral`, `aqua`, `rose`):
+ * The values are the sRGB forms of the cssforge ramps (`neutral`, `gold`, `rose`):
  * a descriptor takes no custom properties, so they are written out. In the dark
  * theme the face is the lightest ink and the extrusion falls into the paper; in
  * the light theme it is the reverse, the face printed dark on a pale relief.
@@ -78,11 +78,11 @@
   override-colors: 0 #35322e, 1 #b8b4ab, 2 #6a665e, 3 #8d897f, 4 #35322e, 5 #22201d, 6 #35322e, 7 #22201d, 8 #151412, 9 #0a0a09;
 }
 
-/* The accent: aqua at night, rose by day, as `--accent` is. */
+/* The accent: gold at night, rose by day, as `--accent` is. */
 @font-palette-values --nabla-accent-dark {
   font-family: "Nabla";
   base-palette: 0;
-  override-colors: 0 #59cccc, 1 #023536, 2 #076b6c, 3 #045050, 4 #59cccc, 5 #6ce8e8, 6 #59cccc, 7 #6ce8e8, 8 #87ffff, 9 #ffffff;
+  override-colors: 0 #f6c453, 1 #463006, 2 #8e640e, 3 #6a4a09, 4 #f6c453, 5 #ffdf8f, 6 #f6c453, 7 #ffdf8f, 8 #fff0c4, 9 #ffffff;
 }
 
 @font-palette-values --nabla-accent-light {

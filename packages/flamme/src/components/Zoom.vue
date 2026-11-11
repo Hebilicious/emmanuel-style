@@ -65,7 +65,7 @@ const figure = computed(() =>
 }
 
 .Label {
-  color: var(--palette-aqua-300);
+  color: var(--palette-gold-300);
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }

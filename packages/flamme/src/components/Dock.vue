@@ -84,7 +84,7 @@ defineExpose({
 
         <span class="Net" :class="{ Offline: !shell.online }">
           <span class="Lamp" aria-hidden="true"></span>
-          {{ shell.online ? "online" : "offline" }}
+          <span class="NetWord">{{ shell.online ? "online" : "offline" }}</span>
         </span>
       </span>
     </div>
@@ -252,6 +252,15 @@ defineExpose({
     width: 2.25rem;
     height: 1.9rem;
     font-size: 1.15rem;
+  }
+}
+
+/* A narrow phone: the lamp says it, and the year goes, so the page count is never cut. */
+@media (max-width: 27rem) {
+  .NetWord,
+  .Brand .Dot,
+  .Brand .Dot + span {
+    display: none;
   }
 }
 </style>
