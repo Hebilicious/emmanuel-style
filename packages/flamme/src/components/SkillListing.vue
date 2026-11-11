@@ -8,7 +8,7 @@
 import { RouterLink, type RouteLocationRaw } from "vue-router"
 
 defineProps<{
-	skills: readonly { name: string; description: string }[]
+	skills: readonly { name: string; title: string }[]
 	/** Where a skill's page is. */
 	to: (name: string) => RouteLocationRaw
 }>()
@@ -30,16 +30,16 @@ const PROFILE = "https://www.linkedin.com/in/emmanuel-donnet"
         data-row
         :data-label="skill.name">
         <span class="FileName">{{ skill.name }}/</span>
-        <span class="FileLine">{{ skill.description }}</span>
+        <span class="FileLine">{{ skill.title }}</span>
       </RouterLink>
     </nav>
     <section class="Hire" aria-label="Get in touch">
       <p class="HireTitle">
-        <span class="Sigil" aria-hidden="true">#</span> to load one
+        <span class="Sigil" aria-hidden="true">#</span> to hire the author
       </p>
       <p class="HireText">
-        Every skill here has been used for someone. To have one used for you,
-        the long record and the way to get in touch are on LinkedIn.
+        Every line in these files is something I have done, and the Library has
+        the work. The long record and the way to reach me are on LinkedIn.
       </p>
       <a
         class="HireLink"

@@ -97,7 +97,7 @@ const sections = [
 		href: "/skills",
 		label: "skills",
 		key: "s",
-		blurb: "What can be asked for, written as agent skills."
+		blurb: "What I do well, and the proof, filed as agent skills."
 	}
 ]
 

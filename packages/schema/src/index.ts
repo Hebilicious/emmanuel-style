@@ -97,17 +97,17 @@ export interface SkillShape {
 	/** The skill's name, kebab-case, as a `SKILL.md` front matter has it. */
 	name: string
 	title: string
-	/** "Use when …": the line an agent reads to decide whether to load the skill. */
+	/** "Load when …": the front matter line that says when the skill applies. */
 	description: string
-	/** The situations to call it for, a line each. */
-	whenToUse: string[]
-	/** How it runs, in order. */
-	steps: string[]
+	/** What he does, in two or three sentences. */
+	summary: string
+	/** What he has done with it: facts from the Library, a line each. */
+	record: string[]
+	/** How he works, a line each. */
+	practice: string[]
 	tools: string[]
 	/** The names of the Library projects that prove it. */
 	evidence: string[]
-	/** A request it answers, as someone would write it. */
-	example: string
 }
 
 /** One role, as the Experience page reads it. */
@@ -366,11 +366,11 @@ builder.objectType("Skill", {
 		name: t.exposeID("name", { nullable: false }),
 		title: t.exposeString("title", { nullable: false }),
 		description: t.exposeString("description", { nullable: false }),
-		whenToUse: t.exposeStringList("whenToUse", { nullable: false }),
-		steps: t.exposeStringList("steps", { nullable: false }),
+		summary: t.exposeString("summary", { nullable: false }),
+		record: t.exposeStringList("record", { nullable: false }),
+		practice: t.exposeStringList("practice", { nullable: false }),
 		tools: t.exposeStringList("tools", { nullable: false }),
-		evidence: t.exposeStringList("evidence", { nullable: false }),
-		example: t.exposeString("example", { nullable: false })
+		evidence: t.exposeStringList("evidence", { nullable: false })
 	})
 })
 

@@ -182,9 +182,11 @@ const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"]) => {
 	for (const skill of skills) {
 		check(/^[a-z0-9][a-z0-9-]*$/.test(skill.name), `skills: ${skill.name} is not a skill name`)
 		check(
-			skill.description.startsWith("Use when"),
-			`skills: ${skill.name}'s description does not say when to use it`
+			skill.description.startsWith("Load when"),
+			`skills: ${skill.name}'s description does not say when to load it`
 		)
+		check(/\bI\b/.test(skill.summary), `skills: ${skill.name}'s summary is not in the first person`)
+		check(skill.record.length >= 3, `skills: ${skill.name} has less than three lines of record`)
 		check(skill.evidence.length > 0, `skills: ${skill.name} cites no evidence`)
 		for (const project of skill.evidence) {
 			check(

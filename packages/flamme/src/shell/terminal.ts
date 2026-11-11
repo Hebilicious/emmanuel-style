@@ -45,8 +45,10 @@ export interface IndexSkill {
 	readonly name: string
 	readonly title: string
 	readonly description: string
-	readonly whenToUse: readonly string[]
-	readonly steps: readonly string[]
+	readonly summary: string
+	readonly record: readonly string[]
+	readonly practice: readonly string[]
+	readonly tools: readonly string[]
 	readonly evidence: readonly string[]
 }
 
@@ -212,12 +214,14 @@ const cat = (index: TerminalIndex, cwd: string, target: string): string => {
 				"---",
 				`name: ${skill.name}`,
 				`description: ${skill.description}`,
+				`allowed-tools: ${skill.tools.join(", ")}`,
 				"---",
 				`# ${skill.title}`,
-				"## When to use",
-				...skill.whenToUse.map((line) => `- ${line}`),
-				"## Steps",
-				...skill.steps.map((line, number) => `${number + 1}. ${line}`),
+				skill.summary,
+				"## Track record",
+				...skill.record.map((line) => `- ${line}`),
+				"## How I work",
+				...skill.practice.map((line) => `- ${line}`),
 				"## Evidence",
 				skill.evidence.map((name) => `library/${name}.txt`).join("  ")
 			])
@@ -278,8 +282,10 @@ const grep = (index: TerminalIndex, args: readonly string[]): string => {
 			skill.name,
 			skill.title,
 			skill.description,
-			...skill.whenToUse,
-			...skill.steps
+			skill.summary,
+			...skill.record,
+			...skill.practice,
+			...skill.tools
 		].join(" ")
 		if (!expression.test(text)) continue
 		hits.push(

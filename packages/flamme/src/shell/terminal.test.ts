@@ -28,9 +28,11 @@ const index: TerminalIndex = {
 		{
 			name: "edge-native-backends",
 			title: "Edge-native backends",
-			description: "Use when an API has to answer close to its readers.",
-			whenToUse: ["An API that is slow far from its region"],
-			steps: ["Put the API on Workers"],
+			description: "Load when an API has to answer close to its readers.",
+			summary: "I build backends that run on the edge.",
+			record: ["An API that was slow far from its region"],
+			practice: ["Put the API on Workers"],
+			tools: ["Cloudflare Workers"],
 			evidence: ["cssforge"]
 		}
 	],
@@ -82,10 +84,11 @@ describe("terminal", () => {
 
 	it("prints a skill as the SKILL.md it is written as", () => {
 		const output = run("cat skills/edge-native-backends.md", "/", index).output
-		expect(output.split("\n").slice(0, 4)).toEqual([
+		expect(output.split("\n").slice(0, 5)).toEqual([
 			"---",
 			"name: edge-native-backends",
-			"description: Use when an API has to answer close to its readers.",
+			"description: Load when an API has to answer close to its readers.",
+			"allowed-tools: Cloudflare Workers",
 			"---"
 		])
 		expect(output).toContain("library/cssforge.txt")
