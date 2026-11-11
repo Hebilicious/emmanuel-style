@@ -12,6 +12,7 @@
  */
 import { computed } from "vue"
 import Cover from "./Cover.vue"
+import Inline from "./Inline.vue"
 
 export interface DeckProject {
 	readonly name: string
@@ -45,31 +46,33 @@ const front = computed(() => props.projects[props.active] ?? null)
 <template>
   <div class="Deck" aria-hidden="true">
     <div class="Stage">
-      <span
-        v-for="(project, index) of projects"
-        :key="project.name"
-        class="Sheet"
-        :class="{ Front: places[index] === 0 }"
-        :style='{
-        	"--place": places[index],
-        	"--away": Math.abs(places[index] ?? 0),
-        	zIndex: 10 - Math.abs(places[index] ?? 0)
-        }'>
-        <Cover
-          :motif="project.cover"
-          :seed="project.name"
-          :activity="project.activity"
-          :count="project.contributions"
-          :ratio="16 / 9"
-        />
-      </span>
+      <div class="Room">
+        <span
+          v-for="(project, index) of projects"
+          :key="project.name"
+          class="Sheet"
+          :class="{ Front: places[index] === 0 }"
+          :style='{
+          	"--place": places[index],
+          	"--away": Math.abs(places[index] ?? 0),
+          	zIndex: 10 - Math.abs(places[index] ?? 0)
+          }'>
+          <Cover
+            :motif="project.cover"
+            :seed="project.name"
+            :activity="project.activity"
+            :count="project.contributions"
+            :ratio="16 / 9"
+          />
+        </span>
+      </div>
     </div>
     <p v-if="front" class="Caption">
       <span class="Number">No.&nbsp;{{
           String(active + 1).padStart(2, "0")
         }}</span>
       <span class="Name">{{ front.title }}</span>
-      <span class="Line">{{ front.tagline }}</span>
+      <span class="Line"><Inline :text="front.tagline" /></span>
       <span class="Ticks">
         <span
           v-for="(project, index) of projects"
@@ -89,16 +92,25 @@ const front = computed(() => props.projects[props.active] ?? null)
   min-height: 0;
 }
 
-/* The room the plates stand in: wide, with the eye a little above the middle. */
+/*
+ * The stage is the box the fan is measured against and cut to: a plate far round
+ * it does not cross the spine. The room inside it is where the perspective is,
+ * wide, with the eye a little above the middle. They are two elements so that the
+ * perspective is not on the element that clips and contains.
+ */
 .Stage {
   position: relative;
   flex: 1 1 0;
   min-height: 7rem;
+  container-type: size;
+  overflow: clip;
+}
+
+.Room {
+  position: absolute;
+  inset: 0;
   perspective: 68rem;
   perspective-origin: 50% 38%;
-  container-type: size;
-  /* The fan is cut at the edges of its page: a plate far round it does not cross the spine. */
-  overflow: clip;
 }
 
 /*

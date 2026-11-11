@@ -27,6 +27,7 @@ import { useShell } from "../shell/shell.js"
 import { useSiteIndex } from "../shell/site-index.js"
 import { formatMonth } from "../utils/format.js"
 import Cover from "./Cover.vue"
+import Inline from "./Inline.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -206,7 +207,7 @@ const fit = () => {
             <span v-if="project.archived" class="Archived">archived</span>
           </p>
           <h2 class="Title display">{{ project.title }}</h2>
-          <p class="Standfirst">{{ project.tagline }}</p>
+          <p class="Standfirst"><Inline :text="project.tagline" /></p>
           <div class="Plate" data-project-plate>
             <Cover
               :motif="project.cover"
@@ -260,12 +261,14 @@ const fit = () => {
             :key="index"
             class="Paragraph"
             :class="{ Lede: index === 0 }">
-            {{ paragraph }}
+            <Inline :text="paragraph" />
           </p>
           <section v-if="project.points.length > 0" class="Box">
             <h3 class="BoxTitle">Worth knowing</h3>
             <ul class="Points">
-              <li v-for="point of project.points" :key="point">{{ point }}</li>
+              <li v-for="point of project.points" :key="point">
+                <Inline :text="point" />
+              </li>
             </ul>
           </section>
           <section v-if="project.links.length > 0" class="Box">

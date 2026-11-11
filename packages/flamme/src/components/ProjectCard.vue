@@ -14,6 +14,7 @@ import { computed } from "vue"
 import { useRouter } from "vue-router"
 import { openProject, projectHref } from "../shell/project.js"
 import Cover from "./Cover.vue"
+import Inline from "./Inline.vue"
 
 export interface CardProject {
 	readonly name: string
@@ -97,9 +98,9 @@ const compact = (count: number) =>
     <h3 class="Title" :class='size === "card" ? "Mono" : "display"'>
       {{ project.title }}
     </h3>
-    <p class="Tagline">{{ project.tagline }}</p>
+    <p class="Tagline"><Inline :text="project.tagline" /></p>
     <p v-if='size === "lead" && project.body?.[0]' class="Body">
-      {{ project.body[0] }}
+      <Inline :text="project.body[0]" />
     </p>
     <p class="Meta">
       <span v-if="outside && project.contributions !== null">{{
