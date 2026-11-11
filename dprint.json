@@ -33,6 +33,7 @@
 		"**/.wrangler",
 		"**/generated/*.d.ts",
 		"**/worker-configuration.d.ts",
+		"packages/flamme/scripts/data/contributions.ts",
 		".playwright-cli",
 		".agents/skills/gh-stack/**",
 		"pnpm-workspace.yaml",

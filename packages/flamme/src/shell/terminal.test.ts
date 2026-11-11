@@ -33,6 +33,7 @@ const index: TerminalIndex = {
 			record: ["An API that was slow far from its region"],
 			practice: ["Put the API on Workers"],
 			tools: ["Cloudflare Workers"],
+			roles: ["Acme"],
 			evidence: ["cssforge"]
 		}
 	],

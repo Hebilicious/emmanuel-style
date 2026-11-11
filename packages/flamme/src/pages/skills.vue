@@ -14,7 +14,7 @@
  * listing of `skills/` beside it, with where to get in touch.
  */
 import { computed, ref } from "vue"
-import { useRouter } from "vue-router"
+import { RouterLink, useRouter } from "vue-router"
 import { usePageQuery } from "$flamme/records/skills"
 import Inline from "../components/Inline.vue"
 import Pager from "../components/Pager.vue"
@@ -45,7 +45,8 @@ type SkillsItem =
 	| (PagerItem & { readonly kind: "landing" })
 	| (PagerItem & { readonly kind: "listing" })
 	| (PagerItem & {
-			readonly kind: "skill"
+			/** The first page of a skill's file, and the page it continues on. */
+			readonly kind: "skill" | "record"
 			readonly skill: Skill
 			readonly number: number
 	  })
@@ -59,18 +60,33 @@ const items = computed<SkillsItem[]>(() =>
 				...(wide.value
 					? []
 					: [{ id: "listing", kind: "listing" as const, fit: true }]),
-				...skills.value.map(
-					(skill, at): SkillsItem => ({
+				/*
+				 * Each skill is a file of two pages, and each page opens one, fills it and is
+				 * shown whole. The first is what the skill is and the proof: the front matter,
+				 * the heading, what I do, and where I did it. The second is the record and how
+				 * I work. After the landing, which takes a spread, a skill is a spread of its
+				 * own; on a phone it is two pages.
+				 */
+				...skills.value.flatMap((skill, at): SkillsItem[] => [
+					{
 						id: `skill-${skill.name}`,
 						kind: "skill",
 						skill,
 						number: at + 1,
-						// Each skill is a file of its own: it opens a page, fills it, and is shown whole.
 						opens: true,
 						fit: true,
 						grow: true
-					})
-				)
+					},
+					{
+						id: `record-${skill.name}`,
+						kind: "record",
+						skill,
+						number: at + 1,
+						opens: true,
+						fit: true,
+						grow: true
+					}
+				])
 			]
 )
 
@@ -104,6 +120,12 @@ const standfirst =
 	"What I am good at, filed the way an agent files a skill: when to load it, what I have done with it, how I work. The format is for fun. The record is not: every line of it is in the Library."
 
 const open = (name: string) => void openProject(router, name)
+
+/** The page of the ledger a company's role is on: the ledger resolves the role's id to its page. */
+const roleLink = (company: string) => {
+	const role = index.value.roles.find((entry) => entry.company === company)
+	return { path: "/experience", query: role ? { role: role.id } : {} }
+}
 </script>
 
 <template>
@@ -162,6 +184,49 @@ const open = (name: string) => void openProject(router, name)
 
         <p class="Summary">{{ item.skill.summary }}</p>
 
+        <section class="Part Proof">
+          <h3 class="Heading">
+            <span class="Hash" aria-hidden="true">##</span> Evidence
+          </h3>
+          <p class="Evidence">
+            <span class="EvidenceLabel">on the job</span>
+            <RouterLink
+              v-for="company of item.skill.roles"
+              :key="company"
+              class="Chip Job"
+              :to="roleLink(company)"
+              data-row
+              :data-label="company">{{ company }}</RouterLink>
+          </p>
+          <p class="Evidence">
+            <span class="EvidenceLabel">in the Library</span>
+            <a
+              v-for="name of item.skill.evidence"
+              :key="name"
+              class="Chip"
+              :href="projectHref(router, name)"
+              data-row
+              :data-label="titles.get(name) ?? name"
+              :data-project="name"
+              @click.exact.prevent="open(name)">{{
+              titles.get(name) ?? name
+            }}</a>
+          </p>
+        </section>
+      </article>
+
+      <article
+        v-else-if='item.kind === "record"'
+        class="Skill"
+        :aria-label="`${item.skill.title}, continued`">
+        <header class="Tab">
+          <span class="Path">skills/{{ item.skill.name }}/<b>SKILL.md</b>
+            <span class="Continued">continued</span></span>
+          <span class="Count">{{ String(item.number).padStart(2, "0") }} / {{
+              String(skills.length).padStart(2, "0")
+            }}</span>
+        </header>
+
         <section class="Part">
           <h3 class="Heading">
             <span class="Hash" aria-hidden="true">##</span> Track record
@@ -182,26 +247,6 @@ const open = (name: string) => void openProject(router, name)
               <Inline :text="line" />
             </li>
           </ul>
-        </section>
-
-        <section class="Part Proof">
-          <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> Evidence
-            <span class="Aside">in the Library</span>
-          </h3>
-          <p class="Evidence">
-            <a
-              v-for="name of item.skill.evidence"
-              :key="name"
-              class="Chip"
-              :href="projectHref(router, name)"
-              data-row
-              :data-label="titles.get(name) ?? name"
-              :data-project="name"
-              @click.exact.prevent="open(name)">{{
-              titles.get(name) ?? name
-            }}</a>
-          </p>
         </section>
       </article>
     </template>
@@ -285,6 +330,13 @@ const open = (name: string) => void openProject(router, name)
 }
 
 /* What he does: the one paragraph a person reads, set as the lede. */
+.Continued {
+  margin-left: 0.8em;
+  color: var(--faint);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
 .Summary {
   max-width: 62ch;
   color: var(--ink);
@@ -320,7 +372,7 @@ const open = (name: string) => void openProject(router, name)
 .Part {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing_fluid-tight-space-tight-xs);
+  gap: var(--spacing_fluid-tight-space-tight-s);
 }
 
 .Heading {
@@ -343,12 +395,12 @@ const open = (name: string) => void openProject(router, name)
 .Steps {
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.55rem;
   margin: 0;
   padding: 0;
   list-style: none;
   color: var(--ink);
-  font-size: var(--typography_fluid-content-font-size-s);
+  font-size: var(--typography_fluid-content-font-size-m);
   line-height: 1.5;
   counter-reset: step;
 }
@@ -405,6 +457,21 @@ const open = (name: string) => void openProject(router, name)
   background: var(--accent);
   box-shadow: none;
   color: var(--accent-ink);
+}
+
+/* A role in the ledger: set in ink, where a project is set in the accent. */
+.Chip.Job {
+  border-color: var(--rule-strong);
+  color: var(--ink);
+}
+
+.EvidenceLabel {
+  min-width: 7.5em;
+  align-self: center;
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 /* A phone has no cursor to draw (see `global.css`). */

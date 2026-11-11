@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Experience",
     "kind": "query",
-    "hash": "53c16505d633c0f76aa040d8a2be1c5954c89a1dcbdb8588eb15737bdfa6a7de",
+    "hash": "753f0ef41adf74aa2c0a993a87403fdfcc0e67435b69e042d4232952eae8e4d3",
     "raw": `query Experience {
     roles {
         __typename
@@ -13,6 +13,7 @@ const artifact = {
         end
         highlights
         id
+        library
         location
         stack
         start
@@ -77,6 +78,13 @@ const artifact = {
                             "type": "ID",
                             "modifiers": "ID!",
                             "keyRaw": "id",
+                            "visible": true,
+                        },
+
+                        "library": {
+                            "type": "String",
+                            "modifiers": "[String!]!",
+                            "keyRaw": "library",
                             "visible": true,
                         },
 
@@ -220,6 +228,7 @@ export type Experience$result = {
 		readonly summary: string;
 		readonly highlights: ReadonlyArray<string>;
 		readonly stack: ReadonlyArray<string>;
+		readonly library: ReadonlyArray<string>;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 	readonly schools: ReadonlyArray<{
@@ -248,6 +257,7 @@ export type Experience$unmasked = {
 		readonly summary: string;
 		readonly highlights: ReadonlyArray<string>;
 		readonly stack: ReadonlyArray<string>;
+		readonly library: ReadonlyArray<string>;
 	}> | null;
 	readonly schools: ReadonlyArray<{
 		readonly __typename: "School";

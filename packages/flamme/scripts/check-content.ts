@@ -15,10 +15,11 @@
  * Run it with `pnpm --filter @emmanuel/flamme run content:check`.
  */
 
+import { pulls } from "./data/contributions.ts"
 import { readFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
-import type { BlockShape, PostShape, ProjectShape, SkillShape } from "@emmanuel/schema"
+import type { BlockShape, PostShape, ProjectShape, SkillShape, RoleShape } from "@emmanuel/schema"
 import { MOTIFS } from "../src/components/cover.ts"
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -27,7 +28,7 @@ const flamme = join(here, "..")
 interface Bundle {
 	posts: PostShape[]
 	shelves: { slug: string; projects: ProjectShape[] }[]
-	roles: unknown[]
+	roles: RoleShape[]
 	schools: unknown[]
 	skills: SkillShape[]
 }
@@ -171,13 +172,19 @@ const verifyLibrary = (shelves: Bundle["shelves"]) => {
 		"library: two projects share a place on the front page"
 	)
 	check(places.includes(1), "library: nothing leads the front page")
+	const listed = projects.reduce((sum, project) => sum + (project.contributions ?? 0), 0)
+	check(
+		listed === pulls.length,
+		`library: ${pulls.length - listed} merged pull request(s) are in no entry; every repository in data/contributions.ts needs one`
+	)
 	console.log(
 		`\nlibrary: ${projects.length} projects on ${shelves.length} shelves, ${places.length} on the front page`
 	)
 }
 
 /** Every skill cites real work: the projects it names are in the Library. */
-const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"]) => {
+const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"], roles: Bundle["roles"]) => {
+	const companies = new Set(roles.map((role) => role.company))
 	const names = new Set(shelves.flatMap((shelf) => shelf.projects.map((project) => project.name)))
 	for (const skill of skills) {
 		check(/^[a-z0-9][a-z0-9-]*$/.test(skill.name), `skills: ${skill.name} is not a skill name`)
@@ -188,6 +195,13 @@ const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"]) => {
 		check(/\bI\b/.test(skill.summary), `skills: ${skill.name}'s summary is not in the first person`)
 		check(skill.record.length >= 3, `skills: ${skill.name} has less than three lines of record`)
 		check(skill.evidence.length > 0, `skills: ${skill.name} cites no evidence`)
+		check(skill.roles.length > 0, `skills: ${skill.name} names no role it was done in`)
+		for (const company of skill.roles) {
+			check(
+				companies.has(company),
+				`skills: ${skill.name} names "${company}", which is not in the ledger`
+			)
+		}
 		for (const project of skill.evidence) {
 			check(
 				names.has(project),
@@ -196,6 +210,19 @@ const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"]) => {
 		}
 	}
 	console.log(`skills: ${skills.length}, each citing the Library`)
+}
+
+/** A role's Library projects are in the Library. */
+const verifyLedger = (roles: Bundle["roles"], shelves: Bundle["shelves"]) => {
+	const names = new Set(shelves.flatMap((shelf) => shelf.projects.map((project) => project.name)))
+	for (const role of roles) {
+		for (const project of role.library) {
+			check(
+				names.has(project),
+				`ledger: ${role.company} cites "${project}", which is not in the Library`
+			)
+		}
+	}
 }
 
 const main = async () => {
@@ -208,7 +235,8 @@ const main = async () => {
 
 	for (const post of bundle.posts) verifyPost(post)
 	verifyLibrary(bundle.shelves)
-	verifySkills(bundle.skills, bundle.shelves)
+	verifySkills(bundle.skills, bundle.shelves, bundle.roles)
+	verifyLedger(bundle.roles, bundle.shelves)
 
 	// Every footnote in the article is reachable from a block, and the page's
 	// block list is what the layout paginates, so an empty body is a failure too.

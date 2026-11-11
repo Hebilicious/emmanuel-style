@@ -13,6 +13,7 @@
  *   Home · End               first and last page
  *   Enter                    follow the row: open a link, a project, a figure
  *   n · p · Esc              in an open project: the next, the previous, close
+ *   PageDown · PageUp · ] [  in an open project: turn its list of pull requests
  *   / · : · ?                open the prompt (? prints the help)
  *   Ctrl+`                   open or close the prompt
  *   Esc                      close whatever is open
@@ -199,6 +200,8 @@ export const useKeyboard = (
 			else if (key === "Enter") follow()
 			else if (key === "n") shell.project?.next()
 			else if (key === "p") shell.project?.previous()
+			else if (key === "PageDown" || key === "]") shell.project?.page(1)
+			else if (key === "PageUp" || key === "[") shell.project?.page(-1)
 			else if (key === "Escape" || key === "q") shell.project?.close()
 			else return false
 			return true

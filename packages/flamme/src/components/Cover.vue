@@ -750,6 +750,66 @@ const drawing = computed<Drawing>(() => {
 			}
 			break
 		}
+		case "merge": {
+			// A branch for each pull request, leaving the trunk and merged back into it.
+			const merges = Math.max(1, Math.min(props.count ?? 1, 5))
+			const trunk = top + (bottom - top) * 0.72
+			paths.push({
+				d: `M${left} ${trunk} H${right}`,
+				kind: "ink",
+				width: 1.6
+			})
+			const room = (right - left - 24) / merges
+			for (let i = 0; i < merges; i += 1) {
+				const from = left + 10 + i * room + rnd() * room * 0.12
+				const to = from + room * (0.62 + rnd() * 0.22)
+				const up = trunk - (bottom - top) * (0.26 + rnd() * 0.22)
+				const bend = Math.min(16, (to - from) / 4)
+				paths.push({
+					d: `M${from.toFixed(1)} ${trunk} C${(from + bend).toFixed(1)} ${trunk} ${from.toFixed(1)} ${up.toFixed(1)} ${(from + bend).toFixed(1)} ${up.toFixed(1)} H${(to - bend).toFixed(1)} C${to.toFixed(1)} ${up.toFixed(1)} ${(to - bend).toFixed(1)} ${trunk} ${to.toFixed(1)} ${trunk}`,
+					kind: "accent",
+					width: 1.8
+				})
+				// The commits on the branch, and the merge where it lands.
+				const commits = 1 + Math.floor(rnd() * 3)
+				for (let c = 0; c < commits; c += 1) {
+					dots.push({
+						x: from + bend + ((to - from - bend * 2) * (c + 0.5)) / commits,
+						y: up,
+						r: 2.2,
+						kind: "ink"
+					})
+				}
+				dots.push({ x: from, y: trunk, r: 2.2, kind: "ink" })
+				dots.push({ x: to, y: trunk, r: 3.4, kind: "accent" })
+			}
+			labels.push({
+				x: left,
+				y: top + 26,
+				text: String(props.count ?? 1),
+				size: 34,
+				kind: "ink",
+				display: true
+			})
+			labels.push({
+				x: left + 4 + String(props.count ?? 1).length * 22,
+				y: top + 24,
+				text: "merged",
+				size: 9,
+				kind: "accent"
+			})
+			const year = (props.activity[0] ?? "").slice(0, 4)
+			if (year)
+				labels.push({
+					x: right,
+					y: top + 24,
+					text: year,
+					size: 9,
+					kind: "faint",
+					anchor: "end"
+				})
+			break
+		}
 		case "timeline": {
 			// One bar per month with a merged pull request, from the first to the last.
 			const months = [...props.activity]

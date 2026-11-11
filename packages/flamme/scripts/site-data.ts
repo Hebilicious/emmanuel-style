@@ -17,7 +17,12 @@
 import type { ProjectShape, RoleShape, SchoolShape, ShelfShape, SkillShape } from "@emmanuel/schema"
 import { education, roles } from "./data/experience.ts"
 import { type PortfolioEntry, portfolio, shelves as shelfList } from "./data/portfolio.ts"
+import { pulls } from "./data/contributions.ts"
 import { skills as skillList } from "./data/skills.ts"
+
+/** The merged pull requests of an entry of outside work. */
+const pullsOf = (entry: PortfolioEntry) =>
+	pulls.filter((pull) => entry.repositories?.includes(pull.repository) === true)
 
 const project = (entry: PortfolioEntry): ProjectShape => ({
 	name: entry.name,
@@ -36,13 +41,26 @@ const project = (entry: PortfolioEntry): ProjectShape => ({
 	started: entry.started,
 	ended: entry.ended ?? null,
 	featured: entry.featured ?? null,
-	contributions: entry.activity === undefined ? null : entry.activity.length,
-	activity: [...(entry.activity ?? [])].sort(),
-	links: (entry.links ?? []).map((link) => ({
-		label: link.label,
-		url: link.url,
-		date: link.date ?? null
-	})),
+	contributions: entry.repositories === undefined ? null : pullsOf(entry).length,
+	// One month per merged pull request, oldest first: what the cover's timeline draws.
+	activity: pullsOf(entry)
+		.map((pull) => pull.date.slice(0, 7))
+		.sort(),
+	// Outside work lists every pull request, newest first; a project of his own, its further reading.
+	links:
+		entry.repositories === undefined
+			? (entry.links ?? []).map((link) => ({
+					label: link.label,
+					url: link.url,
+					date: link.date ?? null
+				}))
+			: pullsOf(entry)
+					.sort((a, b) => b.date.localeCompare(a.date) || b.number - a.number)
+					.map((pull) => ({
+						label: pull.title,
+						url: `https://github.com/${pull.repository}/pull/${pull.number}`,
+						date: pull.date.slice(0, 7)
+					})),
 	cover: entry.cover
 })
 
@@ -73,7 +91,8 @@ export const experiences: RoleShape[] = roles.map((role) => ({
 	end: role.end,
 	summary: role.summary,
 	highlights: role.highlights,
-	stack: role.stack
+	stack: role.stack,
+	library: role.library ?? []
 }))
 
 export const schools: SchoolShape[] = education.map((entry) => ({
@@ -95,5 +114,6 @@ export const skills: SkillShape[] = skillList.map((skill) => ({
 	record: [...skill.record],
 	practice: [...skill.practice],
 	tools: [...skill.tools],
+	roles: [...skill.roles],
 	evidence: [...skill.evidence]
 }))

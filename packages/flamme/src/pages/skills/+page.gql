@@ -9,6 +9,7 @@ query Skills {
 		record
 		practice
 		tools
+		roles
 		evidence
 	}
 }

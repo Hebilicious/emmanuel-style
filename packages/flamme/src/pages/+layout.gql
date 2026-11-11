@@ -35,6 +35,7 @@ query SiteIndex {
 		record
 		practice
 		tools
+		roles
 		evidence
 	}
 	roles {

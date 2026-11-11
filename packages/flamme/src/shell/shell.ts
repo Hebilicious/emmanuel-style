@@ -55,8 +55,14 @@ export interface Shell {
 	 * into the dialog waits for it, so the dialog is captured full rather than empty.
 	 */
 	projectShown: string | null
-	/** What the open project dialog answers: `n` and `p` for the next and previous project, Esc. */
-	project: { next(): void; previous(): void; close(): void } | null
+	/** What the open project dialog answers: `n` and `p` for the next and previous project, PageDown and PageUp for its list, Esc. */
+	project: {
+		next(): void
+		previous(): void
+		/** Turn the open project's list of pull requests, where it has one. */
+		page(delta: number): void
+		close(): void
+	} | null
 }
 
 const SHELL_KEY: InjectionKey<Shell> = Symbol("shell")

@@ -79,6 +79,29 @@ const source = computed(() => {
 	return `${value.url.replace(/^https?:\/\/(www\.)?/, "")} ↗`
 })
 
+/*
+ * Outside work lists every pull request, and some entries have more than a hundred.
+ * They are read a page at a time, newest first, so the sheet keeps its size: the
+ * arrows beside the heading turn the list, and so do PageDown and PageUp.
+ */
+const LINKS_PER_PAGE = 8
+const linkPage = ref(0)
+const linkPages = computed(() =>
+	Math.max(1, Math.ceil((project.value?.links.length ?? 0) / LINKS_PER_PAGE))
+)
+const shownLinks = computed(() =>
+	(project.value?.links ?? []).slice(
+		linkPage.value * LINKS_PER_PAGE,
+		(linkPage.value + 1) * LINKS_PER_PAGE
+	)
+)
+const pageLinks = (delta: number) => {
+	linkPage.value = Math.max(
+		0,
+		Math.min(linkPages.value - 1, linkPage.value + delta)
+	)
+}
+
 const label = computed(() => project.value?.title ?? "Project")
 const close = () => void closeProject(router)
 const go = (target: { name: string } | null) => {
@@ -90,6 +113,7 @@ const go = (target: { name: string } | null) => {
 watch(
 	name,
 	(value) => {
+		linkPage.value = 0
 		syncProject(value)
 		if (value !== null) shell.dialog = { kind: "project", name: value }
 		else if (shell.dialog?.kind === "project") shell.dialog = null
@@ -126,6 +150,7 @@ onMounted(() => {
 	shell.project = {
 		next: () => go(next.value),
 		previous: () => go(previous.value),
+		page: pageLinks,
 		close
 	}
 	window.addEventListener("resize", fit)
@@ -273,10 +298,42 @@ const fit = () => {
           </section>
           <section v-if="project.links.length > 0" class="Box">
             <h3 class="BoxTitle">
-              {{ outside ? "Pull requests worth reading" : "Further reading" }}
+              <span>{{
+                outside
+                ? `Every pull request merged · ${project.links.length}`
+                : "Further reading"
+              }}</span>
+              <span v-if="linkPages > 1" class="ListPager">
+                <button
+                  type="button"
+                  class="PageTurn"
+                  :disabled="linkPage === 0"
+                  aria-label="Newer pull requests"
+                  data-row
+                  data-steady
+                  data-label="newer pull requests"
+                  @click="pageLinks(-1)">
+                  ‹
+                </button>
+                <span class="PageCount">{{ linkPage + 1 }}<span
+                    class="Faint">/</span>{{ linkPages }}</span>
+                <button
+                  type="button"
+                  class="PageTurn"
+                  :disabled="linkPage === linkPages - 1"
+                  aria-label="Older pull requests"
+                  data-row
+                  data-steady
+                  data-label="older pull requests"
+                  @click="pageLinks(1)">
+                  ›
+                </button>
+              </span>
             </h3>
-            <ol class="Links">
-              <li v-for="link of project.links" :key="link.url">
+            <ol
+              class="Links"
+              :style="linkPages > 1 ? { minHeight: `${LINKS_PER_PAGE * 1.95}rem` } : undefined">
+              <li v-for="link of shownLinks" :key="link.url">
                 <a
                   :href="link.url"
                   target="_blank"
@@ -559,6 +616,46 @@ const fit = () => {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* The list's own pager, beside its heading. */
+.BoxTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing_fluid-tight-space-tight-m);
+}
+
+.ListPager {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.06em;
+}
+
+.PageTurn {
+  min-width: 1.9em;
+  padding: 0 0.4em;
+  border: var(--spacing-size-hairline) solid var(--rule-strong);
+  color: var(--accent);
+  line-height: 1.6;
+}
+
+.PageTurn:disabled {
+  color: var(--faint);
+  cursor: default;
+}
+
+.Faint {
+  color: var(--faint);
+}
+
+.LinkLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .Links a {

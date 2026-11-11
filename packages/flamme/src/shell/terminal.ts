@@ -49,6 +49,7 @@ export interface IndexSkill {
 	readonly record: readonly string[]
 	readonly practice: readonly string[]
 	readonly tools: readonly string[]
+	readonly roles: readonly string[]
 	readonly evidence: readonly string[]
 }
 
@@ -218,12 +219,15 @@ const cat = (index: TerminalIndex, cwd: string, target: string): string => {
 				"---",
 				`# ${skill.title}`,
 				skill.summary,
+				// The evidence comes first: a long record is cut at the foot of the screen.
+				"## Where",
+				skill.roles.join(" · "),
+				"## Evidence",
+				skill.evidence.map((name) => `library/${name}.txt`).join("  "),
 				"## Track record",
 				...skill.record.map((line) => `- ${line}`),
 				"## How I work",
-				...skill.practice.map((line) => `- ${line}`),
-				"## Evidence",
-				skill.evidence.map((name) => `library/${name}.txt`).join("  ")
+				...skill.practice.map((line) => `- ${line}`)
 			])
 		}
 		case "role": {

@@ -25,6 +25,9 @@ interface Role {
 
 const props = defineProps<{ roles: readonly Role[] }>()
 
+/** With more roles than this, a row is one line: the company and its bar. */
+const DENSE_FROM = 8
+
 const monthIndex = (value: string) => {
 	const [year = 0, month = 1] = value.split("-").map(Number)
 	return year * 12 + (month - 1)
@@ -82,7 +85,7 @@ const rows = computed(() =>
 </script>
 
 <template>
-  <figure class="Chart">
+  <figure class="Chart" :class="{ Dense: roles.length > DENSE_FROM }">
     <figcaption class="Caption">
       <span class="Title label">
         <span class="Mark" aria-hidden="true">▚</span>
@@ -304,6 +307,44 @@ const rows = computed(() =>
   white-space: nowrap;
 }
 
+/*
+ * A long career: every row is one line, the company beside its bar, so fifteen
+ * roles fit the page the chart is on. The title and the dates are on the role's
+ * own page.
+ */
+.Dense .Rows {
+  gap: 0.2rem;
+}
+
+.Dense .Who {
+  flex-direction: row;
+  align-items: baseline;
+  font-size: var(--typography_fluid-micro-font-size-micro-l);
+}
+
+.Dense .Company {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Dense .Role,
+.Dense .When {
+  display: none;
+}
+
+.Dense .Track {
+  height: 1.35rem;
+}
+
+.Dense .Bar {
+  height: 0.75rem;
+}
+
+.Dense .Span {
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+}
+
 /* A container query cannot style the container, so the chart's own padding follows the screen. */
 @media (max-width: 40rem) {
   .Chart {
@@ -351,8 +392,20 @@ const rows = computed(() =>
     display: none;
   }
 
+  .Dense .Who .When {
+    display: inline;
+  }
+
   .Track {
     height: 1.8rem;
+  }
+
+  .Dense .Track {
+    height: 1rem;
+  }
+
+  .Dense .Bar {
+    height: 0.6rem;
   }
 
   .Bar {

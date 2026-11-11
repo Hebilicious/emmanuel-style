@@ -18,14 +18,17 @@
  * smaller until it fits, never cut. On a phone the same blocks are stacked on one
  * page each.
  */
-import { computed, ref } from "vue"
+import { computed, ref, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { usePageQuery } from "$flamme/records/experience"
 import ExperienceChart from "../components/ExperienceChart.vue"
 import LedgerProgress, { type Segment } from "../components/LedgerProgress.vue"
 import Pager from "../components/Pager.vue"
 import SectionLanding from "../components/SectionLanding.vue"
 import type { PagerHandle, PagerItem } from "../components/pager.js"
+import { openProject, projectHref } from "../shell/project.js"
 import { useShell } from "../shell/shell.js"
+import { useSiteIndex } from "../shell/site-index.js"
 import { useWide } from "../shell/wide.js"
 import { formatDuration, formatMonth, monthsBetween } from "../utils/format.js"
 
@@ -33,6 +36,18 @@ const { data } = usePageQuery()
 const wide = useWide()
 const shell = useShell()
 const pager = ref<PagerHandle | null>(null)
+const route = useRoute()
+const router = useRouter()
+const index = useSiteIndex()
+
+/** The Library's titles, for the projects a role cites. */
+const titles = computed(
+	() =>
+		new Map(
+			index.value.projects.map((project) => [project.name, project.title])
+		)
+)
+const open = (name: string) => void openProject(router, name)
 
 const roles = computed(() =>
 	[...(data.value?.roles ?? [])].sort((a, b) => b.start.localeCompare(a.start))
@@ -49,21 +64,27 @@ const today = new Intl.DateTimeFormat("en-GB", {
 	year: "numeric"
 }).format(new Date())
 
-const totalMonths = computed(() =>
-	roles.value.reduce(
-		(sum, role) => sum + monthsBetween(role.start, role.end),
-		0
-	)
-)
 const since = computed(() =>
 	roles.value.reduce(
 		(first, role) => (role.start < first ? role.start : first),
 		"9999"
 	)
 )
-const stack = computed(() => [
-	...new Set(roles.value.flatMap((role) => role.stack))
-])
+/** From the first role to now. Roles overlap, so their lengths are not added up. */
+const totalMonths = computed(() =>
+	roles.value.length === 0 ? 0 : monthsBetween(since.value, null)
+)
+/** What the roles were built with: the technologies named most often, most used first. */
+const STACK_SHOWN = 16
+const stack = computed(() => {
+	const counts = new Map<string, number>()
+	for (const tech of roles.value.flatMap((role) => role.stack))
+		counts.set(tech, (counts.get(tech) ?? 0) + 1)
+	return [...counts.entries()]
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, STACK_SHOWN)
+		.map(([tech]) => tech)
+})
 
 type LedgerItem =
 	| (PagerItem & { readonly kind: "chart" })
@@ -104,7 +125,7 @@ const toPage = (page: number | null) => ({
 })
 
 const standfirst =
-	"The short form of the career: every role with what was done in it, how long it lasted, and where it sits on the whole; then the record."
+	"The career, role by role: what I did in each, how long it lasted, and where it sits on the whole. Then the record."
 const figures = computed(() => [
 	{ label: "roles", value: String(roles.value.length) },
 	{ label: "in the trade", value: formatDuration(totalMonths.value) },
@@ -122,6 +143,28 @@ const secondary = computed(() => ({
 	label: "Straight to the record",
 	to: toPage(pageOfItem("record"))
 }))
+
+/*
+ * A link from elsewhere names a role (`/experience?role=<id>`, from a skill's "on
+ * the job"): once the pages are laid out the ledger opens on that role's page, and
+ * the name is taken out of the address, which keeps only the page.
+ */
+watch(
+	() => [route.query["role"], layout.value] as const,
+	([wanted]) => {
+		if (typeof wanted !== "string" || wanted === "") return
+		const page = pageOfItem(`role-${wanted}`)
+		if (page === null) return
+		void router.replace({
+			query: {
+				...route.query,
+				role: undefined,
+				page: page > 1 ? page : undefined
+			}
+		})
+	},
+	{ immediate: true }
+)
 
 /** The progress bar: the overview, a segment per role as long as the role (a year at least), the record. */
 const segments = computed<Segment[]>(() => [
@@ -262,7 +305,10 @@ const placement = (role: Role) => {
                 <span>now</span>
               </figcaption>
             </figure>
-            <ul class="Stack" aria-label="Stack">
+            <ul
+              v-if="item.role.stack.length > 0"
+              class="Stack"
+              aria-label="Stack">
               <li v-for="tech of item.role.stack" :key="tech" class="Tech">
                 {{ tech }}
               </li>
@@ -282,11 +328,25 @@ const placement = (role: Role) => {
               <span class="Rule" aria-hidden="true"></span>
             </header>
             <p class="Summary">{{ item.role.summary }}</p>
-            <ul class="Highlights">
+            <ul v-if="item.role.highlights.length > 0" class="Highlights">
               <li v-for="highlight of item.role.highlights" :key="highlight">
                 {{ highlight }}
               </li>
             </ul>
+            <p v-if="item.role.library.length > 0" class="Shelf">
+              <span class="ShelfLabel">in the Library</span>
+              <a
+                v-for="name of item.role.library"
+                :key="name"
+                class="Chip"
+                :href="projectHref(router, name)"
+                data-row
+                :data-label="titles.get(name) ?? name"
+                :data-project="name"
+                @click.exact.prevent="open(name)">{{
+                titles.get(name) ?? name
+              }}</a>
+            </p>
           </div>
         </article>
 
@@ -612,6 +672,47 @@ const placement = (role: Role) => {
   position: absolute;
   left: 0.15em;
   color: var(--accent);
+}
+
+/* What the role left in the Library: each chip opens its project over the page. */
+.Shelf {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: var(--spacing_fluid-tight-space-tight-m);
+  border-top: var(--spacing-size-hairline) solid var(--rule);
+}
+
+.ShelfLabel {
+  margin-right: 0.4em;
+  color: var(--faint);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.Chip {
+  padding: 0.1rem 0.6em;
+  border: var(--spacing-size-hairline) solid var(--accent);
+  color: var(--accent);
+  font-size: var(--typography_fluid-micro-font-size-micro-m);
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+.Chip[data-cursor="true"] {
+  background: var(--accent);
+  box-shadow: none;
+  color: var(--accent-ink);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .Chip[data-cursor="true"] {
+    background: none;
+    color: var(--accent);
+  }
 }
 
 /* -------------------------------------------------------------- the record */
