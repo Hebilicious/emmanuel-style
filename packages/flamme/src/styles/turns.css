@@ -397,6 +397,24 @@
   animation: none;
 }
 
+/*
+ * The press's canvas (`components/Press.vue`) is over the page and keeps drawing
+ * through a turn: its old snapshot is dropped and the new one, which is live, is
+ * shown as it is, above the turning leaves.
+ */
+::view-transition-group(press) {
+  z-index: 20;
+  animation: none;
+}
+
+::view-transition-old(press) {
+  display: none;
+}
+
+::view-transition-new(press) {
+  animation: none;
+}
+
 /* ------------------------------------------------------------------ zoom */
 
 /*

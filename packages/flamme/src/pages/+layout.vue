@@ -15,8 +15,11 @@ import { onBeforeUnmount, onMounted, provide, ref, watch } from "vue"
 import { RouterView, useRoute, useRouter } from "vue-router"
 import Bar from "../components/Bar.vue"
 import Dock from "../components/Dock.vue"
+import Furniture from "../components/Furniture.vue"
 import MouseGate from "../components/MouseGate.vue"
+import Press from "../components/Press.vue"
 import ProjectDialog from "../components/ProjectDialog.vue"
+import Wire from "../components/Wire.vue"
 import Zoom from "../components/Zoom.vue"
 import { useFootnotes } from "../shell/footnotes.js"
 import { useKeyboard } from "../shell/keyboard.js"
@@ -93,15 +96,20 @@ watch(
     <a class="Skip" href="#main">Skip to content</a>
     <Bar />
     <div class="Edge" aria-hidden="true"></div>
+    <Wire />
 
-    <main id="main" class="Page" tabindex="-1">
-      <RouterView />
-    </main>
+    <div class="Desk">
+      <main id="main" class="Page" tabindex="-1">
+        <RouterView />
+      </main>
+      <Furniture />
+    </div>
 
     <Dock ref="dock" />
 
     <MouseGate />
     <ProjectDialog />
     <Zoom />
+    <Press />
   </div>
 </template>

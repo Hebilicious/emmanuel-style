@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Home",
     "kind": "query",
-    "hash": "8e9ec4c371b9202e4a362f458344aae8d6177bdf909622fedac80c032ca26ef9",
+    "hash": "a0c69ee3b932418ab7fa33383625f85b822b8cc8cf79fc47c119596131b71c0b",
     "raw": `query Home {
     posts {
         __typename
@@ -32,6 +32,7 @@ const artifact = {
             featured
             kind
             name
+            tagline
             title
         }
         slug
@@ -221,6 +222,13 @@ const artifact = {
                                         "visible": true,
                                     },
 
+                                    "tagline": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "tagline",
+                                        "visible": true,
+                                    },
+
                                     "title": {
                                         "type": "String",
                                         "modifiers": "String!",
@@ -322,6 +330,7 @@ export type Home$result = {
 		readonly projects: ReadonlyArray<{
 			readonly name: string;
 			readonly title: string;
+			readonly tagline: string;
 			readonly kind: string;
 			readonly featured: number | null;
 			readonly contributions: number | null;
@@ -362,6 +371,7 @@ export type Home$unmasked = {
 			readonly __typename: "Project";
 			readonly name: string;
 			readonly title: string;
+			readonly tagline: string;
 			readonly kind: string;
 			readonly featured: number | null;
 			readonly contributions: number | null;

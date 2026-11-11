@@ -17,7 +17,7 @@ import { useMediaQuery } from "@vueuse/core"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { RouterLink } from "vue-router"
 import { usePageQuery } from "$flamme/records/index"
-import Cover from "../components/Cover.vue"
+import CoverDeck from "../components/CoverDeck.vue"
 import Icon from "../components/Icon.vue"
 import Pager from "../components/Pager.vue"
 import type { PagerHandle, PagerItem } from "../components/pager.js"
@@ -146,7 +146,14 @@ const quotes = [
 ]
 
 const quote = ref(0)
+/** The plate in front of the Library's deck; it steps on with the quote's clock. */
+const plate3d = ref(0)
 let timer = 0
+let deckTimer = 0
+const stepDeck = () => {
+	if (featured.value.length > 0)
+		plate3d.value = (plate3d.value + 1) % featured.value.length
+}
 
 /** A step by hand restarts the rotation, so the timer does not undo it a moment later. */
 const restart = () => {
@@ -180,10 +187,13 @@ const onLayout = (total: number) => {
 onMounted(() => {
 	restart()
 	shell.turner = quoteTurner
+	if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+		deckTimer = window.setInterval(stepDeck, 3800)
 })
 
 onBeforeUnmount(() => {
 	window.clearInterval(timer)
+	window.clearInterval(deckTimer)
 	if (shell.turner === quoteTurner) shell.turner = null
 })
 
@@ -196,26 +206,35 @@ const spread = useMediaQuery("(min-width: 60rem)")
 
 /*
  * A spread: the identity and the index of the edition on the left page, the index
- * growing into it; the Library opening the right page and growing into it, and
- * the quote under it. The latest dispatch is the blog's row of the index there. A
- * phone: the Library straight after the identity, the latest dispatch with its
- * plate after the index, the quote last. On a short screen it is the quote that
- * goes over to a second spread, never the Library.
+ * growing into it; the Library on the right page, growing into it, and the quote
+ * under it. The latest dispatch is the blog's row of the index there. A phone: the
+ * Library straight after the identity, the latest dispatch with its plate after
+ * the index, the quote last.
  */
-const items = computed<PagerItem[]>(() =>
+type FrontItem = PagerItem & { readonly parts: readonly string[] }
+
+const items = computed<FrontItem[]>(() =>
 	spread.value
 		? [
-				{ id: "identity", atomic: true },
-				{ id: "index", atomic: true, grow: true },
-				{ id: "library", opens: true, atomic: true, grow: true },
-				{ id: "quote", atomic: true }
+				// Each page is one block, set smaller when the screen is short (`fit`), so the
+				// front page is always exactly one spread.
+				{ id: "left", parts: ["identity", "index"], fit: true, grow: true },
+				{
+					id: "right",
+					parts: ["library", "quote"],
+					opens: true,
+					fit: true,
+					grow: true
+				}
 			]
 		: [
-				{ id: "identity", atomic: true },
-				{ id: "library", atomic: true },
-				{ id: "index", atomic: true },
-				...(latest.value ? [{ id: "latest", atomic: true }] : []),
-				{ id: "quote", atomic: true }
+				{ id: "identity", parts: ["identity"], atomic: true },
+				{ id: "library", parts: ["library"], atomic: true },
+				{ id: "index", parts: ["index"], atomic: true },
+				...(latest.value
+					? [{ id: "latest", parts: ["latest"], atomic: true }]
+					: []),
+				{ id: "quote", parts: ["quote"], atomic: true }
 			]
 )
 
@@ -234,154 +253,164 @@ const blurbOf = (section: (typeof sections)[number]) =>
     :turns="false"
     @layout="onLayout">
     <template #item="{ item }">
-      <section v-if='item.id === "identity"' class="Identity" aria-label="Who">
-        <img
-          class="Portrait"
-          src="/images/Profile.webp"
-          width="480"
-          height="480"
-          alt="Emmanuel"
-          decoding="async"
-        />
-        <div class="Who">
-          <h2 class="Name display">Emmanuel LD</h2>
-          <ul class="Lines">
-            <li v-for="line of identity" :key="line">{{ line }}</li>
-          </ul>
-        </div>
-        <p v-if="tagline" class="Tagline">{{ tagline }}</p>
-        <ul class="Links">
-          <li v-for="link of links" :key="link.label">
-            <a
-              class="Link"
-              :href="link.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-row
-              :data-label="link.label">
-              <Icon :name="link.icon" />
-              <span class="Handle">{{ link.label }}</span>
-              <span class="Out" aria-hidden="true">↗</span>
-            </a>
-          </li>
-        </ul>
-      </section>
+      <div class="Parts">
+        <template v-for="part of item.parts" :key="part">
+          <section v-if='part === "identity"' class="Identity" aria-label="Who">
+            <figure class="Portrait">
+              <span class="Window" data-relief="/images/Profile.webp">
+                <img
+                  class="Photo"
+                  src="/images/Profile.webp"
+                  width="460"
+                  height="460"
+                  alt="Emmanuel"
+                  decoding="async"
+                />
+              </span>
+              <figcaption class="Live" aria-hidden="true">
+                <span class="Pulse"></span> fig. 1 · live plate
+              </figcaption>
+            </figure>
+            <div class="Who">
+              <h2 class="Name display">Emmanuel LD</h2>
+              <ul class="Lines">
+                <li v-for="line of identity" :key="line">{{ line }}</li>
+              </ul>
+            </div>
+            <p v-if="tagline" class="Tagline">{{ tagline }}</p>
+            <ul class="Links">
+              <li v-for="link of links" :key="link.label">
+                <a
+                  class="Link"
+                  :href="link.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-row
+                  :data-label="link.label">
+                  <Icon :name="link.icon" />
+                  <span class="Handle">{{ link.label }}</span>
+                  <span class="Out" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            </ul>
+          </section>
 
-      <section
-        v-else-if='item.id === "quote"'
-        class="Quote"
-        aria-label="Quote"
-        aria-live="polite">
-        <p class="Overline label">
-          <span>quote</span>
-          <span class="Next" aria-hidden="true"><span class="Key">n</span><span
-              class="Key">p</span> another</span>
-          <span class="Count">{{ String(quote + 1).padStart(2, "0") }} / {{
-              quotes.length
-            }}</span>
-        </p>
-        <!--
+          <section
+            v-else-if='part === "quote"'
+            class="Quote"
+            aria-label="Quote"
+            aria-live="polite">
+            <p class="Overline label">
+              <span>quote</span>
+              <span class="Next" aria-hidden="true"><span
+                  class="Key">n</span><span class="Key">p</span> another</span>
+              <span class="Count">{{ String(quote + 1).padStart(2, "0") }} / {{
+                  quotes.length
+                }}</span>
+            </p>
+            <!--
           Every quote is laid out in the same box and only the current one is shown,
           so the block does not change height (and re-paginate the page) every eight
           seconds.
         -->
-        <div class="Stack">
-          <blockquote
-            v-for="(entry, index) of quotes"
-            :key="entry.author"
-            class="Words"
-            :class="{ Shown: index === quote }"
-            :aria-hidden="index !== quote">
-            <p class="Text">“{{ entry.quote }}”</p>
-            <footer class="Author">— {{ entry.author }}</footer>
-          </blockquote>
-        </div>
-      </section>
+            <div class="Stack">
+              <blockquote
+                v-for="(entry, index) of quotes"
+                :key="entry.author"
+                class="Words"
+                :class="{ Shown: index === quote }"
+                :aria-hidden="index !== quote">
+                <p class="Text">“{{ entry.quote }}”</p>
+                <footer class="Author">— {{ entry.author }}</footer>
+              </blockquote>
+            </div>
+          </section>
 
-      <section
-        v-else-if='item.id === "library"'
-        class="Library"
-        aria-label="The Library">
-        <p class="Overline label">
-          <span>the story of the edition</span>
-          <span class="Count">{{ projects.length }} entries</span>
-        </p>
-        <div class="Covers" aria-hidden="true">
-          <span
-            v-for="(project, index) of featured.slice(0, 5)"
-            :key="project.name"
-            class="CoverCell"
-            :class="{ First: index === 0 }">
-            <Cover
-              :motif="project.cover"
-              :seed="project.name"
-              :activity="project.activity"
-              :count="project.contributions"
-              :ratio="index === 0 ? 16 / 7 : 16 / 10"
-            />
-          </span>
-        </div>
-        <h2 class="LibraryTitle display">The Library</h2>
-        <p class="LibraryStandfirst">
-          {{ own }} projects built end to end, Nuxt modules, tools, and {{
-            merged
-          }}
-          pull requests merged into other people's code.
-        </p>
-        <RouterLink
-          class="Open"
-          to="/library"
-          data-row
-          data-cursor-home
-          data-label="open the library">
-          <span>Open the Library</span>
-          <span class="OpenArrow" aria-hidden="true">→</span>
-        </RouterLink>
-      </section>
+          <section
+            v-else-if='part === "library"'
+            class="Library"
+            aria-label="The Library">
+            <p class="Overline label">
+              <span>the story of the edition</span>
+              <span class="Count">{{ projects.length }} entries</span>
+            </p>
+            <CoverDeck class="Covers" :projects="featured" :active="plate3d" />
+            <h2 class="LibraryTitle display">The Library</h2>
+            <p class="LibraryStandfirst">
+              {{ own }} projects built end to end, Nuxt modules, tools, and {{
+                merged
+              }}
+              pull requests merged into other people's code.
+            </p>
+            <RouterLink
+              class="Open"
+              to="/library"
+              data-row
+              data-cursor-home
+              data-label="open the library">
+              <span>Open the Library</span>
+              <span class="OpenArrow" aria-hidden="true">→</span>
+            </RouterLink>
+          </section>
 
-      <nav v-else-if='item.id === "index"' class="Index" aria-label="Sections">
-        <p class="Overline label">in this edition</p>
-        <RouterLink
-          v-for="section of sections"
-          :key="section.href"
-          class="Entry"
-          :to="section.href"
-          data-row
-          :data-label="section.label">
-          <span class="Label">[{{ section.label }}]</span>
-          <span class="Blurb">{{ blurbOf(section) }}</span>
-          <span class="Shortcut" aria-hidden="true"><span
-              class="Key">g</span><span class="Key">{{
-              section.key
-            }}</span></span>
-        </RouterLink>
-      </nav>
+          <nav v-else-if='part === "index"' class="Index" aria-label="Sections">
+            <p class="Overline label">in this edition</p>
+            <RouterLink
+              v-for="section of sections"
+              :key="section.href"
+              class="Entry"
+              :to="section.href"
+              data-row
+              :data-label="section.label">
+              <span class="Label">[{{ section.label }}]</span>
+              <span class="Blurb">{{ blurbOf(section) }}</span>
+              <span class="Shortcut" aria-hidden="true"><span
+                  class="Key">g</span><span class="Key">{{
+                  section.key
+                }}</span></span>
+            </RouterLink>
+          </nav>
 
-      <article v-else-if="latest" class="Latest">
-        <p class="Overline label">latest dispatch</p>
-        <RouterLink
-          class="Story"
-          :to="`/blog/${latest.slug}`"
-          data-row
-          :data-label="latest.title">
-          <span v-if="plate?.image" class="Thumb">
-            <img :src="plate.image" alt="" decoding="async" />
-          </span>
-          <span class="Copy">
-            <time class="Date" :datetime="latest.date">{{
-              formatDate(latest.date)
-            }}</time>
-            <span class="Title display">{{ latest.title }}</span>
-            <span class="Standfirst">{{ latest.description }}</span>
-            <span class="Read">read <span aria-hidden="true">→</span></span>
-          </span>
-        </RouterLink>
-      </article>
+          <article v-else-if="latest" class="Latest">
+            <p class="Overline label">latest dispatch</p>
+            <RouterLink
+              class="Story"
+              :to="`/blog/${latest.slug}`"
+              data-row
+              :data-label="latest.title">
+              <span v-if="plate?.image" class="Thumb">
+                <img :src="plate.image" alt="" decoding="async" />
+              </span>
+              <span class="Copy">
+                <time class="Date" :datetime="latest.date">{{
+                  formatDate(latest.date)
+                }}</time>
+                <span class="Title display">{{ latest.title }}</span>
+                <span class="Standfirst">{{ latest.description }}</span>
+                <span class="Read">read <span
+                    aria-hidden="true">→</span></span>
+              </span>
+            </RouterLink>
+          </article>
+        </template>
+      </div>
     </template>
   </Pager>
 </template>
 
 <style scoped>
+/* The parts of one page, one under the other; the index and the Library take what is left. */
+.Parts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--block-gap, 0.85rem);
+}
+
+.Parts > .Index,
+.Parts > .Library {
+  flex: 1 1 auto;
+}
+
 .Overline {
   display: flex;
   justify-content: space-between;
@@ -392,27 +421,84 @@ const blurbOf = (section: (typeof sections)[number]) =>
 .Identity {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr;
   grid-template-areas:
     "portrait who"
-    "tagline tagline"
-    "links links";
-  align-items: center;
+    "portrait tagline"
+    "portrait links";
+  align-items: start;
   gap: var(--spacing_fluid-tight-space-tight-l)
     var(--spacing_fluid-column-space-column-s);
   padding-bottom: var(--spacing_fluid-flow-space-s);
   border-bottom: var(--spacing-size-rule) double var(--rule-strong);
 }
 
+/*
+ * The portrait's plate. The press draws the portrait in it in relief, a field of
+ * halftone dots that turns with the pointer; the photograph under it is what shows
+ * until the press has printed it, and where there is no press.
+ */
 .Portrait {
   grid-area: portrait;
-  width: clamp(5.5rem, 3rem + 6vw, 9.5rem);
-  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: clamp(6.5rem, 1rem + 15vw, 17rem);
+  margin: 0;
+}
+
+.Window {
+  position: relative;
+  display: block;
   aspect-ratio: 1;
-  object-fit: cover;
+  overflow: hidden;
   border: var(--spacing-size-hairline) solid var(--rule-strong);
   outline: var(--spacing-size-hairline) solid var(--rule);
   outline-offset: 4px;
+  background: var(--sunk);
+}
+
+.Photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   filter: grayscale(1) contrast(1.15);
+  transition: opacity 500ms linear;
+}
+
+:global(:root[data-relief-shown]) .Photo {
+  opacity: 0;
+}
+
+/* The tag in the plate's corner, once the press is drawing it: this picture moves. */
+.Live {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--muted);
+  font-size: var(--typography_fluid-micro-font-size-micro-s);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity 400ms linear 600ms;
+}
+
+:global(:root[data-relief-shown]) .Live {
+  opacity: 1;
+}
+
+.Pulse {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes live-pulse {
+  50% {
+    opacity: 0.25;
+  }
 }
 
 .Who {
@@ -446,17 +532,18 @@ const blurbOf = (section: (typeof sections)[number]) =>
 .Tagline {
   grid-area: tagline;
   color: var(--ink);
-  font-size: var(--typography_fluid-content-font-size-l);
+  font-size: var(--typography_fluid-content-font-size-m);
   line-height: 1.45;
   text-wrap: balance;
 }
 
 .Links {
   grid-area: links;
+  align-self: end;
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing_fluid-tight-space-tight-s)
-    var(--spacing_fluid-tight-space-tight-xl);
+  gap: var(--spacing_fluid-tight-space-tight-xs)
+    var(--spacing_fluid-tight-space-tight-l);
 }
 
 .Link {
@@ -611,29 +698,10 @@ const blurbOf = (section: (typeof sections)[number]) =>
   border-bottom: var(--spacing-size-rule) double var(--rule-strong);
 }
 
+/* The deck of plates takes the room the text under it leaves. */
 .Covers {
-  display: grid;
   flex: 1 1 0;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: minmax(0, 2fr) minmax(0, 1fr);
-  gap: var(--spacing_fluid-tight-space-tight-s);
   min-height: 9rem;
-}
-
-.CoverCell {
-  position: relative;
-  overflow: hidden;
-  border: var(--spacing-size-hairline) solid var(--rule);
-}
-
-.CoverCell :deep(svg) {
-  position: absolute;
-  inset: 0;
-}
-
-.CoverCell.First {
-  grid-column: 1 / -1;
-  border-color: var(--accent);
 }
 
 .LibraryTitle {
@@ -706,12 +774,20 @@ const blurbOf = (section: (typeof sections)[number]) =>
   align-content: center;
   align-items: baseline;
   gap: var(--spacing_fluid-tight-space-tight-l);
-  padding: var(--spacing_fluid-tight-space-tight-l) 0.6rem;
+  padding: var(--spacing_fluid-tight-space-tight-s) 0.6rem;
   border-bottom: var(--spacing-size-hairline) solid var(--rule);
 }
 
 /* A laptop's screen is short: the index and the Library tighten, so the front page stays one spread. */
 @media (min-width: 60rem) and (max-height: 52rem) {
+  .Portrait {
+    width: clamp(6rem, 24vh, 12rem);
+  }
+
+  .Identity {
+    padding-bottom: var(--spacing_fluid-tight-space-tight-l);
+  }
+
   .Covers {
     min-height: 5rem;
   }
@@ -737,7 +813,12 @@ const blurbOf = (section: (typeof sections)[number]) =>
   color: var(--accent);
 }
 
+/* Two lines at most, so a long headline does not push the page onto a second spread. */
 .Blurb {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
   color: var(--ink);
   line-height: 1.5;
 }
@@ -860,8 +941,25 @@ const blurbOf = (section: (typeof sections)[number]) =>
     padding-bottom: var(--spacing_fluid-tight-space-tight-l);
   }
 
+  .Identity {
+    grid-template-rows: auto;
+    grid-template-areas:
+      "portrait who"
+      "tagline tagline"
+      "links links";
+    align-items: center;
+  }
+
   .Portrait {
-    width: 4.75rem;
+    width: 6.5rem;
+  }
+
+  .Tagline {
+    font-size: var(--typography_fluid-content-font-size-m);
+  }
+
+  .Live {
+    display: none;
   }
 
   .Name {
