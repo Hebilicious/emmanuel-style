@@ -21,6 +21,7 @@
 import { onBeforeUnmount, onMounted } from "vue"
 import type { Router } from "vue-router"
 import { describe, placeCursor, rowOf } from "./cursor.js"
+import { createMachine } from "./machine.js"
 import type { Shell } from "./shell.js"
 import { turning } from "./turns.js"
 
@@ -76,7 +77,33 @@ export const usePointer = (
 	footnotes: { follow(anchor: HTMLAnchorElement): boolean }
 ): void => {
 	let lastPointer = ""
-	let lastClick = 0
+
+	/**
+	 * The mouse question, while the mouse is off: one click arms it, a second within
+	 * `DOUBLE_CLICK_MS` asks, and a click that comes later is a first click again.
+	 */
+	let armedAt = 0
+	const doubleClick = createMachine<
+		"idle" | "armed",
+		{ type: "CLICK"; time: number; ask: () => void }
+	>("idle", {
+		idle: {
+			CLICK: (event) => {
+				armedAt = event.time
+				return "armed"
+			}
+		},
+		armed: {
+			CLICK: (event) => {
+				if (event.time - armedAt >= DOUBLE_CLICK_MS) {
+					armedAt = event.time
+					return undefined
+				}
+				event.ask()
+				return "idle"
+			}
+		}
+	})
 
 	const onPointerDown = (event: PointerEvent) => {
 		lastPointer = event.pointerType
@@ -126,10 +153,13 @@ export const usePointer = (
 		 * enough: a stray click should not interrupt the reader, and a pair is
 		 * unambiguous.
 		 */
-		const now = Date.now()
-		const doubled = now - lastClick < DOUBLE_CLICK_MS
-		lastClick = doubled ? 0 : now
-		if (doubled && shell.dialog === null) shell.dialog = { kind: "gate" }
+		doubleClick.send({
+			type: "CLICK",
+			time: Date.now(),
+			ask: () => {
+				if (shell.dialog === null) shell.dialog = { kind: "gate" }
+			}
+		})
 	}
 
 	/**
