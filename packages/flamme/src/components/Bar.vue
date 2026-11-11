@@ -67,7 +67,7 @@ const shortDate = computed(() =>
       <span>earth</span>
     </p>
 
-    <h1 class="Plate display">{{ section.plate }}</h1>
+    <h1 :key="section.plate" class="Plate display">{{ section.plate }}</h1>
 
     <div class="End">
       <nav class="Sections" aria-label="Sections">
@@ -149,6 +149,38 @@ const shortDate = computed(() =>
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
+  /* The nameplate rises when its section is set, then breathes: the sheet is live. */
+  animation:
+    plate-rise 1400ms cubic-bezier(0.2, 0.7, 0.2, 1) both,
+    plate-breathe 9s ease-in-out 1400ms infinite alternate;
+}
+
+@keyframes plate-rise {
+  from {
+    --depth: 0;
+    --glint: 0;
+  }
+  to {
+    --depth: 120;
+    --glint: 14;
+  }
+}
+
+@keyframes plate-breathe {
+  from {
+    --depth: 120;
+    --glint: 14;
+  }
+  to {
+    --depth: 60;
+    --glint: 22;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .Plate {
+    animation: none;
+  }
 }
 
 .End {

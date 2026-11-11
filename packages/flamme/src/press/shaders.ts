@@ -57,8 +57,11 @@ void main() {
 
 	// The lamp: light that falls off around the row under the cursor.
 	vec2 centre = uLamp.xy + uLamp.zw * 0.5;
-	float away = max(box(p - centre, uLamp.zw * 0.5), 0.0);
-	float lamp = exp(-away / 46.0) * uLampOn;
+	float edge = box(p - centre, uLamp.zw * 0.5);
+	float lamp = exp(-max(edge, 0.0) / 46.0) * uLampOn;
+	// Strongest at the edge of the row: inside it the light thins out, so a large
+	// card is lit round its rim rather than washed over.
+	lamp *= 0.25 + 0.75 * exp(-max(-edge, 0.0) / 18.0);
 
 	// The pointer carries a smaller light of its own.
 	vec2 toPointer = p - uPointer.xy;
@@ -76,6 +79,8 @@ void main() {
 	float screen = smoothstep(0.5, 0.18, length(fract(cell) - 0.5));
 	float light = lamp * 0.085 + torch * 0.05 + head * 0.2;
 	light *= mix(0.45, 1.0, screen);
+	// On light paper the same light is a tint of ink, and less of it reads as much.
+	light *= mix(0.6, 1.0, uDark);
 
 	// The grain of the paper, still in dark and light alike.
 	float grain = hash(floor(p * uDpr) + floor(uTime * 24.0) * 17.0);

@@ -181,6 +181,7 @@ const fit = () => {
         class="Close"
         aria-label="Close"
         data-row
+        data-steady
         data-label="close"
         @click="close">
         <span class="Key">esc</span> close
@@ -297,6 +298,7 @@ const fit = () => {
           type="button"
           class="Neighbour"
           data-row
+          data-steady
           :data-label="`previous: ${previous.title}`"
           @click="go(previous)">
           <span class="Key">p</span>
@@ -308,6 +310,7 @@ const fit = () => {
           type="button"
           class="Neighbour Next"
           data-row
+          data-steady
           :data-label="`next: ${next.title}`"
           @click="go(next)">
           <span class="NeighbourName">{{ next.title }} →</span>

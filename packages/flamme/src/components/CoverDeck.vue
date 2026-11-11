@@ -117,11 +117,9 @@ const front = computed(() => props.projects[props.active] ?? null)
   background: var(--sunk);
   transform: translateX(-50%) translateX(calc(var(--place) * 44cqw))
     translateZ(calc(var(--away) * -9rem)) rotateY(calc(var(--place) * -34deg));
-  filter: brightness(calc(1 - var(--away) * 0.3));
-  opacity: calc(1.25 - var(--away) * 0.42);
+  opacity: calc(1.1 - var(--away) * 0.5);
   transition:
     transform 900ms cubic-bezier(0.3, 0.7, 0.2, 1),
-    filter 900ms linear,
     opacity 900ms linear,
     border-color 400ms linear,
     box-shadow 900ms linear;

@@ -10,6 +10,7 @@
  * It is created per app, in the layout's `setup`, never at module scope.
  */
 import { type InjectionKey, inject, reactive } from "vue"
+import { turn } from "./turns.js"
 
 /** The one dialog that can be open at a time. */
 export type Dialog =
@@ -131,8 +132,24 @@ export const applyTheme = (shell: Shell, theme: Theme): void => {
  */
 const PAPER: Record<Theme, string> = { light: "#f7f6f3", dark: "#0b0b0a" }
 
-export const toggleTheme = (shell: Shell): void =>
-	applyTheme(shell, shell.theme === "dark" ? "light" : "dark")
+/**
+ * Switch to the other theme, as a flood: the new paper spreads over the old from
+ * the switch in the bar (`styles/turns.css`). Where transitions are not available
+ * the theme simply changes.
+ */
+export const toggleTheme = (shell: Shell): void => {
+	const next = shell.theme === "dark" ? "light" : "dark"
+	const origin = document.querySelector(".Switch")?.getBoundingClientRect()
+	const style = document.documentElement.style
+	const x = origin ? origin.left + origin.width / 2 : window.innerWidth
+	const y = origin ? origin.top + origin.height / 2 : 0
+	style.setProperty("--flood-x", `${x}px`)
+	style.setProperty("--flood-y", `${y}px`)
+	// As far as the furthest corner of the screen, so the flood ends as it covers it.
+	const reach = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
+	style.setProperty("--flood-reach", `${Math.ceil(reach)}px`)
+	void turn("forward", () => applyTheme(shell, next), "theme")
+}
 
 /** Turn the mouse on or off for the rest of the session. */
 export const setMouse = (shell: Shell, enabled: boolean): void => {

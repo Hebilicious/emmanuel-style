@@ -969,8 +969,8 @@ const vars = computed(() => ({
 
 @starting-style {
   .Spread .Slice {
-    opacity: 0.25;
-    filter: blur(3px) contrast(1.5);
+    opacity: 0.35;
+    filter: blur(2px) contrast(1.4);
   }
 }
 

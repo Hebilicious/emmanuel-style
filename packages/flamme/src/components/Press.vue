@@ -23,8 +23,11 @@ const shell = useShell()
 const canvas = ref<HTMLCanvasElement | null>(null)
 
 /** How long each kind of turn lasts, as `styles/turns.css` sets them. */
-const DURATION = { page: 720, route: 820, zoom: 620 } as const
+const DURATION = { page: 720, route: 820 } as const
 const QUICK = 380
+/** How long the print head takes to cross the edition when the press starts. */
+const INTRO = 1300
+let startedAt = Number.NEGATIVE_INFINITY
 
 let press: Press | null = null
 let frame = 0
@@ -93,7 +96,12 @@ const reliefOf = (): PressFrame["relief"] => {
 
 const turnOf = (now: number): PressFrame["turn"] => {
 	const turn = currentTurn()
-	if (turn === null || turn.kind === "zoom") return null
+	// The first thing the press does is run the print head across the edition once.
+	if (now - startedAt < INTRO) {
+		return { forward: false, progress: (now - startedAt) / INTRO }
+	}
+	if (turn === null || turn.kind === "zoom" || turn.kind === "theme")
+		return null
 	const length = turn.quick ? QUICK : DURATION[turn.kind]
 	// The free edge of a leaf turning about the spine crosses the page as a cosine does.
 	const along = Math.min(1, (now - turn.at) / length)
@@ -156,6 +164,7 @@ const start = async () => {
 	document.documentElement.dataset["press"] = ""
 	window.addEventListener("pointermove", onPointerMove, { passive: true })
 	document.documentElement.addEventListener("pointerleave", onPointerLeave)
+	startedAt = performance.now()
 	frame = requestAnimationFrame(tick)
 }
 
