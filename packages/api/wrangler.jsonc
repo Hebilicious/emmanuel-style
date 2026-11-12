@@ -4,6 +4,13 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-17",
 	"preview_urls": true,
+	// The site is a worker of its own on emmanuel.style; this one answers `/api/*` in front of it.
+	"routes": [
+		{
+			"pattern": "emmanuel.style/api/*",
+			"zone_name": "emmanuel.style"
+		}
+	],
 	"observability": {
 		"enabled": true
 	},
