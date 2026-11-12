@@ -49,7 +49,8 @@ export default defineConfig({
 			 * declared here, because a declared secret is a required one and a deploy
 			 * without it fails; the star counts are worth less than the deploy. Set it once
 			 * with `wrangler secret put GITHUB_TOKEN --name emmanuel-style-api`: a deploy
-			 * keeps the secrets a worker already has.
+			 * keeps the secrets a worker already has (tested with cf 1.0.0-beta.29, by
+			 * `cf deploy` and by `cf build` then `cf deploy --prebuilt`).
 			 */
 		}
 	}
