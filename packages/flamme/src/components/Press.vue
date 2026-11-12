@@ -236,11 +236,21 @@ const tick = (now: number) => {
 		return
 	simulation?.draw(page, now / 1000)
 	press.draw(page, now / 1000)
-	const root = document.documentElement
-	if (press.reliefShown) root.dataset["reliefShown"] = ""
-	else delete root.dataset["reliefShown"]
-	if (press.deckShown) root.dataset["deckGpu"] = ""
-	else delete root.dataset["deckGpu"]
+	flag("reliefShown", press.reliefShown)
+	flag("deckGpu", press.deckShown)
+}
+
+/**
+ * Say on the root element whether something is so, and only when it changes:
+ * writing an attribute, even to the value it has, makes the browser work out the
+ * style of the whole page again, and this is asked every frame.
+ */
+const flags = new Map<string, boolean>()
+const flag = (name: string, on: boolean) => {
+	if (flags.get(name) === on) return
+	flags.set(name, on)
+	if (on) document.documentElement.dataset[name] = ""
+	else delete document.documentElement.dataset[name]
 }
 
 const onPointerMove = (event: PointerEvent) => {

@@ -63,8 +63,8 @@ const items = computed<SkillsItem[]>(() =>
 				/*
 				 * Each skill is a file of two pages, and each page opens one, fills it and is
 				 * shown whole. The first is what the skill is: the front matter, the heading,
-				 * the pitch and what I bring. The second is what I believe about it, and
-				 * examples of where I did it. After the landing, which takes a spread, a skill is a spread of its
+				 * the pitch, and examples of where I did it. The second is what I bring and
+				 * what I believe about it. The two are set at one size (`fitWith`). After the landing, which takes a spread, a skill is a spread of its
 				 * own; on a phone it is two pages.
 				 */
 				...skills.value.flatMap((skill, at): SkillsItem[] => [
@@ -75,6 +75,7 @@ const items = computed<SkillsItem[]>(() =>
 						number: at + 1,
 						opens: true,
 						fit: true,
+						fitWith: skill.name,
 						grow: true
 					},
 					{
@@ -84,6 +85,7 @@ const items = computed<SkillsItem[]>(() =>
 						number: at + 1,
 						opens: true,
 						fit: true,
+						fitWith: skill.name,
 						grow: true
 					}
 				])
@@ -185,41 +187,6 @@ const roleLink = (company: string) => {
 
         <p class="Summary">{{ item.skill.summary }}</p>
 
-        <section class="Part">
-          <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> What I bring
-          </h3>
-          <ul class="Bullets">
-            <li v-for="line of item.skill.offer" :key="line">
-              <Inline :text="line" />
-            </li>
-          </ul>
-        </section>
-      </article>
-
-      <article
-        v-else-if='item.kind === "beliefs"'
-        class="Skill"
-        :aria-label="`${item.skill.title}, continued`">
-        <header class="Tab">
-          <span class="Path">skills/{{ item.skill.name }}/<b>SKILL.md</b>
-            <span class="Continued">continued</span></span>
-          <span class="Count">{{ String(item.number).padStart(2, "0") }} / {{
-              String(skills.length).padStart(2, "0")
-            }}</span>
-        </header>
-
-        <section class="Part">
-          <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> What I believe
-          </h3>
-          <ul class="Bullets Plain">
-            <li v-for="line of item.skill.principles" :key="line">
-              <Inline :text="line" />
-            </li>
-          </ul>
-        </section>
-
         <section class="Part Proof">
           <h3 class="Heading">
             <span class="Hash" aria-hidden="true">##</span> For example
@@ -248,6 +215,41 @@ const roleLink = (company: string) => {
               titles.get(name) ?? name
             }}</a>
           </p>
+        </section>
+      </article>
+
+      <article
+        v-else-if='item.kind === "beliefs"'
+        class="Skill"
+        :aria-label="`${item.skill.title}, continued`">
+        <header class="Tab">
+          <span class="Path">skills/{{ item.skill.name }}/<b>SKILL.md</b>
+            <span class="Continued">continued</span></span>
+          <span class="Count">{{ String(item.number).padStart(2, "0") }} / {{
+              String(skills.length).padStart(2, "0")
+            }}</span>
+        </header>
+
+        <section class="Part">
+          <h3 class="Heading">
+            <span class="Hash" aria-hidden="true">##</span> What I bring
+          </h3>
+          <ul class="Bullets">
+            <li v-for="line of item.skill.offer" :key="line">
+              <Inline :text="line" />
+            </li>
+          </ul>
+        </section>
+
+        <section class="Part">
+          <h3 class="Heading">
+            <span class="Hash" aria-hidden="true">##</span> What I believe
+          </h3>
+          <ul class="Bullets Plain">
+            <li v-for="line of item.skill.principles" :key="line">
+              <Inline :text="line" />
+            </li>
+          </ul>
         </section>
       </article>
     </template>
@@ -479,7 +481,9 @@ const roleLink = (company: string) => {
 }
 
 .EvidenceLabel {
-  min-width: 7.5em;
+  flex: none;
+  min-width: 10.5em;
+  white-space: nowrap;
   align-self: center;
   color: var(--faint);
   font-size: var(--typography_fluid-micro-font-size-micro-s);

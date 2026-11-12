@@ -242,23 +242,39 @@ const readGeometry = () => {
  * Set a `fit` block as large as it can be while it still fits one page.
  *
  * `zoom` scales the block's layout, so its text rewraps at the smaller size and
- * the height read back is the height it will have. Six halvings find the scale to
- * within a percent.
+ * the height read back is the height it will have. Every probe lays the block out
+ * again, so there are as few as will do: none for a block that fits as it is, and
+ * otherwise a first guess from how much too tall it is, then up to three halvings
+ * around it, which find the scale to within a few percent.
  */
+const zoomOf = (target: HTMLElement): number => Number(target.style.zoom || "1")
+const setZoom = (target: HTMLElement, scale: number) => {
+	// Writing the value it already has would still make the browser lay it out again.
+	if (zoomOf(target) !== scale)
+		target.style.zoom = scale === 1 ? "" : String(scale)
+}
+
 const fitBlock = (element: HTMLElement, room: number): number => {
 	const target = element.querySelector<HTMLElement>(":scope > .Fit")
 	if (target === null) return 1
-	target.style.zoom = "1"
-	if (element.getBoundingClientRect().height <= room) return 1
-	let low = MIN_FIT
-	let high = 1
-	for (let step = 0; step < 6; step += 1) {
+	setZoom(target, 1)
+	const whole = element.getBoundingClientRect().height
+	if (whole <= room) return 1
+	const fits = (scale: number): boolean => {
+		setZoom(target, scale)
+		return element.getBoundingClientRect().height <= room
+	}
+	// Text set smaller is both shorter and wraps less, so its height goes with the square.
+	const guess = Math.max(MIN_FIT, Math.min(1, Math.sqrt(room / whole) * 0.99))
+	let [low, high] = fits(guess)
+		? [guess, Math.min(1, guess * 1.08)]
+		: [MIN_FIT, guess]
+	for (let step = 0; step < 3 && high - low > 0.025; step += 1) {
 		const middle = (low + high) / 2
-		target.style.zoom = String(middle)
-		if (element.getBoundingClientRect().height <= room) low = middle
+		if (fits(middle)) low = middle
 		else high = middle
 	}
-	target.style.zoom = String(low)
+	setZoom(target, low)
 	return low
 }
 
@@ -300,19 +316,43 @@ const measureAll = async () => {
 
 	const scales = new Map<string, number>()
 	const next: Measured[] = []
-	for (const element of Array.from(
+	const blocks = Array.from(
 		host.querySelectorAll<HTMLElement>(":scope > [data-measure-id]")
-	)) {
+	)
+	// First every `fit` block is set to fit its page.
+	const roomOf = (first: boolean) =>
+		first && slots.lead !== undefined
+			? geometry.value.height - leadHeight.value - geometry.value.leadGap
+			: geometry.value.height
+	blocks.forEach((element, at) => {
+		const id = element.dataset["measureId"] ?? ""
+		if (byId.value.get(id)?.fit === true)
+			scales.set(id, fitBlock(element, roomOf(at === 0)))
+	})
+	/*
+	 * Then the blocks that are read together (`fitWith`, the two pages of a skill)
+	 * are all set at the smallest scale among them: the same text at two sizes on
+	 * facing pages reads as a mistake.
+	 */
+	const smallest = new Map<string, number>()
+	for (const [id, scale] of scales) {
+		const group = byId.value.get(id)?.fitWith
+		if (group !== undefined)
+			smallest.set(group, Math.min(smallest.get(group) ?? 1, scale))
+	}
+	for (const element of blocks) {
+		const id = element.dataset["measureId"] ?? ""
+		const group = byId.value.get(id)?.fitWith
+		const scale = group === undefined ? undefined : smallest.get(group)
+		if (scale === undefined || scale === scales.get(id)) continue
+		scales.set(id, scale)
+		const target = element.querySelector<HTMLElement>(":scope > .Fit")
+		if (target !== null) setZoom(target, scale)
+	}
+	for (const element of blocks) {
 		const id = element.dataset["measureId"] ?? ""
 		const item = byId.value.get(id)
 		if (item === undefined) continue
-		if (item.fit === true) {
-			const room =
-				next.length === 0 && slots.lead !== undefined
-					? geometry.value.height - leadHeight.value - geometry.value.leadGap
-					: geometry.value.height
-			scales.set(id, fitBlock(element, room))
-		}
 		const height = element.getBoundingClientRect().height
 		const top = element.getBoundingClientRect().top
 		const refs = Array.from(
@@ -491,7 +531,7 @@ const go = (index: number) => {
 const RIFFLE_EVERY = 55
 const RIFFLE_MOST = 7
 /** How long a leaf of the riffle is in the air; the stylesheet is given it. */
-const RIFFLE_MS = 300
+const RIFFLE_MS = 220
 const riffle = ref<{ id: number; direction: "forward" | "back" }[]>([])
 let riffleId = 0
 let riffledAt = Number.NEGATIVE_INFINITY
@@ -917,6 +957,25 @@ const vars = computed(() => ({
   display: flow-root;
 }
 
+/*
+ * Each block is measured on its own: out of the flow, so that setting one smaller
+ * (`fit`) does not move, and lay out again, every block after it.
+ */
+.Measure > .Block {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  contain: layout style;
+}
+
+/* Nothing moves in a copy nobody sees: its animations would only cost. */
+.Measure :deep(*),
+.Measure :deep(*)::before,
+.Measure :deep(*)::after {
+  animation: none !important;
+  transition: none !important;
+}
+
 .Fit {
   display: flow-root;
 }
@@ -1121,6 +1180,31 @@ const vars = computed(() => ({
 
 .Slice[data-clip] {
   overflow: clip;
+}
+
+.SliceBody {
+  display: flow-root;
+}
+
+/*
+ * A block that asks to grow takes the rest of its page: the slice, its body, the
+ * scaled box and the block itself are each a column that stretches.
+ */
+.Slice.Grow {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.Slice.Grow > .SliceBody,
+.Slice.Grow > .SliceBody > .Fit {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.Slice.Grow > .SliceBody > .Fit > :deep(*) {
+  flex: 1 1 auto;
 }
 
 /*
