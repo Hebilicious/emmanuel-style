@@ -1,0 +1,17 @@
+{
+	"name": "@emmanuel/site",
+	"version": "0.0.0",
+	"private": true,
+	"type": "module",
+	"description": "The site as a Cloudflare Worker: the build of @emmanuel/flamme, served from emmanuel.style.",
+	"scripts": {
+		"build": "pnpm --filter @emmanuel/flamme run build && cf build",
+		"deploy": "pnpm run build && cf deploy --prebuilt",
+		"deploy:check": "pnpm run build && cf deploy --prebuilt --dry-run",
+		"deploy-pr": "pnpm run build && cf previews deploy --prebuilt"
+	},
+	"devDependencies": {
+		"cf": "1.0.0-beta.29",
+		"wrangler": "catalog:api"
+	}
+}
