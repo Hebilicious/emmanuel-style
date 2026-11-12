@@ -40,9 +40,12 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # The vendored Flamme packages are sources: their builds are not committed.
+      # The vendored Flamme packages are sources: their builds are not committed. The
+      # second install links the `flamme` command, which did not exist for the first.
       - name: Build the vendored Flamme packages
-        run: pnpm -r --filter "./vendor/flamme/*" build
+        run: |
+          pnpm -r --filter "./vendor/flamme/*" build
+          pnpm install --frozen-lockfile --offline
 
       - name: Format
         if: github.event_name == 'pull_request'
@@ -50,9 +53,11 @@ jobs:
           git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" \
             | xargs -r pnpm exec dprint check --allow-no-files
 
+      # What the checks read and git does not hold: the articles as modules, the design tokens as CSS.
       - name: Content
         run: |
           pnpm --filter @emmanuel/flamme run content
+          pnpm --filter @emmanuel/flamme run cssforge
           pnpm --filter @emmanuel/flamme run content:check
 
       - name: Typecheck
