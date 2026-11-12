@@ -120,7 +120,13 @@ const leaves = computed(() =>
 /** The measured blocks, the height of the lead, and the scale each `fit` block is set at. */
 const measured = shallowRef<Measured[]>([])
 const noteHeights = shallowRef<ReadonlyMap<string, number>>(new Map())
-const fitScale = shallowRef<ReadonlyMap<string, number>>(new Map())
+/**
+ * The scale each `fit` block is set at. Not reactive on purpose: it fills up while
+ * the rest of a section is measured behind the page, and the page showing must not
+ * be drawn again each time a block it does not show gets its scale. A page reads it
+ * when it is drawn, by which time its own blocks are in it.
+ */
+let fitScale = new Map<string, number>()
 const notesChrome = ref(0)
 const noteGap = ref(0)
 const leadHeight = ref(0)
@@ -151,12 +157,13 @@ const notesById = computed(
 	() => new Map(props.notes.map((note) => [note.id, note]))
 )
 
-const pages = computed<Page[]>(() => {
-	if (measured.value.length === 0) return []
+/** The pages a list of measured blocks packs into, at the geometry as it is. */
+const pagesOf = (blocks: readonly Measured[]): Page[] => {
+	if (blocks.length === 0) return []
 	const { height, columns, leadGap } = geometry.value
 	const lead =
 		slots.lead === undefined ? 0 : leadHeight.value + leadGap + leadExtra.value
-	return paginate(measured.value, {
+	return paginate(blocks, {
 		height: (page) => (page < columns ? height - lead : height),
 		gap: geometry.value.gap,
 		noteHeights: noteHeights.value,
@@ -165,20 +172,33 @@ const pages = computed<Page[]>(() => {
 		noteGap: noteGap.value,
 		minLines: props.minLines
 	})
-})
+}
+const pages = computed<Page[]>(() => pagesOf(measured.value))
 
 const opensAScreen = (page: Page) =>
 	props.opensScreen &&
 	byId.value.get(page.slices[0]?.id ?? "")?.opens === true &&
 	(page.slices[0]?.from ?? 0) === 0
 
+const screensOf = (blocks: readonly Measured[]): Screen[] =>
+	screens(pagesOf(blocks), geometry.value.columns, opensAScreen)
 const spread = computed<Screen[]>(() =>
 	screens(pages.value, geometry.value.columns, opensAScreen)
 )
 const total = computed(() => Math.max(1, spread.value.length))
-const screen = computed<Screen | null>(
-	() => spread.value[current.value] ?? null
-)
+/**
+ * The screen drawn. When more of the section is measured the screens are worked
+ * out again, and the one showing comes out the same: the object it was is kept,
+ * so nothing that draws from it is drawn again.
+ */
+let drawnScreen: Screen | null = null
+const sameScreen = (a: Screen | null, b: Screen | null): boolean =>
+	a !== null && b !== null && JSON.stringify(a) === JSON.stringify(b)
+const screen = computed<Screen | null>(() => {
+	const next = spread.value[current.value] ?? null
+	if (!sameScreen(next, drawnScreen)) drawnScreen = next
+	return drawnScreen
+})
 
 /* ------------------------------------------------------------------ measuring */
 
@@ -256,15 +276,18 @@ const setZoom = (target: HTMLElement, scale: number) => {
 		target.style.zoom = scale === 1 ? "" : String(scale)
 }
 
-const fitBlock = (element: HTMLElement, room: number): number => {
-	const target = element.querySelector<HTMLElement>(":scope > .Fit")
-	if (target === null) return 1
+/** Find the largest scale at which `heightOf()` is no more than `room`, setting `target` to it. */
+const fitTo = (
+	target: HTMLElement,
+	heightOf: () => number,
+	room: number
+): number => {
 	setZoom(target, 1)
-	const whole = element.getBoundingClientRect().height
-	if (whole <= room) return 1
+	const whole = heightOf()
+	if (whole <= room + 0.5) return 1
 	const fits = (scale: number): boolean => {
 		setZoom(target, scale)
-		return element.getBoundingClientRect().height <= room
+		return heightOf() <= room + 0.5
 	}
 	// Text set smaller is both shorter and wraps less, so its height goes with the square.
 	const guess = Math.max(MIN_FIT, Math.min(1, Math.sqrt(room / whole) * 0.99))
@@ -280,66 +303,166 @@ const fitBlock = (element: HTMLElement, room: number): number => {
 	return low
 }
 
-let generation = 0
+const fitBlock = (element: HTMLElement, room: number): number => {
+	const target = element.querySelector<HTMLElement>(":scope > .Fit")
+	if (target === null) return 1
+	return fitTo(target, () => element.getBoundingClientRect().height, room)
+}
 
 /**
- * Measure every block at the width it will be shown at.
- *
- * Fonts are awaited first: a block measured in the fallback face is shorter than
- * the same block in Monaspace, and a page packed to the shorter height overflows
- * once the real face arrives.
+ * A block that fills a page by itself: set to fit (`fit`), and either as wide as
+ * the spread (`screen`) or stretched to the foot of its page (`grow`). Where it
+ * goes is known without measuring it: it is one page. Only the scale it is set at
+ * has to be found, and that is found on the page itself, when it is drawn
+ * (`fitDrawn`). The front of every section is one of these, so a section's first
+ * page is drawn without a measuring pass at all.
  */
-const measureAll = async () => {
-	const run = (generation += 1)
-	/*
-	 * Where the reader is, taken before anything moves: once the new geometry is
-	 * read, the screens are recomputed from the old heights at the new size, and the
-	 * block at the top of the "current" screen is not the one the reader was on.
-	 */
-	const fresh = !ready.value
-	const anchor = fresh ? null : anchorOf()
-	readGeometry()
-	await nextTick()
-	/*
-	 * Lay the measuring pass out before waiting: a face is only requested once text
-	 * set in it is laid out, and `fonts.ready` does not wait for a face nobody has
-	 * asked for yet. Without this the first layout was taken in the fallback face and
-	 * redone when Nabla arrived, moving the cuts under the page the reader was on.
-	 */
-	void measure.value?.offsetHeight
-	await document.fonts.ready
-	if (run !== generation) return
-	const host = measure.value
+const fillsPage = (item: PagerItem | undefined): boolean =>
+	item?.fit === true && (item.grow === true || item.screen === true)
+
+/** What the paginator is told about a block that fills a page: it is as tall as one. */
+const fullPage = (item: PagerItem): Measured => ({
+	id: item.id,
+	height:
+		geometry.value.height -
+		(slots.lead === undefined
+			? 0
+			: leadHeight.value + geometry.value.leadGap + leadExtra.value) -
+		1,
+	cuts: [],
+	refs: [],
+	atomic: true,
+	...(item.opens === true ? { opens: true } : {}),
+	...(item.screen === true ? { screen: true } : {}),
+	...(item.keep === true ? { keep: true } : {})
+})
+
+/**
+ * Set the page-filling blocks that are drawn, and have no scale yet, to fit their
+ * page. It is done on the page, before it is painted: the block is asked how tall
+ * it is at a few scales, and left at the largest that fits its column. Blocks read
+ * together (`fitWith`) are set alike.
+ */
+const fitDrawn = () => {
+	const host = root.value
 	if (host === null) return
+	const drawnNow = Array.from(
+		host.querySelectorAll<HTMLElement>("[data-leaf] [data-fit]")
+	)
+	const found = new Map<string, number>()
+	for (const slice of drawnNow) {
+		const id = slice.dataset["fit"] ?? ""
+		if (fitScale.has(id) || found.has(id)) continue
+		const target = slice.querySelector<HTMLElement>(".Fit")
+		const content = target?.firstElementChild
+		const column = slice.closest<HTMLElement>(".Column")
+		if (target == null || content == null || column === null) continue
+		found.set(
+			id,
+			fitTo(
+				target,
+				() => content.getBoundingClientRect().height,
+				column.getBoundingClientRect().height
+			)
+		)
+	}
+	if (found.size === 0) return
+	const smallest = new Map<string, number>()
+	for (const [id, scale] of found) {
+		const group = byId.value.get(id)?.fitWith
+		if (group !== undefined)
+			smallest.set(group, Math.min(smallest.get(group) ?? 1, scale))
+	}
+	for (const [id, scale] of found) {
+		const group = byId.value.get(id)?.fitWith
+		fitScale.set(
+			id,
+			group === undefined ? scale : (smallest.get(group) ?? scale)
+		)
+	}
+	for (const slice of drawnNow) {
+		const scale = fitScale.get(slice.dataset["fit"] ?? "")
+		const target = slice.querySelector<HTMLElement>(".Fit")
+		if (scale !== undefined && target !== null) setZoom(target, scale)
+	}
+}
 
-	const lead = host.querySelector<HTMLElement>("[data-measure-lead]")
-	leadHeight.value = lead === null ? 0 : lead.getBoundingClientRect().height
-	leadExtra.value = 0
+let generation = 0
 
-	const scales = new Map<string, number>()
-	const next: Measured[] = []
+/*
+ * Measuring is done a few blocks at a time. Only the blocks being measured are in
+ * the measuring pass (`measuring`), and it is empty the rest of the time.
+ *
+ * A section used to be measured whole before its first page was shown: every card
+ * of the Library, every role of the ledger, drawn off screen and laid out, to show
+ * one spread. That was most of what changing section cost. Now the first page is
+ * shown as soon as the blocks on it, and on the page after it, have been measured,
+ * and the rest are measured behind it when the browser has nothing else to do.
+ * Until they all are (`complete`), the count of pages grows; a reader who asks for
+ * a page that is not known yet gets it the moment it is (`owed`, `wantsLast`).
+ */
+const CHUNK = 6
+/** Behind the page, fewer at a time: a chunk is one task, and a long one is a dropped frame. */
+const IDLE_CHUNK = 2
+/** When the reader is waiting for pages that are not known yet, a little more at a time. */
+const WAITED_CHUNK = 3
+/** Nothing is measured behind the page while the reader is moving through it, or just has. */
+const QUIET_FOR = 350
+const measuring = shallowRef<readonly T[]>([])
+const complete = ref(false)
+let idle = 0
+
+const whenIdle = (run: () => void): number =>
+	typeof window.requestIdleCallback === "function"
+		? window.requestIdleCallback(run, { timeout: 120 })
+		: window.setTimeout(run, 16)
+const cancelIdle = (handle: number) => {
+	if (typeof window.cancelIdleCallback === "function")
+		window.cancelIdleCallback(handle)
+	window.clearTimeout(handle)
+}
+
+/** Where a chunk that starts at `from` ends: `CHUNK` blocks on, and never inside a `fitWith` group. */
+const chunkEnd = (from: number, size: number): number => {
+	let end = Math.min(from + size, props.items.length)
+	while (
+		end < props.items.length &&
+		props.items[end]?.fitWith !== undefined &&
+		props.items[end]?.fitWith === props.items[end - 1]?.fitWith
+	)
+		end += 1
+	return end
+}
+
+/** Measure the blocks that are in the measuring pass now, and set the `fit` ones to their page. */
+const measureChunk = (
+	host: HTMLElement,
+	first: boolean,
+	scales: Map<string, number>
+): Measured[] => {
 	const blocks = Array.from(
 		host.querySelectorAll<HTMLElement>(":scope > [data-measure-id]")
 	)
-	// First every `fit` block is set to fit its page.
-	const roomOf = (first: boolean) =>
-		first && slots.lead !== undefined
+	const roomOf = (opening: boolean) =>
+		opening && slots.lead !== undefined
 			? geometry.value.height - leadHeight.value - geometry.value.leadGap
 			: geometry.value.height
 	blocks.forEach((element, at) => {
 		const id = element.dataset["measureId"] ?? ""
 		if (byId.value.get(id)?.fit === true)
-			scales.set(id, fitBlock(element, roomOf(at === 0)))
+			scales.set(id, fitBlock(element, roomOf(first && at === 0)))
 	})
 	/*
-	 * Then the blocks that are read together (`fitWith`, the two pages of a skill)
-	 * are all set at the smallest scale among them: the same text at two sizes on
-	 * facing pages reads as a mistake.
+	 * The blocks that are read together (`fitWith`, the two pages of a skill) are
+	 * all set at the smallest scale among them: the same text at two sizes on facing
+	 * pages reads as a mistake. A chunk never ends inside such a group.
 	 */
 	const smallest = new Map<string, number>()
-	for (const [id, scale] of scales) {
+	for (const element of blocks) {
+		const id = element.dataset["measureId"] ?? ""
 		const group = byId.value.get(id)?.fitWith
-		if (group !== undefined)
+		const scale = scales.get(id)
+		if (group !== undefined && scale !== undefined)
 			smallest.set(group, Math.min(smallest.get(group) ?? 1, scale))
 	}
 	for (const element of blocks) {
@@ -351,6 +474,7 @@ const measureAll = async () => {
 		const target = element.querySelector<HTMLElement>(":scope > .Fit")
 		if (target !== null) setZoom(target, scale)
 	}
+	const next: Measured[] = []
 	for (const element of blocks) {
 		const id = element.dataset["measureId"] ?? ""
 		const item = byId.value.get(id)
@@ -375,7 +499,11 @@ const measureAll = async () => {
 			...(item.atomic === true || item.fit === true ? { atomic: true } : {})
 		})
 	}
+	return next
+}
 
+/** The notes of the article, measured once: they are few, and a page needs them to be packed. */
+const measureNotes = (host: HTMLElement) => {
 	const heights = new Map<string, number>()
 	const list = host.querySelector<HTMLElement>("[data-measure-notes]")
 	if (list !== null) {
@@ -397,23 +525,198 @@ const measureAll = async () => {
 			: 0
 		noteGap.value = px(getComputedStyle(list).rowGap)
 	}
-
 	noteHeights.value = heights
-	fitScale.value = scales
-	measured.value = next
+}
+
+/** The screen a block is on, among these screens, or -1. */
+const screenWith = (
+	list: readonly Screen[],
+	id: string,
+	from: number
+): number =>
+	list.findIndex((candidate) =>
+		candidate.pages.some((page) =>
+			page.slices.some(
+				(slice) => slice.id === id && slice.from <= from + 1 && slice.to > from
+			)
+		)
+	)
+
+/**
+ * Measure the blocks at the width they will be shown at: enough of them to show
+ * the page the reader is on, then the rest when the browser is idle.
+ *
+ * Fonts are awaited first: a block measured in the fallback face is shorter than
+ * the same block in Monaspace, and a page packed to the shorter height overflows
+ * once the real face arrives.
+ */
+const measureAll = async () => {
+	const run = (generation += 1)
+	cancelIdle(idle)
+	/*
+	 * Where the reader is, taken before anything moves: once the new geometry is
+	 * read, the screens are recomputed from the old heights at the new size, and the
+	 * block at the top of the "current" screen is not the one the reader was on.
+	 */
+	const fresh = !ready.value
+	const anchor = fresh ? null : anchorOf()
+	// The reader may move on while this runs: where they were then, to carry the move over.
+	const startedOn = state.value.current
+	readGeometry()
+	complete.value = false
+
+	const scales = new Map<string, number>()
+	const blocks: Measured[] = []
+	let at = 0
+	/** Put the next blocks in the measuring pass, lay them out, and measure them. `false` when overtaken. */
+	const more = async (size = CHUNK): Promise<boolean> => {
+		// A block that fills a page is not drawn to be measured: it is one page.
+		const next = props.items[at]
+		if (next !== undefined && fillsPage(next) && at > 0) {
+			blocks.push(fullPage(next))
+			at += 1
+			return true
+		}
+		// The blocks to measure: up to the next one that fills a page.
+		let end = chunkEnd(at, size)
+		const stop = props.items.findIndex(
+			(item, index) => index > at && fillsPage(item)
+		)
+		if (stop !== -1 && stop < end) end = stop
+		const first = at === 0
+		const leading = first && fillsPage(next)
+		measuring.value = leading ? [] : props.items.slice(at, end)
+		await nextTick()
+		if (first && document.fonts.status !== "loaded") {
+			/*
+			 * A page set in the fallback face is the wrong height. A face is only
+			 * requested once text set in it is laid out, so the pass is laid out first.
+			 */
+			void measure.value?.offsetHeight
+			await document.fonts.ready
+		}
+		const host = measure.value
+		if (run !== generation || host === null) return false
+		if (first) {
+			const lead = host.querySelector<HTMLElement>("[data-measure-lead]")
+			leadHeight.value = lead === null ? 0 : lead.getBoundingClientRect().height
+			leadExtra.value = 0
+			measureNotes(host)
+		}
+		if (leading && next !== undefined) {
+			blocks.push(fullPage(next))
+			at += 1
+			return true
+		}
+		blocks.push(...measureChunk(host, first, scales))
+		at = end
+		return true
+	}
+	const all = () => at >= props.items.length
+
+	/** Whether the page the reader is to be shown is known, with the page after it. */
+	const wanted = fresh ? pageFromUrl() : null
+	/*
+	 * The page is known once nothing that follows could still land on it. That is
+	 * tried with a stand-in for what follows, one pixel tall: if even that goes to a
+	 * later screen, so will the real thing.
+	 */
+	const REST = "\u0000rest"
+	const enough = (): boolean => {
+		const following = props.items[at]
+		const known = screensOf([
+			...blocks,
+			{
+				id: REST,
+				height: 1,
+				cuts: [],
+				refs: [],
+				...(following?.opens === true ? { opens: true } : {}),
+				...(following?.screen === true ? { screen: true } : {})
+			}
+		])
+		const on =
+			wanted ??
+			(anchor === null ? 0 : screenWith(known, anchor.id, anchor.from))
+		const there = known[on]
+		return (
+			there !== undefined &&
+			!there.pages.some((page) =>
+				page.slices.some((slice) => slice.id === REST)
+			)
+		)
+	}
+	/*
+	 * A link deep into a section needs a lot of it measured before its page is
+	 * known. Each chunk is then a task of its own: the browser gets to draw and to
+	 * answer the reader between them, rather than stop for the whole of it.
+	 */
+	let since = performance.now()
+	do {
+		if (!(await more())) return
+		if (performance.now() - since > 24 && !all() && !enough()) {
+			await new Promise<void>((resolve) => window.setTimeout(resolve, 0))
+			if (run !== generation) return
+			since = performance.now()
+		}
+	} while (!all() && !enough())
+
+	fitScale = scales
+	measured.value = [...blocks]
+	if (all()) {
+		measuring.value = []
+		complete.value = true
+	}
 	send({
 		type: "LAID_OUT",
 		// The first layout opens on the page the URL names; a later one keeps the reader's place.
 		screen:
 			anchor === null
 				? Math.min(pageFromUrl(), total.value - 1)
-				: restore(anchor)
+				: Math.max(
+						0,
+						Math.min(
+							restore(anchor) + (state.value.current - startedOn),
+							total.value - 1
+						)
+					)
 	})
-	if (fresh) {
-		// A route turn waits for this, so it captures the new page laid out.
-		await nextTick()
-		shell.layouts += 1
+	shell.laidOut += 1
+	await nextTick()
+	if (run !== generation) return
+	fitDrawn()
+	// A route turn waits for this, so it captures the new page laid out.
+	if (fresh) shell.layouts += 1
+
+	/* The rest, a chunk whenever the browser is idle, until every block is measured. */
+	const rest = () => {
+		if (run !== generation || all()) return
+		// The reader comes first: unless they are waiting for these very pages, wait until they are still.
+		const waitingNow = owed > 0 || wantsLast
+		if (!waitingNow && performance.now() - movedAt < QUIET_FOR) {
+			idle = whenIdle(rest)
+			return
+		}
+		void more(waitingNow ? WAITED_CHUNK : IDLE_CHUNK).then((went) => {
+			if (!went) return
+			/*
+			 * What has been measured is made known when it is all there, or sooner if the
+			 * reader is waiting for it: at the last page known, or owed pages past it.
+			 * Each time it is made known the count of pages changes and everything that
+			 * shows the count is drawn again, so it is not done for every chunk.
+			 */
+			const waiting =
+				owed > 0 || wantsLast || state.value.current >= total.value - 2
+			if (all() || waiting) measured.value = [...blocks]
+			if (all()) {
+				measuring.value = []
+				complete.value = true
+			}
+			settleOwed()
+			if (!all()) idle = whenIdle(rest)
+		})
 	}
+	if (!all()) idle = whenIdle(rest)
 }
 
 /** The block and offset at the top of the current screen, to keep the place on a re-layout. */
@@ -546,6 +849,9 @@ const release = (leaf: HTMLElement) => {
 	done?.()
 }
 
+/* Whenever a page is drawn, its page-filling blocks are set to fit it, before it is painted. */
+watch([screen, drawn], fitDrawn, { flush: "post" })
+
 /**
  * Draw the screen the reader is on, if it is not the one drawn. Once it is in the
  * DOM, the leaves that left are handed to the flipper with the ones that came.
@@ -569,10 +875,14 @@ const show = () => {
 	})
 }
 
+/** When the reader last moved, for whatever should wait until they are still. */
+let movedAt = Number.NEGATIVE_INFINITY
+
 /** Deliver an event. A move is drawn on the next frame; a layout, at once. */
 const send = (event: PagerEvent) => {
 	const before = state.value
 	state.value = pagerStep(before, event)
+	if (event.type === "STEP" || event.type === "ASK") movedAt = performance.now()
 	if (event.type === "RESET" || event.type === "LAID_OUT") {
 		flipper.snap()
 		current.value = state.value.current
@@ -587,12 +897,39 @@ const stopFollowing = turning.subscribe((now) => {
 	if (now !== "idle") flipper.snap()
 })
 
-const go = (index: number) =>
+/*
+ * A reader can ask for a page before it is known: a spin of the wheel past the
+ * last page measured so far, or `End`. What cannot be given yet is owed, and is
+ * given as the pages come in.
+ */
+let owed = 0
+let wantsLast = false
+const settleOwed = () => {
+	if (wantsLast) {
+		send({ type: "ASK", screen: total.value - 1, total: total.value })
+		if (complete.value) wantsLast = false
+		return
+	}
+	if (owed === 0) return
+	const room = total.value - 1 - state.value.current
+	const given = Math.min(owed, room)
+	owed = complete.value ? 0 : owed - given
+	if (given > 0) send({ type: "STEP", delta: given, total: total.value })
+}
+
+const go = (index: number) => {
+	owed = 0
+	wantsLast = !complete.value && index >= total.value
 	send({ type: "ASK", screen: index, total: total.value })
+}
 
 /** Move by `delta` screens from the one the reader is on. */
-const step = (delta: number) =>
+const step = (delta: number) => {
+	wantsLast = false
+	const past = state.value.current + delta - (total.value - 1)
+	owed = delta > 0 && past > 0 && !complete.value ? owed + past : 0
 	send({ type: "STEP", delta, total: total.value })
+}
 
 const turner = {
 	turn: step,
@@ -637,9 +974,12 @@ let touch: { x: number; y: number; id: number } | null = null
  * wheel during a turn was lost, which is what made the wheel feel spotty. Only
  * events over the pager count, and none while a dialog is open over it.
  */
+let pane: DOMRect | null = null
 const over = (event: MouseEvent): boolean => {
 	if (shell.dialog !== null) return false
-	const box = root.value?.getBoundingClientRect()
+	// Read once and kept until the pane is resized: asking on every notch laid the page out on every notch.
+	pane ??= root.value?.getBoundingClientRect() ?? null
+	const box = pane ?? undefined
 	return (
 		box !== undefined &&
 		event.clientX >= box.left &&
@@ -709,6 +1049,7 @@ onMounted(() => {
 	observer = new ResizeObserver(() => {
 		const element = root.value
 		if (element === null) return
+		pane = null
 		const size = `${element.clientWidth}x${element.clientHeight}`
 		if (size === lastSize) return
 		lastSize = size
@@ -731,6 +1072,8 @@ onBeforeUnmount(() => {
 	shell.position = null
 	stopFollowing()
 	flipper.snap()
+	generation += 1
+	cancelIdle(idle)
 	cancelAnimationFrame(frame)
 	window.clearTimeout(addressTimer)
 })
@@ -769,7 +1112,7 @@ const pageStyle = (index: number) => {
 }
 
 const fitStyle = (id: string) => {
-	const scale = fitScale.value.get(id)
+	const scale = fitScale.get(id)
 	return scale === undefined || scale === 1
 		? undefined
 		: { zoom: String(scale) }
@@ -837,7 +1180,7 @@ const vars = computed(() => ({
         <slot name="lead"></slot>
       </div>
       <div
-        v-for="item of items"
+        v-for="item of measuring"
         :key="item.id"
         class="Block"
         :data-measure-id="item.id"
@@ -914,6 +1257,7 @@ const vars = computed(() => ({
                       v-if="byId.get(slice.id)"
                       class="Slice"
                       :class="{ Grow: isWhole(slice) && byId.get(slice.id)?.grow === true }"
+                      :data-fit="fillsPage(byId.get(slice.id)) ? slice.id : undefined"
                       :data-clip="isWhole(slice) ? undefined : true"
                       :style="sliceStyle(slice)">
                       <div

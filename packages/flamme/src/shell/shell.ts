@@ -50,6 +50,8 @@ export interface Shell {
 	 * new page is captured laid out rather than empty.
 	 */
 	layouts: number
+	/** Counts every layout of a pager, the first and the ones a resize brings: the screen showing has changed under the reader. */
+	laidOut: number
 	/**
 	 * The project the dialog has drawn, once its text is there, or `null`. The zoom
 	 * into the dialog waits for it, so the dialog is captured full rather than empty.
@@ -100,6 +102,7 @@ export const createShell = (): Shell =>
 		dialog: null,
 		turner: null,
 		layouts: 0,
+		laidOut: 0,
 		projectShown: null,
 		project: null
 	})

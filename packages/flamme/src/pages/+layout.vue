@@ -80,13 +80,15 @@ watch(
 /*
  * The cursor goes onto whatever screen is now showing. The page in the query is
  * left out: a turn moves it, and the turn's own position change already did this.
+ * A layout counts (a resize changes what is on the screen), but the count of pages
+ * does not: it grows while the rest of a section is measured behind the page, and
+ * the cursor must not be taken back to the top each time it does.
  * The key is a string so that only a real change fires it: an array is a new value
  * every time `shell.position` is written, and a second call threw away where the
  * turn had said the cursor should land.
  */
 watch(
-	() =>
-		`${route.path}|${shell.position?.current ?? 0}|${shell.position?.total ?? 0}`,
+	() => `${route.path}|${shell.position?.current ?? 0}|${shell.laidOut}`,
 	() => keyboard.home()
 )
 </script>
