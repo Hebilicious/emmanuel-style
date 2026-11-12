@@ -20,7 +20,6 @@ uniform vec4 uPane;
 uniform float uSweep;
 uniform float uSweepOn;
 uniform float uSweepDir;
-uniform vec4 uFold;
 uniform vec3 uPaper;
 
 float hash(vec2 p) {
@@ -69,7 +68,7 @@ void main() {
 	vec2 toPointer = p - uPointer.xy;
 	float torch = exp(-dot(toPointer, toPointer) / (2.0 * 90.0 * 90.0)) * uPointer.z;
 
-	// The print head: a band of light crossing the pane with the turning leaf.
+	// The print head: a band of light crossing the pane as the press starts.
 	float inPane = step(uPane.y, p.y) * step(p.y, uPane.y + uPane.w)
 		* step(uPane.x, p.x) * step(p.x, uPane.x + uPane.z);
 	float fromHead = (p.x - headX()) * uSweepDir;
@@ -79,8 +78,6 @@ void main() {
 	// All of it is light through a halftone screen, so it reads as print, not as glow.
 	vec2 cell = mat2(0.7071, -0.7071, 0.7071, 0.7071) * p / 4.5;
 	float screen = smoothstep(0.5, 0.18, length(fract(cell) - 0.5));
-	// A real turn is shaded as a fold (below); the band is the press's own first pass.
-	head *= 1.0 - uFold.z;
 	float light = lamp * 0.085 + torch * 0.05 + head * 0.2;
 	light *= mix(0.45, 1.0, screen);
 	// On light paper the same light is a tint of ink, and less of it reads as much.
@@ -94,38 +91,7 @@ void main() {
 	float alpha = clamp(light + speck, 0.0, 1.0);
 	vec4 sheet = vec4(tint * light + uInk * speck, alpha);
 
-	/*
-	 * A leaf turning on its hinge. The browser turns the page in depth; what makes it
-	 * paper is the light. The leaf stands up off the spread, so it throws a shadow on
-	 * the page under it, past its free edge, longer the higher it stands; it is darker
-	 * where it bends into the hinge; and its free edge catches the lamp.
-	 * uFold is the hinge, the free edge as it is seen, whether a leaf is turning, and
-	 * how far it stands off the page (0 flat, 1 upright).
-	 */
-	float fold = uFold.x;
-	float tip = uFold.y;
-	float lift = uFold.w;
-	float side = sign(tip - fold);            // which side of the hinge the leaf is on
-	float width = abs(tip - fold);
-	float fromFold = (p.x - fold) * side;      // positive on the leaf's side
-	float onLeaf = step(0.0, fromFold) * step(fromFold, width);
-	float grown = lift * uFold.z * inPane;
-
-	float bend = onLeaf * 0.26 * exp(-fromFold / (width * 0.3 + 10.0));
-	float reach = 18.0 + lift * uPane.z * 0.11;
-	float thrown = step(width, fromFold) * 0.5 * exp(-(fromFold - width) / reach);
-	float shade = clamp((bend + thrown) * grown, 0.0, 0.8);
-
-	vec4 leaf = vec4(0.0, 0.0, 0.0, shade);
-	// On dark paper a shadow does not show, so the leaf is told from the page under it
-	// by light instead: it is lifted toward the lamp, and its free edge is drawn.
-	float lifted = onLeaf * (0.03 + 0.08 * exp(-(width - fromFold) / (width * 0.3 + 14.0))) * grown * uDark;
-	float rim = exp(-abs(fromFold - width) / 1.4) * 0.5 * grown;
-	vec3 lampLight = mix(vec3(1.0), uAccent, 0.35);
-	leaf.rgb += lampLight * lifted + mix(uInk, uAccent, 0.5) * rim * 0.6;
-	leaf.a = max(leaf.a, max(lifted, rim * 0.6));
-
-	gl_FragColor = leaf + sheet * (1.0 - leaf.a);
+	gl_FragColor = sheet;
 }
 `
 
@@ -274,56 +240,6 @@ void main() {
 	float d = length(gl_PointCoord - 0.5) * 2.0;
 	float alpha = smoothstep(1.0, 0.78, d) * clamp(vAlpha, 0.0, 1.0);
 	vec3 colour = mix(uInk, uAccent, vGlow * 0.85);
-	gl_FragColor = vec4(colour * alpha, alpha);
-}
-`
-
-/* ------------------------------------------------------------------ the deck */
-
-export const DECK_VERTEX = /* glsl */ `
-varying vec2 vUv;
-varying vec3 vNormal;
-
-void main() {
-	vUv = uv;
-	vNormal = normalize(normalMatrix * vec3(0.0, 0.0, 1.0));
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-}
-`
-
-export const DECK_FRAGMENT = /* glsl */ `
-precision highp float;
-uniform sampler2D uAtlas;
-uniform float uTile;
-uniform float uTiles;
-uniform float uAlpha;
-uniform float uFront;
-uniform float uMirror;
-uniform vec3 uAccent;
-uniform vec2 uLight;
-varying vec2 vUv;
-varying vec3 vNormal;
-
-void main() {
-	// The plate's tile of the strip.
-	vec4 plate = texture2D(uAtlas, vec2((uTile + vUv.x) / uTiles, vUv.y));
-
-	// Lit from where the pointer is: a plate turned to the light is brighter, and
-	// the light catches it in a band as it passes.
-	vec3 towards = normalize(vec3(uLight, 0.9));
-	vec3 normal = normalize(vNormal) * (gl_FrontFacing ? 1.0 : -1.0);
-	float lit = 0.5 + 0.6 * max(dot(normal, towards), 0.0);
-	float glint = pow(max(dot(normal, normalize(towards + vec3(0.0, 0.0, 1.0))), 0.0), 40.0);
-	vec3 colour = plate.rgb * lit + uAccent * glint * 0.25;
-
-	// Its frame, in the accent on the plate in front.
-	vec2 edge = min(vUv, 1.0 - vUv) * vec2(16.0 / 9.0, 1.0);
-	float frame = 1.0 - smoothstep(0.004, 0.012, min(edge.x, edge.y));
-	colour = mix(colour, uAccent, frame * (0.3 + 0.7 * uFront));
-
-	float alpha = uAlpha;
-	// The reflection is faint, and fades as it leaves the floor.
-	if (uMirror > 0.5) alpha *= 0.4 * pow(1.0 - vUv.y, 2.0);
 	gl_FragColor = vec4(colour * alpha, alpha);
 }
 `

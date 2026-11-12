@@ -4,7 +4,7 @@
  *
  * The engine (`press/engine.ts`) draws; this measures. Every frame it reads where
  * the reading cursor is, where the pointer is, where the pane and the portrait's
- * plate are and whether a page is turning, and hands that to the engine. The
+ * plate are, and hands that to the engine. The
  * engine and three.js are a chunk of their own, loaded once the page is up and
  * idle, so the paper is readable before the press starts.
  *
@@ -15,16 +15,10 @@
  */
 import { onBeforeUnmount, onMounted, ref } from "vue"
 import type { Box, Press, PressFrame, Rgb } from "../press/engine.js"
-import { deckOf } from "../press/deck.js"
 import type { Ink } from "../press/ink.js"
 import { cursorBox, shown } from "../shell/cursor.js"
 import { useShell } from "../shell/shell.js"
-import {
-	currentTurn,
-	leafAngle,
-	reducedMotion,
-	turnProgress
-} from "../shell/turns.js"
+import { reducedMotion } from "../shell/turns.js"
 
 const shell = useShell()
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -107,88 +101,11 @@ const reliefOf = (): PressFrame["relief"] => {
 	return null
 }
 
-/** The deck's stage on show, with the strip of plates the page drew for it. */
-const deckOfPage = (): PressFrame["deck"] => {
-	if (shell.dialog !== null) return null
-	for (const stage of document.querySelectorAll<HTMLElement>(
-		".Page [data-deck]"
-	)) {
-		const source = deckOf(stage)
-		const rect = shown(stage)
-		if (source === undefined || rect === null) continue
-		if (rect.width < stage.getBoundingClientRect().width - 1) continue
-		return {
-			box: { x: rect.left, y: rect.top, w: rect.width, h: rect.height },
-			atlas: source.atlas,
-			tiles: source.tiles,
-			version: source.version,
-			places: (stage.dataset["deckPlaces"] ?? "").split(" ").map(Number)
-		}
-	}
-	return null
-}
-
-/**
- * The turn in progress, and where its leaf is.
- *
- * A turning leaf is hinged on the spine of a spread, or on the left edge of a
- * phone's page, and turns in depth (`styles/turns.css`). The press draws the
- * shadow it throws and the light on its edge, so the hinge, the free edge as the
- * reader sees it and how far the leaf stands off the page are worked out here,
- * from the same clock and the same perspective the stylesheet uses.
- */
-const TURN_DEPTH = { spread: 1.9, single: 5.2 }
-
-const turnOf = (now: number, pane: Box | null): PressFrame["turn"] => {
-	const turn = currentTurn()
-	// The first thing the press does is run the print head across the edition once.
-	if (now - startedAt < INTRO) {
-		return { forward: false, progress: (now - startedAt) / INTRO, fold: null }
-	}
-	if (turn === null || turn.kind === "zoom" || turn.kind === "theme")
-		return null
-	const forward = turn.direction !== "back"
-	const progress = turnProgress(turn, now)
-	if (pane === null) return { forward, progress, fold: null }
-	const spread =
-		document.querySelector(".Page .Pager")?.getAttribute("data-columns") !== "1"
-	const page = spread ? pane.w / 2 : pane.w
-	const depth =
-		window.innerWidth * (spread ? TURN_DEPTH.spread : TURN_DEPTH.single)
-	/** How far from its hinge the free edge of a leaf is seen, `degrees` off the page. */
-	const seen = (degrees: number): number => {
-		const angle = (degrees * Math.PI) / 180
-		return (page * Math.cos(angle)) / (1 - (page * Math.sin(angle)) / depth)
-	}
-	if (!spread) {
-		// One page, hinged on its left edge: it swings away going forward, down going back.
-		const degrees = 90 * (forward ? progress : 1 - progress)
-		return {
-			forward,
-			progress,
-			fold: {
-				x: pane.x,
-				edge: pane.x + seen(degrees),
-				lift: Math.sin((degrees * Math.PI) / 180)
-			}
-		}
-	}
-	const spine = pane.x + pane.w / 2
-	const degrees = leafAngle(turn, now)
-	// Before upright the leaf is on the side it leaves, after it on the side it lands on.
-	const leaving = degrees < 90
-	const off = leaving ? degrees : 180 - degrees
-	const right = forward === leaving
-	return {
-		forward,
-		progress,
-		fold: {
-			x: spine,
-			edge: right ? spine + seen(off) : spine - seen(off),
-			lift: Math.sin((off * Math.PI) / 180)
-		}
-	}
-}
+/** The print head's first pass across the edition, when the press starts. */
+const introOf = (now: number): PressFrame["sweep"] =>
+	now - startedAt < INTRO
+		? { forward: false, progress: (now - startedAt) / INTRO }
+		: null
 
 /*
  * Where the pager is. Asking an element for its box makes the browser bring the
@@ -210,15 +127,14 @@ const paneBox = (now: number): Box | null => {
 }
 
 /*
- * The same goes for the reading cursor, the portrait and the deck: they move when
+ * The same goes for the reading cursor and the portrait: they move when
  * the reader does something, not sixty times a second, and the press eases toward
  * where they are, so they are looked for ten times a second.
  */
 const BOXES_EVERY = 100
-let boxes: Pick<PressFrame, "lamp" | "relief" | "deck"> = {
+let boxes: Pick<PressFrame, "lamp" | "relief"> = {
 	lamp: null,
-	relief: null,
-	deck: null
+	relief: null
 }
 let boxesAt = Number.NEGATIVE_INFINITY
 const pageBoxes = (now: number) => {
@@ -227,8 +143,7 @@ const pageBoxes = (now: number) => {
 	boxes = {
 		// A touch screen has no reading cursor to light.
 		lamp: touch.matches ? null : boxOf(cursorBox()),
-		relief: reliefOf(),
-		deck: deckOfPage()
+		relief: reliefOf()
 	}
 	return boxes
 }
@@ -254,8 +169,7 @@ const measure = (now: number): PressFrame => {
 		pane,
 		paper,
 		relief: page.relief,
-		deck: page.deck,
-		turn: turnOf(now, pane)
+		sweep: introOf(now)
 	}
 }
 
@@ -270,21 +184,14 @@ const tick = (now: number) => {
 	if (document.hidden) return
 	const page = measure(now)
 	const lamp = page.lamp === null ? "" : `${page.lamp.x},${page.lamp.y}`
-	if (lamp !== lastLamp || page.turn !== null) stirredAt = now
+	if (lamp !== lastLamp || page.sweep !== null) stirredAt = now
 	lastLamp = lamp
 	// A sheet nobody is touching is drawn at half the rate: the drift reads the same.
 	odd = !odd
-	if (
-		now - stirredAt > CALM_AFTER &&
-		odd &&
-		press.reliefShown === false &&
-		!press.deckShown
-	)
-		return
+	if (now - stirredAt > CALM_AFTER && odd && press.reliefShown === false) return
 	simulation?.draw(page, now / 1000)
 	press.draw(page, now / 1000)
 	flag("reliefShown", press.reliefShown)
-	flag("deckGpu", press.deckShown)
 }
 
 /**
@@ -364,7 +271,6 @@ onBeforeUnmount(() => {
 	delete document.documentElement.dataset["press"]
 	delete document.documentElement.dataset["reliefShown"]
 	delete document.documentElement.dataset["ink"]
-	delete document.documentElement.dataset["deckGpu"]
 	probe?.remove()
 	simulation?.dispose()
 	simulation = null
