@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeexperience_fpods0",
     "kind": "query",
-    "hash": "0e3cca9c58dd5673044c37932fbabd6ebe900c074e45ba099bfec68498d01c41",
+    "hash": "366df0947b39ead032ef6a3517ca538625735ce03cce333f2f4ce470118146bc",
     "raw": `query Routeexperience_fpods0 {
     posts {
         __typename
@@ -63,8 +63,8 @@ const artifact = {
         description
         evidence
         name
-        practice
-        record
+        offer
+        principles
         roles
         summary
         title
@@ -454,17 +454,17 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "practice": {
+                        "offer": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "practice",
+                            "keyRaw": "offer",
                             "visible": true,
                         },
 
-                        "record": {
+                        "principles": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "record",
+                            "keyRaw": "principles",
                             "visible": true,
                         },
 
@@ -554,8 +554,8 @@ export type Routeexperience_fpods0$result = {
 		readonly title: string;
 		readonly description: string;
 		readonly summary: string;
-		readonly record: ReadonlyArray<string>;
-		readonly practice: ReadonlyArray<string>;
+		readonly offer: ReadonlyArray<string>;
+		readonly principles: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
 		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
@@ -623,8 +623,8 @@ export type Routeexperience_fpods0$unmasked = {
 		readonly title: string;
 		readonly description: string;
 		readonly summary: string;
-		readonly record: ReadonlyArray<string>;
-		readonly practice: ReadonlyArray<string>;
+		readonly offer: ReadonlyArray<string>;
+		readonly principles: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
 		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;

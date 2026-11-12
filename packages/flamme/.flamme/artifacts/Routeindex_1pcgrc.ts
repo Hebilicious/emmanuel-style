@@ -5,7 +5,7 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Routeindex_1pcgrc",
     "kind": "query",
-    "hash": "0b8b81af51e1e4728924d3345c35b8cb92be65e2d0beacef157a32737aacc2df",
+    "hash": "3b0e321449015ac97df892d04d11dc96f523eb4731a1cadc1e974255393c45d4",
     "raw": `query Routeindex_1pcgrc {
     posts {
         __typename
@@ -62,8 +62,8 @@ const artifact = {
         description
         evidence
         name
-        practice
-        record
+        offer
+        principles
         roles
         summary
         title
@@ -449,17 +449,17 @@ const artifact = {
                             "visible": true,
                         },
 
-                        "practice": {
+                        "offer": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "practice",
+                            "keyRaw": "offer",
                             "visible": true,
                         },
 
-                        "record": {
+                        "principles": {
                             "type": "String",
                             "modifiers": "[String!]!",
-                            "keyRaw": "record",
+                            "keyRaw": "principles",
                             "visible": true,
                         },
 
@@ -557,8 +557,8 @@ export type Routeindex_1pcgrc$result = {
 		readonly title: string;
 		readonly description: string;
 		readonly summary: string;
-		readonly record: ReadonlyArray<string>;
-		readonly practice: ReadonlyArray<string>;
+		readonly offer: ReadonlyArray<string>;
+		readonly principles: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
 		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;
@@ -625,8 +625,8 @@ export type Routeindex_1pcgrc$unmasked = {
 		readonly title: string;
 		readonly description: string;
 		readonly summary: string;
-		readonly record: ReadonlyArray<string>;
-		readonly practice: ReadonlyArray<string>;
+		readonly offer: ReadonlyArray<string>;
+		readonly principles: ReadonlyArray<string>;
 		readonly tools: ReadonlyArray<string>;
 		readonly roles: ReadonlyArray<string>;
 		readonly evidence: ReadonlyArray<string>;

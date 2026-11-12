@@ -31,7 +31,7 @@ import {
 } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useShell } from "../shell/shell.js"
-import { hurry, pageDuration, turn } from "../shell/turns.js"
+import { hurry, pageDuration, skipTurn, turn } from "../shell/turns.js"
 import { WHEEL_REST, wheelStep } from "../shell/wheel.js"
 import { SPREAD_QUERY } from "../shell/wide.js"
 import {
@@ -46,7 +46,7 @@ import {
 } from "../utils/paginate.js"
 import { MIN_FIT, type PagerItem, type PagerNote } from "./pager.js"
 import {
-	hasRoom,
+	blitzing,
 	nextTurn,
 	PAGER_START,
 	type PagerEvent,
@@ -446,6 +446,9 @@ watch(
 
 /* -------------------------------------------------------------------- turning */
 
+/** How long the last turn of the run in progress took, or was hurried to. */
+let leafing = Number.POSITIVE_INFINITY
+
 /**
  * Turn until the screen asked for is showing.
  *
@@ -454,9 +457,6 @@ watch(
  * next (`nextTurn`): the neighbouring screen, riffled while more wait behind it, or
  * a far target in one turn.
  */
-/** How long the last turn of the run in progress took, or was hurried to. */
-let leafing = Number.POSITIVE_INFINITY
-
 const pump = async () => {
 	if (state.value.phase !== "resting") return
 	send({ type: "BEGIN" })
@@ -477,7 +477,9 @@ const pump = async () => {
 			await turn(
 				next.direction,
 				async () => {
-					send({ type: "LANDED", screen: to })
+					// A blitz may have moved the page on while this turn was being set up.
+					if (nextTurn(state.value)?.to === to)
+						send({ type: "LANDED", screen: to })
 					await nextTick()
 				},
 				"page",
@@ -494,9 +496,25 @@ const go = (index: number) => {
 	void pump()
 }
 
+/** When the last step was asked for, to tell a spin of the wheel from a turn. */
+let askedAt = Number.NEGATIVE_INFINITY
+
 /** Turn by `delta` screens, counted from the screen already asked for. */
 const step = (delta: number) => {
+	const now = performance.now()
+	const since = now - askedAt
+	askedAt = now
 	send({ type: "STEP", delta, total: total.value })
+	/*
+	 * A spun wheel or a held key is scrolling, not turning: the page follows at
+	 * once, as a scrolled page would. The turn in the air is cut short, and the
+	 * screen asked for is shown without one.
+	 */
+	if (blitzing(state.value, since)) {
+		skipTurn()
+		send({ type: "JUMP" })
+		return
+	}
 	// Asked for while a page is turning: that page gets out of the way sooner.
 	if (state.value.phase === "turning") {
 		const duration = pageDuration(
@@ -595,8 +613,7 @@ const onWheel = (event: WheelEvent) => {
 			: event.deltaX) * scale
 	const asked = wheelStep(wheel, { delta, time: event.timeStamp })
 	wheel = asked.state
-	// A spin beyond what the queue holds is not stored up to run on after it stops.
-	if (asked.turn !== 0 && hasRoom(state.value)) step(asked.turn)
+	if (asked.turn !== 0) step(asked.turn)
 }
 
 /* ------------------------------------------------------------------ lifecycle */

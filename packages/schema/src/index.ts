@@ -101,12 +101,12 @@ export interface SkillShape {
 	description: string
 	/** What he does, in two or three sentences. */
 	summary: string
-	/** What he has done with it: facts from the Library, a line each. */
-	record: string[]
-	/** How he works, a line each. */
-	practice: string[]
+	/** What he brings: capabilities and outcomes, a line each. */
+	offer: string[]
+	/** What he believes about the skill, a line each. */
+	principles: string[]
 	tools: string[]
-	/** Where he did it: the companies of the ledger, by name. */
+	/** Examples of where he did it: the companies of the ledger, by name. */
 	roles: string[]
 	/** The names of the Library projects that prove it. */
 	evidence: string[]
@@ -372,8 +372,8 @@ builder.objectType("Skill", {
 		title: t.exposeString("title", { nullable: false }),
 		description: t.exposeString("description", { nullable: false }),
 		summary: t.exposeString("summary", { nullable: false }),
-		record: t.exposeStringList("record", { nullable: false }),
-		practice: t.exposeStringList("practice", { nullable: false }),
+		offer: t.exposeStringList("offer", { nullable: false }),
+		principles: t.exposeStringList("principles", { nullable: false }),
 		tools: t.exposeStringList("tools", { nullable: false }),
 		roles: t.exposeStringList("roles", { nullable: false }),
 		evidence: t.exposeStringList("evidence", { nullable: false })

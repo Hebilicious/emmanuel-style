@@ -3,8 +3,8 @@
  * The furniture of the sheet: what a printer leaves in the margins.
  *
  * The page is set inside a sheet that is a little larger, and the margin carries
- * what a proof carries: crop marks at the corners of the page, a control strip of
- * the edition's inks down one side, the running line down the other, and, at each
+ * what a proof carries: crop marks at the corners of the page, the running line
+ * down one side, and, at each
  * outer edge, the pages of the section stacked up: the ones read on the left, the
  * ones to come on the right, so the thickness of each pile says how far in the
  * reader is.
@@ -37,15 +37,6 @@ const running = computed(() => {
 			: ` · sheet ${two(position.current)} of ${two(position.total)}`
 	return `emmanuel.style · earth edition · ${sectionOf(route.path).dateline}${sheet}`
 })
-
-const INKS = [
-	"accent",
-	"ink",
-	"muted",
-	"faint",
-	"rule-strong",
-	"tertiary"
-] as const
 </script>
 
 <template>
@@ -57,15 +48,6 @@ const INKS = [
 
     <span class="Pile Read" :style='{ "--edges": read }'></span>
     <span class="Pile Ahead" :style='{ "--edges": left }'></span>
-
-    <span class="Strip">
-      <span
-        v-for="ink of INKS"
-        :key="ink"
-        class="Patch"
-        :style="{ background: `var(--${ink})` }"></span>
-      <span class="Target"></span>
-    </span>
 
     <span class="Running">{{ running }}</span>
   </div>
@@ -164,51 +146,6 @@ const INKS = [
 
 .Pile.Ahead {
   left: calc(100% - var(--margin) + 5px);
-}
-
-/* The control strip: a patch of each ink, and a registration target under them. */
-.Strip {
-  position: absolute;
-  top: 50%;
-  left: calc(var(--margin) * 0.22);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  transform: translateY(-50%);
-}
-
-.Patch {
-  width: 0.45rem;
-  height: 0.45rem;
-}
-
-.Target {
-  position: relative;
-  width: 0.8rem;
-  height: 0.8rem;
-  margin-top: 0.5rem;
-  border: var(--spacing-size-hairline) solid var(--rule-strong);
-  border-radius: 50%;
-}
-
-.Target::before,
-.Target::after {
-  content: "";
-  position: absolute;
-  background: var(--rule-strong);
-}
-
-.Target::before {
-  inset-inline: -0.25rem;
-  top: 50%;
-  height: var(--spacing-size-hairline);
-}
-
-.Target::after {
-  inset-block: -0.25rem;
-  left: 50%;
-  width: var(--spacing-size-hairline);
 }
 
 /* The running line, set up the outer margin the way a sheet's slug is. */

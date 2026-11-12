@@ -232,6 +232,8 @@ export const hurry = (duration: number): void => {
 }
 
 let info: TurnInfo | null = null
+/** The browser's transition behind the running turn. */
+let live: ViewTransitionLike | null = null
 export const currentTurn = (): TurnInfo | null => (turning.state === "idle" ? null : info)
 
 /** The root element says what is turning, for `styles/turns.css` to key on. */
@@ -283,6 +285,7 @@ export const turn = async (
 	mark(info)
 	turning.send({ type: "START", kind, direction, owner: token })
 	const transition = doc.startViewTransition(update)
+	live = transition
 	// The leaves start to move when the new page has been captured, not before.
 	// A transition overtaken by the next one rejects these; the page is updated either way.
 	transition.ready
@@ -301,8 +304,14 @@ export const turn = async (
 		// A transition that cannot start (the update threw, or it was skipped) still
 		// leaves the page updated; nothing else to do.
 	} finally {
+		if (live === transition) live = null
 		if (turning.send({ type: "END", owner: token }) === "idle") mark(null)
 	}
+}
+
+/** Cut the running page turn short: the page it was turning to is shown at once. */
+export const skipTurn = (): void => {
+	if (turning.state === "page") live?.skipTransition()
 }
 
 /** Run `update` as a zoom: a card lifted into its dialog, or set back down. */

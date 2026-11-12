@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
-	hasRoom,
+	blitzing,
 	nextTurn,
 	PAGER_START,
 	type PagerEvent,
@@ -54,10 +54,19 @@ describe("the pager", () => {
 		expect(run([{ type: "ASK", screen: 99, total: 9 }], resting(0)).target).toBe(8)
 	})
 
-	it("has room for a few turns and no more", () => {
-		const ask = (delta: number) => run([{ type: "STEP", delta, total: 20 }], resting(0))
-		expect(hasRoom(ask(5))).toBe(true)
-		expect(hasRoom(ask(6))).toBe(false)
+	it("jumps rather than turns when asks come as fast as a spun wheel", () => {
+		const one = run([{ type: "STEP", delta: 1, total: 20 }], resting(0))
+		expect(blitzing(one, 400)).toBe(false)
+		expect(blitzing(one, 40)).toBe(true)
+		// Turns piling up are a blitz too, however far apart the asks were.
+		const piled = run([{ type: "STEP", delta: 3, total: 20 }], resting(0))
+		expect(blitzing(piled, 400)).toBe(true)
+	})
+
+	it("a jump shows the screen asked for at once", () => {
+		const state = run([{ type: "STEP", delta: 5, total: 20 }, { type: "JUMP" }], resting(2))
+		expect(state.current).toBe(7)
+		expect(nextTurn(state)).toBeNull()
 	})
 
 	it("keeps turning through a layout redone under it, and ends on target", () => {
