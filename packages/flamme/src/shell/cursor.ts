@@ -36,21 +36,56 @@ export interface Row {
 	readonly box: DOMRect
 }
 
+/** Whether a leaf is turning (`components/pager-flip.ts`): set edge-on, or moving. */
+const turning = (leaf: HTMLElement): boolean =>
+	leaf.style.transform !== "" || leaf.getAnimations().length > 0
+
+/**
+ * Where an element on a turning leaf will be once the leaf lies flat: its box
+ * from the layout, which a transform does not move. A page being laid stands
+ * edge-on until its turn, and the cursor goes where the reader will read, not
+ * where the paper is for that moment.
+ */
+const laidBox = (leaf: HTMLElement) => {
+	const spread = (leaf.offsetParent as HTMLElement | null)?.getBoundingClientRect()
+	return (element: HTMLElement): DOMRect | null => {
+		if (spread === undefined) return null
+		let x = 0
+		let y = 0
+		let node: HTMLElement | null = element
+		while (node !== null && node !== leaf) {
+			x += node.offsetLeft
+			y += node.offsetTop
+			node = node.offsetParent as HTMLElement | null
+		}
+		if (node !== leaf) return null
+		return new DOMRect(
+			spread.left + leaf.offsetLeft + x,
+			spread.top + leaf.offsetTop + y,
+			element.offsetWidth,
+			element.offsetHeight
+		)
+	}
+}
+
 /**
  * The part of an element left on screen once every clipping box around it (a
  * page cut out of a block, the leaf it is drawn on) has cut it, or `null`.
  */
 export const shown = (element: HTMLElement): DOMRect | null => {
 	if (element.closest("[data-measure], [hidden], [inert]")) return null
-	const box = element.getBoundingClientRect()
-	if (box.width === 0 || box.height === 0) return null
+	const leaf = element.closest<HTMLElement>("[data-leaf]")
+	const flat = leaf !== null && turning(leaf) ? laidBox(leaf) : null
+	const box = flat === null ? element.getBoundingClientRect() : flat(element)
+	if (box === null || box.width === 0 || box.height === 0) return null
 	let { left, top, right, bottom } = box
 	for (
 		let clip = element.closest<HTMLElement>("[data-clip]");
 		clip !== null;
 		clip = clip.parentElement?.closest<HTMLElement>("[data-clip]") ?? null
 	) {
-		const frame = clip.getBoundingClientRect()
+		const frame =
+			(flat !== null && leaf?.contains(clip) ? flat(clip) : null) ?? clip.getBoundingClientRect()
 		left = Math.max(left, frame.left)
 		top = Math.max(top, frame.top)
 		right = Math.min(right, frame.right)
