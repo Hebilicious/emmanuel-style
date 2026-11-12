@@ -4,23 +4,22 @@
  *
  *   measuring  the blocks are being measured; there are no screens to turn yet
  *   resting    a screen is showing and nothing is asked for
- *   turning    turns are running, one at a time, until the screen asked for shows
+ *   turning    a turn is running, to the screen asked for
  *
- * `current` is the screen showing and `target` the one asked for. A reader can ask
- * while a turn runs (a second notch of the wheel, `n` twice): the target moves and
- * the turns carry on until they reach it. Asks are counted from the target while
- * turning, so two quick presses are two pages, and a target further away than
- * `QUEUE` is reached in one turn rather than by riffling through every page.
+ * `current` is the screen showing and `target` the one asked for. Where the reader
+ * is going is always worked out first, and the animation follows from it, never
+ * the other way round: an animation does not hold a page back.
  *
- * A reader who spins the wheel is not asking for turns at all: they are scrolling,
- * and the page follows the wheel at once (`JUMP`), with no leaf in the air.
+ *   one ask at rest      one turn, of one leaf, to the screen asked for, however
+ *                        far it is
+ *   an ask while a leaf  the reader is scrolling: a spun wheel, a held key. The
+ *   is in the air, or    screen asked for is shown at once (`JUMP`), and what
+ *   hard on the last     plays over it is a riffle of leaves in that direction,
+ *                        for as long as the asks keep coming
  *
  * It is a pure reducer: `Pager.vue` holds the state, sends it events, and runs the
- * View Transitions that `nextTurn` asks for.
+ * View Transition that `nextTurn` asks for.
  */
-
-/** How far ahead of the page showing the reader can ask, a turn per step. */
-export const QUEUE = 3
 
 export type PagerPhase = "measuring" | "resting" | "turning"
 
@@ -88,28 +87,20 @@ export interface NextTurn {
 	/** The screen this turn puts on show. */
 	readonly to: number
 	readonly direction: "forward" | "back"
-	/** How many more turns wait behind this one: the more, the quicker it is. */
-	readonly behind: number
 }
 
 /** The turn to run next, or `null` when the screen asked for is showing. */
-export const nextTurn = (state: PagerState): NextTurn | null => {
-	const distance = state.target - state.current
-	if (distance === 0) return null
-	const to = Math.abs(distance) > QUEUE ? state.target : state.current + Math.sign(distance)
-	return {
-		to,
-		direction: to > state.current ? "forward" : "back",
-		behind: Math.abs(state.target - to)
-	}
-}
+export const nextTurn = (state: PagerState): NextTurn | null =>
+	state.target === state.current
+		? null
+		: { to: state.target, direction: state.target > state.current ? "forward" : "back" }
 
 /** Asks closer together than this, in milliseconds, are a spin of the wheel or a held key. */
 export const BLITZ_GAP = 150
 
 /**
- * Whether an ask is part of a blitz, and the page should jump rather than turn:
- * it came hard on the heels of the last one, or turns are already piling up.
+ * Whether an ask is scrolling rather than a turn: a leaf was already in the air
+ * when it came (`before` is the state it found), or it came hard on the last one.
  */
-export const blitzing = (state: PagerState, sinceLastAsk: number): boolean =>
-	sinceLastAsk < BLITZ_GAP || Math.abs(state.target - state.current) > 1
+export const scrolling = (before: PagerState, sinceLastAsk: number): boolean =>
+	before.phase === "turning" || sinceLastAsk < BLITZ_GAP

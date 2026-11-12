@@ -31,7 +31,7 @@ import {
 } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useShell } from "../shell/shell.js"
-import { hurry, pageDuration, skipTurn, turn } from "../shell/turns.js"
+import { reducedMotion, skipTurn, turn } from "../shell/turns.js"
 import { WHEEL_REST, wheelStep } from "../shell/wheel.js"
 import { SPREAD_QUERY } from "../shell/wide.js"
 import {
@@ -46,7 +46,7 @@ import {
 } from "../utils/paginate.js"
 import { MIN_FIT, type PagerItem, type PagerNote } from "./pager.js"
 import {
-	blitzing,
+	scrolling,
 	nextTurn,
 	PAGER_START,
 	type PagerEvent,
@@ -446,21 +446,15 @@ watch(
 
 /* -------------------------------------------------------------------- turning */
 
-/** How long the last turn of the run in progress took, or was hurried to. */
-let leafing = Number.POSITIVE_INFINITY
-
 /**
- * Turn until the screen asked for is showing.
+ * Turn until the screen asked for is showing: one leaf, to that screen.
  *
- * One turn at a time, each to the end: starting a View Transition while one runs
- * skips the first, and a skipped turn is a jump. The machine says which turn is
- * next (`nextTurn`): the neighbouring screen, riffled while more wait behind it, or
- * a far target in one turn.
+ * One View Transition at a time, each to the end unless the reader scrolls on
+ * (`step`), which cuts it short.
  */
 const pump = async () => {
 	if (state.value.phase !== "resting") return
 	send({ type: "BEGIN" })
-	leafing = Number.POSITIVE_INFINITY
 	try {
 		for (
 			let next = nextTurn(state.value);
@@ -468,23 +462,12 @@ const pump = async () => {
 			next = nextTurn(state.value)
 		) {
 			const { to } = next
-			// Leafing keeps its speed: the pages after a quick one do not drag, and the
-			// last one is only a little slower, to land.
-			const duration = Math.round(
-				Math.min(pageDuration(next.behind), leafing * 1.15)
-			)
-			leafing = duration
-			await turn(
-				next.direction,
-				async () => {
-					// A blitz may have moved the page on while this turn was being set up.
-					if (nextTurn(state.value)?.to === to)
-						send({ type: "LANDED", screen: to })
-					await nextTick()
-				},
-				"page",
-				duration
-			)
+			await turn(next.direction, async () => {
+				// Scrolling may have moved the page on while this turn was being set up.
+				if (nextTurn(state.value)?.to === to)
+					send({ type: "LANDED", screen: to })
+				await nextTick()
+			})
 		}
 	} finally {
 		send({ type: "SETTLE" })
@@ -496,32 +479,60 @@ const go = (index: number) => {
 	void pump()
 }
 
-/** When the last step was asked for, to tell a spin of the wheel from a turn. */
+/*
+ * The riffle: the leaves that flip over the spread while the reader scrolls.
+ *
+ * Scrolling does not wait for a turn. The page asked for is shown at once, and
+ * over it blank leaves flip in the direction of travel, one per page passed (no
+ * closer together than `RIFFLE_EVERY`, and no more than `RIFFLE_MOST` in the air),
+ * so a slow scroll is a leaf now and then and a spin of the wheel is a flutter of
+ * them. Each leaf removes itself when it has landed.
+ */
+const RIFFLE_EVERY = 55
+const RIFFLE_MOST = 7
+/** How long a leaf of the riffle is in the air; the stylesheet is given it. */
+const RIFFLE_MS = 300
+const riffle = ref<{ id: number; direction: "forward" | "back" }[]>([])
+let riffleId = 0
+let riffledAt = Number.NEGATIVE_INFINITY
+
+const flip = (direction: "forward" | "back", now: number) => {
+	if (reducedMotion() || now - riffledAt < RIFFLE_EVERY) return
+	if (riffle.value.length >= RIFFLE_MOST) return
+	riffledAt = now
+	riffleId += 1
+	const id = riffleId
+	riffle.value = [...riffle.value, { id, direction }]
+	// The leaf takes itself away when it lands; this is for the one whose landing is not reported.
+	window.setTimeout(() => landed(id), RIFFLE_MS + 120)
+}
+const landed = (id: number) => {
+	riffle.value = riffle.value.filter((leaf) => leaf.id !== id)
+}
+
+/** When the last step was asked for, to tell scrolling from a turn. */
 let askedAt = Number.NEGATIVE_INFINITY
 
-/** Turn by `delta` screens, counted from the screen already asked for. */
+/**
+ * Move by `delta` screens, counted from the screen already asked for.
+ *
+ * Where the reader is going is settled first, here; what is animated follows. A
+ * step on its own is one turn. A step that comes while a leaf is in the air, or
+ * hard on the last one, is scrolling: the leaf in the air is dropped, the screen
+ * asked for is shown at once, and a riffle plays over it.
+ */
 const step = (delta: number) => {
 	const now = performance.now()
 	const since = now - askedAt
 	askedAt = now
+	const before = state.value
 	send({ type: "STEP", delta, total: total.value })
-	/*
-	 * A spun wheel or a held key is scrolling, not turning: the page follows at
-	 * once, as a scrolled page would. The turn in the air is cut short, and the
-	 * screen asked for is shown without one.
-	 */
-	if (blitzing(state.value, since)) {
+	if (state.value.target === before.target) return
+	if (scrolling(before, since)) {
 		skipTurn()
 		send({ type: "JUMP" })
+		flip(delta > 0 ? "forward" : "back", now)
 		return
-	}
-	// Asked for while a page is turning: that page gets out of the way sooner.
-	if (state.value.phase === "turning") {
-		const duration = pageDuration(
-			Math.abs(state.value.target - state.value.current)
-		)
-		hurry(duration)
-		leafing = Math.min(leafing, duration)
 	}
 	void pump()
 }
@@ -847,6 +858,19 @@ const vars = computed(() => ({
           </div>
         </div>
       </div>
+      <div
+        v-if="riffle.length > 0"
+        class="Riffle"
+        :class="{ Single: geometry.columns === 1 }"
+        aria-hidden="true">
+        <span
+          v-for="leaf of riffle"
+          :key="leaf.id"
+          class="Flip"
+          :class="leaf.direction"
+          :style="{ animationDuration: `${RIFFLE_MS}ms` }"
+          @animationend="landed(leaf.id)"></span>
+      </div>
     </div>
   </div>
 </template>
@@ -951,6 +975,113 @@ const vars = computed(() => ({
     color-mix(in oklab, var(--ink) 7%, transparent),
     transparent 85%
   );
+}
+
+/*
+ * The riffle: blank leaves flipping over the spread while the reader scrolls. On
+ * a spread a leaf goes from one page over the spine onto the other; on a phone it
+ * swings off its left edge. It is over the pages and never in the way of a click.
+ */
+.Riffle {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  perspective: 190vw;
+}
+
+.Riffle.Single {
+  perspective: 520vw;
+}
+
+.Flip {
+  position: absolute;
+  inset-block: 0;
+  width: 50%;
+  border: var(--spacing-size-hairline) solid var(--rule-strong);
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 0.9rem,
+      color-mix(in oklab, var(--ink) 9%, transparent) 0.9rem 1rem
+    ),
+    var(--paper);
+  background-clip: content-box, border-box;
+  padding: 8% 9%;
+  box-shadow: 0 0 2.5rem color-mix(in oklab, #000 35%, transparent);
+  opacity: 0.86;
+  backface-visibility: visible;
+  animation: 300ms cubic-bezier(0.4, 0.1, 0.6, 0.95) both;
+}
+
+.Flip.forward {
+  left: 50%;
+  transform-origin: left center;
+  animation-name: flip-forward;
+}
+
+.Flip.back {
+  left: 0;
+  transform-origin: right center;
+  animation-name: flip-back;
+}
+
+.Riffle.Single .Flip {
+  left: 0;
+  width: 100%;
+  transform-origin: left center;
+}
+
+.Riffle.Single .Flip.forward {
+  animation-name: swing-off;
+}
+
+.Riffle.Single .Flip.back {
+  animation-name: swing-on;
+}
+
+@keyframes flip-forward {
+  from {
+    transform: rotateY(0deg);
+  }
+  50% {
+    filter: brightness(var(--turn-dim));
+  }
+  to {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes flip-back {
+  from {
+    transform: rotateY(0deg);
+  }
+  50% {
+    filter: brightness(var(--turn-dim));
+  }
+  to {
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes swing-off {
+  from {
+    transform: rotateY(0deg);
+  }
+  to {
+    transform: rotateY(-92deg);
+    filter: brightness(var(--turn-dim));
+  }
+}
+
+@keyframes swing-on {
+  from {
+    transform: rotateY(-92deg);
+    filter: brightness(var(--turn-dim));
+  }
+  to {
+    transform: rotateY(0deg);
+  }
 }
 
 .Screen {
