@@ -38,14 +38,16 @@ jobs:
           node-version: 24
           cache: pnpm
 
-      - run: pnpm install --frozen-lockfile
-
-      # The vendored Flamme packages are sources: their builds are not committed. The
-      # second install links the `flamme` command, which did not exist for the first.
-      - name: Build the vendored Flamme packages
+      # The vendored Flamme packages are sources: their builds are not committed, and
+      # the `flamme` command is one of them. So they are installed and built first,
+      # and the rest is installed after, which is when the command can be linked.
+      - name: Install and build the vendored Flamme packages
         run: |
+          pnpm install --frozen-lockfile --filter "./vendor/flamme/*"
           pnpm -r --filter "./vendor/flamme/*" build
-          pnpm install --frozen-lockfile --offline
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
 
       - name: Format
         if: github.event_name == 'pull_request'
