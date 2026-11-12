@@ -58,18 +58,22 @@ secret to raise the upstream limit from 60 to 5000 an hour.
 
 ```sh
 pnpm install
-pnpm dev        # wrangler dev on http://localhost:8787
-pnpm test       # node --test, covers toggle idempotency per reader
-pnpm types      # regenerate worker-configuration.d.ts after a binding change
-pnpm typecheck  # tsc --noEmit
-pnpm deploy     # wrangler deploy
+pnpm dev           # cf dev on http://localhost:8787
+pnpm test          # node --test, covers toggle idempotency per reader
+pnpm types         # regenerate the binding types after a binding change
+pnpm typecheck     # tsc --noEmit
+pnpm deploy:check  # build and validate a deploy without uploading
 ```
+
+The worker is configured in `cloudflare.config.ts` and deployed by CI when a pull
+request merges to `main` (`.github/workflows/ci.yml`). Its route is
+`emmanuel.style/api/*`, in front of the site's own worker.
 
 To check the GraphQL surface by hand against a state of its own, so an existing
 counter does not make the first answer look wrong:
 
 ```sh
-pnpm exec wrangler dev --port 8788 --persist-to /tmp/api-state
+pnpm dev --port 8788 --persist-to /tmp/api-state
 curl -X POST localhost:8788/api/graphql -H 'content-type: application/json' \
   -H 'x-reader-id: a' -d '{"query":"mutation{ toggleFavourite(slug:\"x\"){count} }"}'
 ```

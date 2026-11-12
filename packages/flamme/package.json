@@ -12,7 +12,11 @@
 		"content": "tsx ./scripts/build-content.ts",
 		"content:check": "tsx ./scripts/check-content.ts",
 		"cssforge": "tsx ./node_modules/@hebilicious/cssforge/src/cli.ts --prefix . --config ./cssforge.config.ts --mode all --css ./src/styles/cssforge.css --json ./.cssforge/output.json --ts ./.cssforge/output.ts",
-		"codegen": "flamme generate"
+		"codegen": "flamme generate",
+		"images": "tsx ./scripts/optimize-images.ts",
+		"contributions": "tsx ./scripts/contributions.ts",
+		"emblems": "blender --background --python ./scripts/blender/emblems.py -- ./public/images/emblems",
+		"fonts": "tsx ./scripts/fonts.ts"
 	},
 	"dependencies": {
 		"@emmanuel/schema": "workspace:*",
@@ -24,15 +28,19 @@
 		"@hebilicious/cssforge": "catalog:astro",
 		"@vueuse/core": "catalog:astro",
 		"graphql": "16.14.2",
+		"three": "0.187.0",
 		"vue": "catalog:astro",
 		"vue-router": "5.3.1"
 	},
 	"devDependencies": {
+		"@flamme/cli": "workspace:*",
+		"@flamme/vite": "workspace:*",
 		"@types/hast": "3.0.4",
 		"@types/mdast": "4.0.4",
 		"@types/node": "24.13.5",
-		"@vitejs/plugin-vue": "6.0.8",
+		"@types/three": "0.187.0",
 		"@vizejs/vite-plugin": "0.424.10",
+		"@webgpu/types": "0.1.74",
 		"hast-util-from-html": "2.0.3",
 		"hast-util-to-html": "9.0.5",
 		"hast-util-to-string": "3.0.1",
@@ -42,6 +50,7 @@
 		"remark-gfm": "4.0.1",
 		"remark-parse": "11.0.0",
 		"remark-rehype": "11.1.2",
+		"remark-smartypants": "3.0.3",
 		"tsx": "4.20.0",
 		"typescript": "6.0.3",
 		"unified": "11.0.5",
@@ -49,8 +58,6 @@
 		"vite": "8.3.0",
 		"vitest": "5.0.1",
 		"vue-tsc": "3.2.4",
-		"yaml": "2.9.1",
-		"@flamme/cli": "workspace:*",
-		"@flamme/vite": "workspace:*"
+		"yaml": "2.9.1"
 	}
 }

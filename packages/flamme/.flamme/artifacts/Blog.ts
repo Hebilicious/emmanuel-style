@@ -5,20 +5,23 @@ import type { Artifact } from '@flamme/runtime'
 const artifact = {
     "name": "Blog",
     "kind": "query",
-    "hash": "005f81b8ed135e4aa88b604418df33209d54b489acfac8689db67af35a40c517",
+    "hash": "b6bef305c96909c293971361bc23ef126ca315c301de3dbe2423848c3371e08b",
     "raw": `query Blog {
     posts {
         __typename
+        blocks {
+            __typename
+            caption
+            id
+            image
+            kind
+            text
+        }
         date
         description
         slug
         tags
         title
-    }
-    site {
-        __typename
-        date
-        name
     }
 }
 `,
@@ -40,6 +43,61 @@ const artifact = {
                             "type": "String",
                             "modifiers": "String!",
                             "keyRaw": "__typename",
+                        },
+
+                        "blocks": {
+                            "type": "Block",
+                            "modifiers": "[Block!]",
+                            "keyRaw": "blocks",
+                            "nullable": true,
+
+                            "selection": {
+                                "fields": {
+                                    "__typename": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "__typename",
+                                    },
+
+                                    "caption": {
+                                        "type": "String",
+                                        "modifiers": "String",
+                                        "keyRaw": "caption",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "id": {
+                                        "type": "ID",
+                                        "modifiers": "ID!",
+                                        "keyRaw": "id",
+                                        "visible": true,
+                                    },
+
+                                    "image": {
+                                        "type": "String",
+                                        "modifiers": "String",
+                                        "keyRaw": "image",
+                                        "nullable": true,
+                                        "visible": true,
+                                    },
+
+                                    "kind": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "kind",
+                                        "visible": true,
+                                    },
+
+                                    "text": {
+                                        "type": "String",
+                                        "modifiers": "String!",
+                                        "keyRaw": "text",
+                                        "visible": true,
+                                    },
+                                },
+                            },
+                            "visible": true,
                         },
 
                         "date": {
@@ -80,38 +138,6 @@ const artifact = {
                 },
                 "visible": true,
             },
-
-            "site": {
-                "type": "Site",
-                "modifiers": "Site",
-                "keyRaw": "site",
-                "nullable": true,
-
-                "selection": {
-                    "fields": {
-                        "__typename": {
-                            "type": "String",
-                            "modifiers": "String!",
-                            "keyRaw": "__typename",
-                        },
-
-                        "date": {
-                            "type": "String",
-                            "modifiers": "String!",
-                            "keyRaw": "date",
-                            "visible": true,
-                        },
-
-                        "name": {
-                            "type": "String",
-                            "modifiers": "String!",
-                            "keyRaw": "name",
-                            "visible": true,
-                        },
-                    },
-                },
-                "visible": true,
-            },
         },
     },
 
@@ -136,17 +162,19 @@ export type Blog$artifact = typeof artifact
 export type Blog = Artifact<'query', Blog$result, Blog$input, never>
 
 export type Blog$result = {
-	readonly site: {
-		readonly name: string;
-		readonly date: string;
-		readonly " $loadingFrame"?: undefined;
-	} | null;
 	readonly posts: ReadonlyArray<{
 		readonly slug: string;
 		readonly title: string;
 		readonly description: string;
 		readonly date: string;
 		readonly tags: ReadonlyArray<string>;
+		readonly blocks: ReadonlyArray<{
+			readonly id: string;
+			readonly kind: string;
+			readonly text: string;
+			readonly image: string | null;
+			readonly caption: string | null;
+		}> | null;
 		readonly " $loadingFrame"?: undefined;
 	}> | null;
 };
@@ -154,11 +182,6 @@ export type Blog$result = {
 export type Blog$input = Record<string, never>;
 
 export type Blog$unmasked = {
-	readonly site: {
-		readonly __typename: "Site";
-		readonly name: string;
-		readonly date: string;
-	} | null;
 	readonly posts: ReadonlyArray<{
 		readonly __typename: "Post";
 		readonly slug: string;
@@ -166,6 +189,14 @@ export type Blog$unmasked = {
 		readonly description: string;
 		readonly date: string;
 		readonly tags: ReadonlyArray<string>;
+		readonly blocks: ReadonlyArray<{
+			readonly __typename: "Block";
+			readonly id: string;
+			readonly kind: string;
+			readonly text: string;
+			readonly image: string | null;
+			readonly caption: string | null;
+		}> | null;
 	}> | null;
 };
 

@@ -1,0 +1,100 @@
+# Checks every pull request, and publishes emmanuel.style from `main`.
+#
+# One job builds the site and the worker once. A pull request stops after the
+# checks and a dry run of the deploy, which needs no credentials. A push to `main`
+# (a merge) goes on to deploy that same build: the API worker, then the site.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to a pull request replaces the run in progress; deploys to `main` queue.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Check, build${{ github.event_name == 'push' && ' and deploy' || '' }}
+    runs-on: ubuntu-latest
+    env:
+      CF_SEND_TELEMETRY: "false"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # The format check compares with the branch a pull request is going into.
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          # `cf` loads `cloudflare.config.ts` with Node 22.18 or later.
+          node-version: 24
+          cache: pnpm
+
+      # The vendored Flamme packages are sources: their builds are not committed, and
+      # the `flamme` command is one of them. So they are installed and built first,
+      # and the rest is installed after, which is when the command can be linked.
+      - name: Install and build the vendored Flamme packages
+        run: |
+          pnpm install --frozen-lockfile --filter "./vendor/flamme/*"
+          pnpm -r --filter "./vendor/flamme/*" build
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Format
+        if: github.event_name == 'pull_request'
+        run: |
+          git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" \
+            | xargs -r pnpm exec dprint check --allow-no-files
+
+      # What the checks read and git does not hold: the articles as modules, the design tokens as CSS.
+      - name: Content
+        run: |
+          pnpm --filter @emmanuel/flamme run content
+          pnpm --filter @emmanuel/flamme run cssforge
+          pnpm --filter @emmanuel/flamme run content:check
+
+      - name: Typecheck
+        run: |
+          pnpm --filter @emmanuel/flamme run typecheck
+          pnpm --filter api-worker run typecheck
+
+      - name: Unit tests
+        run: |
+          pnpm --filter @emmanuel/flamme exec vitest run
+          pnpm --filter api-worker test
+
+      # The site's own build, then `cf build`, which packs it as the worker's files.
+      - name: Build the site
+        run: pnpm --filter @emmanuel/site run build
+
+      - name: Build the API worker
+        run: pnpm --filter api-worker exec cf build
+
+      - name: Check the deploy
+        run: |
+          pnpm --filter api-worker exec cf deploy --prebuilt --dry-run
+          pnpm --filter @emmanuel/site exec cf deploy --prebuilt --dry-run
+
+      # From here on, `main` only. The worker first: the site calls it.
+      - name: Deploy the API worker
+        if: github.event_name == 'push'
+        run: pnpm --filter api-worker exec cf deploy --prebuilt --message "${{ github.sha }}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy the site
+        if: github.event_name == 'push'
+        run: pnpm --filter @emmanuel/site exec cf deploy --prebuilt --message "${{ github.sha }}"
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}

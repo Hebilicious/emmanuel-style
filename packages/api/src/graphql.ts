@@ -47,8 +47,16 @@ export const typeDefs = /* GraphQL */ `
 		count: Int
 	}
 
-	"""One repository's star count."""
+	"""
+	One repository's star count.
+
+	\`name\` is the field the shared schema keys a repository on, so a document
+	compiled against \`packages/schema/schema.graphql\` (which asks for
+	\`name\` and \`stars\`) runs here unchanged. \`repo\` is the star cache's
+	own name for the same value, kept for callers that already read it.
+	"""
 	type Repository {
+		name: String
 		repo: String
 		stars: Int
 	}
@@ -148,6 +156,7 @@ export const runGraphQL = async (
 
 		stars: async ({ names }: { names: string[] }) =>
 			(await context.stars(names)).map((entry) => ({
+				name: entry.repo,
 				repo: entry.repo,
 				stars: entry.stars
 			}))

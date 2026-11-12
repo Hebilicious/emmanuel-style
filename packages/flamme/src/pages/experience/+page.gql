@@ -9,6 +9,7 @@ query Experience {
 		summary
 		highlights
 		stack
+		library
 	}
 	schools {
 		id

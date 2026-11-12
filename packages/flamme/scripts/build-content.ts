@@ -4,7 +4,7 @@
  * Reads the Astro package's markdown and data modules and writes
  * `.content/content.ts`, the typed bundle `@emmanuel/schema` describes: the
  * rendered blocks of every article, each block carrying the footnotes it cites,
- * plus the shelves, roles and schools the Library and the Experience page read.
+ * plus the shelves, projects, roles and schools the Library and the Experience page read.
  *
  * The site compiles its documents against the same schema, so a block that asks
  * for a field that does not exist fails at build time, and the data answers from
@@ -13,6 +13,7 @@
  * Run it with `pnpm --filter @emmanuel/flamme run content`.
  */
 
+import { createHash } from "node:crypto"
 import { mkdir, writeFile } from "node:fs/promises"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -23,17 +24,21 @@ import remarkGfm from "remark-gfm"
 import remarkParse from "remark-parse"
 import remarkRehype from "remark-rehype"
 import { unified } from "unified"
+import remarkSmartypants from "remark-smartypants"
 import {
 	assertNotesAgree,
+	externalLinks,
+	figureHtml,
 	htmlText,
+	linkFootnoteRefs,
 	type NoteDefinition,
 	type ParsedBlock,
 	splitArticle,
-	toBlocks,
-	unwrapFootnoteRefs
+	toBlocks
 } from "./blocks.ts"
+import { webpSize } from "./image-size.ts"
 import remarkFrontMatter from "./remark-front-matter.ts"
-import { experiences, schools, shelves } from "./site-data.ts"
+import { experiences, projects, schools, shelves, skills } from "./site-data.ts"
 import {
 	markdownFiles,
 	parseFrontMatter,
@@ -88,6 +93,13 @@ const warn = (message: string) => {
  */
 const parser = unified().use(remarkParse).use(remarkGfm).use(remarkFrontMatter)
 
+/**
+ * Typographic quotes and dashes, as the Astro build set them: `"x"` becomes “x”,
+ * an apostrophe becomes ’ and `--` an en dash. Run on the parsed tree, so code
+ * spans and URLs are left alone.
+ */
+const typography = unified().use(remarkSmartypants)
+
 const transform = unified()
 	.use(remarkRehype, { allowDangerousHtml: true })
 	.use(rehypeStringify, { allowDangerousHtml: true, allowDangerousCharacters: true })
@@ -114,7 +126,7 @@ const renderNote = (note: NoteDefinition): string => {
 }
 
 const toNote = (note: NoteDefinition): NoteShape => {
-	const html = renderNote(note)
+	const html = externalLinks(renderNote(note))
 	return { id: note.id, number: note.number, html, text: htmlText(html) }
 }
 
@@ -143,7 +155,7 @@ const toPost = async (file: string): Promise<PostShape | null> => {
 		}
 	)
 
-	const tree = parser.parse(rewritten)
+	const tree = typography.runSync(parser.parse(rewritten)) as MdastRoot
 	const split = splitArticle(tree)
 	assertNotesAgree(split)
 
@@ -169,7 +181,18 @@ const toPost = async (file: string): Promise<PostShape | null> => {
 	 * not travel with it.
 	 */
 	const parsed: ParsedBlock[] = toBlocks(split).map((block, index) => {
-		const html = unwrapFootnoteRefs(renderNode(split.nodes[index] as never), notesById)
+		/*
+		 * A figure is rendered here rather than by remark, because the page needs its
+		 * size before the image loads: the markup carries the width and height read
+		 * from the served file, so the paginator measures the figure it will show.
+		 */
+		if (block.kind === "figure" && block.image !== null) {
+			const file = join(FLAMME_IMAGES, block.image.replace(/^\/images\//, ""))
+			const size = file.endsWith(".webp") ? webpSize(file) : null
+			if (size === null) warn(`${slug}: ${block.image} is not a WebP, so its figure has no size`)
+			return { ...block, html: figureHtml(block.image, block.caption, size) }
+		}
+		const html = externalLinks(linkFootnoteRefs(renderNode(split.nodes[index] as never), notesById))
 		return { ...block, html }
 	})
 
@@ -179,16 +202,33 @@ const toPost = async (file: string): Promise<PostShape | null> => {
 		throw new Error(`${slug}: blocks cite notes that do not exist: ${dangling.join(", ")}`)
 	}
 
+	/*
+	 * Block and note ids are the cache's keys (`flamme.config.ts` keys `Block` and
+	 * `Note` on `id`), and the splitter numbers them per article: every article has a
+	 * `b1` and an `fn-1`. Left like that, the second article's blocks would be
+	 * normalised onto the first article's records. Each id is prefixed with the
+	 * article's slug, and the references in the markup follow.
+	 */
+	const own = (id: string) => `${slug}-${id}`
+	const ownMarkup = (html: string) =>
+		html
+			.replace(
+				/data-footnote-ref="(fn-\d+)"/g,
+				(_full, id: string) => `data-footnote-ref="${own(id)}"`
+			)
+			.replace(/href="#(fn-\d+)"/g, (_full, id: string) => `href="#${own(id)}"`)
+
 	const blocks: BlockShape[] = parsed.map((block) => ({
-		id: block.id,
+		id: own(block.id),
 		kind: block.kind,
 		depth: block.depth,
-		html: block.html,
+		html: ownMarkup(block.html),
 		text: block.text,
-		noteIds: block.noteIds,
+		noteIds: block.noteIds.map(own),
 		image: block.image,
 		caption: block.caption
 	}))
+	const ownNotes: NoteShape[] = notes.map((note) => ({ ...note, id: own(note.id) }))
 
 	for (const block of blocks) {
 		if (block.noteIds.length > 0) {
@@ -208,7 +248,7 @@ const toPost = async (file: string): Promise<PostShape | null> => {
 		description: frontMatter.description,
 		date: frontMatter.publishDate,
 		tags: frontMatter.tags,
-		notes,
+		notes: ownNotes,
 		blocks
 	}
 }
@@ -235,7 +275,8 @@ const module = (
 	posts: PostShape[],
 	sections: SiteShape,
 	roles: typeof experiences,
-	educationEntries: typeof schools
+	educationEntries: typeof schools,
+	skillEntries: typeof skills
 ) => `/**
  * Generated by scripts/build-content.ts. Do not edit.
  *
@@ -253,16 +294,34 @@ export const roles = ${json(roles)}
 
 export const schools = ${json(educationEntries)}
 
-export const content = { site, shelves, posts, roles, schools }
+export const skills = ${json(skillEntries)}
+
+/** A hash of everything above, so a cache written from older content can be told apart. */
+export const version = "${contentVersion(posts, sections, roles, educationEntries, skillEntries)}"
+
+export const content = { site, shelves, posts, roles, schools, skills, version }
 
 export default content
 `
 
 const json = (value: unknown) => JSON.stringify(value, null, "\t")
 
+/**
+ * The content's version: the first twelve hex digits of a SHA-256 over the data.
+ *
+ * The app keeps a durable copy of its cache on the device, and the content is in
+ * that cache like any other answer. Read back after a new build, the old copy would
+ * answer for the new content. The client names its snapshot after this version, so
+ * new content starts a new snapshot instead of being shadowed by the old one.
+ */
+const contentVersion = (...parts: unknown[]) =>
+	createHash("sha256").update(JSON.stringify(parts)).digest("hex").slice(0, 12)
+
 const main = async () => {
 	const files = await markdownFiles(BLOG_DIR)
-	const posts = (await Promise.all(files.map(toPost))).filter((post): post is PostShape => post !== null)
+	const posts = (await Promise.all(files.map(toPost))).filter(
+		(post): post is PostShape => post !== null
+	)
 
 	if (posts.length === 0) throw new Error(`no published articles under ${BLOG_DIR}`)
 
@@ -270,7 +329,7 @@ const main = async () => {
 
 	await mkdir(dirname(OUTPUT), { recursive: true })
 
-	const source = module(posts, site, experiences, schools)
+	const source = module(posts, site, experiences, schools, skills)
 	await writeFile(OUTPUT, source, "utf8")
 
 	const blocks = posts.reduce((total, post) => total + post.blocks.length, 0)
@@ -279,8 +338,8 @@ const main = async () => {
 	console.log("")
 	console.log(`wrote ${OUTPUT}`)
 	console.log(
-		`${posts.length} posts, ${blocks} blocks, ${notes} notes, ${shelves.length} shelves, ` +
-			`${experiences.length} roles, ${schools.length} schools, ` +
+		`${posts.length} posts, ${blocks} blocks, ${notes} notes, ${shelves.length} shelves, ${projects.length} projects, ` +
+			`${experiences.length} roles, ${schools.length} schools, ${skills.length} skills, ` +
 			`${(Buffer.byteLength(source) / 1024).toFixed(1)} kB`
 	)
 	if (warnings.length > 0) {

@@ -1,124 +1,135 @@
 /*____ CSSForge ____*/
 :root {
-/*____ Colors ____*/
-/* Palette */
-/* neutral */
---palette-neutral-0: oklch(100% 0 0);
---palette-neutral-50: oklch(97.308% 0.00412 91.44624);
---palette-neutral-100: oklch(93.72% 0.00703 88.64431);
---palette-neutral-200: oklch(88.264% 0.01005 87.47654);
---palette-neutral-300: oklch(77.062% 0.01339 86.84433);
---palette-neutral-400: oklch(63.057% 0.01542 88.73184);
---palette-neutral-500: oklch(51.144% 0.01335 84.59297);
---palette-neutral-600: oklch(40.632% 0.0106 84.59297);
---palette-neutral-700: oklch(31.883% 0.00818 75.27741);
---palette-neutral-800: oklch(24.461% 0.00636 78.20639);
---palette-neutral-900: oklch(19.161% 0.00427 84.59123);
---palette-neutral-950: oklch(14.434% 0.00219 106.67093);
-/* aqua */
---palette-aqua-100: oklch(93.042% 0.10869 195.44627);
---palette-aqua-200: oklch(86.093% 0.11055 195.29537);
---palette-aqua-300: oklch(77.985% 0.1035 195.23987);
---palette-aqua-400: oklch(68.089% 0.09622 195.13072);
---palette-aqua-500: oklch(57.921% 0.08775 196.00446);
---palette-aqua-600: oklch(47.907% 0.07995 195.96822);
---palette-aqua-700: oklch(39.118% 0.06532 194.81365);
---palette-aqua-800: oklch(29.889% 0.04964 196.9159);
---palette-aqua-900: oklch(20.953% 0.0345 194.84173);
---palette-aqua-950: oklch(13.262% 0.01951 195.05812);
-/* frost */
---palette-frost-100: oklch(93.008% 0.05483 215.03117);
---palette-frost-200: oklch(85.917% 0.08172 214.63545);
---palette-frost-300: oklch(78.062% 0.07821 213.74509);
---palette-frost-400: oklch(68.011% 0.07199 214.78118);
---palette-frost-500: oklch(58.117% 0.06661 214.35389);
---palette-frost-600: oklch(47.901% 0.0606 215.63457);
---palette-frost-700: oklch(39.127% 0.05509 213.14394);
---palette-frost-800: oklch(29.979% 0.05011 213.93401);
---palette-frost-900: oklch(20.877% 0.03723 216.7514);
---palette-frost-950: oklch(12.901% 0.02315 217.77723);
-/* peri */
---palette-peri-100: oklch(93.022% 0.03371 287.56162);
---palette-peri-200: oklch(86.025% 0.07182 289.20026);
---palette-peri-300: oklch(78.009% 0.07643 288.73477);
---palette-peri-400: oklch(68.078% 0.07028 288.19614);
---palette-peri-500: oklch(57.987% 0.06555 289.51405);
---palette-peri-600: oklch(47.971% 0.06068 288.71247);
---palette-peri-700: oklch(39.003% 0.05544 289.11269);
---palette-peri-800: oklch(29.892% 0.05014 289.55549);
---palette-peri-900: oklch(20.989% 0.04651 289.41992);
---palette-peri-950: oklch(12.777% 0.04172 289.23434);
-/* pink */
---palette-pink-100: oklch(93.024% 0.04278 347.89288);
---palette-pink-200: oklch(86.008% 0.08059 348.33442);
---palette-pink-300: oklch(77.934% 0.08597 347.84117);
---palette-pink-400: oklch(68.109% 0.08165 348.53687);
---palette-pink-500: oklch(58.032% 0.07517 348.29534);
---palette-pink-600: oklch(48.023% 0.07035 347.49034);
---palette-pink-700: oklch(38.924% 0.06441 347.75266);
---palette-pink-800: oklch(30.074% 0.05819 348.17069);
---palette-pink-900: oklch(20.904% 0.05445 346.60174);
---palette-pink-950: oklch(13.07% 0.0477 349.45393);
-/* rose */
---palette-rose-100: oklch(92.998% 0.03447 11.14215);
---palette-rose-200: oklch(85.976% 0.07557 10.57352);
---palette-rose-300: oklch(77.969% 0.10128 10.35144);
---palette-rose-400: oklch(67.917% 0.10772 10.60532);
---palette-rose-500: oklch(58.066% 0.10037 10.71735);
---palette-rose-600: oklch(48.015% 0.09159 10.72464);
---palette-rose-700: oklch(39.035% 0.08617 10.47976);
---palette-rose-800: oklch(30.033% 0.08025 10.69377);
---palette-rose-900: oklch(21.123% 0.07216 11.25926);
---palette-rose-950: oklch(12.817% 0.0513 8.54176);
-/* Themes */
-/*____ Spacing ____*/
---spacing_fluid-flow-space-xs: clamp(1rem, 0.7857rem + 1.0714vw, 1.75rem);
---spacing_fluid-flow-space-s: clamp(1rem, 0.7857rem + 1.0714vw, 1.75rem);
---spacing_fluid-flow-space-m: clamp(1.5rem, 1.1786rem + 1.6071vw, 2.625rem);
---spacing_fluid-flow-space-l: clamp(2rem, 1.5714rem + 2.1429vw, 3.5rem);
---spacing_fluid-flow-space-xl: clamp(3rem, 2.3571rem + 3.2143vw, 5.25rem);
---spacing_fluid-flow-space-2xl: clamp(4rem, 3.1429rem + 4.2857vw, 7rem);
---spacing_fluid-flow-space-xs-s: clamp(1rem, 0.7857rem + 1.0714vw, 1.75rem);
---spacing_fluid-flow-space-s-m: clamp(1rem, 0.5357rem + 2.3214vw, 2.625rem);
---spacing_fluid-flow-space-m-l: clamp(1.5rem, 0.9286rem + 2.8571vw, 3.5rem);
---spacing_fluid-flow-space-l-xl: clamp(2rem, 1.0714rem + 4.6429vw, 5.25rem);
---spacing_fluid-flow-space-xl-2xl: clamp(3rem, 1.8571rem + 5.7143vw, 7rem);
---spacing_fluid-tight-space-tight-xs: clamp(0.375rem, 0.3036rem + 0.3571vw, 0.625rem);
---spacing_fluid-tight-space-tight-s: clamp(0.375rem, 0.3036rem + 0.3571vw, 0.625rem);
---spacing_fluid-tight-space-tight-m: clamp(0.5625rem, 0.4554rem + 0.5357vw, 0.9375rem);
---spacing_fluid-tight-space-tight-l: clamp(0.75rem, 0.6071rem + 0.7143vw, 1.25rem);
---spacing_fluid-tight-space-tight-xl: clamp(1.125rem, 0.9107rem + 1.0714vw, 1.875rem);
---spacing_fluid-tight-space-tight-xs-s: clamp(0.375rem, 0.3036rem + 0.3571vw, 0.625rem);
---spacing_fluid-tight-space-tight-s-m: clamp(0.375rem, 0.2143rem + 0.8036vw, 0.9375rem);
---spacing_fluid-tight-space-tight-m-l: clamp(0.5625rem, 0.3661rem + 0.9821vw, 1.25rem);
---spacing_fluid-tight-space-tight-l-xl: clamp(0.75rem, 0.4286rem + 1.6071vw, 1.875rem);
---spacing_fluid-gutter-space-gutter-s: clamp(1rem, 0.25rem + 3.75vw, 4rem);
---spacing_fluid-gutter-space-gutter-m: clamp(1.5rem, 0.375rem + 5.625vw, 6rem);
---spacing_fluid-gutter-space-gutter-l: clamp(2rem, 0.5rem + 7.5vw, 8rem);
---spacing_fluid-gutter-space-gutter-s-m: clamp(1rem, -0.25rem + 6.25vw, 6rem);
---spacing_fluid-gutter-space-gutter-m-l: clamp(1.5rem, -0.125rem + 8.125vw, 8rem);
---spacing_fluid-column-space-column-s: clamp(1.25rem, 0.6875rem + 2.8125vw, 3.5rem);
---spacing_fluid-column-space-column-m: clamp(1.875rem, 1.0313rem + 4.2188vw, 5.25rem);
---spacing_fluid-column-space-column-s-m: clamp(1.25rem, 0.25rem + 5vw, 5.25rem);
---spacing-size-none: 0;
---spacing-size-hairline: 0.0625rem;
---spacing-size-rule: 0.1875rem;
-/*____ Typography ____*/
---typography_fluid-micro-font-size-micro-l: clamp(0.9rem, 0.8571rem + 0.2143vw, 1.05rem);
---typography_fluid-micro-font-size-micro-m: clamp(0.75rem, 0.7143rem + 0.1786vw, 0.875rem);
---typography_fluid-micro-font-size-micro-s: clamp(0.625rem, 0.5952rem + 0.1488vw, 0.7292rem);
---typography_fluid-content-font-size-2xl: clamp(1.728rem, 1.559rem + 0.8448vw, 2.3193rem);
---typography_fluid-content-font-size-xl: clamp(1.44rem, 1.3213rem + 0.5935vw, 1.8555rem);
---typography_fluid-content-font-size-l: clamp(1.2rem, 1.1188rem + 0.4063vw, 1.4844rem);
---typography_fluid-content-font-size-m: clamp(1rem, 0.9464rem + 0.2679vw, 1.1875rem);
---typography_fluid-content-font-size-s: clamp(0.8333rem, 0.8rem + 0.1667vw, 0.95rem);
---typography_fluid-display-font-size-display-xl: clamp(2.5391rem, 1.7914rem + 3.7383vw, 5.997rem);
---typography_fluid-display-font-size-display-l: clamp(2.0313rem, 1.4977rem + 2.6677vw, 4.4989rem);
---typography_fluid-display-font-size-display-m: clamp(1.625rem, 1.2466rem + 1.8919vw, 3.375rem);
---typography_fluid-display-font-size-display-s: clamp(1.3rem, 1.0336rem + 1.3318vw, 2.5319rem);
---typography-weight-body-regular: 400;
---typography-weight-body-medium: 500;
---typography-weight-body-bold: 700;
+  /*____ Colors ____*/
+  /* Palette */
+  /* neutral */
+  --palette-neutral-0: oklch(100% 0 0);
+  --palette-neutral-50: oklch(97.308% 0.00412 91.44624);
+  --palette-neutral-100: oklch(93.72% 0.00703 88.64431);
+  --palette-neutral-200: oklch(88.264% 0.01005 87.47654);
+  --palette-neutral-300: oklch(77.062% 0.01339 86.84433);
+  --palette-neutral-400: oklch(63.057% 0.01542 88.73184);
+  --palette-neutral-500: oklch(51.144% 0.01335 84.59297);
+  --palette-neutral-600: oklch(40.632% 0.0106 84.59297);
+  --palette-neutral-700: oklch(31.883% 0.00818 75.27741);
+  --palette-neutral-800: oklch(24.461% 0.00636 78.20639);
+  --palette-neutral-900: oklch(19.161% 0.00427 84.59123);
+  --palette-neutral-950: oklch(14.434% 0.00219 106.67093);
+  /* aqua */
+  --palette-aqua-100: oklch(93.042% 0.10869 195.44627);
+  --palette-aqua-200: oklch(86.093% 0.11055 195.29537);
+  --palette-aqua-300: oklch(77.985% 0.1035 195.23987);
+  --palette-aqua-400: oklch(68.089% 0.09622 195.13072);
+  --palette-aqua-500: oklch(57.921% 0.08775 196.00446);
+  --palette-aqua-600: oklch(47.907% 0.07995 195.96822);
+  --palette-aqua-700: oklch(39.118% 0.06532 194.81365);
+  --palette-aqua-800: oklch(29.889% 0.04964 196.9159);
+  --palette-aqua-900: oklch(20.953% 0.0345 194.84173);
+  --palette-aqua-950: oklch(13.262% 0.01951 195.05812);
+  /* gold */
+  --palette-gold-100: oklch(95.617% 0.05908 91.44916);
+  --palette-gold-200: oklch(91.301% 0.1051 88.47453);
+  --palette-gold-300: oklch(84.437% 0.14016 84.78615);
+  --palette-gold-400: oklch(75.746% 0.14496 80.85107);
+  --palette-gold-500: oklch(64.647% 0.12885 78.63641);
+  --palette-gold-600: oklch(53.372% 0.10657 78.45397);
+  --palette-gold-700: oklch(43.343% 0.08592 78.6021);
+  --palette-gold-800: oklch(32.699% 0.06314 78.41444);
+  --palette-gold-900: oklch(23.277% 0.04336 80.59103);
+  --palette-gold-950: oklch(15.53% 0.02838 83.44487);
+  /* frost */
+  --palette-frost-100: oklch(93.008% 0.05483 215.03117);
+  --palette-frost-200: oklch(85.917% 0.08172 214.63545);
+  --palette-frost-300: oklch(78.062% 0.07821 213.74509);
+  --palette-frost-400: oklch(68.011% 0.07199 214.78118);
+  --palette-frost-500: oklch(58.117% 0.06661 214.35389);
+  --palette-frost-600: oklch(47.901% 0.0606 215.63457);
+  --palette-frost-700: oklch(39.127% 0.05509 213.14394);
+  --palette-frost-800: oklch(29.979% 0.05011 213.93401);
+  --palette-frost-900: oklch(20.877% 0.03723 216.7514);
+  --palette-frost-950: oklch(12.901% 0.02315 217.77723);
+  /* peri */
+  --palette-peri-100: oklch(93.022% 0.03371 287.56162);
+  --palette-peri-200: oklch(86.025% 0.07182 289.20026);
+  --palette-peri-300: oklch(78.009% 0.07643 288.73477);
+  --palette-peri-400: oklch(68.078% 0.07028 288.19614);
+  --palette-peri-500: oklch(57.987% 0.06555 289.51405);
+  --palette-peri-600: oklch(47.971% 0.06068 288.71247);
+  --palette-peri-700: oklch(39.003% 0.05544 289.11269);
+  --palette-peri-800: oklch(29.892% 0.05014 289.55549);
+  --palette-peri-900: oklch(20.989% 0.04651 289.41992);
+  --palette-peri-950: oklch(12.777% 0.04172 289.23434);
+  /* pink */
+  --palette-pink-100: oklch(93.024% 0.04278 347.89288);
+  --palette-pink-200: oklch(86.008% 0.08059 348.33442);
+  --palette-pink-300: oklch(77.934% 0.08597 347.84117);
+  --palette-pink-400: oklch(68.109% 0.08165 348.53687);
+  --palette-pink-500: oklch(58.032% 0.07517 348.29534);
+  --palette-pink-600: oklch(48.023% 0.07035 347.49034);
+  --palette-pink-700: oklch(38.924% 0.06441 347.75266);
+  --palette-pink-800: oklch(30.074% 0.05819 348.17069);
+  --palette-pink-900: oklch(20.904% 0.05445 346.60174);
+  --palette-pink-950: oklch(13.07% 0.0477 349.45393);
+  /* rose */
+  --palette-rose-100: oklch(92.998% 0.03447 11.14215);
+  --palette-rose-200: oklch(85.976% 0.07557 10.57352);
+  --palette-rose-300: oklch(77.969% 0.10128 10.35144);
+  --palette-rose-400: oklch(67.917% 0.10772 10.60532);
+  --palette-rose-500: oklch(58.066% 0.10037 10.71735);
+  --palette-rose-600: oklch(48.015% 0.09159 10.72464);
+  --palette-rose-700: oklch(39.035% 0.08617 10.47976);
+  --palette-rose-800: oklch(30.033% 0.08025 10.69377);
+  --palette-rose-900: oklch(21.123% 0.07216 11.25926);
+  --palette-rose-950: oklch(12.817% 0.0513 8.54176);
+  /* Themes */
+  /*____ Spacing ____*/
+  --spacing_fluid-flow-space-xs: clamp(1rem, 0.7857rem + 1.0714vw, 1.75rem);
+  --spacing_fluid-flow-space-s: clamp(1rem, 0.7857rem + 1.0714vw, 1.75rem);
+  --spacing_fluid-flow-space-m: clamp(1.5rem, 1.1786rem + 1.6071vw, 2.625rem);
+  --spacing_fluid-flow-space-l: clamp(2rem, 1.5714rem + 2.1429vw, 3.5rem);
+  --spacing_fluid-flow-space-xl: clamp(3rem, 2.3571rem + 3.2143vw, 5.25rem);
+  --spacing_fluid-flow-space-2xl: clamp(4rem, 3.1429rem + 4.2857vw, 7rem);
+  --spacing_fluid-flow-space-xs-s: clamp(1rem, 0.7857rem + 1.0714vw, 1.75rem);
+  --spacing_fluid-flow-space-s-m: clamp(1rem, 0.5357rem + 2.3214vw, 2.625rem);
+  --spacing_fluid-flow-space-m-l: clamp(1.5rem, 0.9286rem + 2.8571vw, 3.5rem);
+  --spacing_fluid-flow-space-l-xl: clamp(2rem, 1.0714rem + 4.6429vw, 5.25rem);
+  --spacing_fluid-flow-space-xl-2xl: clamp(3rem, 1.8571rem + 5.7143vw, 7rem);
+  --spacing_fluid-tight-space-tight-xs: clamp(0.375rem, 0.3036rem + 0.3571vw, 0.625rem);
+  --spacing_fluid-tight-space-tight-s: clamp(0.375rem, 0.3036rem + 0.3571vw, 0.625rem);
+  --spacing_fluid-tight-space-tight-m: clamp(0.5625rem, 0.4554rem + 0.5357vw, 0.9375rem);
+  --spacing_fluid-tight-space-tight-l: clamp(0.75rem, 0.6071rem + 0.7143vw, 1.25rem);
+  --spacing_fluid-tight-space-tight-xl: clamp(1.125rem, 0.9107rem + 1.0714vw, 1.875rem);
+  --spacing_fluid-tight-space-tight-xs-s: clamp(0.375rem, 0.3036rem + 0.3571vw, 0.625rem);
+  --spacing_fluid-tight-space-tight-s-m: clamp(0.375rem, 0.2143rem + 0.8036vw, 0.9375rem);
+  --spacing_fluid-tight-space-tight-m-l: clamp(0.5625rem, 0.3661rem + 0.9821vw, 1.25rem);
+  --spacing_fluid-tight-space-tight-l-xl: clamp(0.75rem, 0.4286rem + 1.6071vw, 1.875rem);
+  --spacing_fluid-gutter-space-gutter-s: clamp(1rem, 0.25rem + 3.75vw, 4rem);
+  --spacing_fluid-gutter-space-gutter-m: clamp(1.5rem, 0.375rem + 5.625vw, 6rem);
+  --spacing_fluid-gutter-space-gutter-l: clamp(2rem, 0.5rem + 7.5vw, 8rem);
+  --spacing_fluid-gutter-space-gutter-s-m: clamp(1rem, -0.25rem + 6.25vw, 6rem);
+  --spacing_fluid-gutter-space-gutter-m-l: clamp(1.5rem, -0.125rem + 8.125vw, 8rem);
+  --spacing_fluid-column-space-column-s: clamp(1.25rem, 0.6875rem + 2.8125vw, 3.5rem);
+  --spacing_fluid-column-space-column-m: clamp(1.875rem, 1.0313rem + 4.2188vw, 5.25rem);
+  --spacing_fluid-column-space-column-s-m: clamp(1.25rem, 0.25rem + 5vw, 5.25rem);
+  --spacing-size-none: 0;
+  --spacing-size-hairline: 0.0625rem;
+  --spacing-size-rule: 0.1875rem;
+  /*____ Typography ____*/
+  --typography_fluid-micro-font-size-micro-l: clamp(0.9rem, 0.8571rem + 0.2143vw, 1.05rem);
+  --typography_fluid-micro-font-size-micro-m: clamp(0.75rem, 0.7143rem + 0.1786vw, 0.875rem);
+  --typography_fluid-micro-font-size-micro-s: clamp(0.625rem, 0.5952rem + 0.1488vw, 0.7292rem);
+  --typography_fluid-content-font-size-2xl: clamp(1.728rem, 1.559rem + 0.8448vw, 2.3193rem);
+  --typography_fluid-content-font-size-xl: clamp(1.44rem, 1.3213rem + 0.5935vw, 1.8555rem);
+  --typography_fluid-content-font-size-l: clamp(1.2rem, 1.1188rem + 0.4063vw, 1.4844rem);
+  --typography_fluid-content-font-size-m: clamp(1rem, 0.9464rem + 0.2679vw, 1.1875rem);
+  --typography_fluid-content-font-size-s: clamp(0.8333rem, 0.8rem + 0.1667vw, 0.95rem);
+  --typography_fluid-display-font-size-display-xl: clamp(2.5391rem, 1.7914rem + 3.7383vw, 5.997rem);
+  --typography_fluid-display-font-size-display-l: clamp(2.0313rem, 1.4977rem + 2.6677vw, 4.4989rem);
+  --typography_fluid-display-font-size-display-m: clamp(1.625rem, 1.2466rem + 1.8919vw, 3.375rem);
+  --typography_fluid-display-font-size-display-s: clamp(1.3rem, 1.0336rem + 1.3318vw, 2.5319rem);
+  --typography-weight-body-regular: 400;
+  --typography-weight-body-medium: 500;
+  --typography-weight-body-bold: 700;
 }
 /* Theme: light */
 .LightTheme {
@@ -155,15 +166,15 @@
   --rule-strong: var(--palette-neutral-400);
   --surface: var(--palette-neutral-900);
   --sunk: var(--palette-neutral-800);
-  --accent: var(--palette-aqua-300);
+  --accent: var(--palette-gold-300);
   --accent-ink: var(--palette-neutral-950);
-  --accent-soft: var(--palette-aqua-800);
+  --accent-soft: var(--palette-gold-800);
   --secondary: var(--palette-peri-200);
   --tertiary: var(--palette-pink-200);
   --link: var(--palette-frost-200);
   --primaryBackground: var(--palette-neutral-950);
   --primaryText: var(--palette-neutral-50);
-  --colorAccent: var(--palette-aqua-300);
+  --colorAccent: var(--palette-gold-300);
   --activeBorder: var(--rule-strong);
   --tagBackground: var(--palette-neutral-50);
   --tagText: var(--palette-neutral-900);

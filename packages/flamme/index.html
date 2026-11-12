@@ -1,24 +1,65 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <meta name="theme-color" content="#0a0a09" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <title>Emmanuel</title>
+    <meta
+      name="description"
+      content="Emmanuel's site: open source modules and tools, long-form writing on philosophy, science and history, and the ledger of what came before."
+    />
+    <meta name="theme-color" content="#0b0b0a" />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon-180x180.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <!--
+      The faces are preloaded: the pager measures every block once the fonts are in,
+      so the sooner they arrive, the sooner the first screen is laid out for good.
+    -->
+    <link
+      rel="preload"
+      href="/fonts/MonaspaceArgon-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/Nabla.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <script>
-      // The theme is applied before the first paint, so a reader who chose dark never sees
-      // a flash of paper. The key is the one @vueuse/core writes, so a returning reader
-      // keeps the theme they picked in the previous build.
-      try {
-        var stored = localStorage.getItem("vueuse-color-scheme");
-        // Dark is the default, matching the previous build: the stored choice wins and
-        // a first visit starts dark rather than following the system preference.
-        var dark = stored !== "light";
-        document.documentElement.classList.add(dark ? "DarkTheme" : "LightTheme");
-      } catch (error) {
-        document.documentElement.classList.add("LightTheme");
-      }
+    // The theme is applied before the first paint, so a reader who chose light never
+// sees a flash of the dark page. The key is the one @vueuse/core wrote in the
+// previous build, so a returning reader keeps the theme they picked. Dark is the
+// default: the stored choice wins, and a first visit starts dark.
+try {
+	var light = localStorage.getItem("vueuse-color-scheme") === "light"
+	document.documentElement.classList.add(light ? "LightTheme" : "DarkTheme")
+	if (light)
+		document.querySelector('meta[name="theme-color"]').content = "#f7f6f3"
+} catch (error) {
+	document.documentElement.classList.add("DarkTheme")
+}
+// WebKit on Linux draws Nabla's colour layers but ignores palettes, while reporting
+// support for them, so no feature test can tell. It gets the compositor correction
+// instead (see `.NoPalette` in global.css). The platform is read rather than the user
+// agent, which some WebKit builds dress up as Safari on a Mac.
+var agent = navigator.userAgent
+if (
+	/AppleWebKit/.test(agent) &&
+	!/Chrome|Chromium|Edg\//.test(agent) &&
+	/Linux/.test(navigator.platform)
+) {
+	document.documentElement.classList.add("NoPalette")
+}
     </script>
   </head>
   <body>

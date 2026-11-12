@@ -309,28 +309,85 @@ export const renderBlocks = (
 		const node = body.nodes[index]
 		if (node === undefined) return block
 		const html = render(node)
-		return { ...block, html: block.noteIds.length > 0 ? withNotes({ ...block, html }, body.notes).html : unwrapFootnoteRefs(html, notesById) }
+		return {
+			...block,
+			html:
+				block.noteIds.length > 0
+					? withNotes({ ...block, html }, body.notes).html
+					: linkFootnoteRefs(html, notesById)
+		}
 	})
 
 /**
- * Rewrite the footnote reference anchors in a rendered block to plain
- * superscripts.
+ * Rewrite the footnote reference anchors in a rendered block to links the page can
+ * follow.
  *
- * The rendered reference is `<sup><a href="#user-content-fn-1" …>1</a></sup>`. The
- * block already records that it cites `fn-1`, and the page renders the note beside
- * the sentence, so the anchor is replaced by a `<sup>` that still names the note in
- * `data-footnote-id` and still prints its number.
+ * `remark-rehype` renders a reference as
+ *
+ *   <sup><a href="#user-content-fn-1" id="user-content-fnref-1" data-footnote-ref …>1</a></sup>
+ *
+ * which points at a definitions list the page never renders. The page places each
+ * note at the foot of the column that cites it, under the id `fn-1`, so the anchor
+ * is rewritten to point there and to carry the note's id in `data-footnote-ref`.
+ * It stays a link: the reading cursor lands on it, and following it moves to the
+ * note on the same page. It carries no `id`: a paragraph split across two columns
+ * is rendered in both, so an id would be duplicated, and the page finds the
+ * reference by `data-footnote-ref` instead. `data-footnote-back` keeps remark's
+ * numbering (`1`, `1-2` for a second citation of the same note).
  */
-export const unwrapFootnoteRefs = (html: string, notesById: Map<string, NoteShape>): string =>
+export const linkFootnoteRefs = (html: string, notesById: Map<string, NoteShape>): string =>
 	html.replace(
-		/<sup><a href="#user-content-fnref-[\d-]+"[^>]*data-footnote-ref[^>]*>([\s\S]*?)<\/a><\/sup>/g,
-		(_full, marker: string) => {
-			const number = Number(String(marker).replace(/\D/g, ""))
-			const note = notesById.get(noteId(number))
-			const id = note?.id ?? (Number.isFinite(number) ? noteId(number) : "")
-			return `<sup class="footnote-ref" data-footnote-id="${id}">${marker}</sup>`
+		/<sup><a href="#user-content-fn-(\d+)" id="user-content-fnref-([\d-]+)"[^>]*>([\s\S]*?)<\/a><\/sup>/g,
+		(_full, number: string, back: string) => {
+			const note = notesById.get(noteId(Number(number)))
+			const id = note?.id ?? noteId(Number(number))
+			/*
+			 * The printed number is the note's own, not the text remark rendered: each
+			 * block is rendered on its own, so remark numbers the citations of every
+			 * block from 1 and every reference read "1".
+			 */
+			const printed = String(note?.number ?? Number(number))
+			return (
+				`<sup class="Ref"><a href="#${id}" data-footnote-ref="${id}" data-footnote-back="${back}" ` +
+				`aria-label="Note ${printed}">${printed}</a></sup>`
+			)
 		}
 	)
+
+/**
+ * Open every external link in a new tab.
+ *
+ * Reading the site never navigates it away: an article's citation or a note's
+ * source opens beside it. Done on the rendered string because the anchors come
+ * from markdown, where an author cannot say it, and an anchor that already names a
+ * target is left alone.
+ */
+export const externalLinks = (html: string): string =>
+	html.replace(
+		/<a href="(https?:\/\/[^"]+)"(?![^>]*\btarget=)/g,
+		(_full, href: string) => `<a href="${href}" target="_blank" rel="noopener noreferrer"`
+	)
+
+/** The rendered markup of a figure block, sized so a page can be laid out before it loads. */
+export const figureHtml = (
+	src: string,
+	caption: string | null,
+	size: { width: number; height: number } | null
+): string => {
+	const escape = (value: string) =>
+		value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+	const alt = escape(caption ?? "")
+	const dimensions =
+		size === null
+			? ""
+			: ` width="${size.width}" height="${size.height}" style="--w: ${size.width}; --h: ${size.height}"`
+	return (
+		`<figure class="Plate">` +
+		`<img src="${escape(src)}" alt="${alt}"${dimensions} decoding="async" loading="eager">` +
+		(caption === null ? "" : `<figcaption>${escape(caption)}</figcaption>`) +
+		`</figure>`
+	)
+}
 
 /** The HTML of one element, with no wrapper elements added. */
 export const elementHtml = (element: Element): string => toHtml(element)

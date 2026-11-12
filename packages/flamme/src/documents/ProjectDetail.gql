@@ -1,0 +1,28 @@
+# One project in full, for the dialog it opens in over any page (`?open=<name>`).
+query ProjectDetail($name: String!) {
+	project(name: $name) {
+		name
+		title
+		tagline
+		body
+		points
+		kind
+		shelf
+		language
+		stack
+		url
+		homepage
+		archived
+		repo
+		started
+		ended
+		contributions
+		activity
+		links {
+			label
+			url
+			date
+		}
+		cover
+	}
+}

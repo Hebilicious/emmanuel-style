@@ -1,0 +1,425 @@
+/*
+ * Turns that are View Transitions: a project or a figure lifted off the page into
+ * its dialog (`zoom`), and the other theme flooding the screen (`theme`).
+ *
+ * Page turns, inside a section and between sections, are not View Transitions:
+ * the leaves themselves are turned by script (`components/pager-flip.ts`), so the
+ * new page is never held back by a photograph of the old one. What they need from
+ * here is the blank leaf of a longer turn (`.TurnFiller`) and how dark a leaf is
+ * when it stands edge-on (`--turn-dim`).
+ *
+ * `data-turn` and `data-turn-kind` on the root say what is running; `shell/turns.ts`
+ * sets them for the length of the transition, with `--turn-duration`. The rest of
+ * the shell (the bar, the dock) does not move: the root snapshot is shown as it
+ * is, with no cross-fade.
+ */
+
+:root {
+  --turn-duration: 400ms;
+  /* How a zoom's frame is pulled off the page, and how it is set down. */
+  --turn-lift: cubic-bezier(0.42, 0, 0.78, 0.6);
+  --turn-land: cubic-bezier(0.22, 0.6, 0.36, 1);
+  /* How dark a leaf is when it stands edge-on to the light. */
+  --turn-dim: 0.7;
+}
+
+:root.DarkTheme {
+  /* Dark paper cannot be dimmed much further: it catches the lamp instead. */
+  --turn-dim: 1.3;
+}
+
+:root[data-turn]::view-transition-old(root),
+:root[data-turn]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Under a zoom the leaves stay where they are. */
+:root[data-turn]::view-transition-group(leaf-left),
+:root[data-turn]::view-transition-group(leaf-right),
+:root[data-turn]::view-transition-group(leaf-single) {
+  animation: none;
+}
+
+:root[data-turn]::view-transition-image-pair(leaf-left),
+:root[data-turn]::view-transition-image-pair(leaf-right),
+:root[data-turn]::view-transition-image-pair(leaf-single) {
+  isolation: isolate;
+}
+
+/* And above the rest of the page, under the dialog. */
+:root[data-turn]::view-transition-group(leaf-left),
+:root[data-turn]::view-transition-group(leaf-right) {
+  z-index: 3;
+}
+
+/*
+ * A blank leaf of a longer turn (`components/pager-flip.ts`): between the page
+ * lifted and the page laid, when the reader has moved several pages at once. It is
+ * paper on both sides, with the faint lines of set type, and is placed and turned
+ * by the script.
+ */
+.TurnFiller {
+  position: absolute;
+  inset-block: 0;
+  box-sizing: border-box;
+  padding: 7% 9%;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 0.95rem,
+      color-mix(in oklab, var(--ink) 8%, transparent) 0.95rem 1.05rem
+    ),
+    var(--paper);
+  background-clip: content-box, border-box;
+  outline: var(--spacing-size-hairline) solid var(--rule-strong);
+  outline-offset: calc(var(--spacing-size-hairline) * -1);
+  pointer-events: none;
+}
+
+/*
+ * A zoom changes neither the masthead nor the pages under the dialog, so those are
+ * shown as they are. Left to the
+ * default cross-fade, two identical snapshots blended halfway dim in WebKit, which
+ * does not add them back up.
+ */
+:root[data-turn-kind="zoom"]::view-transition-old(plate),
+:root[data-turn-kind="zoom"]::view-transition-old(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-old(ledger-progress),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-left),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-right),
+:root[data-turn-kind="zoom"]::view-transition-old(leaf-single) {
+  display: none;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(plate),
+:root[data-turn-kind="zoom"]::view-transition-new(section-mark),
+:root[data-turn-kind="zoom"]::view-transition-new(ledger-progress),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-left),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-right),
+:root[data-turn-kind="zoom"]::view-transition-new(leaf-single) {
+  animation: none;
+}
+
+/* ----------------------------------------------------------------- theme */
+
+/*
+ * The other theme floods the screen from the switch. For the length of it nothing
+ * on the page keeps a transition name of its own, so the whole screen is one
+ * picture, and the new one is uncovered over the old in a growing circle.
+ */
+:root[data-turn-kind="theme"] * {
+  view-transition-name: none !important;
+}
+
+:root[data-turn-kind="theme"]::view-transition-old(root) {
+  z-index: 1;
+  animation: none;
+}
+
+:root[data-turn-kind="theme"]::view-transition-new(root) {
+  z-index: 2;
+  animation: theme-flood var(--turn-duration) cubic-bezier(0.45, 0.1, 0.35, 1) both;
+}
+
+@keyframes theme-flood {
+  from {
+    clip-path: circle(0 at var(--flood-x, 100%) var(--flood-y, 0));
+  }
+  to {
+    clip-path: circle(var(--flood-reach, 150vmax) at var(--flood-x, 100%) var(--flood-y, 0));
+  }
+}
+
+/*
+ * The press's canvas (`components/Press.vue`) is over the page and keeps drawing
+ * through a turn: its old snapshot is dropped and the new one, which is live, is
+ * shown as it is, above the turning leaves.
+ */
+::view-transition-group(press),
+::view-transition-group(press-ink) {
+  z-index: 20;
+  animation: none;
+}
+
+::view-transition-old(press),
+::view-transition-old(press-ink) {
+  display: none;
+}
+
+::view-transition-new(press),
+::view-transition-new(press-ink) {
+  animation: none;
+}
+
+/* ------------------------------------------------------------------ zoom */
+
+/*
+ * A project opens from its card: the card is lifted off the page and unfolds into
+ * the dialog, its plate travelling to the plate's place in the dialog, while the
+ * page behind dims. The dialog is not scaled up from the card: it is shown at its
+ * own size from the first frame, through a frame that grows, the way a folded
+ * sheet is opened, so its text is never stretched. Closing folds it back down to
+ * where it came from. With no card to come from (a link straight to `?open=`) the
+ * dialog rises from the middle of the page; with none to return to, it sinks.
+ *
+ * A figure opens the same way, its plate growing into the viewer.
+ */
+:root[data-turn-kind="zoom"] {
+  --zoom-ease: cubic-bezier(0.2, 0.85, 0.2, 1);
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project),
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-group(figure) {
+  animation-duration: var(--turn-duration);
+  animation-timing-function: var(--zoom-ease);
+}
+
+/*
+ * What is lifted is above the page, and above the dimming behind it. The browser
+ * orders the groups by where their elements were painted before the change, and
+ * the card was painted inside the left-hand leaf: left alone, the right-hand leaf
+ * and the dimming were drawn over the opening dialog.
+ */
+:root[data-turn-kind="zoom"]::view-transition-group(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-group(figure-backdrop) {
+  z-index: 10;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project),
+:root[data-turn-kind="zoom"]::view-transition-group(figure) {
+  z-index: 11;
+}
+
+/* The sheet is lifted off the page: it carries a shadow as long as it is in the air. */
+:root[data-turn-kind="zoom"]::view-transition-group(project) {
+  overflow: clip;
+  box-shadow: 0 0 0 var(--spacing-size-hairline) var(--accent), 0 2.5rem 5rem -1rem rgb(0 0 0 / 70%);
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project),
+:root[data-turn-kind="zoom"]::view-transition-new(project),
+:root[data-turn-kind="zoom"]::view-transition-old(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-new(project-plate) {
+  width: 100%;
+  height: 100%;
+  overflow: clip;
+  animation-duration: var(--turn-duration);
+  animation-timing-function: linear;
+}
+
+/* The plates fill their frame as it changes shape. */
+:root[data-turn-kind="zoom"]::view-transition-old(project-plate),
+:root[data-turn-kind="zoom"]::view-transition-new(project-plate) {
+  object-fit: cover;
+}
+
+/* The card and the dialog keep their own size and are seen through the frame, from its top left. */
+:root[data-turn-kind="zoom"]::view-transition-old(project),
+:root[data-turn-kind="zoom"]::view-transition-new(project) {
+  object-fit: none;
+  object-position: 0 0;
+}
+
+:root[data-turn="open"]::view-transition-old(project) {
+  animation-name: zoom-out-early;
+}
+
+:root[data-turn="open"]::view-transition-new(project) {
+  animation-name: zoom-in-early;
+}
+
+:root[data-turn="close"]::view-transition-old(project) {
+  animation-name: zoom-out-late;
+}
+
+:root[data-turn="close"]::view-transition-new(project) {
+  animation-name: zoom-in-late;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-group(project-plate) {
+  z-index: 12;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project):only-child {
+  object-fit: fill;
+  animation: zoom-rise var(--turn-duration) var(--zoom-ease) both;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(project):only-child {
+  object-fit: fill;
+  animation: zoom-sink calc(var(--turn-duration) * 0.6) var(--turn-lift) both;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-new(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-old(project-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-new(figure-backdrop),
+:root[data-turn-kind="zoom"]::view-transition-old(figure-backdrop) {
+  animation-duration: calc(var(--turn-duration) * 0.7);
+  animation-timing-function: linear;
+}
+
+/* A figure: the same picture at both ends, so it only has to grow. */
+:root[data-turn-kind="zoom"]::view-transition-old(figure),
+:root[data-turn-kind="zoom"]::view-transition-new(figure) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: none;
+}
+
+:root[data-turn-kind="zoom"]::view-transition-old(figure):not(:only-child) {
+  display: none;
+}
+
+/*
+ * One project for another: the sheet stays where it is and its contents change the
+ * way a page does, the old one leaving toward the side it came from. The next
+ * project comes in from the right, the previous from the left.
+ */
+:root[data-turn^="swap"]::view-transition-group(project) {
+  animation: none;
+  box-shadow: none;
+}
+
+:root[data-turn^="swap"]::view-transition-old(project),
+:root[data-turn^="swap"]::view-transition-new(project) {
+  object-fit: fill;
+}
+
+/* The dimming behind the sheet does not change in a swap, so it is shown as it is. */
+:root[data-turn^="swap"]::view-transition-old(project-backdrop) {
+  display: none;
+}
+
+:root[data-turn^="swap"]::view-transition-new(project-backdrop) {
+  animation: none;
+}
+
+:root[data-turn="swap"]::view-transition-old(project) {
+  animation: swap-out-left 240ms var(--turn-lift) both;
+}
+
+:root[data-turn="swap"]::view-transition-new(project) {
+  animation: swap-in-right 460ms var(--zoom-ease) both;
+}
+
+:root[data-turn="swap-back"]::view-transition-old(project) {
+  animation: swap-out-right 240ms var(--turn-lift) both;
+}
+
+:root[data-turn="swap-back"]::view-transition-new(project) {
+  animation: swap-in-left 460ms var(--zoom-ease) both;
+}
+
+:root[data-turn^="swap"]::view-transition-old(project-plate),
+:root[data-turn^="swap"]::view-transition-new(project-plate) {
+  animation-duration: 460ms;
+}
+
+@keyframes zoom-out-early {
+  0% {
+    opacity: 1;
+  }
+  35%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-in-early {
+  0% {
+    opacity: 0;
+  }
+  45%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-out-late {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes zoom-in-late {
+  0%,
+  60% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoom-rise {
+  from {
+    opacity: 0;
+    transform: translateY(2.5%) scale(0.96);
+  }
+}
+
+@keyframes zoom-sink {
+  to {
+    opacity: 0;
+    transform: translateY(2.5%) scale(0.96);
+  }
+}
+
+@keyframes swap-out-left {
+  to {
+    opacity: 0;
+    transform: translateX(-3rem);
+  }
+}
+
+@keyframes swap-out-right {
+  to {
+    opacity: 0;
+    transform: translateX(3rem);
+  }
+}
+
+@keyframes swap-in-right {
+  0%,
+  40% {
+    opacity: 0;
+    transform: translateX(4rem);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes swap-in-left {
+  0%,
+  40% {
+    opacity: 0;
+    transform: translateX(-4rem);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The marker under the current section slides to the new one. */
+::view-transition-group(section-mark) {
+  animation-duration: var(--turn-duration);
+  animation-timing-function: var(--turn-land);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+  }
+}

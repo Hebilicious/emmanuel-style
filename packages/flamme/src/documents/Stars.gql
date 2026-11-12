@@ -1,0 +1,9 @@
+# The star counts of the Library's repositories. The worker owns this field and
+# caches GitHub's answer, so the transport sends it over HTTP; with the network off
+# the durable cache answers with the last counts it saw.
+query Stars($names: [String!]!) {
+	stars(names: $names) {
+		name
+		stars
+	}
+}

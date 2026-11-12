@@ -1,13 +1,18 @@
+# The blog index: every article, newest first, with what its entry shows: the
+# plate it opens with, and enough of its text to say how long it is to read.
 query Blog {
-	site {
-		name
-		date
-	}
 	posts {
 		slug
 		title
 		description
 		date
 		tags
+		blocks {
+			id
+			kind
+			text
+			image
+			caption
+		}
 	}
 }

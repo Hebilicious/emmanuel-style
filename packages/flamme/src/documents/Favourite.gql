@@ -1,0 +1,7 @@
+# One article's favourite count, read from the worker.
+query Favourite($slug: String!) {
+	favourites(slug: $slug) {
+		slug
+		count
+	}
+}

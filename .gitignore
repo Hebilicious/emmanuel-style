@@ -32,3 +32,10 @@ old
 
 # Playwright CLI session artifacts
 .playwright-cli
+
+# Task worktrees, and the scratch files a session keeps in its worktree
+.worktrees/
+.artifacts/
+
+# Cloudflare build output and generated types
+.cloudflare

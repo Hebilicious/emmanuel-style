@@ -15,10 +15,12 @@ import type {
 	BlockShape,
 	NoteShape,
 	PostShape,
+	ProjectShape,
 	RoleShape,
 	SchoolShape,
 	ShelfShape,
-	SiteShape
+	SiteShape,
+	SkillShape
 } from "@emmanuel/schema"
 import generated from "../.content/content.ts"
 
@@ -28,6 +30,9 @@ export interface ContentModule {
 	readonly posts: PostShape[]
 	readonly roles: RoleShape[]
 	readonly schools: SchoolShape[]
+	readonly skills: SkillShape[]
+	/** A hash of the content, which changes whenever any of it does. */
+	readonly version: string
 }
 
 /** The whole generated bundle, typed. */
@@ -35,9 +40,17 @@ export const content = generated as ContentModule
 
 export const site: SiteShape = content.site
 export const shelves: ShelfShape[] = content.shelves
+/** Every project, shelf by shelf; the bundle carries them once, on their shelves. */
+export const projects: ProjectShape[] = shelves.flatMap((shelf) => shelf.projects)
 export const posts: PostShape[] = content.posts
 export const roles: RoleShape[] = content.roles
 export const schools: SchoolShape[] = content.schools
+export const skills: SkillShape[] = content.skills
+export const contentVersion: string = content.version
+
+/** One project by its name, or `null`. */
+export const projectByName = (name: string): ProjectShape | null =>
+	projects.find((project) => project.name === name) ?? null
 
 /** One post by its slug, or `null`. */
 export const postBySlug = (slug: string): PostShape | null =>
@@ -50,7 +63,10 @@ export const postBySlug = (slug: string): PostShape | null =>
  * blocks it is about to place which notes they carry, and renders those at the
  * foot of that page instead of leaving them to the end of the article.
  */
-export const notesFor = (blocks: readonly BlockShape[], notes: readonly NoteShape[]): NoteShape[] => {
+export const notesFor = (
+	blocks: readonly BlockShape[],
+	notes: readonly NoteShape[]
+): NoteShape[] => {
 	const wanted = new Set(blocks.flatMap((block) => block.noteIds))
 	return notes.filter((note) => wanted.has(note.id))
 }
@@ -59,4 +75,13 @@ export const notesFor = (blocks: readonly BlockShape[], notes: readonly NoteShap
 export const blockForNote = (blocks: readonly BlockShape[], noteId: string): BlockShape | null =>
 	blocks.find((block) => block.noteIds.includes(noteId)) ?? null
 
-export type { BlockShape, NoteShape, PostShape, RoleShape, SchoolShape, ShelfShape, SiteShape }
+export type {
+	BlockShape,
+	NoteShape,
+	PostShape,
+	ProjectShape,
+	RoleShape,
+	SchoolShape,
+	ShelfShape,
+	SiteShape
+}
