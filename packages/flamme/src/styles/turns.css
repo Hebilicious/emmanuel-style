@@ -1,44 +1,24 @@
 /*
- * Page turns.
+ * Turns that are View Transitions: a project or a figure lifted off the page into
+ * its dialog (`zoom`), and the other theme flooding the screen (`theme`).
  *
- * A spread is two leaves, `leaf-left` and `leaf-right`, each a View Transition
- * group of its own (the pager names them; on a phone there is one, `leaf-single`).
- * A turn is a leaf turning on the spine, in depth, the way a page of a book is
- * turned:
+ * Page turns, inside a section and between sections, are not View Transitions:
+ * the leaves themselves are turned by script (`components/pager-flip.ts`), so the
+ * new page is never held back by a photograph of the old one. What they need from
+ * here is the blank leaf of a longer turn (`.TurnFiller`) and how dark a leaf is
+ * when it stands edge-on (`--turn-dim`).
  *
- *   forward  the right-hand page is lifted off the spread, hinged on the spine,
- *            until it stands upright and is seen edge-on; the next right-hand page
- *            is under it. What comes down on the other side is the leaf's back,
- *            the next left-hand page, laid over the old one.
- *   back     the same, mirrored: the left-hand page is lifted and its back, the
- *            previous right-hand page, is laid on the right.
- *
- * On a phone there is one page, hinged on its left edge: going forward it swings
- * up and away and the next one is under it, going back the previous one swings
- * down over the page being read.
- *
- * The leaf is seen in perspective (`--turn-depth`, the distance of the reader's
- * eye), so its free edge grows as it comes up toward the reader, and it is dimmed
- * as it turns away from the light. Its two halves are paced by two curves that
- * meet at the same speed (`--leaf-lift`, `--leaf-land`), which `shell/turns.ts`
- * sets along with `--turn-duration`; the press draws the shadow the leaf throws on
- * the pages under it, on the same clock.
- *
- * `data-turn` on the root says which way; `turns.ts` sets it for the length of the
- * transition. The rest of the shell (the bar, the dock) does not move: the root
- * snapshot is shown as it is, with no cross-fade.
+ * `data-turn` and `data-turn-kind` on the root say what is running; `shell/turns.ts`
+ * sets them for the length of the transition, with `--turn-duration`. The rest of
+ * the shell (the bar, the dock) does not move: the root snapshot is shown as it
+ * is, with no cross-fade.
  */
 
 :root {
   --turn-duration: 400ms;
-  --turn-ease: cubic-bezier(0.33, 0.06, 0.18, 1);
+  /* How a zoom's frame is pulled off the page, and how it is set down. */
   --turn-lift: cubic-bezier(0.42, 0, 0.78, 0.6);
   --turn-land: cubic-bezier(0.22, 0.6, 0.36, 1);
-  --leaf-lift: cubic-bezier(0.45, 0, 0.85, 0.7);
-  --leaf-land: cubic-bezier(0.15, 0.3, 0.45, 1);
-  /* A page of a spread is under half the screen wide; a phone's is all of it. */
-  --turn-depth: 190vw;
-  --turn-depth-single: 520vw;
   /* How dark a leaf is when it stands edge-on to the light. */
   --turn-dim: 0.7;
 }
@@ -54,7 +34,7 @@
   mix-blend-mode: normal;
 }
 
-/* The leaves do not move as boxes: only what is drawn in them does. */
+/* Under a zoom the leaves stay where they are. */
 :root[data-turn]::view-transition-group(leaf-left),
 :root[data-turn]::view-transition-group(leaf-right),
 :root[data-turn]::view-transition-group(leaf-single) {
@@ -67,181 +47,10 @@
   isolation: isolate;
 }
 
-/* By default a page is simply there: the old one until the turn ends, the new one from its start. */
-:root[data-turn]::view-transition-old(leaf-left),
-:root[data-turn]::view-transition-new(leaf-left),
-:root[data-turn]::view-transition-old(leaf-right),
-:root[data-turn]::view-transition-new(leaf-right),
-:root[data-turn]::view-transition-old(leaf-single),
-:root[data-turn]::view-transition-new(leaf-single) {
-  mix-blend-mode: normal;
-  backface-visibility: hidden;
-  animation: leaf-stay var(--turn-duration) linear both;
-}
-
-/* The leaf in the air is over both pages. */
+/* And above the rest of the page, under the dialog. */
 :root[data-turn]::view-transition-group(leaf-left),
 :root[data-turn]::view-transition-group(leaf-right) {
   z-index: 3;
-}
-
-/* ---------------------------------------------------------------- forward */
-
-/* The page being turned, hinged on the spine; the next one is under it. */
-:root[data-turn="forward"]::view-transition-old(leaf-right) {
-  z-index: 2;
-  transform-origin: left center;
-  animation: lift-right var(--turn-duration) linear both;
-}
-
-:root[data-turn="forward"]::view-transition-new(leaf-right) {
-  z-index: 1;
-}
-
-:root[data-turn="forward"]::view-transition-old(leaf-left) {
-  z-index: 1;
-}
-
-/* The leaf's back: the next left-hand page, coming down from upright. */
-:root[data-turn="forward"]::view-transition-new(leaf-left) {
-  z-index: 2;
-  transform-origin: right center;
-  animation: land-left var(--turn-duration) linear both;
-}
-
-/* ------------------------------------------------------------------- back */
-
-:root[data-turn="back"]::view-transition-old(leaf-left) {
-  z-index: 2;
-  transform-origin: right center;
-  animation: lift-left var(--turn-duration) linear both;
-}
-
-:root[data-turn="back"]::view-transition-new(leaf-left) {
-  z-index: 1;
-}
-
-:root[data-turn="back"]::view-transition-old(leaf-right) {
-  z-index: 1;
-}
-
-:root[data-turn="back"]::view-transition-new(leaf-right) {
-  z-index: 2;
-  transform-origin: left center;
-  animation: land-right var(--turn-duration) linear both;
-}
-
-/* --------------------------------------------------------------- a phone */
-
-/* Forward: the page swings up on its left edge and away; the next is under it. */
-:root[data-turn="forward"]::view-transition-old(leaf-single) {
-  z-index: 2;
-  transform-origin: left center;
-  animation: swing-away var(--turn-duration) var(--turn-ease) both;
-}
-
-:root[data-turn="forward"]::view-transition-new(leaf-single) {
-  z-index: 1;
-}
-
-/* Back: the previous page swings down over the one being read. */
-:root[data-turn="back"]::view-transition-old(leaf-single) {
-  z-index: 1;
-}
-
-:root[data-turn="back"]::view-transition-new(leaf-single) {
-  z-index: 2;
-  transform-origin: left center;
-  animation: swing-over var(--turn-duration) var(--turn-ease) both;
-}
-
-/* ------------------------------------------------------------- keyframes */
-
-@keyframes leaf-stay {
-  from,
-  to {
-    opacity: 1;
-  }
-}
-
-/*
- * The first half of a turn: a page lifted from flat to upright on the spine. Its
- * free edge comes toward the reader. From upright on it is edge-on and not seen.
- */
-@keyframes lift-right {
-  0% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    animation-timing-function: var(--leaf-lift);
-  }
-  50%,
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(-90deg);
-    filter: brightness(var(--turn-dim));
-  }
-}
-
-@keyframes lift-left {
-  0% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-    animation-timing-function: var(--leaf-lift);
-  }
-  50%,
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(90deg);
-    filter: brightness(var(--turn-dim));
-  }
-}
-
-/* The second half: the leaf's back, laid from upright onto the other page. */
-@keyframes land-left {
-  0%,
-  50% {
-    transform: perspective(var(--turn-depth)) rotateY(90deg);
-    filter: brightness(var(--turn-dim));
-    animation-timing-function: var(--leaf-land);
-  }
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-  }
-}
-
-@keyframes land-right {
-  0%,
-  50% {
-    transform: perspective(var(--turn-depth)) rotateY(-90deg);
-    filter: brightness(var(--turn-dim));
-    animation-timing-function: var(--leaf-land);
-  }
-  100% {
-    transform: perspective(var(--turn-depth)) rotateY(0deg);
-    filter: brightness(1);
-  }
-}
-
-/* A phone's page, hinged on its left edge. */
-@keyframes swing-away {
-  from {
-    transform: perspective(var(--turn-depth-single)) rotateY(0deg);
-    filter: brightness(1);
-  }
-  to {
-    transform: perspective(var(--turn-depth-single)) rotateY(-90deg);
-    filter: brightness(var(--turn-dim));
-  }
-}
-
-@keyframes swing-over {
-  from {
-    transform: perspective(var(--turn-depth-single)) rotateY(-90deg);
-    filter: brightness(var(--turn-dim));
-  }
-  to {
-    transform: perspective(var(--turn-depth-single)) rotateY(0deg);
-    filter: brightness(1);
-  }
 }
 
 /*
@@ -269,66 +78,11 @@
 }
 
 /*
- * The nameplate, when the section changes: the old title is pulled up out of the
- * frame and the new one set in under it, the way a masthead changes between the
- * sections of a paper.
- */
-::view-transition-group(plate) {
-  animation-duration: var(--turn-duration);
-  animation-timing-function: var(--turn-land);
-}
-
-/*
- * Each title at its own size, centred in the slot, rather than both stretched to
- * the width of the slot as it grows or shrinks from one title to the other.
- */
-::view-transition-old(plate),
-::view-transition-new(plate) {
-  inline-size: auto;
-  inset-inline: 0;
-  margin-inline: auto;
-}
-
-:root[data-turn-kind="route"]::view-transition-old(plate) {
-  animation: plate-out var(--turn-duration) var(--turn-lift) both;
-}
-
-:root[data-turn-kind="route"]::view-transition-new(plate) {
-  animation: plate-in var(--turn-duration) var(--turn-land) both;
-}
-
-@keyframes plate-out {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  45%,
-  100% {
-    transform: translateY(-55%);
-    opacity: 0;
-  }
-}
-
-@keyframes plate-in {
-  0%,
-  40% {
-    transform: translateY(55%);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-/*
- * A page turn does not change the masthead, and a zoom changes neither the masthead
- * nor the pages under the dialog, so those are shown as they are. Left to the
+ * A zoom changes neither the masthead nor the pages under the dialog, so those are
+ * shown as they are. Left to the
  * default cross-fade, two identical snapshots blended halfway dim in WebKit, which
  * does not add them back up.
  */
-:root[data-turn-kind="page"]::view-transition-old(plate),
-:root[data-turn-kind="page"]::view-transition-old(section-mark),
 :root[data-turn-kind="zoom"]::view-transition-old(plate),
 :root[data-turn-kind="zoom"]::view-transition-old(section-mark),
 :root[data-turn-kind="zoom"]::view-transition-old(ledger-progress),
@@ -338,8 +92,6 @@
   display: none;
 }
 
-:root[data-turn-kind="page"]::view-transition-new(plate),
-:root[data-turn-kind="page"]::view-transition-new(section-mark),
 :root[data-turn-kind="zoom"]::view-transition-new(plate),
 :root[data-turn-kind="zoom"]::view-transition-new(section-mark),
 :root[data-turn-kind="zoom"]::view-transition-new(ledger-progress),

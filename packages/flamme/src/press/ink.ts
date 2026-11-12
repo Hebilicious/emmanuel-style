@@ -6,7 +6,7 @@
  * each, moved every frame by a compute shader. They drift on a slow current, gather
  * along the edge of the row under the reading cursor so that the row is outlined in
  * ink, are stirred into a whirl by the pointer, and are swept along by the print
- * head when a page turns. A second pass draws each one as a small soft dot.
+ * head as it crosses the edition. A second pass draws each one as a small soft dot.
  *
  * It is a canvas of its own under the press's, because a canvas has one context
  * and the press's is WebGL. Without WebGPU `createInk` resolves to `null` and the
@@ -293,8 +293,8 @@ export const createInk = async (canvas: HTMLCanvasElement): Promise<Ink | null> 
 		}
 		if (movingGroup === null || stillGroup === null) return
 
-		const turning = frame.turn !== null
-		if (frame.lamp !== null && !turning) {
+		const sweeping = frame.sweep !== null
+		if (frame.lamp !== null && !sweeping) {
 			if (lamp.on < 0.05) Object.assign(lamp, frame.lamp)
 			lamp.x = ease(lamp.x, frame.lamp.x, dt, 0.09)
 			lamp.y = ease(lamp.y, frame.lamp.y, dt, 0.09)
@@ -307,16 +307,16 @@ export const createInk = async (canvas: HTMLCanvasElement): Promise<Ink | null> 
 			pointer.y = frame.pointer.y
 			pointer.on = ease(pointer.on, 1, dt, 0.25)
 		} else pointer.on = ease(pointer.on, 0, dt, 0.4)
-		sweepOn = ease(sweepOn, turning ? 1 : 0, dt, turning ? 0.06 : 0.22)
+		sweepOn = ease(sweepOn, sweeping ? 1 : 0, dt, sweeping ? 0.06 : 0.22)
 
 		uniforms.set([frame.width, frame.height, dpr, time], 0)
 		uniforms.set([lamp.x, lamp.y, lamp.w, lamp.h], 4)
 		uniforms.set([pointer.x, pointer.y, pointer.on, lamp.on], 8)
 		if (frame.pane !== null)
 			uniforms.set([frame.pane.x, frame.pane.y, frame.pane.w, frame.pane.h], 12)
-		if (frame.turn !== null) {
-			uniforms[16] = frame.turn.forward ? 1 - frame.turn.progress : frame.turn.progress
-			uniforms[18] = frame.turn.forward ? -1 : 1
+		if (frame.sweep !== null) {
+			uniforms[16] = frame.sweep.forward ? 1 - frame.sweep.progress : frame.sweep.progress
+			uniforms[18] = frame.sweep.forward ? -1 : 1
 		}
 		uniforms[17] = sweepOn
 		uniforms[19] = dt
