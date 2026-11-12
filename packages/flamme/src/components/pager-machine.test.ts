@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
-	blitzing,
+	scrolling,
 	nextTurn,
 	PAGER_START,
 	type PagerEvent,
@@ -24,7 +24,7 @@ describe("the pager", () => {
 
 	it("runs one turn for one step, then rests", () => {
 		let state = run([{ type: "STEP", delta: 1, total: 9 }, { type: "BEGIN" }], resting(0))
-		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward", behind: 0 })
+		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward" })
 		state = run([{ type: "LANDED", screen: 1 }], state)
 		expect(nextTurn(state)).toBeNull()
 		expect(run([{ type: "SETTLE" }], state)).toEqual({ phase: "resting", current: 1, target: 1 })
@@ -41,12 +41,11 @@ describe("the pager", () => {
 			resting(0)
 		)
 		expect(state.target).toBe(3)
-		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward", behind: 2 })
 	})
 
-	it("reaches a far screen in one turn rather than riffling to it", () => {
+	it("reaches a far screen in one turn", () => {
 		const state = run([{ type: "ASK", screen: 8, total: 9 }], resting(0))
-		expect(nextTurn(state)).toEqual({ to: 8, direction: "forward", behind: 0 })
+		expect(nextTurn(state)).toEqual({ to: 8, direction: "forward" })
 	})
 
 	it("never asks for a screen that is not there", () => {
@@ -54,13 +53,11 @@ describe("the pager", () => {
 		expect(run([{ type: "ASK", screen: 99, total: 9 }], resting(0)).target).toBe(8)
 	})
 
-	it("jumps rather than turns when asks come as fast as a spun wheel", () => {
-		const one = run([{ type: "STEP", delta: 1, total: 20 }], resting(0))
-		expect(blitzing(one, 400)).toBe(false)
-		expect(blitzing(one, 40)).toBe(true)
-		// Turns piling up are a blitz too, however far apart the asks were.
-		const piled = run([{ type: "STEP", delta: 3, total: 20 }], resting(0))
-		expect(blitzing(piled, 400)).toBe(true)
+	it("takes an ask as scrolling when a leaf is in the air or the last ask was a moment ago", () => {
+		expect(scrolling(resting(0), 400)).toBe(false)
+		expect(scrolling(resting(0), 40)).toBe(true)
+		const turning = run([{ type: "STEP", delta: 1, total: 20 }, { type: "BEGIN" }], resting(0))
+		expect(scrolling(turning, 400)).toBe(true)
 	})
 
 	it("a jump shows the screen asked for at once", () => {

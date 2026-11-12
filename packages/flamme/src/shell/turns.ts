@@ -95,15 +95,6 @@ export const TURN_MS: Readonly<Record<TurnKind, number>> = {
 	zoom: 560,
 	theme: 900
 }
-/**
- * How long a page turn takes with this many more waiting behind it. A reader who
- * spins the wheel or holds a key is leafing through, and the faster they ask the
- * faster the pages go: each turn waiting shortens the one in front of it.
- */
-const PAGE_MS = [TURN_MS.page, 380, 260, 200, 160, 135] as const
-export const pageDuration = (behind: number): number =>
-	PAGE_MS[Math.max(0, Math.min(behind, PAGE_MS.length - 1))] ?? TURN_MS.page
-
 /** A page is pulled over quickly and laid down gently. */
 export const TURN_EASE = [0.33, 0.06, 0.18, 1] as const
 /**
@@ -142,10 +133,8 @@ const land = bezier(...TURN_LAND)
 export interface TurnInfo {
 	readonly kind: TurnKind
 	readonly direction: Direction | Zoom
-	/** How long it lasts at its own pace, in milliseconds. */
+	/** How long it lasts, in milliseconds. */
 	readonly duration: number
-	/** How many times faster than that it is being played: more than one when hurried. */
-	rate: number
 	/**
 	 * `performance.now()` when the leaves started to move, or `null` while the new
 	 * page is still being laid out and nothing moves yet.
@@ -169,7 +158,7 @@ const LEAF_KEYFRAMES = new Set([
  * How much of the running turn's time has passed, 0 to 1.
  *
  * The browser starts the leaves a frame or more after it says the transition is
- * ready, and a hurried turn runs faster than its own pace, so the time is read from
+ * ready, so the time is read from
  * the browser's own animation of a leaf when there is one: what the press draws is
  * then on the leaf, not near it.
  */
@@ -202,33 +191,6 @@ export const turnProgress = (turn: TurnInfo, now: number): number => pace(turnTi
 export const leafAngle = (turn: TurnInfo, now: number): number => {
 	const time = turnTime(turn, now)
 	return time < 0.5 ? 90 * lift(time * 2) : 90 + 90 * land(time * 2 - 1)
-}
-
-/** The browser's animations of the transition that is running. */
-const transitionAnimations = (): Animation[] =>
-	document.getAnimations().filter((animation) => {
-		const effect = animation.effect
-		return (
-			effect instanceof KeyframeEffect &&
-			(effect.pseudoElement ?? "").startsWith("::view-transition")
-		)
-	})
-
-const applyRate = (turn: TurnInfo): void => {
-	for (const animation of transitionAnimations()) animation.playbackRate = turn.rate
-}
-
-/**
- * Finish the running page turn in no more than `duration` milliseconds from its
- * start to its end: the reader has asked for more pages while it runs. A turn is
- * only ever hurried, never slowed back down.
- */
-export const hurry = (duration: number): void => {
-	if (info === null || turning.state !== "page") return
-	const rate = info.duration / duration
-	if (rate <= info.rate) return
-	info.rate = rate
-	applyRate(info)
 }
 
 let info: TurnInfo | null = null
@@ -264,9 +226,7 @@ const mark = (running: TurnInfo | null): void => {
 export const turn = async (
 	direction: Direction | Zoom,
 	update: () => Promise<void> | void,
-	kind: TurnKind = "page",
-	/** How long it takes, when not the usual time for its kind: a page leafed through is quicker. */
-	duration: number = TURN_MS[kind]
+	kind: TurnKind = "page"
 ): Promise<void> => {
 	const doc = document as ViewTransitionDocument
 	if (doc.startViewTransition === undefined || reducedMotion()) {
@@ -277,8 +237,7 @@ export const turn = async (
 	const running: TurnInfo = {
 		kind,
 		direction,
-		duration,
-		rate: 1,
+		duration: TURN_MS[kind],
 		at: null
 	}
 	info = running
@@ -291,10 +250,6 @@ export const turn = async (
 	transition.ready
 		.then(() => {
 			running.at = performance.now()
-			// The leaves' animations exist from the next frame, not yet when `ready` resolves.
-			requestAnimationFrame(() => {
-				if (running.rate !== 1 && info === running) applyRate(running)
-			})
 		})
 		.catch(() => undefined)
 	transition.updateCallbackDone.catch(() => undefined)
