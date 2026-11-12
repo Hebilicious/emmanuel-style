@@ -266,8 +266,7 @@ const readGeometry = () => {
  * `zoom` scales the block's layout, so its text rewraps at the smaller size and
  * the height read back is the height it will have. Every probe lays the block out
  * again, so there are as few as will do: none for a block that fits as it is, and
- * otherwise a first guess from how much too tall it is, then up to three halvings
- * around it, which find the scale to within a few percent.
+ * otherwise a guess from how much too tall it is, which is usually the answer.
  */
 const zoomOf = (target: HTMLElement): number => Number(target.style.zoom || "1")
 const setZoom = (target: HTMLElement, scale: number) => {
@@ -289,18 +288,16 @@ const fitTo = (
 		setZoom(target, scale)
 		return heightOf() <= room + 0.5
 	}
-	// Text set smaller is both shorter and wraps less, so its height goes with the square.
-	const guess = Math.max(MIN_FIT, Math.min(1, Math.sqrt(room / whole) * 0.99))
-	let [low, high] = fits(guess)
-		? [guess, Math.min(1, guess * 1.08)]
-		: [MIN_FIT, guess]
-	for (let step = 0; step < 3 && high - low > 0.025; step += 1) {
-		const middle = (low + high) / 2
-		if (fits(middle)) low = middle
-		else high = middle
-	}
-	setZoom(target, low)
-	return low
+	/*
+	 * Text set smaller is both shorter and wraps less, so its height goes with the
+	 * square: that guess is usually right, and is taken when it fits. When it does
+	 * not, the scale comes down a step at a time. Every try lays the block out, so
+	 * the first that fits is kept rather than looking for a slightly larger one.
+	 */
+	let scale = Math.max(MIN_FIT, Math.min(1, Math.sqrt(room / whole) * 0.985))
+	while (!fits(scale) && scale > MIN_FIT)
+		scale = Math.max(MIN_FIT, scale * 0.95)
+	return scale
 }
 
 const fitBlock = (element: HTMLElement, room: number): number => {
@@ -663,10 +660,7 @@ const measureAll = async () => {
 
 	fitScale = scales
 	measured.value = [...blocks]
-	if (all()) {
-		measuring.value = []
-		complete.value = true
-	}
+	if (all()) complete.value = true
 	send({
 		type: "LAID_OUT",
 		// The first layout opens on the page the URL names; a later one keeps the reader's place.
@@ -688,13 +682,78 @@ const measureAll = async () => {
 	// A route turn waits for this, so it captures the new page laid out.
 	if (fresh) shell.layouts += 1
 
-	/* The rest, a chunk whenever the browser is idle, until every block is measured. */
+	/*
+	 * The page-filling blocks the reader has not been shown yet still need their
+	 * scale. Finding it on the page when it is first drawn costs that turn a few
+	 * layouts of the whole page, so it is found here first, off screen, one block
+	 * (or one `fitWith` group) at a time; the page then only has to be drawn.
+	 */
+	const unfitted = (): T[] => {
+		const from = props.items.findIndex(
+			(item, index) => index < at && fillsPage(item) && !scales.has(item.id)
+		)
+		const first = props.items[from]
+		if (first === undefined) return []
+		const group = [first]
+		if (first.fitWith !== undefined)
+			for (
+				let next = from + 1;
+				props.items[next]?.fitWith === first.fitWith;
+				next += 1
+			)
+				group.push(props.items[next] as T)
+		return group
+	}
+	const prefit = async (group: readonly T[]): Promise<boolean> => {
+		measuring.value = group
+		await nextTick()
+		const host = measure.value
+		if (run !== generation || host === null) return false
+		const found = new Map<string, number>()
+		for (const element of host.querySelectorAll<HTMLElement>(
+			":scope > [data-measure-id]"
+		)) {
+			const id = element.dataset["measureId"] ?? ""
+			const opening = props.items[0]?.id === id && slots.lead !== undefined
+			found.set(
+				id,
+				fitBlock(
+					element,
+					geometry.value.height -
+						(opening ? leadHeight.value + geometry.value.leadGap : 0)
+				)
+			)
+		}
+		const smallest = Math.min(1, ...found.values())
+		for (const item of group) {
+			// The page may have been drawn, and fitted there, while this was laid out.
+			if (scales.has(item.id)) continue
+			scales.set(
+				item.id,
+				item.fitWith === undefined ? (found.get(item.id) ?? 1) : smallest
+			)
+		}
+		return true
+	}
+
+	/* The rest, a little whenever the browser is idle and the reader is still. */
 	const rest = () => {
-		if (run !== generation || all()) return
+		if (run !== generation) return
+		const group = unfitted()
+		if (all() && group.length === 0) {
+			measuring.value = []
+			return
+		}
 		// The reader comes first: unless they are waiting for these very pages, wait until they are still.
-		const waitingNow = owed > 0 || wantsLast
+		const waitingNow = (owed > 0 || wantsLast) && !all()
 		if (!waitingNow && performance.now() - movedAt < QUIET_FOR) {
 			idle = whenIdle(rest)
+			return
+		}
+		if (!waitingNow && group.length > 0) {
+			void prefit(group).then((went) => {
+				if (went) idle = whenIdle(rest)
+			})
 			return
 		}
 		void more(waitingNow ? WAITED_CHUNK : IDLE_CHUNK).then((went) => {
@@ -708,15 +767,12 @@ const measureAll = async () => {
 			const waiting =
 				owed > 0 || wantsLast || state.value.current >= total.value - 2
 			if (all() || waiting) measured.value = [...blocks]
-			if (all()) {
-				measuring.value = []
-				complete.value = true
-			}
+			if (all()) complete.value = true
 			settleOwed()
-			if (!all()) idle = whenIdle(rest)
+			idle = whenIdle(rest)
 		})
 	}
-	if (!all()) idle = whenIdle(rest)
+	idle = whenIdle(rest)
 }
 
 /** The block and offset at the top of the current screen, to keep the place on a re-layout. */
@@ -824,6 +880,7 @@ const flipper = createFlipper(() => ({
 /** The change of page being drawn: its direction, and the leaves that left and came. */
 let change: {
 	direction: "forward" | "back"
+	pages: number
 	old: Partial<Record<LeafName, HTMLElement>>
 	fresh: Partial<Record<LeafName, HTMLElement>>
 } | null = null
@@ -863,6 +920,7 @@ const show = () => {
 	if (to === current.value || !ready.value) return
 	const drawing = {
 		direction: to > current.value ? ("forward" as const) : ("back" as const),
+		pages: Math.abs(to - current.value),
 		old: {},
 		fresh: {}
 	}
@@ -871,7 +929,13 @@ const show = () => {
 	current.value = to
 	void nextTick(() => {
 		if (change === drawing) change = null
-		flipper.step(drawing.direction, drawing.old, drawing.fresh, release)
+		flipper.step(
+			drawing.direction,
+			drawing.pages,
+			drawing.old,
+			drawing.fresh,
+			release
+		)
 	})
 }
 
