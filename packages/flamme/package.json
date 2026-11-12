@@ -8,6 +8,8 @@
 		"dev": "pnpm run cssforge && vite",
 		"build": "pnpm run cssforge && tsx ./scripts/build.ts",
 		"preview": "vite preview --port 4322",
+		"deploy": "pnpm run build && pnpm --filter api-worker exec wrangler deploy --config ../flamme/wrangler.jsonc",
+		"deploy-pr": "pnpm run build && pnpm --filter api-worker exec wrangler versions upload --config ../flamme/wrangler.jsonc",
 		"typecheck": "flamme generate && vue-tsc -p tsconfig.json",
 		"content": "tsx ./scripts/build-content.ts",
 		"content:check": "tsx ./scripts/check-content.ts",
