@@ -24,9 +24,12 @@ const route = useRoute()
 const MOST = 9
 
 const read = computed(() => Math.min(MOST, (shell.position?.current ?? 1) - 1))
-const left = computed(() =>
-	Math.min(MOST, (shell.position?.total ?? 1) - (shell.position?.current ?? 1))
-)
+/* The pile ahead is set down once the pages are counted, not stacked up as they are. */
+const left = computed(() => {
+	const position = shell.position
+	if (position === null || !position.counted) return 0
+	return Math.min(MOST, position.total - position.current)
+})
 
 const two = (value: number) => String(value).padStart(2, "0")
 const running = computed(() => {
@@ -34,7 +37,9 @@ const running = computed(() => {
 	const sheet =
 		position === null
 			? ""
-			: ` · sheet ${two(position.current)} of ${two(position.total)}`
+			: position.counted
+				? ` · sheet ${two(position.current)} of ${two(position.total)}`
+				: ` · sheet ${two(position.current)}`
 	return `emmanuel.style · earth edition · ${sectionOf(route.path).dateline}${sheet}`
 })
 </script>

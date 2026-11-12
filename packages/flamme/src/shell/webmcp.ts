@@ -188,7 +188,12 @@ export const registerWebMcp = (shell: Shell, router: Router, index: () => Termin
 					await new Promise((resolve) => setTimeout(resolve, 50))
 				}
 				const position = shell.position
-				return text(position ? `Page ${position.current} of ${position.total}.` : "Turned.")
+				if (position === null) return text("Turned.")
+				return text(
+					position.counted
+						? `Page ${position.current} of ${position.total}.`
+						: `Page ${position.current}.`
+				)
 			}
 		},
 		{
