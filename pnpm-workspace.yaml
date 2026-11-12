@@ -23,7 +23,7 @@ catalogs:
     "@types/node": "24.13.5"
     "hono": "4.13.8"
     "typescript": "6.0.3"
-    "wrangler": "4.133.0"
+    "wrangler": "4.160.0"
   astro:
     "@astrojs/vue": "7.0.3"
     "@hebilicious/cssforge": "jsr:0.4.1"
@@ -53,7 +53,7 @@ catalogs:
     "postcss-nested": "8.0.1"
     "postcss-viewport-height-correction": "1.1.1"
     "vitest": "5.0.1"
-    "wrangler": "4.133.0"
+    "wrangler": "4.160.0"
 
 minimumReleaseAgeExclude:
   - '@astrojs/vue@7.0.3'
@@ -102,3 +102,5 @@ minimumReleaseAgeExclude:
   - unocss@66.10.5
   - wrangler@4.133.0
   - '@cloudflare/workers-types@5.20260917.1'
+  - miniflare@5.20261110.1-beta
+  - wrangler@4.160.1

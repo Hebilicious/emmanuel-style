@@ -2,7 +2,7 @@
 
 emmanuel.style is a personal site in a pnpm monorepo. `packages/flamme` is the site (Flamme, Vize, Vue),
 `packages/api` the Cloudflare Worker behind it (favourites and star counts), `packages/schema` the GraphQL schema the
-two share, and `packages/astro` the previous build, kept as a reference. `packages/nuxt` is older still and not part of
+two share, `packages/site` the site's build as a Cloudflare Worker, and `packages/astro` the previous build, kept as a reference. `packages/nuxt` is older still and not part of
 the current work.
 
 ## Branches and pull requests
@@ -42,8 +42,9 @@ the current work.
   their current message explicitly says to merge without review; a request for changes, approval of a plan, or an
   instruction given before the work exists is not acceptance.
 - The author of a branch owns it until it merges: keep it rebased on `main`, resolve its conflicts and make its checks
-  pass. Never skip or weaken a check to make it pass, and never push to, rebase or merge another session's branch. The
-  repository has no CI, so the checks are run by hand before each handoff:
+  pass. Never skip or weaken a check to make it pass, and never push to, rebase or merge another session's branch. CI
+  ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs the checks on every pull request; run them by hand before
+  each handoff as well, so a failure is found before the push:
   - `pnpm --filter @emmanuel/flamme run typecheck`
   - `pnpm --filter @emmanuel/flamme exec vitest run`
   - `pnpm --filter @emmanuel/flamme run content:check`
@@ -51,6 +52,10 @@ the current work.
   - `pnpm --filter api-worker test` (the worker's package is `api-worker`; a filter that matches no package exits
     0 without running anything, so check that the output lists the tests)
   - `dprint check` on the files the branch changes
+- Merging to `main` publishes: the same workflow deploys the API worker and then the site to emmanuel.style with `cf`
+  (`packages/api/cloudflare.config.ts`, `packages/site/cloudflare.config.ts`). Do not deploy by hand from a branch;
+  `pnpm --filter @emmanuel/site run deploy-pr` uploads a preview instead. The workflow needs the repository secret
+  `CLOUDFLARE_API_TOKEN` and the variable `CLOUDFLARE_ACCOUNT_ID`.
 - Once a pull request or stack merges, remove its worktree (`git worktree remove .worktrees/<branch>`) and bring the
   main checkout's `main` up to `origin/main`: `git -C <repository root> pull --ff-only origin main`. Pull only with
   `--ff-only`; when it refuses, stop and tell the user rather than resetting, stashing or merging.
