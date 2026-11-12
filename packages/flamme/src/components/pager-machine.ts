@@ -12,12 +12,15 @@
  * turning, so two quick presses are two pages, and a target further away than
  * `QUEUE` is reached in one turn rather than by riffling through every page.
  *
+ * A reader who spins the wheel is not asking for turns at all: they are scrolling,
+ * and the page follows the wheel at once (`JUMP`), with no leaf in the air.
+ *
  * It is a pure reducer: `Pager.vue` holds the state, sends it events, and runs the
  * View Transitions that `nextTurn` asks for.
  */
 
 /** How far ahead of the page showing the reader can ask, a turn per step. */
-export const QUEUE = 6
+export const QUEUE = 3
 
 export type PagerPhase = "measuring" | "resting" | "turning"
 
@@ -38,6 +41,8 @@ export type PagerEvent =
 	| { readonly type: "ASK"; readonly screen: number; readonly total: number }
 	/** Go `delta` screens on from the one already asked for. */
 	| { readonly type: "STEP"; readonly delta: number; readonly total: number }
+	/** Show the screen asked for at once, without a turn: the reader is scrolling. */
+	| { readonly type: "JUMP" }
 	/** The first turn of a run is starting. */
 	| { readonly type: "BEGIN" }
 	/** A turn has put `screen` on show. */
@@ -68,6 +73,8 @@ export const pagerStep = (state: PagerState, event: PagerEvent): PagerState => {
 			const from = state.phase === "turning" ? state.target : state.current
 			return { ...state, target: clamp(from + event.delta, event.total) }
 		}
+		case "JUMP":
+			return state.phase === "measuring" ? state : { ...state, current: state.target }
 		case "BEGIN":
 			return state.phase === "resting" ? { ...state, phase: "turning" } : state
 		case "LANDED":
@@ -97,6 +104,12 @@ export const nextTurn = (state: PagerState): NextTurn | null => {
 	}
 }
 
-/** Whether the queue has room for one more turn: a spin of the wheel is not stored up. */
-export const hasRoom = (state: PagerState): boolean =>
-	Math.abs(state.target - state.current) < QUEUE
+/** Asks closer together than this, in milliseconds, are a spin of the wheel or a held key. */
+export const BLITZ_GAP = 150
+
+/**
+ * Whether an ask is part of a blitz, and the page should jump rather than turn:
+ * it came hard on the heels of the last one, or turns are already piling up.
+ */
+export const blitzing = (state: PagerState, sinceLastAsk: number): boolean =>
+	sinceLastAsk < BLITZ_GAP || Math.abs(state.target - state.current) > 1

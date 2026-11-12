@@ -5,9 +5,9 @@
  * An agent skill is a `SKILL.md`: front matter with a name, a description that says
  * when to load it and the tools it may use, then the body. Each skill here is set
  * as that file, open on its own page, but it is written for a person deciding whom
- * to hire: what he does, in the first person; his record with it; how he works;
- * and the evidence, the projects in the Library that prove it, each opening over
- * the page like a card in the Library does. The prompt has them too:
+ * to hire: what he does, in the first person; what he brings; what he believes
+ * about doing it well; and examples, some of the roles and some of the projects in
+ * the Library, each opening over the page like a card in the Library does. The prompt has them too:
  * `cat skills/<name>.md`.
  *
  * The first spread is the section's landing: what this is, the way in, and the
@@ -46,7 +46,7 @@ type SkillsItem =
 	| (PagerItem & { readonly kind: "listing" })
 	| (PagerItem & {
 			/** The first page of a skill's file, and the page it continues on. */
-			readonly kind: "skill" | "record"
+			readonly kind: "skill" | "beliefs"
 			readonly skill: Skill
 			readonly number: number
 	  })
@@ -62,9 +62,9 @@ const items = computed<SkillsItem[]>(() =>
 					: [{ id: "listing", kind: "listing" as const, fit: true }]),
 				/*
 				 * Each skill is a file of two pages, and each page opens one, fills it and is
-				 * shown whole. The first is what the skill is and the proof: the front matter,
-				 * the heading, what I do, and where I did it. The second is the record and how
-				 * I work. After the landing, which takes a spread, a skill is a spread of its
+				 * shown whole. The first is what the skill is: the front matter, the heading,
+				 * the pitch and what I bring. The second is what I believe about it, and
+				 * examples of where I did it. After the landing, which takes a spread, a skill is a spread of its
 				 * own; on a phone it is two pages.
 				 */
 				...skills.value.flatMap((skill, at): SkillsItem[] => [
@@ -78,8 +78,8 @@ const items = computed<SkillsItem[]>(() =>
 						grow: true
 					},
 					{
-						id: `record-${skill.name}`,
-						kind: "record",
+						id: `beliefs-${skill.name}`,
+						kind: "beliefs",
 						skill,
 						number: at + 1,
 						opens: true,
@@ -101,12 +101,12 @@ const toPage = (page: number | null) => ({
 	query: { page: page !== null && page > 1 ? page : undefined }
 })
 
-const cited = computed(
-	() => new Set(skills.value.flatMap((skill) => skill.evidence)).size
-)
 const figures = computed(() => [
 	{ label: "skills", value: String(skills.value.length) },
-	{ label: "projects cited", value: String(cited.value) }
+	{
+		label: "years building software",
+		value: String(new Date().getFullYear() - 2013)
+	}
 ])
 const cta = computed(() => {
 	const first = skills.value[0]
@@ -117,7 +117,7 @@ const cta = computed(() => {
 	}
 })
 const standfirst =
-	"What I am good at, filed the way an agent files a skill: when to load it, what I have done with it, how I work. The format is for fun. The record is not: every line of it is in the Library."
+	"What I am good at, filed the way an agent files a skill: when to load it, what I bring, what I believe about doing it well. The format is for fun. The skills are not."
 
 const open = (name: string) => void openProject(router, name)
 
@@ -185,9 +185,44 @@ const roleLink = (company: string) => {
 
         <p class="Summary">{{ item.skill.summary }}</p>
 
+        <section class="Part">
+          <h3 class="Heading">
+            <span class="Hash" aria-hidden="true">##</span> What I bring
+          </h3>
+          <ul class="Bullets">
+            <li v-for="line of item.skill.offer" :key="line">
+              <Inline :text="line" />
+            </li>
+          </ul>
+        </section>
+      </article>
+
+      <article
+        v-else-if='item.kind === "beliefs"'
+        class="Skill"
+        :aria-label="`${item.skill.title}, continued`">
+        <header class="Tab">
+          <span class="Path">skills/{{ item.skill.name }}/<b>SKILL.md</b>
+            <span class="Continued">continued</span></span>
+          <span class="Count">{{ String(item.number).padStart(2, "0") }} / {{
+              String(skills.length).padStart(2, "0")
+            }}</span>
+        </header>
+
+        <section class="Part">
+          <h3 class="Heading">
+            <span class="Hash" aria-hidden="true">##</span> What I believe
+          </h3>
+          <ul class="Bullets Plain">
+            <li v-for="line of item.skill.principles" :key="line">
+              <Inline :text="line" />
+            </li>
+          </ul>
+        </section>
+
         <section class="Part Proof">
           <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> Evidence
+            <span class="Hash" aria-hidden="true">##</span> For example
           </h3>
           <p class="Evidence">
             <span class="EvidenceLabel">on the job</span>
@@ -213,41 +248,6 @@ const roleLink = (company: string) => {
               titles.get(name) ?? name
             }}</a>
           </p>
-        </section>
-      </article>
-
-      <article
-        v-else-if='item.kind === "record"'
-        class="Skill"
-        :aria-label="`${item.skill.title}, continued`">
-        <header class="Tab">
-          <span class="Path">skills/{{ item.skill.name }}/<b>SKILL.md</b>
-            <span class="Continued">continued</span></span>
-          <span class="Count">{{ String(item.number).padStart(2, "0") }} / {{
-              String(skills.length).padStart(2, "0")
-            }}</span>
-        </header>
-
-        <section class="Part">
-          <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> Track record
-          </h3>
-          <ul class="Bullets">
-            <li v-for="line of item.skill.record" :key="line">
-              <Inline :text="line" />
-            </li>
-          </ul>
-        </section>
-
-        <section class="Part">
-          <h3 class="Heading">
-            <span class="Hash" aria-hidden="true">##</span> How I work
-          </h3>
-          <ul class="Bullets Plain">
-            <li v-for="line of item.skill.practice" :key="line">
-              <Inline :text="line" />
-            </li>
-          </ul>
         </section>
       </article>
     </template>

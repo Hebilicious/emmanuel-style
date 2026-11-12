@@ -38,8 +38,8 @@ export const useSiteIndex = (): ComputedRef<TerminalIndex> => {
 			title: skill.title,
 			description: skill.description,
 			summary: skill.summary,
-			record: skill.record,
-			practice: skill.practice,
+			offer: skill.offer,
+			principles: skill.principles,
 			tools: skill.tools,
 			roles: skill.roles,
 			evidence: skill.evidence

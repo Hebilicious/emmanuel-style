@@ -193,7 +193,8 @@ const verifySkills = (skills: SkillShape[], shelves: Bundle["shelves"], roles: B
 			`skills: ${skill.name}'s description does not say when to load it`
 		)
 		check(/\bI\b/.test(skill.summary), `skills: ${skill.name}'s summary is not in the first person`)
-		check(skill.record.length >= 3, `skills: ${skill.name} has less than three lines of record`)
+		check(skill.offer.length >= 3, `skills: ${skill.name} says less than three things he brings`)
+		check(skill.principles.length >= 3, `skills: ${skill.name} has less than three principles`)
 		check(skill.evidence.length > 0, `skills: ${skill.name} cites no evidence`)
 		check(skill.roles.length > 0, `skills: ${skill.name} names no role it was done in`)
 		for (const company of skill.roles) {

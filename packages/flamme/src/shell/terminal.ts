@@ -46,8 +46,8 @@ export interface IndexSkill {
 	readonly title: string
 	readonly description: string
 	readonly summary: string
-	readonly record: readonly string[]
-	readonly practice: readonly string[]
+	readonly offer: readonly string[]
+	readonly principles: readonly string[]
 	readonly tools: readonly string[]
 	readonly roles: readonly string[]
 	readonly evidence: readonly string[]
@@ -219,15 +219,13 @@ const cat = (index: TerminalIndex, cwd: string, target: string): string => {
 				"---",
 				`# ${skill.title}`,
 				skill.summary,
-				// The evidence comes first: a long record is cut at the foot of the screen.
-				"## Where",
+				"## What I bring",
+				...skill.offer.map((line) => `- ${line}`),
+				"## What I believe",
+				...skill.principles.map((line) => `- ${line}`),
+				"## For example",
 				skill.roles.join(" · "),
-				"## Evidence",
-				skill.evidence.map((name) => `library/${name}.txt`).join("  "),
-				"## Track record",
-				...skill.record.map((line) => `- ${line}`),
-				"## How I work",
-				...skill.practice.map((line) => `- ${line}`)
+				skill.evidence.map((name) => `library/${name}.txt`).join("  ")
 			])
 		}
 		case "role": {
@@ -287,8 +285,8 @@ const grep = (index: TerminalIndex, args: readonly string[]): string => {
 			skill.title,
 			skill.description,
 			skill.summary,
-			...skill.record,
-			...skill.practice,
+			...skill.offer,
+			...skill.principles,
 			...skill.tools
 		].join(" ")
 		if (!expression.test(text)) continue

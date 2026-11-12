@@ -30,8 +30,8 @@ const index: TerminalIndex = {
 			title: "Edge-native backends",
 			description: "Load when an API has to answer close to its readers.",
 			summary: "I build backends that run on the edge.",
-			record: ["An API that was slow far from its region"],
-			practice: ["Put the API on Workers"],
+			offer: ["An API that was slow far from its region"],
+			principles: ["Put the API on Workers"],
 			tools: ["Cloudflare Workers"],
 			roles: ["Acme"],
 			evidence: ["cssforge"]

@@ -39,8 +39,8 @@ const PROFILE = "https://www.linkedin.com/in/emmanuel-donnet"
         <span class="Sigil" aria-hidden="true">#</span> to hire the author
       </p>
       <p class="HireText">
-        Every line in these files is something I have done, and the Library has
-        the work. The long record and the way to reach me are on LinkedIn.
+        The Library has examples of the work, and the ledger the roles. The full
+        history and the way to reach me are on LinkedIn.
       </p>
       <a
         class="HireLink"

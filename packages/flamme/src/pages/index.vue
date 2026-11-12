@@ -17,7 +17,7 @@ import { useMediaQuery } from "@vueuse/core"
 import { computed, onBeforeUnmount, onMounted, ref } from "vue"
 import { RouterLink } from "vue-router"
 import { usePageQuery } from "$flamme/records/index"
-import CoverDeck from "../components/CoverDeck.vue"
+import CoverStrip from "../components/CoverStrip.vue"
 import Icon from "../components/Icon.vue"
 import Pager from "../components/Pager.vue"
 import type { PagerHandle, PagerItem } from "../components/pager.js"
@@ -68,11 +68,16 @@ const links = [
 const projects = computed(() =>
 	(data.value?.shelves ?? []).flatMap((shelf) => shelf.projects ?? [])
 )
-const featured = computed(() =>
-	projects.value
+/** The covers that pass by on the front page: the featured ones first, then the other projects. */
+const covers = computed(() => {
+	const featured = projects.value
 		.filter((project) => project.featured !== null)
 		.sort((a, b) => (a.featured ?? 0) - (b.featured ?? 0))
-)
+	const others = projects.value.filter(
+		(project) => project.featured === null && project.kind === "project"
+	)
+	return [...featured, ...others].slice(0, 14)
+})
 const merged = computed(() =>
 	projects.value.reduce((sum, project) => sum + (project.contributions ?? 0), 0)
 )
@@ -146,14 +151,7 @@ const quotes = [
 ]
 
 const quote = ref(0)
-/** The plate in front of the Library's deck; it steps on with the quote's clock. */
-const plate3d = ref(0)
 let timer = 0
-let deckTimer = 0
-const stepDeck = () => {
-	if (featured.value.length > 0)
-		plate3d.value = (plate3d.value + 1) % featured.value.length
-}
 
 /** A step by hand restarts the rotation, so the timer does not undo it a moment later. */
 const restart = () => {
@@ -187,13 +185,10 @@ const onLayout = (total: number) => {
 onMounted(() => {
 	restart()
 	shell.turner = quoteTurner
-	if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-		deckTimer = window.setInterval(stepDeck, 3800)
 })
 
 onBeforeUnmount(() => {
 	window.clearInterval(timer)
-	window.clearInterval(deckTimer)
 	if (shell.turner === quoteTurner) shell.turner = null
 })
 
@@ -331,10 +326,9 @@ const blurbOf = (section: (typeof sections)[number]) =>
             class="Library"
             aria-label="The Library">
             <p class="Overline label">
-              <span>the story of the edition</span>
+              <span>the work</span>
               <span class="Count">{{ projects.length }} entries</span>
             </p>
-            <CoverDeck class="Covers" :projects="featured" :active="plate3d" />
             <h2 class="LibraryTitle display">The Library</h2>
             <p class="LibraryStandfirst">
               {{ own }} projects built end to end, Nuxt modules, tools, and {{
@@ -342,6 +336,7 @@ const blurbOf = (section: (typeof sections)[number]) =>
               }}
               pull requests merged into other people's code.
             </p>
+            <CoverStrip class="Covers" :projects="covers" />
             <RouterLink
               class="Open"
               to="/library"
@@ -680,10 +675,9 @@ const blurbOf = (section: (typeof sections)[number]) =>
 }
 
 /*
- * The Library leads the edition: its covers in a strip, the lead project's widest,
- * its name in the display face, its figures, and the way in, which is where the
- * cursor starts. On a spread it grows into the right-hand page, the covers taking
- * the room.
+ * The Library leads the edition: its name in the display face, what is in it, its
+ * covers passing by in a strip, and the way in, which is where the cursor starts.
+ * On a spread it grows into the right-hand page, the covers taking the room.
  */
 .Library {
   display: flex;
@@ -698,7 +692,7 @@ const blurbOf = (section: (typeof sections)[number]) =>
   border-bottom: var(--spacing-size-rule) double var(--rule-strong);
 }
 
-/* The deck of plates takes the room the text under it leaves. */
+/* The strip of covers takes the room the text around it leaves. */
 .Covers {
   flex: 1 1 0;
   min-height: 9rem;

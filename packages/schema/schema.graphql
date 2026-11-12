@@ -162,8 +162,8 @@ type Skill {
   description: String!
   evidence: [String!]!
   name: ID!
-  practice: [String!]!
-  record: [String!]!
+  offer: [String!]!
+  principles: [String!]!
   roles: [String!]!
   summary: String!
   title: String!

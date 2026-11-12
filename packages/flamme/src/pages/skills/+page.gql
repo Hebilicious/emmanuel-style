@@ -6,8 +6,8 @@ query Skills {
 		title
 		description
 		summary
-		record
-		practice
+		offer
+		principles
 		tools
 		roles
 		evidence
