@@ -17,7 +17,7 @@
  */
 
 /** How far ahead of the page showing the reader can ask, a turn per step. */
-export const QUEUE = 3
+export const QUEUE = 6
 
 export type PagerPhase = "measuring" | "resting" | "turning"
 
@@ -81,8 +81,8 @@ export interface NextTurn {
 	/** The screen this turn puts on show. */
 	readonly to: number
 	readonly direction: "forward" | "back"
-	/** More turns wait behind this one, so it is riffled, quicker. */
-	readonly quick: boolean
+	/** How many more turns wait behind this one: the more, the quicker it is. */
+	readonly behind: number
 }
 
 /** The turn to run next, or `null` when the screen asked for is showing. */
@@ -90,7 +90,11 @@ export const nextTurn = (state: PagerState): NextTurn | null => {
 	const distance = state.target - state.current
 	if (distance === 0) return null
 	const to = Math.abs(distance) > QUEUE ? state.target : state.current + Math.sign(distance)
-	return { to, direction: to > state.current ? "forward" : "back", quick: to !== state.target }
+	return {
+		to,
+		direction: to > state.current ? "forward" : "back",
+		behind: Math.abs(state.target - to)
+	}
 }
 
 /** Whether the queue has room for one more turn: a spin of the wheel is not stored up. */

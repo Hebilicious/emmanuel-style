@@ -31,7 +31,7 @@ import {
 } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useShell } from "../shell/shell.js"
-import { turn } from "../shell/turns.js"
+import { hurry, pageDuration, turn } from "../shell/turns.js"
 import { WHEEL_REST, wheelStep } from "../shell/wheel.js"
 import { SPREAD_QUERY } from "../shell/wide.js"
 import {
@@ -454,9 +454,13 @@ watch(
  * next (`nextTurn`): the neighbouring screen, riffled while more wait behind it, or
  * a far target in one turn.
  */
+/** How long the last turn of the run in progress took, or was hurried to. */
+let leafing = Number.POSITIVE_INFINITY
+
 const pump = async () => {
 	if (state.value.phase !== "resting") return
 	send({ type: "BEGIN" })
+	leafing = Number.POSITIVE_INFINITY
 	try {
 		for (
 			let next = nextTurn(state.value);
@@ -464,6 +468,12 @@ const pump = async () => {
 			next = nextTurn(state.value)
 		) {
 			const { to } = next
+			// Leafing keeps its speed: the pages after a quick one do not drag, and the
+			// last one is only a little slower, to land.
+			const duration = Math.round(
+				Math.min(pageDuration(next.behind), leafing * 1.15)
+			)
+			leafing = duration
 			await turn(
 				next.direction,
 				async () => {
@@ -471,7 +481,7 @@ const pump = async () => {
 					await nextTick()
 				},
 				"page",
-				next.quick
+				duration
 			)
 		}
 	} finally {
@@ -487,6 +497,14 @@ const go = (index: number) => {
 /** Turn by `delta` screens, counted from the screen already asked for. */
 const step = (delta: number) => {
 	send({ type: "STEP", delta, total: total.value })
+	// Asked for while a page is turning: that page gets out of the way sooner.
+	if (state.value.phase === "turning") {
+		const duration = pageDuration(
+			Math.abs(state.value.target - state.value.current)
+		)
+		hurry(duration)
+		leafing = Math.min(leafing, duration)
+	}
 	void pump()
 }
 

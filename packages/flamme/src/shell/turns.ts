@@ -60,7 +60,6 @@ export type TurnEvent =
 			readonly type: "START"
 			readonly kind: TurnKind
 			readonly direction: Direction | Zoom
-			readonly quick: boolean
 			readonly owner: object
 	  }
 	| { readonly type: "END"; readonly owner: object }
@@ -96,10 +95,24 @@ export const TURN_MS: Readonly<Record<TurnKind, number>> = {
 	zoom: 560,
 	theme: 900
 }
-/** A turn with more waiting behind it. */
-export const QUICK_MS = 300
+/**
+ * How long a page turn takes with this many more waiting behind it. A reader who
+ * spins the wheel or holds a key is leafing through, and the faster they ask the
+ * faster the pages go: each turn waiting shortens the one in front of it.
+ */
+const PAGE_MS = [TURN_MS.page, 380, 260, 200, 160, 135] as const
+export const pageDuration = (behind: number): number =>
+	PAGE_MS[Math.max(0, Math.min(behind, PAGE_MS.length - 1))] ?? TURN_MS.page
+
 /** A page is pulled over quickly and laid down gently. */
 export const TURN_EASE = [0.33, 0.06, 0.18, 1] as const
+/**
+ * A leaf of a spread turns through half a circle in two halves: it is lifted from
+ * the page to upright, picking up speed, and laid from upright onto the other
+ * page, losing it. The two curves meet at the same speed, so it is one movement.
+ */
+export const TURN_LIFT = [0.45, 0, 0.85, 0.7] as const
+export const TURN_LAND = [0.15, 0.3, 0.45, 1] as const
 
 /**
  * A CSS `cubic-bezier(x1, y1, x2, y2)` as a function of time, 0 to 1: the same
@@ -122,14 +135,17 @@ export const bezier = (x1: number, y1: number, x2: number, y2: number) => {
 	}
 }
 const pace = bezier(...TURN_EASE)
+const lift = bezier(...TURN_LIFT)
+const land = bezier(...TURN_LAND)
 
 /** The turn that is running, for whoever draws along with it (the press). */
 export interface TurnInfo {
 	readonly kind: TurnKind
 	readonly direction: Direction | Zoom
-	readonly quick: boolean
-	/** How long it lasts, in milliseconds. */
+	/** How long it lasts at its own pace, in milliseconds. */
 	readonly duration: number
+	/** How many times faster than that it is being played: more than one when hurried. */
+	rate: number
 	/**
 	 * `performance.now()` when the leaves started to move, or `null` while the new
 	 * page is still being laid out and nothing moves yet.
@@ -141,21 +157,23 @@ export interface TurnInfo {
 
 /** The keyframes that move a leaf (`styles/turns.css`): any of them tells the time. */
 const LEAF_KEYFRAMES = new Set([
-	"fold-away-left",
-	"fold-away-right",
-	"back-from-right",
-	"back-from-left",
-	"lay-from-left"
+	"lift-right",
+	"lift-left",
+	"land-left",
+	"land-right",
+	"swing-away",
+	"swing-over"
 ])
 
 /**
- * How far along the running turn is, 0 to 1, as the stylesheet's easing paces it.
+ * How much of the running turn's time has passed, 0 to 1.
  *
  * The browser starts the leaves a frame or more after it says the transition is
- * ready, so the time is read from its own animation of a leaf when there is one:
- * the shading the press draws is then on the fold, not near it.
+ * ready, and a hurried turn runs faster than its own pace, so the time is read from
+ * the browser's own animation of a leaf when there is one: what the press draws is
+ * then on the leaf, not near it.
  */
-export const turnProgress = (turn: TurnInfo, now: number): number => {
+const turnTime = (turn: TurnInfo, now: number): number => {
 	if (turn.at === null) return 0
 	if (turn.leaf === undefined || turn.leaf === null) {
 		turn.leaf =
@@ -167,10 +185,52 @@ export const turnProgress = (turn: TurnInfo, now: number): number => {
 				) ?? null
 	}
 	const time = turn.leaf?.currentTime
-	if (typeof time === "number") return pace(time / turn.duration)
-	// No leaf is moving yet: the fold has not started.
-	return turn.leaf === null && now - turn.at < 250 ? 0 : pace((now - turn.at) / turn.duration)
+	if (typeof time === "number") return Math.max(0, Math.min(time / turn.duration, 1))
+	// No leaf is moving yet: the turn has not started.
+	if (turn.leaf === null && now - turn.at < 250) return 0
+	return Math.max(0, Math.min((now - turn.at) / turn.duration, 1))
 }
+
+/** How far along the running turn is, 0 to 1, as the stylesheet's easing paces it. */
+export const turnProgress = (turn: TurnInfo, now: number): number => pace(turnTime(turn, now))
+
+/**
+ * The angle the turning leaf of a spread has come through, in degrees: 0 flat on
+ * the page it leaves, 90 upright over the spine, 180 flat on the page it lands on.
+ * The same two curves as the keyframes in `styles/turns.css`.
+ */
+export const leafAngle = (turn: TurnInfo, now: number): number => {
+	const time = turnTime(turn, now)
+	return time < 0.5 ? 90 * lift(time * 2) : 90 + 90 * land(time * 2 - 1)
+}
+
+/** The browser's animations of the transition that is running. */
+const transitionAnimations = (): Animation[] =>
+	document.getAnimations().filter((animation) => {
+		const effect = animation.effect
+		return (
+			effect instanceof KeyframeEffect &&
+			(effect.pseudoElement ?? "").startsWith("::view-transition")
+		)
+	})
+
+const applyRate = (turn: TurnInfo): void => {
+	for (const animation of transitionAnimations()) animation.playbackRate = turn.rate
+}
+
+/**
+ * Finish the running page turn in no more than `duration` milliseconds from its
+ * start to its end: the reader has asked for more pages while it runs. A turn is
+ * only ever hurried, never slowed back down.
+ */
+export const hurry = (duration: number): void => {
+	if (info === null || turning.state !== "page") return
+	const rate = info.duration / duration
+	if (rate <= info.rate) return
+	info.rate = rate
+	applyRate(info)
+}
+
 let info: TurnInfo | null = null
 export const currentTurn = (): TurnInfo | null => (turning.state === "idle" ? null : info)
 
@@ -181,17 +241,16 @@ const mark = (running: TurnInfo | null): void => {
 	if (running !== null) {
 		style.setProperty("--turn-duration", `${running.duration}ms`)
 		style.setProperty("--turn-ease", `cubic-bezier(${TURN_EASE.join(", ")})`)
+		style.setProperty("--leaf-lift", `cubic-bezier(${TURN_LIFT.join(", ")})`)
+		style.setProperty("--leaf-land", `cubic-bezier(${TURN_LAND.join(", ")})`)
 	}
 	if (running === null) {
 		delete data["turn"]
 		delete data["turnKind"]
-		delete data["turnQuick"]
 		return
 	}
 	data["turn"] = running.direction
 	data["turnKind"] = running.kind
-	if (running.quick) data["turnQuick"] = ""
-	else delete data["turnQuick"]
 }
 
 /**
@@ -204,8 +263,8 @@ export const turn = async (
 	direction: Direction | Zoom,
 	update: () => Promise<void> | void,
 	kind: TurnKind = "page",
-	/** Riffled: more turns are waiting behind this one, so it is quicker. */
-	quick = false
+	/** How long it takes, when not the usual time for its kind: a page leafed through is quicker. */
+	duration: number = TURN_MS[kind]
 ): Promise<void> => {
 	const doc = document as ViewTransitionDocument
 	if (doc.startViewTransition === undefined || reducedMotion()) {
@@ -216,19 +275,23 @@ export const turn = async (
 	const running: TurnInfo = {
 		kind,
 		direction,
-		quick,
-		duration: quick ? QUICK_MS : TURN_MS[kind],
+		duration,
+		rate: 1,
 		at: null
 	}
 	info = running
 	mark(info)
-	turning.send({ type: "START", kind, direction, quick, owner: token })
+	turning.send({ type: "START", kind, direction, owner: token })
 	const transition = doc.startViewTransition(update)
 	// The leaves start to move when the new page has been captured, not before.
 	// A transition overtaken by the next one rejects these; the page is updated either way.
 	transition.ready
 		.then(() => {
 			running.at = performance.now()
+			// The leaves' animations exist from the next frame, not yet when `ready` resolves.
+			requestAnimationFrame(() => {
+				if (running.rate !== 1 && info === running) applyRate(running)
+			})
 		})
 		.catch(() => undefined)
 	transition.updateCallbackDone.catch(() => undefined)

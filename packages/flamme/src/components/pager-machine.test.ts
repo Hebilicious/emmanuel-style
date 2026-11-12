@@ -24,7 +24,7 @@ describe("the pager", () => {
 
 	it("runs one turn for one step, then rests", () => {
 		let state = run([{ type: "STEP", delta: 1, total: 9 }, { type: "BEGIN" }], resting(0))
-		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward", quick: false })
+		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward", behind: 0 })
 		state = run([{ type: "LANDED", screen: 1 }], state)
 		expect(nextTurn(state)).toBeNull()
 		expect(run([{ type: "SETTLE" }], state)).toEqual({ phase: "resting", current: 1, target: 1 })
@@ -41,12 +41,12 @@ describe("the pager", () => {
 			resting(0)
 		)
 		expect(state.target).toBe(3)
-		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward", quick: true })
+		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward", behind: 2 })
 	})
 
 	it("reaches a far screen in one turn rather than riffling to it", () => {
 		const state = run([{ type: "ASK", screen: 8, total: 9 }], resting(0))
-		expect(nextTurn(state)).toEqual({ to: 8, direction: "forward", quick: false })
+		expect(nextTurn(state)).toEqual({ to: 8, direction: "forward", behind: 0 })
 	})
 
 	it("never asks for a screen that is not there", () => {
@@ -56,8 +56,8 @@ describe("the pager", () => {
 
 	it("has room for a few turns and no more", () => {
 		const ask = (delta: number) => run([{ type: "STEP", delta, total: 20 }], resting(0))
-		expect(hasRoom(ask(2))).toBe(true)
-		expect(hasRoom(ask(3))).toBe(false)
+		expect(hasRoom(ask(5))).toBe(true)
+		expect(hasRoom(ask(6))).toBe(false)
 	})
 
 	it("keeps turning through a layout redone under it, and ends on target", () => {
