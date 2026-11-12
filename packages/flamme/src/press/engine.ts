@@ -97,10 +97,10 @@ export interface PressFrame {
 		readonly forward: boolean
 		readonly progress: number
 		/**
-		 * The fold of the turning leaf: where it is across the screen, where the leaf's
-		 * free edge has got to, and whether the press paints the leaf's back.
+		 * The turning leaf: where its hinge is across the screen, where its
+		 * free edge is seen, and how far the leaf stands off the page (0 flat, 1 upright).
 		 */
-		readonly fold: { readonly x: number; readonly edge: number; readonly back: boolean } | null
+		readonly fold: { readonly x: number; readonly edge: number; readonly lift: number } | null
 	} | null
 }
 
@@ -484,7 +484,7 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 		u.uSweepOn.value = sweepOn
 		const fold = frame.turn?.fold ?? null
 		if (fold === null) u.uFold.value.z = 0
-		else u.uFold.value.set(fold.x, fold.edge, 1, fold.back ? 1 : 0)
+		else u.uFold.value.set(fold.x, fold.edge, 1, fold.lift)
 		u.uPaper.value.set(...frame.paper)
 
 		renderer.setScissorTest(false)
