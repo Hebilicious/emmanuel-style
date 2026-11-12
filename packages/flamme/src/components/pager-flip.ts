@@ -72,7 +72,7 @@ export interface Flipper {
 		fresh: Leaves,
 		release: (leaf: HTMLElement) => void
 	): void
-	/** Let every kept leaf go now: the layout changed, a View Transition is starting, the pager is leaving. */
+	/** Let every kept leaf go now: the layout changed, a View Transition is starting, the reader went elsewhere. */
 	snap(): void
 	/** How many turns are in the air. */
 	readonly flying: number
@@ -116,6 +116,12 @@ interface Flight {
 		readonly order: number
 	}
 }
+
+/** How far the eye is from the page, for the perspective of a turning leaf: a spread's, and a phone's. */
+export const leafDepth = (): { spread: number; single: number } => ({
+	spread: window.innerWidth * 1.9,
+	single: window.innerWidth * 5.2
+})
 
 export const createFlipper = (depth: () => { spread: number; single: number }): Flipper => {
 	let flights: Flight[] = []

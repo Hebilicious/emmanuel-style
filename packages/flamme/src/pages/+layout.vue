@@ -42,7 +42,7 @@ const keyboard = useKeyboard(shell, router, {
 	close: () => dock.value?.close()
 })
 usePointer(shell, router, useFootnotes(shell))
-useRouteTurns(shell, router)
+const routeTurn = useRouteTurns(shell, router)
 
 const index = useSiteIndex()
 
@@ -102,7 +102,15 @@ watch(
 
     <div class="Desk">
       <main id="main" class="Page" tabindex="-1">
-        <RouterView />
+        <!--
+          Keyed by the path, so another route is another page: the old one is handed
+          to the route's turn as it leaves, and kept until its leaf has turned.
+        -->
+        <RouterView #default="{ Component, route: shown }">
+          <Transition :css="false" @leave="routeTurn.leave">
+            <component :is="Component" :key="shown.path" />
+          </Transition>
+        </RouterView>
       </main>
       <Furniture />
     </div>
