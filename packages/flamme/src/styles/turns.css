@@ -245,6 +245,30 @@
 }
 
 /*
+ * A blank leaf of a longer turn (`components/pager-flip.ts`): between the page
+ * lifted and the page laid, when the reader has moved several pages at once. It is
+ * paper on both sides, with the faint lines of set type, and is placed and turned
+ * by the script.
+ */
+.TurnFiller {
+  position: absolute;
+  inset-block: 0;
+  box-sizing: border-box;
+  padding: 7% 9%;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0 0.95rem,
+      color-mix(in oklab, var(--ink) 8%, transparent) 0.95rem 1.05rem
+    ),
+    var(--paper);
+  background-clip: content-box, border-box;
+  outline: var(--spacing-size-hairline) solid var(--rule-strong);
+  outline-offset: calc(var(--spacing-size-hairline) * -1);
+  pointer-events: none;
+}
+
+/*
  * The nameplate, when the section changes: the old title is pulled up out of the
  * frame and the new one set in under it, the way a masthead changes between the
  * sections of a paper.

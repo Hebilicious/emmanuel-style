@@ -17,15 +17,17 @@
  * forward the old page swings up and away, going back the new one swings down
  * over the old.
  *
- * Scrolling makes a riffle of it. A step that comes while a leaf is still being
- * lifted joins that turn: the page it brings is the one that will be laid. A step
- * that comes later starts a leaf of its own behind it. So leaves follow each other
- * half a turn apart however fast the wheel is spun, and the last one down is
- * always the page the reader stopped on.
+ * How much turns says how far the reader went. One page is one leaf. A step that
+ * comes while that leaf is still being lifted joins the turn, and the turn grows
+ * with the pages it now covers: between the page lifted and the page laid, blank
+ * leaves follow each other across the spine, two for a move of two to four pages,
+ * five for a longer one, and one more for as long as the reader keeps scrolling.
+ * The page laid at the end is always the one the reader stopped on. A step that
+ * comes once that page is on its way down starts a turn of its own behind it.
  *
- * A step the other way, while one leaf is in the air, turns that leaf back, which
- * is what a hand does. With more than one in the air they are dropped and the new
- * turn starts clean.
+ * A step the other way, while a single leaf is in the air, turns that leaf back,
+ * which is what a hand does. Against a longer turn, the leaves in the air are
+ * dropped and the new turn starts clean.
  */
 
 import { reducedMotion } from "../shell/turns.js"
@@ -41,6 +43,14 @@ const RIFFLE_WITHIN = 320
 const LIFT = "cubic-bezier(0.45, 0, 0.85, 0.7)"
 const LAND = "cubic-bezier(0.15, 0.3, 0.45, 1)"
 const SWING = "cubic-bezier(0.33, 0.06, 0.18, 1)"
+const PASS = "cubic-bezier(0.4, 0.1, 0.6, 0.9)"
+/** The time between two leaves of a longer turn. */
+const STAGGER = 150
+/** The blank leaves between the page lifted and the page laid: for two to four pages, and for more. */
+const SOME = 2
+const MANY = 5
+/** The most a turn carries, however long the reader keeps scrolling. */
+const MOST = 9
 
 /** The leaves of one screen. A spread has a left and a right, a phone a single one. */
 export interface Leaves {
@@ -56,6 +66,8 @@ export interface Flipper {
 	 */
 	step(
 		direction: FlipDirection,
+		/** How many pages the reader moved. */
+		pages: number,
 		old: Leaves,
 		fresh: Leaves,
 		release: (leaf: HTMLElement) => void
@@ -84,6 +96,25 @@ interface Flight {
 	readonly kept: HTMLElement[]
 	turnedBack: boolean
 	done: boolean
+	/** How many pages it covers, and when the last of them was asked for. */
+	pages: number
+	lastStepAt: number
+	/** Whether it has grown past one leaf: blank leaves pass, and the page is laid when they have. */
+	multi: boolean
+	/** Whether the page it lays is on its way down. Until then a step can still join it. */
+	landingStarted: boolean
+	readonly fillers: HTMLElement[]
+	readonly fillerMoves: Animation[]
+	timer: number
+	/** Where its leaves are hinged and how they lean, for the blank ones. */
+	readonly shape: {
+		readonly single: boolean
+		readonly forward: boolean
+		readonly eye: number
+		readonly left: string
+		readonly width: string
+		readonly order: number
+	}
 }
 
 export const createFlipper = (depth: () => { spread: number; single: number }): Flipper => {
@@ -114,12 +145,16 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 		if (leaf === null || held.has(leaf)) return
 		leaf.style.zIndex = ""
 		leaf.style.transformOrigin = ""
+		leaf.style.transform = ""
 	}
 
 	const end = (flight: Flight) => {
 		flight.done = true
+		window.clearTimeout(flight.timer)
 		flight.lift?.cancel()
 		flight.land?.cancel()
+		for (const move of flight.fillerMoves) move.cancel()
+		for (const filler of flight.fillers) filler.remove()
 		letGo(flight.lifting)
 		for (const leaf of flight.kept) letGo(leaf)
 		// A leaf that was turned back was laid by nothing: the page under it is the one showing.
@@ -135,7 +170,8 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 
 	/** A turn is over when neither of its leaves is still moving. */
 	const settle = (flight: Flight) => {
-		if (flight.done) return
+		// A longer turn is over when its page has been laid, not when its first leaf is up.
+		if (flight.done || (flight.multi && !flight.landingStarted)) return
 		const moving = [flight.lift, flight.land].some(
 			(animation) => animation !== null && animation.playState === "running"
 		)
@@ -202,7 +238,122 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 		return away ? [{ ...flat, easing: SWING }, up] : [{ ...up, easing: SWING }, flat]
 	}
 
-	const step: Flipper["step"] = (direction, old, fresh, release) => {
+	/** Keep the page that will be laid out of sight, edge-on at its hinge, until its turn comes. */
+	const hide = (flight: Flight, leaf: HTMLElement) => {
+		const { single, forward, eye, order: at } = flight.shape
+		leaf.style.transformOrigin = single || !forward ? "left center" : "right center"
+		leaf.style.zIndex = String(300 + at)
+		leaf.style.transform = single
+			? `perspective(${eye}px) rotateY(-96deg)`
+			: `perspective(${eye}px) rotateY(${forward ? 90 : -90}deg)`
+	}
+
+	/** A blank leaf, following the ones before it across the spine (or, on a phone, off or onto the page). */
+	const pass = (flight: Flight) => {
+		const { single, forward, eye, left, width } = flight.shape
+		const parent = (flight.lifting ?? flight.landing ?? flight.kept[0])?.parentElement
+		if (parent == null) return
+		const at = flight.fillers.length + 1
+		const filler = document.createElement("div")
+		filler.className = "TurnFiller"
+		filler.style.left = left
+		filler.style.width = width
+		filler.style.transformOrigin = single || forward ? "left center" : "right center"
+		parent.append(filler)
+		flight.fillers.push(filler)
+		const timing = { duration: flight.ms, fill: "both" as const }
+		const turn = (degrees: number) => `perspective(${eye}px) rotateY(${degrees}deg)`
+		const lit = { filter: "brightness(1)" }
+		const dimmed = { filter: `brightness(${brightness()})` }
+		if (single) {
+			// Off the page going forward, down onto it going back.
+			const frames = forward
+				? [
+						{ transform: turn(0), ...lit, easing: SWING },
+						{ transform: turn(-96), ...dimmed }
+					]
+				: [
+						{ transform: turn(-96), ...dimmed, easing: SWING },
+						{ transform: turn(0), ...lit }
+					]
+			filler.style.zIndex = String(forward ? 800 - at : 100 + at)
+			flight.fillerMoves.push(filler.animate(frames, timing))
+			return
+		}
+		const lean = forward ? -1 : 1
+		flight.fillerMoves.push(
+			filler.animate(
+				[
+					{ transform: turn(0), ...lit, easing: PASS },
+					{ transform: turn(lean * 90), ...dimmed, offset: 0.5, easing: PASS },
+					{ transform: turn(lean * 180), ...lit }
+				],
+				timing
+			),
+			// Under the leaves before it where it lifts, over them where it lands: it changes sides edge-on.
+			filler.animate(
+				[
+					{ zIndex: 800 - at },
+					{ zIndex: 800 - at, offset: 0.5 },
+					{ zIndex: 100 + at, offset: 0.5 },
+					{ zIndex: 100 + at }
+				],
+				timing
+			)
+		)
+	}
+
+	/** Lay the page: the blank leaves have passed, and the reader has stopped. */
+	const lay = (flight: Flight) => {
+		flight.landingStarted = true
+		const { single, forward, eye, order: at } = flight.shape
+		const landing = flight.landing
+		if (landing === null) {
+			// A phone going forward lays nothing: the turn is over when the last leaf is off the page.
+			flight.timer = window.setTimeout(() => end(flight), flight.ms)
+			return
+		}
+		landing.style.transform = ""
+		if (single) {
+			flight.land = animate(flight, landing, swung(eye, false), "left", 300 + at)
+			return
+		}
+		flight.land = animate(
+			flight,
+			landing,
+			laid(forward ? 1 : -1, eye),
+			forward ? "right" : "left",
+			300 + at
+		)
+		// The first half of those frames is the wait while the other page lifts: that is done.
+		flight.land.currentTime = flight.ms / 2
+	}
+
+	/** Every `STAGGER`: one more blank leaf while the turn is short of its length or the reader scrolls on, then the page. */
+	const tick = (flight: Flight) => {
+		if (flight.done || flight.landingStarted) return
+		const wanted = flight.pages > 4 ? MANY : flight.pages > 1 ? SOME : 0
+		const scrolling = performance.now() - flight.lastStepAt < STAGGER
+		if (flight.fillers.length < MOST && (flight.fillers.length < wanted || scrolling)) {
+			pass(flight)
+			flight.timer = window.setTimeout(() => tick(flight), STAGGER)
+			return
+		}
+		lay(flight)
+	}
+
+	/** A turn that now covers more than one page: its page waits, out of sight, for the leaves between. */
+	const grow = (flight: Flight) => {
+		if (flight.landing !== null) hide(flight, flight.landing)
+		if (flight.multi) return
+		flight.multi = true
+		flight.land?.cancel()
+		flight.land = null
+		const elapsed = performance.now() - flight.startedAt
+		flight.timer = window.setTimeout(() => tick(flight), Math.max(0, flight.ms / 4 - elapsed))
+	}
+
+	const step: Flipper["step"] = (direction, pages, old, fresh, release) => {
 		const leaving = [old.left, old.right, old.single].filter(
 			(leaf): leaf is HTMLElement => leaf !== undefined
 		)
@@ -215,7 +366,7 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 		const last = flying.at(-1)
 
 		if (last !== undefined && last.heading !== direction) {
-			if (flying.length === 1) {
+			if (flying.length === 1 && !last.multi) {
 				/*
 				 * One leaf in the air, and the reader has changed their mind: it is turned
 				 * back. The first time, the page that was showing is kept under it until it
@@ -249,17 +400,40 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 		const current = flights.filter((flight) => !flight.done).at(-1)
 		const ms =
 			now - (current?.startedAt ?? Number.NEGATIVE_INFINITY) < RIFFLE_WITHIN ? RIFFLE_MS : FLIP_MS
+		// Leaves are stacked by the order they left in; with none in the air it starts again.
+		if (current === undefined) order = 0
 		order += 1
 		const { spread, single } = depth()
+		const fresh0 = {
+			turnedBack: false,
+			done: false,
+			pages,
+			lastStepAt: now,
+			multi: false,
+			landingStarted: false,
+			fillers: [],
+			fillerMoves: [],
+			timer: 0
+		}
 
 		/* ------------------------------------------------------------- a phone */
 
 		if (fresh.single !== undefined && old.single !== undefined) {
 			if (forward) {
-				// A leaf is still on its way up: this page goes without one, under it.
-				if (current !== undefined && now - current.startedAt < current.ms / 3)
-					return letGo(old.single)
+				// A leaf is still on its way up: this page goes without one, under it, and the turn grows.
+				if (
+					current !== undefined &&
+					!current.landingStarted &&
+					(current.multi || now - current.startedAt < current.ms / 2)
+				) {
+					letGo(old.single)
+					current.pages += pages
+					current.lastStepAt = now
+					grow(current)
+					return
+				}
 				const flight: Flight = {
+					...fresh0,
 					type: direction,
 					heading: direction,
 					ms,
@@ -269,26 +443,38 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 					landing: null,
 					land: null,
 					kept: [],
-					turnedBack: false,
-					done: false
+					shape: {
+						single: true,
+						forward,
+						eye: single,
+						left: old.single.style.left,
+						width: old.single.style.width,
+						order
+					}
 				}
 				flights.push(flight)
-				flight.lift = animate(flight, old.single, swung(single, true), "left", 1000 - order)
+				flight.lift = animate(flight, old.single, swung(single, true), "left", 990 - order)
+				if (pages > 1) grow(flight)
 				return
 			}
-			if (current !== undefined && current.landing === old.single && current.land !== null) {
-				if (now - current.startedAt < current.ms / 3) {
-					// The page coming down has barely started: this one comes down in its place.
-					const at = current.land.currentTime
-					current.land.cancel()
-					letGo(old.single)
-					current.landing = fresh.single
-					current.land = animate(current, fresh.single, swung(single, false), "left", order)
-					current.land.currentTime = at
-					return
-				}
+			if (
+				current !== undefined &&
+				current.landing === old.single &&
+				!current.landingStarted &&
+				(current.multi || now - current.startedAt < current.ms / 3)
+			) {
+				// The page coming down has barely started: this one will come down in its place, after more leaves.
+				current.land?.cancel()
+				current.land = null
+				letGo(old.single)
+				current.landing = fresh.single
+				current.pages += pages
+				current.lastStepAt = now
+				grow(current)
+				return
 			}
 			const flight: Flight = {
+				...fresh0,
 				type: direction,
 				heading: direction,
 				ms,
@@ -299,12 +485,19 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 				land: null,
 				// The page it comes down on: the old one, which may itself still be coming down.
 				kept: [old.single],
-				turnedBack: false,
-				done: false
+				shape: {
+					single: true,
+					forward,
+					eye: single,
+					left: fresh.single.style.left,
+					width: fresh.single.style.width,
+					order
+				}
 			}
 			flights.push(flight)
 			if (!flights.some((other) => other.landing === old.single)) old.single.style.zIndex = "1"
-			flight.land = animate(flight, fresh.single, swung(single, false), "left", order)
+			if (pages > 1) grow(flight)
+			else flight.land = animate(flight, fresh.single, swung(single, false), "left", 300 + order)
 			return
 		}
 
@@ -321,24 +514,27 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 		if (
 			current !== undefined &&
 			current.landing === under &&
-			current.land !== null &&
-			now - current.startedAt < current.ms / 2
+			!current.landingStarted &&
+			(current.multi || now - current.startedAt < current.ms / 2)
 		) {
 			/*
-			 * The last leaf is still being lifted, and the page it was going to lay has not
-			 * shown yet: this step joins that turn, and the page it brings is laid instead.
+			 * The page the last turn was going to lay has not shown yet: this step joins
+			 * that turn. The page it brings is the one that will be laid, and the turn
+			 * grows to the length of the move it now covers.
 			 */
-			const at = current.land.currentTime
-			current.land.cancel()
+			current.land?.cancel()
+			current.land = null
 			letGo(under)
 			letGo(lifting)
 			current.landing = landing
-			current.land = animate(current, landing, laid(-sign, spread), lands, order)
-			current.land.currentTime = at
+			current.pages += pages
+			current.lastStepAt = now
+			grow(current)
 			return
 		}
 
 		const flight: Flight = {
+			...fresh0,
 			type: direction,
 			heading: direction,
 			ms,
@@ -349,14 +545,21 @@ export const createFlipper = (depth: () => { spread: number; single: number }): 
 			land: null,
 			// What the laid page lands on: the old page, which may itself still be on its way down.
 			kept: [under],
-			turnedBack: false,
-			done: false
+			shape: {
+				single: false,
+				forward,
+				eye: spread,
+				left: lifting.style.left,
+				width: lifting.style.width,
+				order
+			}
 		}
 		flights.push(flight)
 		if (!flights.some((other) => other.landing === under)) under.style.zIndex = "1"
 		// On the side leaves lift from, the older is on top; on the side they land, the newer.
-		flight.lift = animate(flight, lifting, lifted(sign, spread), hinge, 1000 - order)
-		flight.land = animate(flight, landing, laid(-sign, spread), lands, order + 1)
+		flight.lift = animate(flight, lifting, lifted(sign, spread), hinge, 990 - order)
+		if (pages > 1) grow(flight)
+		else flight.land = animate(flight, landing, laid(-sign, spread), lands, 300 + order)
 	}
 
 	return {
