@@ -29,8 +29,12 @@ export interface Turner {
 export type Theme = "light" | "dark"
 
 export interface Shell {
-	/** The screen the pager is on, counted from one, or `null` with no pager. */
-	position: { current: number; total: number } | null
+	/**
+	 * The screen the pager is on, counted from one, or `null` with no pager.
+	 * `total` grows while the pager is still counting its pages (`counted` false):
+	 * what shows it waits for the count rather than counting up in front of the reader.
+	 */
+	position: { current: number; total: number; counted: boolean } | null
 	/** What `n` and `p` step on this route: pages, or the front page's quotes. */
 	turnLabel: "pages" | "quotes"
 	/** The name of the element the cursor is on, for the status row. */

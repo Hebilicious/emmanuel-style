@@ -142,7 +142,9 @@ export const useKeyboard = (
 		// The pages under an open dialog stay where they are.
 		if (turner === null || position === null || shell.dialog !== null) return
 		const forward = heading === "down" || heading === "right"
-		if (forward ? position.current >= position.total : position.current <= 1) return
+		// While the pages are still being counted there may be more ahead: the pager waits for them.
+		const last = position.counted && position.current >= position.total
+		if (forward ? last : position.current <= 1) return
 		const y = from?.box.top ?? 0
 		landing =
 			heading === "right"

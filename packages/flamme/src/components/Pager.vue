@@ -15,7 +15,7 @@
  * wide as the spread, folds at the spine like a broadsheet; a column that is
  * wholly on the other leaf is left empty, so a page is not drawn twice. That is
  * what lets a turn lift one leaf over the other (`pager-flip.ts` inside a
- * section, `shell/turns.ts` between sections). On a phone there is one leaf.
+ * section, `shell/route-turns.ts` between sections). On a phone there is one leaf.
  *
  * Where the reader is lives in the URL: `?page=3` is the third screen, so a reload,
  * a shared link or the back button returns to the same page.
@@ -46,7 +46,7 @@ import {
 	type Slice
 } from "../utils/paginate.js"
 import { MIN_FIT, type PagerItem, type PagerNote } from "./pager.js"
-import { createFlipper } from "./pager-flip.js"
+import { createFlipper, leafDepth } from "./pager-flip.js"
 import {
 	PAGER_START,
 	type PagerEvent,
@@ -872,10 +872,7 @@ watch(
  */
 const drawn = ref(0)
 type LeafName = "left" | "right" | "single"
-const flipper = createFlipper(() => ({
-	spread: window.innerWidth * 1.9,
-	single: window.innerWidth * 5.2
-}))
+const flipper = createFlipper(leafDepth)
 
 /** The change of page being drawn: its direction, and the leaves that left and came. */
 let change: {
@@ -1001,10 +998,14 @@ const turner = {
 }
 
 watch(
-	[current, total, ready],
+	[current, total, ready, complete],
 	() => {
 		if (!ready.value) return
-		shell.position = { current: current.value + 1, total: total.value }
+		shell.position = {
+			current: current.value + 1,
+			total: total.value,
+			counted: complete.value
+		}
 		emit("layout", total.value)
 	},
 	{ immediate: true }

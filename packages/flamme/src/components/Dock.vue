@@ -69,12 +69,13 @@ defineExpose({
           </button>
           <span class="Count">
             <span class="Faint Word">page</span>
-            {{ pages!.current }}<span class="Faint">/</span>{{ pages!.total }}
+            {{ pages!.current }}<span class="Faint">/</span><span
+              class="Total">{{ pages!.counted ? pages!.total : "…" }}</span>
           </span>
           <button
             type="button"
             class="Turn"
-            :disabled="pages!.current >= pages!.total"
+            :disabled="pages!.counted && pages!.current >= pages!.total"
             aria-label="Next page"
             aria-keyshortcuts="n"
             @click="shell.turner?.turn(1)">
@@ -178,6 +179,13 @@ defineExpose({
 .Count {
   min-width: 9ch;
   text-align: center;
+}
+
+/* The total takes the room of two figures while it is still "…", so the count does not shift when it arrives. */
+.Total {
+  display: inline-block;
+  min-width: 2ch;
+  text-align: start;
 }
 
 .Turn {
