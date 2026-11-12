@@ -149,10 +149,12 @@ const shortDate = computed(() =>
   text-align: center;
   text-transform: uppercase;
   white-space: nowrap;
-  /* The nameplate rises when its section is set, then breathes: the sheet is live. */
-  animation:
-    plate-rise 1400ms cubic-bezier(0.2, 0.7, 0.2, 1) both,
-    plate-breathe 9s ease-in-out 1400ms infinite alternate;
+  /*
+   * The nameplate rises when its section is set, and then is still. It used to
+   * breathe for ever after, which set the colour face again on every frame and
+   * kept the whole page working while nobody touched it.
+   */
+  animation: plate-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
 @keyframes plate-rise {
@@ -163,17 +165,6 @@ const shortDate = computed(() =>
   to {
     --depth: 120;
     --glint: 14;
-  }
-}
-
-@keyframes plate-breathe {
-  from {
-    --depth: 120;
-    --glint: 14;
-  }
-  to {
-    --depth: 60;
-    --glint: 22;
   }
 }
 

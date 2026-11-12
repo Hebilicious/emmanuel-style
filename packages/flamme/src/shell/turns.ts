@@ -90,10 +90,10 @@ export const turning: Machine<TurnState, TurnEvent> = createMachine<TurnState, T
  * leaves the browser is moving.
  */
 export const TURN_MS: Readonly<Record<TurnKind, number>> = {
-	page: 640,
-	route: 780,
-	zoom: 560,
-	theme: 900
+	page: 400,
+	route: 460,
+	zoom: 340,
+	theme: 560
 }
 /** A page is pulled over quickly and laid down gently. */
 export const TURN_EASE = [0.33, 0.06, 0.18, 1] as const

@@ -30,6 +30,11 @@ export interface PagerItem {
 	 * a role of the ledger, the Library's front page. Implies `atomic`.
 	 */
 	readonly fit?: boolean
+	/**
+	 * A name shared by `fit` blocks that are read together: they are all set at the
+	 * smallest scale any of them needs, so facing pages are set in one size.
+	 */
+	readonly fitWith?: string
 }
 
 /** The smallest a `fit` block is set before it is allowed to split after all. */

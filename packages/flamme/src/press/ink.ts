@@ -160,14 +160,14 @@ fn place(@builtin(vertex_index) corner: u32, @builtin(instance_index) index: u32
 	dot.position = vec4f(at.x / frame.size.x * 2.0 - 1.0, 1.0 - at.y / frame.size.y * 2.0, 0.0, 1.0);
 	dot.corner = CORNERS[corner];
 	// Still ink is faint enough to read through; it is the moving ink that shows.
-	dot.alpha = (0.025 + 0.07 * seed) * (1.0 + quick * 3.2) * mix(0.6, 1.0, frame.ink.w);
+	dot.alpha = (0.025 + 0.07 * seed) * (1.0 + quick * 1.6) * mix(0.6, 1.0, frame.ink.w);
 	dot.tint = clamp(step(0.74, hash(index * 13u)) + quick * 0.5, 0.0, 1.0);
 	return dot;
 }
 
 @fragment
 fn colour(dot: Dot) -> @location(0) vec4f {
-	let alpha = smoothstep(1.0, 0.25, length(dot.corner)) * min(dot.alpha, 0.85);
+	let alpha = smoothstep(1.0, 0.25, length(dot.corner)) * min(dot.alpha, 0.4);
 	let ink = mix(frame.ink.rgb, frame.accent.rgb, dot.tint);
 	return vec4f(ink * alpha, alpha);
 }
@@ -283,7 +283,7 @@ export const createInk = async (canvas: HTMLCanvasElement): Promise<Ink | null> 
 	const draw = (frame: PressFrame, time: number) => {
 		const dt = Math.min(0.05, last === 0 ? 0.016 : time - last)
 		last = time
-		const dpr = Math.min(window.devicePixelRatio || 1, 1.75)
+		const dpr = Math.min(window.devicePixelRatio || 1, 1)
 		const wanted = `${frame.width}x${frame.height}@${dpr}`
 		if (wanted !== size) {
 			size = wanted

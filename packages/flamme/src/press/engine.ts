@@ -431,7 +431,8 @@ export const createPress = (canvas: HTMLCanvasElement): Press | null => {
 		const dt = Math.min(0.05, last === 0 ? 0.016 : time - last)
 		last = time
 
-		const dpr = Math.min(window.devicePixelRatio || 1, 1.75)
+		// The sheet is soft light and grain: more pixels than this cost a laptop and show nothing.
+		const dpr = Math.min(window.devicePixelRatio || 1, 1.25)
 		const wanted = `${frame.width}x${frame.height}@${dpr}`
 		if (wanted !== size) {
 			size = wanted
