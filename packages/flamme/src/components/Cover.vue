@@ -1027,32 +1027,17 @@ const boxStroke = (kind: string | undefined) =>
 }
 
 /*
- * Lines are drawn in when the plate arrives: each has a length of 1 (`pathLength`),
- * so a dash of 1 offset by 1 hides it and the offset running to 0 draws it. The
- * arrival is a transition from `@starting-style`, so it runs once, when the page
- * the plate is on is set. The cursor landing on the card draws them again.
+ * Each line has a length of 1 (`pathLength`), so a dash of 1 offset by 1 hides it
+ * and the offset running to 0 draws it. The cursor landing on the card draws them.
+ *
+ * They used to be drawn in whenever a plate arrived on a page as well. A page of
+ * the Library has six plates and is drawn on two leaves, so every page change set
+ * some hundreds of strokes animating for over a second, restyled and repainted on
+ * every frame of it: the cost of turning a page was mostly this.
  */
 .Line {
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
-  transition: stroke-dashoffset 1100ms cubic-bezier(0.3, 0.6, 0.2, 1);
-  transition-delay: calc(120ms + var(--order, 0) * 45ms);
-}
-
-.Wash,
-.Dot {
-  transition: opacity 700ms linear 500ms;
-}
-
-@starting-style {
-  .Line {
-    stroke-dashoffset: 1;
-  }
-
-  .Wash,
-  .Dot {
-    opacity: 0;
-  }
 }
 
 :global([data-cursor="true"]) .Line {

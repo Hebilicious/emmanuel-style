@@ -190,10 +190,57 @@ const turnOf = (now: number, pane: Box | null): PressFrame["turn"] => {
 	}
 }
 
+/*
+ * Where the pager is. Asking an element for its box makes the browser bring the
+ * whole page's style and layout up to date there and then, and this is asked on
+ * every frame; while anything on the page was changing, that was several
+ * milliseconds a frame. The pager only moves when the window is resized or the
+ * route changes, so its box is read a few times a second at most, and at once
+ * after a resize.
+ */
+const PANE_EVERY = 400
+let paneCache: Box | null = null
+let paneAt = Number.NEGATIVE_INFINITY
+const paneBox = (now: number): Box | null => {
+	if (now - paneAt < PANE_EVERY) return paneCache
+	paneAt = now
+	const pager = document.querySelector<HTMLElement>(".Page .Pager")
+	paneCache = pager === null ? null : boxOf(pager.getBoundingClientRect())
+	return paneCache
+}
+
+/*
+ * The same goes for the reading cursor, the portrait and the deck: they move when
+ * the reader does something, not sixty times a second, and the press eases toward
+ * where they are, so they are looked for ten times a second.
+ */
+const BOXES_EVERY = 100
+let boxes: Pick<PressFrame, "lamp" | "relief" | "deck"> = {
+	lamp: null,
+	relief: null,
+	deck: null
+}
+let boxesAt = Number.NEGATIVE_INFINITY
+const pageBoxes = (now: number) => {
+	if (now - boxesAt < BOXES_EVERY) return boxes
+	boxesAt = now
+	boxes = {
+		// A touch screen has no reading cursor to light.
+		lamp: touch.matches ? null : boxOf(cursorBox()),
+		relief: reliefOf(),
+		deck: deckOfPage()
+	}
+	return boxes
+}
+const onResize = () => {
+	paneAt = Number.NEGATIVE_INFINITY
+	boxesAt = Number.NEGATIVE_INFINITY
+}
+
 const measure = (now: number): PressFrame => {
 	readColours()
-	const pager = document.querySelector<HTMLElement>(".Page .Pager")
-	const pane = pager === null ? null : boxOf(pager.getBoundingClientRect())
+	const pane = paneBox(now)
+	const page = pageBoxes(now)
 	return {
 		width: window.innerWidth,
 		height: window.innerHeight,
@@ -203,11 +250,11 @@ const measure = (now: number): PressFrame => {
 		pointer:
 			pointer.over && shell.mouse ? { x: pointer.x, y: pointer.y } : null,
 		// A touch screen has no reading cursor to light.
-		lamp: touch.matches ? null : boxOf(cursorBox()),
+		lamp: page.lamp,
 		pane,
 		paper,
-		relief: reliefOf(),
-		deck: deckOfPage(),
+		relief: page.relief,
+		deck: page.deck,
 		turn: turnOf(now, pane)
 	}
 }
@@ -280,6 +327,7 @@ const start = async () => {
 		.getContext("2d", { willReadFrequently: true })
 	document.documentElement.dataset["press"] = ""
 	window.addEventListener("pointermove", onPointerMove, { passive: true })
+	window.addEventListener("resize", onResize, { passive: true })
 	document.documentElement.addEventListener("pointerleave", onPointerLeave)
 	startedAt = performance.now()
 	frame = requestAnimationFrame(tick)
@@ -311,6 +359,7 @@ onBeforeUnmount(() => {
 	stopped = true
 	cancelAnimationFrame(frame)
 	window.removeEventListener("pointermove", onPointerMove)
+	window.removeEventListener("resize", onResize)
 	document.documentElement.removeEventListener("pointerleave", onPointerLeave)
 	delete document.documentElement.dataset["press"]
 	delete document.documentElement.dataset["reliefShown"]

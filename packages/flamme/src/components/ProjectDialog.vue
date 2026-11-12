@@ -127,7 +127,7 @@ watch(
 /*
  * The dialog says when it has drawn the project (the zoom into it waits for that),
  * and the cursor goes into it, to its first link; when it closes, the cursor goes
- * back to the card it came from.
+ * back to the card it came from, if that card is on the page.
  */
 watch(
 	() => [name.value, project.value?.name ?? null] as const,
@@ -136,8 +136,10 @@ watch(
 		if (wanted === null) {
 			shell.projectShown = null
 			const left = previousValue?.[0] ?? null
-			const card = left === null ? null : cardOf(left)
-			if (card) shell.focus = placeCursor(card)
+			// Back to the card it came from; or, when that card is on another page (the
+			// reader moved on to the next project), to where this page starts.
+			const back = (left === null ? null : cardOf(left)) ?? homeRow(rows())
+			if (back) shell.focus = placeCursor(back)
 			return
 		}
 		if (drawn !== wanted) return

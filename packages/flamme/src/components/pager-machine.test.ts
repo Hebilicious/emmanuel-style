@@ -1,12 +1,5 @@
 import { describe, expect, it } from "vitest"
-import {
-	scrolling,
-	nextTurn,
-	PAGER_START,
-	type PagerEvent,
-	type PagerState,
-	pagerStep
-} from "./pager-machine.js"
+import { PAGER_START, type PagerEvent, type PagerState, pagerStep } from "./pager-machine.js"
 
 const run = (events: readonly PagerEvent[], from: PagerState = PAGER_START): PagerState =>
 	events.reduce(pagerStep, from)
@@ -14,68 +7,41 @@ const run = (events: readonly PagerEvent[], from: PagerState = PAGER_START): Pag
 const resting = (screen: number): PagerState => run([{ type: "LAID_OUT", screen }])
 
 describe("the pager", () => {
-	it("ignores a turn asked for before the layout", () => {
+	it("ignores a move asked for before the layout", () => {
 		expect(run([{ type: "STEP", delta: 1, total: 9 }])).toEqual(PAGER_START)
+		expect(run([{ type: "ASK", screen: 4, total: 9 }])).toEqual(PAGER_START)
 	})
 
 	it("opens on the screen the layout names", () => {
-		expect(resting(2)).toEqual({ phase: "resting", current: 2, target: 2 })
+		expect(resting(2)).toEqual({ phase: "resting", current: 2 })
 	})
 
-	it("runs one turn for one step, then rests", () => {
-		let state = run([{ type: "STEP", delta: 1, total: 9 }, { type: "BEGIN" }], resting(0))
-		expect(nextTurn(state)).toEqual({ to: 1, direction: "forward" })
-		state = run([{ type: "LANDED", screen: 1 }], state)
-		expect(nextTurn(state)).toBeNull()
-		expect(run([{ type: "SETTLE" }], state)).toEqual({ phase: "resting", current: 1, target: 1 })
+	it("shows the screen asked for in the same step as the ask", () => {
+		expect(run([{ type: "STEP", delta: 1, total: 9 }], resting(0)).current).toBe(1)
+		expect(run([{ type: "ASK", screen: 8, total: 9 }], resting(0)).current).toBe(8)
 	})
 
-	it("counts steps asked during a turn from the screen already asked for", () => {
-		const state = run(
-			[
-				{ type: "STEP", delta: 1, total: 9 },
-				{ type: "BEGIN" },
-				{ type: "STEP", delta: 1, total: 9 },
-				{ type: "STEP", delta: 1, total: 9 }
-			],
-			resting(0)
+	it("follows a spin of the wheel step for step, with nothing queued", () => {
+		const spin = Array.from({ length: 30 }, () => ({ type: "STEP", delta: 1, total: 40 }) as const)
+		expect(run(spin, resting(3))).toEqual({ phase: "resting", current: 33 })
+	})
+
+	it("goes back and forth without drifting", () => {
+		const events = Array.from(
+			{ length: 21 },
+			(_, index) => ({ type: "STEP", delta: index % 2 === 0 ? 1 : -1, total: 9 }) as const
 		)
-		expect(state.target).toBe(3)
+		expect(run(events, resting(4)).current).toBe(5)
 	})
 
-	it("reaches a far screen in one turn", () => {
-		const state = run([{ type: "ASK", screen: 8, total: 9 }], resting(0))
-		expect(nextTurn(state)).toEqual({ to: 8, direction: "forward" })
+	it("stops at the first and the last screen", () => {
+		expect(run([{ type: "STEP", delta: -3, total: 9 }], resting(1)).current).toBe(0)
+		expect(run([{ type: "STEP", delta: 30, total: 9 }], resting(1)).current).toBe(8)
+		expect(run([{ type: "ASK", screen: 99, total: 9 }], resting(0)).current).toBe(8)
 	})
 
-	it("never asks for a screen that is not there", () => {
-		expect(run([{ type: "STEP", delta: -1, total: 9 }], resting(0)).target).toBe(0)
-		expect(run([{ type: "ASK", screen: 99, total: 9 }], resting(0)).target).toBe(8)
-	})
-
-	it("takes an ask as scrolling when a leaf is in the air or the last ask was a moment ago", () => {
-		expect(scrolling(resting(0), 400)).toBe(false)
-		expect(scrolling(resting(0), 40)).toBe(true)
-		const turning = run([{ type: "STEP", delta: 1, total: 20 }, { type: "BEGIN" }], resting(0))
-		expect(scrolling(turning, 400)).toBe(true)
-	})
-
-	it("a jump shows the screen asked for at once", () => {
-		const state = run([{ type: "STEP", delta: 5, total: 20 }, { type: "JUMP" }], resting(2))
-		expect(state.current).toBe(7)
-		expect(nextTurn(state)).toBeNull()
-	})
-
-	it("keeps turning through a layout redone under it, and ends on target", () => {
-		const state = run(
-			[{ type: "STEP", delta: 2, total: 9 }, { type: "BEGIN" }, { type: "LAID_OUT", screen: 4 }],
-			resting(0)
-		)
-		expect(state).toEqual({ phase: "turning", current: 4, target: 4 })
-		expect(nextTurn(state)).toBeNull()
-	})
-
-	it("starts over when the blocks change", () => {
-		expect(run([{ type: "RESET" }], resting(5))).toEqual(PAGER_START)
+	it("keeps the reader's place when the layout is redone, and starts over when the blocks change", () => {
+		expect(run([{ type: "LAID_OUT", screen: 5 }], resting(2)).current).toBe(5)
+		expect(run([{ type: "RESET" }], resting(2))).toEqual(PAGER_START)
 	})
 })

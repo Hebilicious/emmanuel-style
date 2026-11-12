@@ -1,110 +1,97 @@
 /**
- * The wheel, as a machine: which of its events turn a page.
+ * The wheel: how far it has been turned, in pages.
  *
- * A mouse wheel sends one event per notch, each the same large step; every notch
- * turns a page. A trackpad sends a stream: the flick itself, then its momentum,
- * small deltas that die away for a second or more. The stream is one gesture while
- * it has no pause longer than `GESTURE_GAP` and keeps its direction.
+ * A wheel moves the reader through the pages the way it moves a reader down an
+ * ordinary page: by how far it is turned, at once, however fast. Nothing here
+ * knows about animation, and nothing here waits.
  *
- *   rest       nothing is happening; the next event starts a gesture
- *   notching   a mouse wheel: each notch turns a page
- *   gathering  a trackpad stream that has not travelled `WHEEL_START` pixels yet
- *   flicking   the stream has turned its page and the flick behind it is still
- *              speeding up or at its peak. Speeding up here is the same flick, not
- *              a second one, so nothing more turns
- *   coasting   the flick has slowed (below `DECAY` of its peak): what follows is
- *              momentum, which must not turn a page. A new flick inside the stream
- *              is told from momentum by its shape: momentum only slows down, a
- *              flick speeds up, so a delta well above the recent ones
- *              (`ACCELERATION`) turns again, and the stream is flicking once more.
+ * Wheels do not agree on what one event is. A mouse wheel with detents sends one
+ * event per notch, a hundred a second when it is spun (recorded from a Logitech
+ * G502 X: bursts of five to fourteen notches, 8 to 25 ms apart). A high-resolution
+ * or free-spinning wheel sends fractions of a notch. A trackpad sends pixels, then
+ * a second of momentum. So every event is first turned into the same unit, the
+ * notch, and the notches are added up:
  *
- * The step is a pure function of the state and one event, so the shapes of real
- * wheels and trackpads can be replayed in a test.
+ *   a notch of a mouse wheel   one page
+ *   a fraction of a notch      that fraction of a page
+ *   a trackpad                 a page for every `TRACKPAD_PAGE` pixels travelled
+ *
+ * The sum is rounded to whole pages and the remainder carried to the next event,
+ * so half a notch already turns the first page and every full notch after it
+ * turns one more. Turning the wheel the other way, or leaving it alone for
+ * `WHEEL_IDLE`, drops what was carried: a change of direction is answered at once
+ * and is never spent undoing a remainder.
+ *
+ * It is a pure function of the state and one event, so the recorded shapes of
+ * real wheels can be replayed in a test.
  */
 
-export const GESTURE_GAP = 180
-export const WHEEL_START = 18
-export const ACCELERATION = 1.8
-/** A flick has passed its peak once an event is this share of it or less. */
-export const DECAY = 0.6
-/** The smallest step a mouse wheel's notch sends. */
-const NOTCH = 50
+/** A wheel left alone this long starts a new gesture, in milliseconds. */
+export const WHEEL_IDLE = 220
+/** The pixels a trackpad travels for one page. */
+export const TRACKPAD_PAGE = 160
+/** What a browser reports as `wheelDelta` for one notch. */
+const WHEEL_DELTA_NOTCH = 120
+/** Lines a browser scrolls per notch, where it reports lines (`deltaMode` 1). */
+const LINES_PER_NOTCH = 3
+/** Pixels per notch where the browser reports nothing else to go by. */
+const PIXELS_PER_NOTCH = 100
 
-export type WheelPhase = "rest" | "notching" | "gathering" | "flicking" | "coasting"
-
-export interface WheelState {
-	readonly phase: WheelPhase
-	/** The time of the last event. */
-	readonly at: number
-	/** The distance travelled in this gesture, signed. */
-	readonly sum: number
-	/** The sizes of the last few events. */
-	readonly recent: readonly number[]
-	/** The largest event of the flick in progress. */
-	readonly peak: number
-}
-
+/** The fields of a `WheelEvent` that say how far the wheel was turned. */
 export interface WheelSample {
-	/** The distance of this event in pixels, signed: positive is forward. */
-	readonly delta: number
+	readonly deltaX: number
+	readonly deltaY: number
+	/** 0 pixels, 1 lines, 2 pages. */
+	readonly deltaMode: number
+	/** The legacy `wheelDeltaX` and `wheelDeltaY`: 120 per notch, positive is up. Absent in some browsers. */
+	readonly wheelDeltaX?: number | undefined
+	readonly wheelDeltaY?: number | undefined
+	/** When the event happened, in milliseconds. */
 	readonly time: number
 }
 
-export const WHEEL_REST: WheelState = {
-	phase: "rest",
-	at: Number.NEGATIVE_INFINITY,
-	sum: 0,
-	recent: [],
-	peak: 0
+export interface WheelState {
+	/** The time of the last event. */
+	readonly at: number
+	/** Which way it was last turned: 1 forward, -1 back, 0 before the first event. */
+	readonly direction: number
+	/**
+	 * The part of a page turned and not yet shown, signed like the pages. It is
+	 * negative after a page shown early: half a notch shows the first page, and the
+	 * other half is owed.
+	 */
+	readonly carry: number
+}
+
+export const WHEEL_REST: WheelState = { at: Number.NEGATIVE_INFINITY, direction: 0, carry: 0 }
+
+/** How far one event turned the wheel, in notches, signed: positive is forward. */
+export const notchesOf = (sample: WheelSample): number => {
+	const vertical = Math.abs(sample.deltaY) >= Math.abs(sample.deltaX)
+	const delta = vertical ? sample.deltaY : sample.deltaX
+	if (delta === 0) return 0
+	if (sample.deltaMode === 2) return delta
+	if (sample.deltaMode === 1) return delta / LINES_PER_NOTCH
+	const legacy = vertical ? sample.wheelDeltaY : sample.wheelDeltaX
+	if (legacy === undefined || legacy === 0) return delta / PIXELS_PER_NOTCH
+	// A trackpad's pixels are reported as three legacy units each: that is how it is told.
+	if (Math.abs(legacy + delta * 3) < 0.5) return delta / TRACKPAD_PAGE
+	return -legacy / WHEEL_DELTA_NOTCH
 }
 
 export interface WheelStep {
 	readonly state: WheelState
-	/** The page turn this event asks for: forward, back, or none. */
-	readonly turn: -1 | 0 | 1
+	/** The pages this event moves the reader by: positive is forward. */
+	readonly pages: number
 }
 
 export const wheelStep = (previous: WheelState, sample: WheelSample): WheelStep => {
-	if (sample.delta === 0) return { state: previous, turn: 0 }
-	const size = Math.abs(sample.delta)
-	const direction = sample.delta > 0 ? 1 : -1
-	const fresh =
-		previous.phase === "rest" ||
-		sample.time - previous.at > GESTURE_GAP ||
-		direction !== Math.sign(previous.sum || sample.delta)
-	const from = fresh ? WHEEL_REST : previous
-
-	const sameAsBefore =
-		from.recent.length > 0 && from.recent.every((value) => Math.abs(value - size) < 1)
-	const notch = size >= NOTCH && (fresh || sameAsBefore)
-	const average =
-		from.recent.length === 0
-			? 0
-			: from.recent.reduce((sum, value) => sum + value, 0) / from.recent.length
-	const accelerating = from.recent.length >= 3 && size > average * ACCELERATION && size > 6
-
-	const sum = from.sum + sample.delta
-	const moved = { at: sample.time, sum, recent: [...from.recent.slice(-4), size] }
-	const flick = { ...moved, phase: "flicking" as const, peak: size }
-
-	if (notch) return { state: { ...moved, phase: "notching", peak: size }, turn: direction }
-	switch (from.phase) {
-		case "rest":
-		case "gathering":
-			return Math.abs(sum) >= WHEEL_START
-				? { state: flick, turn: direction }
-				: { state: { ...moved, phase: "gathering", peak: 0 }, turn: 0 }
-		case "flicking": {
-			const peak = Math.max(from.peak, size)
-			return {
-				state: { ...moved, phase: size <= peak * DECAY ? "coasting" : "flicking", peak },
-				turn: 0
-			}
-		}
-		case "notching":
-		case "coasting":
-			return accelerating
-				? { state: flick, turn: direction }
-				: { state: { ...moved, phase: "coasting", peak: from.peak }, turn: 0 }
-	}
+	const notches = notchesOf(sample)
+	if (notches === 0) return { state: previous, pages: 0 }
+	const direction = Math.sign(notches)
+	const fresh = sample.time - previous.at > WHEEL_IDLE || previous.direction !== direction
+	const carry = (fresh ? 0 : previous.carry) + notches
+	// Rounded half away from zero, with a hair of slack for fractions that do not add up exactly.
+	const pages = Math.sign(carry) * Math.floor(Math.abs(carry) + 0.5 + 1e-9)
+	return { state: { at: sample.time, direction, carry: carry - pages }, pages }
 }

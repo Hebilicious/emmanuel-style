@@ -20,12 +20,15 @@ const flash = (element: HTMLElement) => {
 export const useFootnotes = (shell: Shell) => ({
 	/** Follow a footnote link, if `anchor` is one. `true` when it was. */
 	follow(anchor: HTMLAnchorElement): boolean {
-		const screen = document.querySelector<HTMLElement>(".Page .Screen")
+		// The pager, and in it only the leaves: its measuring pass and the copies a turn makes are not the page.
+		const screen = document.querySelector<HTMLElement>(".Page .Pager")
 		if (screen === null) return false
 
 		const note = anchor.dataset["footnoteRef"]
 		if (note !== undefined) {
-			const target = screen.querySelector<HTMLElement>(`[data-note="${CSS.escape(note)}"]`)
+			const target = screen.querySelector<HTMLElement>(
+				`[data-leaf] [data-note="${CSS.escape(note)}"]`
+			)
 			if (target === null) return true
 			flash(target)
 			const back = target.querySelector<HTMLElement>("[data-footnote-back-to]")
@@ -36,7 +39,9 @@ export const useFootnotes = (shell: Shell) => ({
 		const back = anchor.dataset["footnoteBackTo"]
 		if (back !== undefined) {
 			const references = Array.from(
-				screen.querySelectorAll<HTMLElement>(`[data-footnote-ref="${CSS.escape(back)}"]`)
+				screen.querySelectorAll<HTMLElement>(
+					`[data-leaf] [data-footnote-ref="${CSS.escape(back)}"]`
+				)
 			).filter((reference) => {
 				const clip = reference.closest<HTMLElement>("[data-clip]")
 				if (clip === null) return true

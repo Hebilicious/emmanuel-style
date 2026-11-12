@@ -10,11 +10,12 @@
  * rendered for real.
  *
  * A screen is drawn as the leaves of a newspaper: the left-hand and the right-hand
- * page, each its own element, clipped at the spine. Both carry the whole screen
- * and each shows its half, so a headline across the spread, or a page as wide as
- * the spread, folds at the spine like a broadsheet. That is what lets a turn lift
- * one leaf over the other (`shell/turns.ts`, `styles/turns.css`). On a phone there
- * is one leaf.
+ * page, each its own element, clipped at the spine. Both are laid out as the whole
+ * screen and each shows its half, so a headline across the spread, or a page as
+ * wide as the spread, folds at the spine like a broadsheet; a column that is
+ * wholly on the other leaf is left empty, so a page is not drawn twice. That is
+ * what lets a turn lift one leaf over the other (`pager-flip.ts` inside a
+ * section, `shell/turns.ts` between sections). On a phone there is one leaf.
  *
  * Where the reader is lives in the URL: `?page=3` is the third screen, so a reload,
  * a shared link or the back button returns to the same page.
@@ -31,7 +32,7 @@ import {
 } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useShell } from "../shell/shell.js"
-import { reducedMotion, skipTurn, turn } from "../shell/turns.js"
+import { turning } from "../shell/turns.js"
 import { WHEEL_REST, wheelStep } from "../shell/wheel.js"
 import { SPREAD_QUERY } from "../shell/wide.js"
 import {
@@ -45,9 +46,8 @@ import {
 	type Slice
 } from "../utils/paginate.js"
 import { MIN_FIT, type PagerItem, type PagerNote } from "./pager.js"
+import { createFlipper } from "./pager-flip.js"
 import {
-	scrolling,
-	nextTurn,
 	PAGER_START,
 	type PagerEvent,
 	type PagerState,
@@ -133,16 +133,18 @@ const leadHeight = ref(0)
 const leadExtra = ref(0)
 
 /**
- * Where the reader is and what the pager is doing about it: measuring, resting on
- * a screen, or turning to the one asked for (`pager-machine.ts`).
+ * Where the reader is (`pager-machine.ts`). It changes in the same step as the
+ * ask, so a spun wheel is never behind: `state.current` is the screen asked for.
+ *
+ * `current` is the screen drawn. It follows `state.current` once a frame at most
+ * (`show`), because a wheel sends a hundred notches a second and each would
+ * otherwise render a page nobody sees: the pages a spin passes between two frames
+ * are skipped, and the one the reader is on by then is drawn.
  */
 const state = shallowRef<PagerState>(PAGER_START)
-const send = (event: PagerEvent) => {
-	state.value = pagerStep(state.value, event)
-}
 const ready = computed(() => state.value.phase !== "measuring")
-/** The screen showing, counted from zero. */
-const current = computed(() => state.value.current)
+/** The screen drawn, counted from zero. */
+const current = ref(0)
 
 const byId = computed(() => new Map(props.items.map((item) => [item.id, item])))
 const notesById = computed(
@@ -456,12 +458,23 @@ const echoes: string[] = []
 const queryPage = (value: unknown): string =>
 	typeof value === "string" ? value : ""
 
-watch(current, (value) => {
+/*
+ * The address is written once the reader has stopped moving, not on every page a
+ * spin of the wheel passes: a write is a navigation, and a hundred a second were
+ * work that slowed the scroll they recorded.
+ */
+const ADDRESS_AFTER = 160
+let addressTimer = 0
+const writeAddress = () => {
 	if (!ready.value) return
-	const page = value === 0 ? undefined : String(value + 1)
+	const page = current.value === 0 ? undefined : String(current.value + 1)
 	if ((route.query["page"] ?? undefined) === page) return
 	echoes.push(page ?? "")
 	void router.replace({ query: { ...route.query, page } })
+}
+watch(current, () => {
+	window.clearTimeout(addressTimer)
+	addressTimer = window.setTimeout(writeAddress, ADDRESS_AFTER)
 })
 
 /**
@@ -479,108 +492,111 @@ watch(
 			echoes.splice(0, echo + 1)
 			return
 		}
+		// A write of our own that has not left yet is newer than whatever the URL says.
+		window.clearTimeout(addressTimer)
 		const wanted = Math.min(pageFromUrl(), total.value - 1)
-		if (wanted !== state.value.target) go(wanted)
+		if (wanted !== state.value.current) go(wanted)
 	}
 )
 
-/* -------------------------------------------------------------------- turning */
-
-/**
- * Turn until the screen asked for is showing: one leaf, to that screen.
- *
- * One View Transition at a time, each to the end unless the reader scrolls on
- * (`step`), which cuts it short.
- */
-const pump = async () => {
-	if (state.value.phase !== "resting") return
-	send({ type: "BEGIN" })
-	try {
-		for (
-			let next = nextTurn(state.value);
-			next !== null;
-			next = nextTurn(state.value)
-		) {
-			const { to } = next
-			await turn(next.direction, async () => {
-				// Scrolling may have moved the page on while this turn was being set up.
-				if (nextTurn(state.value)?.to === to)
-					send({ type: "LANDED", screen: to })
-				await nextTick()
-			})
-		}
-	} finally {
-		send({ type: "SETTLE" })
-	}
-}
-
-const go = (index: number) => {
-	send({ type: "ASK", screen: index, total: total.value })
-	void pump()
-}
+/* --------------------------------------------------------------------- moving */
 
 /*
- * The riffle: the leaves that flip over the spread while the reader scrolls.
+ * The leaves that turn when the page changes (`pager-flip.ts`). A page that
+ * leaves is not removed at once: each leaf is drawn inside a `<Transition>`, which
+ * hands the old element over as it leaves and keeps it in the DOM until it is let
+ * go, and those are the leaves that turn. The new page is drawn under them in the
+ * same frame.
  *
- * Scrolling does not wait for a turn. The page asked for is shown at once, and
- * over it blank leaves flip in the direction of travel, one per page passed (no
- * closer together than `RIFFLE_EVERY`, and no more than `RIFFLE_MOST` in the air),
- * so a slow scroll is a leaf now and then and a spin of the wheel is a flutter of
- * them. Each leaf removes itself when it has landed.
+ * `drawn` is the key of the leaves: it changes with every page shown, so the
+ * leaves of one page are never reused for the next and both exist during a turn.
  */
-const RIFFLE_EVERY = 55
-const RIFFLE_MOST = 7
-/** How long a leaf of the riffle is in the air; the stylesheet is given it. */
-const RIFFLE_MS = 220
-const riffle = ref<{ id: number; direction: "forward" | "back" }[]>([])
-let riffleId = 0
-let riffledAt = Number.NEGATIVE_INFINITY
+const drawn = ref(0)
+type LeafName = "left" | "right" | "single"
+const flipper = createFlipper(() => ({
+	spread: window.innerWidth * 1.9,
+	single: window.innerWidth * 5.2
+}))
 
-const flip = (direction: "forward" | "back", now: number) => {
-	if (reducedMotion() || now - riffledAt < RIFFLE_EVERY) return
-	if (riffle.value.length >= RIFFLE_MOST) return
-	riffledAt = now
-	riffleId += 1
-	const id = riffleId
-	riffle.value = [...riffle.value, { id, direction }]
-	// The leaf takes itself away when it lands; this is for the one whose landing is not reported.
-	window.setTimeout(() => landed(id), RIFFLE_MS + 120)
-}
-const landed = (id: number) => {
-	riffle.value = riffle.value.filter((leaf) => leaf.id !== id)
-}
+/** The change of page being drawn: its direction, and the leaves that left and came. */
+let change: {
+	direction: "forward" | "back"
+	old: Partial<Record<LeafName, HTMLElement>>
+	fresh: Partial<Record<LeafName, HTMLElement>>
+} | null = null
+const releases = new Map<HTMLElement, () => void>()
 
-/** When the last step was asked for, to tell scrolling from a turn. */
-let askedAt = Number.NEGATIVE_INFINITY
+const onLeafLeave = (element: Element, done: () => void) => {
+	const leaf = element as HTMLElement
+	const name = leaf.dataset["leaf"] as LeafName | undefined
+	// Not a change of page (the pager is going, or its columns changed): nothing turns.
+	if (change === null || name === undefined) return done()
+	change.old[name] = leaf
+	releases.set(leaf, done)
+}
+const onLeafEnter = (element: Element, done: () => void) => {
+	const leaf = element as HTMLElement
+	const name = leaf.dataset["leaf"] as LeafName | undefined
+	if (change !== null && name !== undefined) change.fresh[name] = leaf
+	done()
+}
+const release = (leaf: HTMLElement) => {
+	const done = releases.get(leaf)
+	releases.delete(leaf)
+	done?.()
+}
 
 /**
- * Move by `delta` screens, counted from the screen already asked for.
- *
- * Where the reader is going is settled first, here; what is animated follows. A
- * step on its own is one turn. A step that comes while a leaf is in the air, or
- * hard on the last one, is scrolling: the leaf in the air is dropped, the screen
- * asked for is shown at once, and a riffle plays over it.
+ * Draw the screen the reader is on, if it is not the one drawn. Once it is in the
+ * DOM, the leaves that left are handed to the flipper with the ones that came.
  */
-const step = (delta: number) => {
-	const now = performance.now()
-	const since = now - askedAt
-	askedAt = now
+let frame = 0
+const show = () => {
+	frame = 0
+	const to = state.value.current
+	if (to === current.value || !ready.value) return
+	const drawing = {
+		direction: to > current.value ? ("forward" as const) : ("back" as const),
+		old: {},
+		fresh: {}
+	}
+	change = drawing
+	drawn.value += 1
+	current.value = to
+	void nextTick(() => {
+		if (change === drawing) change = null
+		flipper.step(drawing.direction, drawing.old, drawing.fresh, release)
+	})
+}
+
+/** Deliver an event. A move is drawn on the next frame; a layout, at once. */
+const send = (event: PagerEvent) => {
 	const before = state.value
-	send({ type: "STEP", delta, total: total.value })
-	if (state.value.target === before.target) return
-	if (scrolling(before, since)) {
-		skipTurn()
-		send({ type: "JUMP" })
-		flip(delta > 0 ? "forward" : "back", now)
+	state.value = pagerStep(before, event)
+	if (event.type === "RESET" || event.type === "LAID_OUT") {
+		flipper.snap()
+		current.value = state.value.current
 		return
 	}
-	void pump()
+	if (state.value.current !== before.current && frame === 0)
+		frame = requestAnimationFrame(show)
 }
+
+/** A View Transition photographs the page: the copies must be gone before it does. */
+const stopFollowing = turning.subscribe((now) => {
+	if (now !== "idle") flipper.snap()
+})
+
+const go = (index: number) =>
+	send({ type: "ASK", screen: index, total: total.value })
+
+/** Move by `delta` screens from the one the reader is on. */
+const step = (delta: number) =>
+	send({ type: "STEP", delta, total: total.value })
 
 const turner = {
 	turn: step,
-	go,
-	turning: () => state.value.phase === "turning"
+	go
 }
 
 watch(
@@ -649,22 +665,28 @@ const onPointerUp = (event: PointerEvent) => {
 }
 
 /*
- * The wheel turns pages: a turn per notch of a mouse wheel, a turn per flick of a
- * trackpad. Which events count is `shell/wheel.ts`; here they are scaled to pixels
- * and the turn asked for is run, while the queue has room for it.
+ * The wheel moves through the pages by how far it is turned (`shell/wheel.ts`):
+ * every event is worth some part of a page, and the reader is moved by the whole
+ * pages that adds up to, at once.
  */
 let wheel = WHEEL_REST
 
 const onWheel = (event: WheelEvent) => {
 	if (!shell.mouse || !over(event)) return
-	const scale = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 400 : 1
-	const delta =
-		(Math.abs(event.deltaY) >= Math.abs(event.deltaX)
-			? event.deltaY
-			: event.deltaX) * scale
-	const asked = wheelStep(wheel, { delta, time: event.timeStamp })
-	wheel = asked.state
-	if (asked.turn !== 0) step(asked.turn)
+	const legacy = event as WheelEvent & {
+		wheelDeltaX?: number
+		wheelDeltaY?: number
+	}
+	const moved = wheelStep(wheel, {
+		deltaX: event.deltaX,
+		deltaY: event.deltaY,
+		deltaMode: event.deltaMode,
+		wheelDeltaX: legacy.wheelDeltaX,
+		wheelDeltaY: legacy.wheelDeltaY,
+		time: event.timeStamp
+	})
+	wheel = moved.state
+	if (moved.pages !== 0) step(moved.pages)
 }
 
 /* ------------------------------------------------------------------ lifecycle */
@@ -707,6 +729,10 @@ onBeforeUnmount(() => {
 	document.fonts.removeEventListener("loadingdone", onFonts)
 	if (shell.turner === turner) shell.turner = null
 	shell.position = null
+	stopFollowing()
+	flipper.snap()
+	cancelAnimationFrame(frame)
+	window.clearTimeout(addressTimer)
 })
 
 watch(
@@ -749,11 +775,27 @@ const fitStyle = (id: string) => {
 		: { zoom: String(scale) }
 }
 
+/** A page as wide as the spread: it is on both leaves, folded at the spine. */
+const isWide = (page: Page) =>
+	page.screen === true && geometry.value.columns > 1
+
+/**
+ * Whether a column is drawn on a leaf. Each leaf is laid out as the whole screen
+ * and shows its half, but a column wholly on the other leaf is left empty: it
+ * keeps its place and costs nothing. Only a page as wide as the spread is drawn
+ * on both.
+ */
+const onLeaf = (leaf: string, index: number, page: Page) =>
+	leaf === "single" ||
+	isWide(page) ||
+	(leaf === "left" ? index === 0 : index > 0)
+
 /** Each leaf shows its half of the spread: the right-hand one is drawn shifted by a half. */
 const leafStyle = (leaf: string) => {
 	const { width, columns } = geometry.value
 	const half = columns > 1 ? width / 2 : width
 	return {
+		left: leaf === "right" ? `${half}px` : "0px",
 		width: `${half}px`,
 		viewTransitionName: `leaf-${leaf}`
 	}
@@ -832,85 +874,85 @@ const vars = computed(() => ({
       class="Spread"
       :class="{ Single: geometry.columns === 1 }"
       :data-screen-index="current">
-      <div
+      <Transition
         v-for="leaf of leaves"
         :key="leaf"
-        class="Leaf"
-        :class="leaf"
-        :data-leaf="leaf"
-        data-clip
-        :style="leafStyle(leaf)"
-        :aria-hidden='leaf === "right" ? "true" : undefined'>
-        <div class="LeafInner" :style="leafInnerStyle(leaf)">
-          <div class="Screen" :class="{ Wide: screen.wide }">
-            <div v-if="current === 0 && $slots.lead" class="Lead">
-              <slot name="lead"></slot>
-            </div>
-            <div :ref="(element) => setColumns(element, leaf)" class="Columns">
+        :css="false"
+        @leave="onLeafLeave"
+        @enter="onLeafEnter">
+        <div
+          :key="`${leaf}-${drawn}`"
+          class="Leaf"
+          :class="leaf"
+          :data-leaf="leaf"
+          data-clip
+          :style="leafStyle(leaf)">
+          <div class="LeafInner" :style="leafInnerStyle(leaf)">
+            <div class="Screen" :class="{ Wide: screen.wide }">
               <div
-                v-for="(page, index) of screen.pages"
-                :key="`${current}-${index}`"
-                class="Column"
-                :class="{ Wide: page.screen && geometry.columns > 1 }"
-                :style="pageStyle(index)">
-                <template
-                  v-for="slice of page.slices"
-                  :key="`${slice.id}@${slice.from}`">
-                  <div
-                    v-if="byId.get(slice.id)"
-                    class="Slice"
-                    :class="{ Grow: isWhole(slice) && byId.get(slice.id)?.grow === true }"
-                    :data-clip="isWhole(slice) ? undefined : true"
-                    :style="sliceStyle(slice)">
+                v-if="current === 0 && $slots.lead"
+                class="Lead"
+                data-part="lead"
+                :aria-hidden='leaf === "right" ? "true" : undefined'>
+                <slot name="lead"></slot>
+              </div>
+              <div
+                :ref="(element) => setColumns(element, leaf)"
+                class="Columns">
+                <div
+                  v-for="(page, index) of screen.pages"
+                  :key="`${current}-${index}`"
+                  class="Column"
+                  :class="{ Wide: page.screen && geometry.columns > 1 }"
+                  :data-part="`column-${index}`"
+                  :style="pageStyle(index)"
+                  :aria-hidden='leaf === "right" && isWide(page) ? "true" : undefined'>
+                  <template
+                    v-for="slice of onLeaf(leaf, index, page) ? page.slices : []"
+                    :key="`${slice.id}@${slice.from}`">
                     <div
-                      class="SliceBody"
-                      :style="slice.from > 0 ? { marginTop: `${-slice.from}px` } : undefined">
-                      <div class="Fit" :style="fitStyle(slice.id)">
-                        <slot
-                          name="item"
-                          :item="byId.get(slice.id) as T"></slot>
+                      v-if="byId.get(slice.id)"
+                      class="Slice"
+                      :class="{ Grow: isWhole(slice) && byId.get(slice.id)?.grow === true }"
+                      :data-clip="isWhole(slice) ? undefined : true"
+                      :style="sliceStyle(slice)">
+                      <div
+                        class="SliceBody"
+                        :style="slice.from > 0 ? { marginTop: `${-slice.from}px` } : undefined">
+                        <div class="Fit" :style="fitStyle(slice.id)">
+                          <slot
+                            name="item"
+                            :item="byId.get(slice.id) as T"></slot>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </template>
+                  </template>
 
-                <section
-                  v-if="page.notes.length > 0"
-                  class="Notes"
-                  aria-label="Notes">
-                  <ol>
-                    <li v-for="id of page.notes" :key="id" :data-note="id">
-                      <span class="Number">{{
-                        notesById.get(id)?.number
-                      }}</span>
-                      <span class="NoteBody"><span
-                          v-html="notesById.get(id)?.html"></span>
-                        <a
-                          class="Back"
-                          :href="`#ref-${id}`"
-                          :data-footnote-back-to="id"
-                          aria-label="Back to the text">↩</a></span>
-                    </li>
-                  </ol>
-                </section>
+                  <section
+                    v-if="page.notes.length > 0 && onLeaf(leaf, index, page)"
+                    class="Notes"
+                    aria-label="Notes">
+                    <ol>
+                      <li v-for="id of page.notes" :key="id" :data-note="id">
+                        <span class="Number">{{
+                          notesById.get(id)?.number
+                        }}</span>
+                        <span class="NoteBody"><span
+                            v-html="notesById.get(id)?.html"></span>
+                          <a
+                            class="Back"
+                            :href="`#ref-${id}`"
+                            :data-footnote-back-to="id"
+                            aria-label="Back to the text">↩</a></span>
+                      </li>
+                    </ol>
+                  </section>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        v-if="riffle.length > 0"
-        class="Riffle"
-        :class="{ Single: geometry.columns === 1 }"
-        aria-hidden="true">
-        <span
-          v-for="leaf of riffle"
-          :key="leaf.id"
-          class="Flip"
-          :class="leaf.direction"
-          :style="{ animationDuration: `${RIFFLE_MS}ms` }"
-          @animationend="landed(leaf.id)"></span>
-      </div>
+      </Transition>
     </div>
   </div>
 </template>
@@ -922,7 +964,12 @@ const vars = computed(() => ({
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-  overflow: hidden;
+  /*
+   * Cut to the pane, with some room around it: a leaf that is turning comes
+   * toward the reader, so its free edge is taller than the page for a moment.
+   */
+  overflow: clip;
+  overflow-clip-margin: 16vh;
   /* Read by the script: the gutter between columns and the gap between blocks. */
   column-gap: var(--spacing_fluid-column-space-column-s);
   row-gap: var(--block-gap, 0.85rem);
@@ -983,7 +1030,6 @@ const vars = computed(() => ({
 /* The spread: two leaves meeting at the spine, or one on a phone. */
 .Spread {
   position: relative;
-  display: flex;
   height: 100%;
 }
 
@@ -992,9 +1038,12 @@ const vars = computed(() => ({
  * what is under it, and clipped at the spine.
  */
 .Leaf {
-  position: relative;
-  flex: none;
-  height: 100%;
+  /*
+   * Placed, not flowed: during a turn the leaves of the page that is leaving are
+   * still here, over the ones of the page that came, and neither may push the other.
+   */
+  position: absolute;
+  inset-block: 0;
   overflow: clip;
   background: var(--paper);
 }
@@ -1034,113 +1083,6 @@ const vars = computed(() => ({
     color-mix(in oklab, var(--ink) 7%, transparent),
     transparent 85%
   );
-}
-
-/*
- * The riffle: blank leaves flipping over the spread while the reader scrolls. On
- * a spread a leaf goes from one page over the spine onto the other; on a phone it
- * swings off its left edge. It is over the pages and never in the way of a click.
- */
-.Riffle {
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  pointer-events: none;
-  perspective: 190vw;
-}
-
-.Riffle.Single {
-  perspective: 520vw;
-}
-
-.Flip {
-  position: absolute;
-  inset-block: 0;
-  width: 50%;
-  border: var(--spacing-size-hairline) solid var(--rule-strong);
-  background:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0 0.9rem,
-      color-mix(in oklab, var(--ink) 9%, transparent) 0.9rem 1rem
-    ),
-    var(--paper);
-  background-clip: content-box, border-box;
-  padding: 8% 9%;
-  box-shadow: 0 0 2.5rem color-mix(in oklab, #000 35%, transparent);
-  opacity: 0.86;
-  backface-visibility: visible;
-  animation: 300ms cubic-bezier(0.4, 0.1, 0.6, 0.95) both;
-}
-
-.Flip.forward {
-  left: 50%;
-  transform-origin: left center;
-  animation-name: flip-forward;
-}
-
-.Flip.back {
-  left: 0;
-  transform-origin: right center;
-  animation-name: flip-back;
-}
-
-.Riffle.Single .Flip {
-  left: 0;
-  width: 100%;
-  transform-origin: left center;
-}
-
-.Riffle.Single .Flip.forward {
-  animation-name: swing-off;
-}
-
-.Riffle.Single .Flip.back {
-  animation-name: swing-on;
-}
-
-@keyframes flip-forward {
-  from {
-    transform: rotateY(0deg);
-  }
-  50% {
-    filter: brightness(var(--turn-dim));
-  }
-  to {
-    transform: rotateY(-180deg);
-  }
-}
-
-@keyframes flip-back {
-  from {
-    transform: rotateY(0deg);
-  }
-  50% {
-    filter: brightness(var(--turn-dim));
-  }
-  to {
-    transform: rotateY(180deg);
-  }
-}
-
-@keyframes swing-off {
-  from {
-    transform: rotateY(0deg);
-  }
-  to {
-    transform: rotateY(-92deg);
-    filter: brightness(var(--turn-dim));
-  }
-}
-
-@keyframes swing-on {
-  from {
-    transform: rotateY(-92deg);
-    filter: brightness(var(--turn-dim));
-  }
-  to {
-    transform: rotateY(0deg);
-  }
 }
 
 .Screen {

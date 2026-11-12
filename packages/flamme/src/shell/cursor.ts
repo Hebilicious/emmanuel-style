@@ -77,19 +77,33 @@ const union = (a: DOMRect, b: DOMRect): DOMRect => {
 export const rows = (root: ParentNode = document): Row[] => {
 	const pane = scopeOf(root)
 	if (pane === null) return []
-	const leaves = Array.from(pane.querySelectorAll<HTMLElement>("[data-leaf]"))
-	const copies = leaves.map((leaf) => Array.from(leaf.querySelectorAll<HTMLElement>(SELECTABLE)))
+	/*
+	 * A screen is drawn on two leaves. A column is drawn on the leaf it is on, so
+	 * most rows exist once; a page as wide as the spread, and the lead, are drawn on
+	 * both, folded at the spine, and a row there has a twin on the other leaf. The
+	 * twins are the rows at the same place in the same part (`data-part`).
+	 */
 	const groups: HTMLElement[][] = []
+	const byPlace = new Map<string, HTMLElement[]>()
+	const counted = new Map<HTMLElement, number>()
 	for (const element of pane.querySelectorAll<HTMLElement>(SELECTABLE)) {
-		const leaf = element.closest<HTMLElement>("[data-leaf]")
-		if (leaf === null) {
+		const part =
+			element.closest("[data-leaf]") === null ? null : element.closest<HTMLElement>("[data-part]")
+		if (part === null) {
 			groups.push([element])
 			continue
 		}
-		// A row in a leaf is grouped with its twins once, from the first leaf.
-		if (leaf !== leaves[0]) continue
-		const index = copies[0]?.indexOf(element) ?? -1
-		groups.push([element, ...copies.slice(1).flatMap((copy) => copy[index] ?? [])])
+		const at = counted.get(part) ?? 0
+		counted.set(part, at + 1)
+		const place = `${part.dataset["part"]}#${at}`
+		const twins = byPlace.get(place)
+		if (twins !== undefined) {
+			twins.push(element)
+			continue
+		}
+		const first = [element]
+		byPlace.set(place, first)
+		groups.push(first)
 	}
 
 	const seen = new Set<string>()
@@ -111,15 +125,16 @@ export const rows = (root: ParentNode = document): Row[] => {
 		}
 		found.push({ element, twins, box: rest.reduce(union, head) })
 	}
-	// The left leaf lays the screen out in reading order: column by column, top to bottom.
+	// The leaves come in reading order, and so do the columns in them: top to bottom, left to right.
 	return found
 }
 
 /** The row an element belongs to, if it is a copy of one. */
-export const rowOf = (element: Element, list: readonly Row[] = rows()): Row | undefined => {
+export const rowOf = (element: Element, list?: readonly Row[]): Row | undefined => {
 	const target = element.closest<HTMLElement>(SELECTABLE)
+	// Most of what the pointer passes over is not a row: the page is only read for one that is.
 	if (target === null) return undefined
-	return list.find((row) => row.twins.includes(target))
+	return (list ?? rows()).find((row) => row.twins.includes(target))
 }
 
 /** A short name for a row, for the status line. */
