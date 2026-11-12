@@ -24,7 +24,11 @@
  *   description  front matter: when to load it, one sentence, for the smile
  *   summary      the pitch, in a few sentences
  *   offer        what he brings: capabilities and outcomes, one line each
- *   principles   what he believes about the skill, one line each
+ *   principles   what he believes about the skill, one line each. These are his
+ *                words (given 2026-11-12, in answer to questions), tightened; nothing
+ *                is added that he did not say. For agents he follows Lauren Tan's
+ *                pstack: verification first, trust before parallelism, prototypes as
+ *                planning, skills from failures, less code
  *   tools        front matter `allowed-tools`: what he works with
  *   roles        examples of where he did it: companies in the ledger, by name
  *   evidence     examples in the Library, by project name
@@ -57,10 +61,11 @@ export const skills: readonly Skill[] = [
 			"Costs kept in check: the right model for each task, and context that is not paid for twice"
 		],
 		principles: [
-			"An agent is only as good as the system around it. I design the system and let the agent do the typing.",
-			"Trust is earned with evidence. Work is done when it has been shown to work, not when the agent says so.",
-			"Judgment is the scarce resource. People should spend theirs on the decisions that matter, and on nothing else.",
-			"Speed without correctness is debt at a higher interest rate."
+			"Verification is the bottleneck, not writing. An agent has to prove its work on the real product, with evidence I can check.",
+			"Depth before parallelism. One agent I can trust comes first; ten I cannot trust only write slop faster.",
+			"Prototyping is planning, with code. I would rather throw away two working attempts than argue over a spec.",
+			"Every rule and skill I give an agent comes from a failure I watched. The fix goes into the system, so the mistake is not made twice.",
+			"Less code is the goal. I count impact per line, not lines."
 		],
 		tools: ["Coding agents", "MCP", "WebMCP", "Agent skills", "Linear", "GitHub Actions"],
 		roles: ["Self-employed", "Zeko"],
@@ -81,10 +86,10 @@ export const skills: readonly Skill[] = [
 			"SDKs and developer tools that other teams build on"
 		],
 		principles: [
-			"Simplicity is the hard part. Anyone can add; the skill is in what you leave out.",
-			"One source of truth. Everything else is derived from it, or it will drift.",
-			"Make the wrong thing hard to write. A boundary that is typed and checked needs no meeting.",
-			"Architecture is for the people who change the system after me."
+			"I see how the pieces fit before I write them: what owns the state, what talks to what, and where it will hurt in a year.",
+			"Patterns are a vocabulary, not a goal. I know the catalogue, from Design Patterns to Game Programming Patterns, and reach for one when the problem has its shape.",
+			"Functions over objects, composition over inheritance. Small parts that combine outlive a deep hierarchy.",
+			"State is the hard part. I make it explicit, give it one owner, and keep the rest pure."
 		],
 		tools: ["TypeScript", "Rust", "Go", "Python", "OCaml", "GraphQL", "XState", "moon"],
 		roles: ["Zeko", "Zeno", "Obelisk Auditing", "Yo-Da (your data)", "Cohda"],
@@ -105,10 +110,10 @@ export const skills: readonly Skill[] = [
 			"Whichever framework the product is in, and a migration path when it needs another"
 		],
 		principles: [
-			"The interface is the product. Users never see the architecture, they see how it feels.",
-			"Every state deserves design: loading, empty, error and offline, not only the happy path.",
-			"Performance is respect for the person on the other side of the screen.",
-			"The platform first. What the browser already does, it does for everyone."
+			"Perceived performance is the performance that counts: how fast it feels in the hand, not a score.",
+			"Build for the people who will use it. A feature the audience does not need is weight they pay for.",
+			"Use the platform properly. Workers, service workers, offline storage and 60 fps animation were all there in 2015, and most of the web spent a decade not using them.",
+			"That lost decade is over. Time is no longer the excuse: we can now build the web the way we always knew it could be built."
 		],
 		tools: ["Vue", "Nuxt", "React", "Svelte", "TypeScript", "CSS", "Vite", "Cypress"],
 		roles: ["Zeko", "Zeno", "DeepCrawl", "Cognitive Credit", "Cohda"],
@@ -136,10 +141,10 @@ export const skills: readonly Skill[] = [
 			"Serverless and edge architectures that scale down to zero as well as up"
 		],
 		principles: [
-			"Correctness first. A fast wrong answer is still wrong.",
-			"Data outlives code. I model it with care because it is the part that stays.",
-			"Everything fails eventually, so the failure path is designed, not discovered.",
-			"Boring technology where it carries the load, new technology where it earns its place."
+			"It starts with the data model. Get it right and the code is easy; get it wrong and no code saves you.",
+			"Security, performance and cost are designed together, from the first schema. They are not three later projects.",
+			"Cloudflare is the new AWS. The edge is where I start, and most products never need to leave it.",
+			"Sometimes you have to get your hands dirty. When the work needs raw compute, I rent the dedicated server and run it myself."
 		],
 		tools: [
 			"Node.js",
@@ -169,10 +174,9 @@ export const skills: readonly Skill[] = [
 			"Secrets, authentication and authorisation done properly"
 		],
 		principles: [
-			"Security is a property of the design, not a layer added before launch.",
-			"Fail closed. A system that is unsure should refuse.",
-			"Least privilege, for people and for agents alike.",
-			"Assume the attacker is patient and has read the code."
+			"Assume the environment is hostile. Someone out there will do anything to break the application, and has all the time to try.",
+			"Attack it first. I use every tool an attacker would, so that I find what they would find before they do.",
+			"LLMs have changed the craft, not the principle. Attackers and defenders both have agents now; the approach is the same, at another speed."
 		],
 		tools: [
 			"Solidity",
@@ -201,10 +205,10 @@ export const skills: readonly Skill[] = [
 			"A bill that stays in proportion to the usage"
 		],
 		principles: [
-			"If it is not in code, it does not exist. A click in a console is a decision nobody can review.",
-			"Environments are cheap. Production incidents are not.",
-			"You cannot fix what you cannot see. Observability comes with the first deploy.",
-			"The best infrastructure is the one the team forgets about."
+			"Infrastructure is code. If it is not in the repository, it cannot be reviewed, repeated or trusted.",
+			"Breadth matters here. Half the job is knowing what exists; the other half is knowing which of it to use, and when.",
+			"Measure first. I do not tune, scale or migrate what I have not observed.",
+			"Observing is part of the system, from the first deploy."
 		],
 		tools: [
 			"Cloudflare",
@@ -234,10 +238,9 @@ export const skills: readonly Skill[] = [
 			"An open source practice for a company: what to publish, how, and how to keep it alive"
 		],
 		principles: [
-			"Fix it upstream. A workaround helps one team once, a fix helps everyone for good.",
-			"Read the source. The documentation is what was intended, the code is what happens.",
-			"Public work is the most honest CV. Anyone can read how I write, review and disagree.",
-			"Maintenance is the real contribution. Shipping is the easy day."
+			"For me open source is a philosophy, not a strategy.",
+			"I build on other people's work every day, so I give back to it.",
+			"A bug is fixed where it lives, so that everyone gets the fix."
 		],
 		tools: ["Nuxt", "Nitro", "h3", "Vue", "Vite", "TypeScript", "Rust", "OCaml"],
 		roles: ["Nuxt"],
@@ -268,10 +271,9 @@ export const skills: readonly Skill[] = [
 			"DeFi applications and trading systems"
 		],
 		principles: [
-			"Code that holds money deserves paranoia. There is no patch after the exploit.",
-			"A protocol is only as good as the tools around it. Developers adopt what is easy to build on.",
-			"Hide the cryptography, not the guarantees.",
-			"Verify, do not trust, and that includes my own code."
+			"Web3 teaches game theory. You design for people who act in their own interest, and that lesson holds well beyond a blockchain: in teams, and in politics.",
+			"Incentives are part of the system. A protocol is safe when attacking it costs more than it pays.",
+			"Code that holds money gets no second chance, so it is written as if it were already under attack."
 		],
 		tools: ["Solidity", "Foundry", "Viem", "o1js", "OCaml", "ZK circuits", "XState", "NATS"],
 		roles: ["Zeko", "dcSpark", "Obelisk Auditing"],
@@ -299,10 +301,9 @@ export const skills: readonly Skill[] = [
 			"A bridge between engineering and the rest of the business"
 		],
 		principles: [
-			"Lead from the code. I do not ask for what I would not do myself.",
-			"Process is a cost. I keep the smallest amount that keeps the work moving.",
-			"A review teaches as much as it catches.",
-			"Hire people you can trust, then trust them."
+			"Business and engineering are different skills. Being good at one says nothing about the other, and running a company taught me that.",
+			"A great product does not sell itself. Selling is hard, and engineers should respect it.",
+			"I lead from the code: I write the core of the system myself."
 		],
 		tools: ["Code review", "Hiring", "Mentoring", "Linear", "Sentry", "GitHub"],
 		roles: ["Obelisk Auditing", "Zeno", "Zeko", "The M Industries", "Stack Industries"],
@@ -322,10 +323,9 @@ export const skills: readonly Skill[] = [
 			"A visual identity for a product that cannot afford a studio"
 		],
 		principles: [
-			"Creative work can be engineered. A film is a build, and a build can be repeated.",
-			"Taste is the part that cannot be automated, so that is where I spend my time.",
-			"Use the professional's tools. The ceiling of the tool is the ceiling of the work.",
-			"If it cannot be made again from the repository, it was luck."
+			"The bar is higher now. An engineer who only writes code is a specialist in a time that asks for more.",
+			"Engineers know how to learn. That is the real skill, and it carries to a film, a 3D model or a printed part.",
+			"Using these tools is part of the general skillset now, not a hobby on the side."
 		],
 		tools: ["three.js", "WebGPU", "Blender", "DaVinci Resolve", "FFmpeg", "FreeCAD"],
 		roles: ["Self-employed"],
