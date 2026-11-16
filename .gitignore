@@ -32,3 +32,4 @@ old
 
 # Playwright CLI session artifacts
 .playwright-cli
+.worktrees/
