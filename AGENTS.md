@@ -7,4 +7,4 @@
   Do all the work in that worktree, and keep the main checkout as you found it.
 - Push the branch and open a pull request.
 - When the pull request merges or closes, remove its worktree (`git worktree remove .worktrees/<branch>`),
-  every other worktree you made for the task (a baseline, a comparison), and its branch.
+  every other worktree you made for the task (a baseline, a comparison).
