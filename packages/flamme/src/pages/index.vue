@@ -465,6 +465,15 @@ const blurbOf = (section: (typeof sections)[number]) =>
   opacity: 0;
 }
 
+/*
+ * A page that is turning away (`shell/route-turns.ts`) is no longer in the pane the
+ * press draws the relief for, so it shows its own photograph, or the plate is empty.
+ */
+:global(:root [data-leaving]) .Photo {
+  opacity: 1;
+  transition: none;
+}
+
 /* The tag in the plate's corner, once the press is drawing it: this picture moves. */
 .Live {
   display: flex;

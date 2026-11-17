@@ -156,6 +156,12 @@ withDefaults(
   opacity: 0;
 }
 
+/* A page turning away shows its own picture: the press draws the relief for the pane it left. */
+:global(:root [data-leaving]) .EmblemPicture {
+  opacity: 0.85;
+  transition: none;
+}
+
 /* Its credit runs up its outer edge, the way a plate's does. */
 .EmblemCaption {
   writing-mode: vertical-rl;

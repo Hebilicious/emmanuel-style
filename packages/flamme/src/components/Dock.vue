@@ -261,6 +261,16 @@ defineExpose({
     height: 1.9rem;
     font-size: 1.15rem;
   }
+
+  /*
+   * As tall as the page buttons, whether they show or not. If the row grew when
+   * they came, the pane would shrink by as much, and a section that only just
+   * needs a second screen would then fit on one: the buttons would go, the pane
+   * would grow back, and the two would take turns for as long as the page was open.
+   */
+  .Status {
+    min-height: 1.9rem;
+  }
 }
 
 /* A narrow phone: the lamp says it, and the year goes, so the page count is never cut. */
