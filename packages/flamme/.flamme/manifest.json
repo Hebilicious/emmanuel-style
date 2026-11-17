@@ -2,39 +2,39 @@
   "version": 1,
   "compiler": "0.0.0",
   "runtime": "0.0.0",
-  "schemaHash": "e2e59e7cf9ee141b9cc0a3da38d9396cb439c594731bc04e97d3e3b9e84c901e",
+  "schemaHash": "68f88f153c7e563f2dd3ce654c835119717a4cce2bb6babed5ed120df880fbe6",
   "documents": [
     {
       "name": "Blog",
       "kind": "query",
-      "hash": "005f81b8ed135e4aa88b604418df33209d54b489acfac8689db67af35a40c517",
+      "hash": "b6bef305c96909c293971361bc23ef126ca315c301de3dbe2423848c3371e08b",
       "file": "artifacts/Blog.ts",
       "sources": [
         "src/pages/blog/+page.gql"
       ]
     },
     {
-      "name": "Chrome",
-      "kind": "query",
-      "hash": "8a1ec133d9c631658a677b499523eae0d4a620acfe277bb8c8aeafd2b3b05cf2",
-      "file": "artifacts/Chrome.ts",
-      "sources": [
-        "src/pages/+layout.gql"
-      ]
-    },
-    {
       "name": "Experience",
       "kind": "query",
-      "hash": "53c16505d633c0f76aa040d8a2be1c5954c89a1dcbdb8588eb15737bdfa6a7de",
+      "hash": "753f0ef41adf74aa2c0a993a87403fdfcc0e67435b69e042d4232952eae8e4d3",
       "file": "artifacts/Experience.ts",
       "sources": [
         "src/pages/experience/+page.gql"
       ]
     },
     {
+      "name": "Favourite",
+      "kind": "query",
+      "hash": "754fd3aa4e5230fd6122c08bc2f1e64aa2918d9d5b171c7ef0394f3ac62a6f5c",
+      "file": "artifacts/Favourite.ts",
+      "sources": [
+        "src/documents/Favourite.gql"
+      ]
+    },
+    {
       "name": "Home",
       "kind": "query",
-      "hash": "1c10df96864e45ae25ce75b31b3056da5d1f714bb0047f29b1251317383ec6be",
+      "hash": "a0c69ee3b932418ab7fa33383625f85b822b8cc8cf79fc47c119596131b71c0b",
       "file": "artifacts/Home.ts",
       "sources": [
         "src/pages/index/+page.gql"
@@ -43,7 +43,7 @@
     {
       "name": "Library",
       "kind": "query",
-      "hash": "73997aa786d13ee8bbf70fe6c47e4bc0a7d4d8edbca05d48ada8eb48c8a9fb03",
+      "hash": "e5f777b5bd466d8363cacec70fcadcb1d4824417404bba58ed93330a3276d0a9",
       "file": "artifacts/Library.ts",
       "sources": [
         "src/pages/library/+page.gql"
@@ -59,9 +59,18 @@
       ]
     },
     {
+      "name": "ProjectDetail",
+      "kind": "query",
+      "hash": "516618497b4ff2aebd9b0ecb2a631c96e41214f8539ed7c800f7713cfb82bd8f",
+      "file": "artifacts/ProjectDetail.ts",
+      "sources": [
+        "src/documents/ProjectDetail.gql"
+      ]
+    },
+    {
       "name": "Route_layout_oy84b0",
       "kind": "query",
-      "hash": "89361335631b97168091314a8f37003ea04229c5b75da7afd40b6d45a9b1af74",
+      "hash": "4655082caaca6c747344749f62f0fb277df231c6f9f33249458c4db00f382a54",
       "file": "artifacts/Route_layout_oy84b0.ts",
       "sources": [
         ".flamme/composed/Route_layout_oy84b0.composed.gql"
@@ -70,7 +79,7 @@
     {
       "name": "Routeblog_1j1hl4",
       "kind": "query",
-      "hash": "b6b6208106661e5850165b287aa3105e597c439ea8129688fd0dc499cc73b138",
+      "hash": "2973690021b52fe401f8df31691dd79598c0240f41ac7be0d822d4faba3eb0e3",
       "file": "artifacts/Routeblog_1j1hl4.ts",
       "sources": [
         ".flamme/composed/Routeblog_1j1hl4.composed.gql"
@@ -79,7 +88,7 @@
     {
       "name": "Routeblog__slug__1gn4ng",
       "kind": "query",
-      "hash": "a27e179cc9f0fb3378c82459b37ce91b90002f8c9c70f702187734ab3995f52f",
+      "hash": "25ec4049841ff4af260ad07b2a9fa9f6468cbf57f744636a8e4c725d0d8218a9",
       "file": "artifacts/Routeblog__slug__1gn4ng.ts",
       "sources": [
         ".flamme/composed/Routeblog__slug__1gn4ng.composed.gql"
@@ -88,7 +97,7 @@
     {
       "name": "Routeexperience_fpods0",
       "kind": "query",
-      "hash": "b50e76ab0d03e69efc66a373622806f1630e004010941f683442fdb3621c1c49",
+      "hash": "366df0947b39ead032ef6a3517ca538625735ce03cce333f2f4ce470118146bc",
       "file": "artifacts/Routeexperience_fpods0.ts",
       "sources": [
         ".flamme/composed/Routeexperience_fpods0.composed.gql"
@@ -97,7 +106,7 @@
     {
       "name": "Routeindex_1pcgrc",
       "kind": "query",
-      "hash": "6f472eb65236244016e5300af787fe3251a5bb5e7f7b775b47985113f42937b2",
+      "hash": "3b0e321449015ac97df892d04d11dc96f523eb4731a1cadc1e974255393c45d4",
       "file": "artifacts/Routeindex_1pcgrc.ts",
       "sources": [
         ".flamme/composed/Routeindex_1pcgrc.composed.gql"
@@ -106,10 +115,55 @@
     {
       "name": "Routelibrary_n8fr6o",
       "kind": "query",
-      "hash": "b697adc2f5d1fa980efe7568cf7d60eaa16cbbe4768bb36d8fd3099fdf74a9f7",
+      "hash": "899ed35ff3e6d697e3c84dee78026b6a58ea645c71bf240830c3c806ff84fa53",
       "file": "artifacts/Routelibrary_n8fr6o.ts",
       "sources": [
         ".flamme/composed/Routelibrary_n8fr6o.composed.gql"
+      ]
+    },
+    {
+      "name": "Routeskills_rdiloo",
+      "kind": "query",
+      "hash": "13644edc6801ccb2a2ffe354354cc5abed49d3a86a89595d6912d590bce4de4b",
+      "file": "artifacts/Routeskills_rdiloo.ts",
+      "sources": [
+        ".flamme/composed/Routeskills_rdiloo.composed.gql"
+      ]
+    },
+    {
+      "name": "SiteIndex",
+      "kind": "query",
+      "hash": "99cb484092f239d76649cd0ddcc9f4b2b485f599b9be02a4693e421f0777b4f4",
+      "file": "artifacts/SiteIndex.ts",
+      "sources": [
+        "src/pages/+layout.gql"
+      ]
+    },
+    {
+      "name": "Skills",
+      "kind": "query",
+      "hash": "5f02ba5a16ba59a59b921888060ba39936cc122f927640a3237833307151d417",
+      "file": "artifacts/Skills.ts",
+      "sources": [
+        "src/pages/skills/+page.gql"
+      ]
+    },
+    {
+      "name": "Stars",
+      "kind": "query",
+      "hash": "5b273334f9cc8fee1cc74842127547be68ea12e864b186cd731be90f56997f6e",
+      "file": "artifacts/Stars.ts",
+      "sources": [
+        "src/documents/Stars.gql"
+      ]
+    },
+    {
+      "name": "ToggleFavourite",
+      "kind": "mutation",
+      "hash": "6efdc37016e1f75df8e3c3c8a30cc1909aea5be14cd788a6653faedd0c559258",
+      "file": "artifacts/ToggleFavourite.ts",
+      "sources": [
+        "src/documents/ToggleFavourite.gql"
       ]
     }
   ],

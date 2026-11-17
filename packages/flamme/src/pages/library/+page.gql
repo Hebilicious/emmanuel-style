@@ -1,16 +1,29 @@
+# The Library: every shelf with its projects, as the front page and the shelves
+# show them. The front page is the projects with a `featured` place, in its order,
+# and the first of them leads with the opening of its text.
 query Library {
 	shelves {
 		slug
 		label
-		repositories {
+		blurb
+		projects {
 			name
-			description
+			title
+			tagline
+			body
+			kind
+			shelf
 			language
 			url
 			homepage
 			archived
-			category
-			stars
+			repo
+			started
+			ended
+			featured
+			contributions
+			activity
+			cover
 		}
 	}
 }

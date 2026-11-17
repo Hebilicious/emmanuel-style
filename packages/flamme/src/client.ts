@@ -19,10 +19,41 @@ import { browserAdapter, type LocalFirst } from "@flamme/local"
 import type { ClientPlugin, SerializedCache, TransportFn } from "@flamme/runtime"
 import { createFlamme, type FlammeApp } from "@flamme/vue"
 import { cacheKeys, defaultKeys } from "$flamme"
+import { contentVersion } from "./content.js"
 import { createTransport } from "./transport.js"
 
-/** The adapter key of the durable snapshot. */
-export const LOCAL_SNAPSHOT_KEY = "emmanuel.style.v1"
+/** What every snapshot database of this site is named after. */
+const SNAPSHOT_PREFIX = "emmanuel.style."
+
+/**
+ * The IndexedDB database of the durable snapshot, named after the content.
+ *
+ * Content is answered from the bundle, but once answered it sits in the cache, and
+ * the snapshot carries the cache across reloads. A snapshot written by an older
+ * build therefore answered for the new build's content (`CacheOrNetwork` found it
+ * and never asked the bundle), and a reader kept the old article after a new one
+ * shipped. Naming the database after the content version means new content opens a
+ * new snapshot.
+ */
+export const LOCAL_SNAPSHOT_KEY = `${SNAPSHOT_PREFIX}${contentVersion}`
+
+/**
+ * Remove the snapshots older builds left behind. They can no longer be read, so they
+ * only take space. Best effort: `indexedDB.databases()` is missing in some browsers,
+ * and a failure here must not stop the app.
+ */
+const pruneSnapshots = async (): Promise<void> => {
+	try {
+		if (typeof indexedDB === "undefined" || typeof indexedDB.databases !== "function") return
+		for (const database of await indexedDB.databases()) {
+			const name = database.name ?? ""
+			if (name.startsWith(SNAPSHOT_PREFIX) && name !== LOCAL_SNAPSHOT_KEY)
+				indexedDB.deleteDatabase(name)
+		}
+	} catch {
+		// Nothing depends on this.
+	}
+}
 
 export interface ClientOptions {
 	/** Transport override, for tests. */
@@ -53,5 +84,6 @@ export const createSiteClient = (options: ClientOptions = {}): SiteClient => {
 		...(options.plugins === undefined ? {} : { plugins: options.plugins })
 	})
 
+	void pruneSnapshots()
 	return flamme as SiteClient
 }

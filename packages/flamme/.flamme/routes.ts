@@ -10,7 +10,6 @@ import {
   type PageData,
 } from '@flamme/router/auto'
 import DocBlog from '$flamme/artifacts/Blog'
-import DocChrome from '$flamme/artifacts/Chrome'
 import DocExperience from '$flamme/artifacts/Experience'
 import DocHome from '$flamme/artifacts/Home'
 import DocLibrary from '$flamme/artifacts/Library'
@@ -21,6 +20,9 @@ import DocRouteblog__slug__1gn4ng from '$flamme/artifacts/Routeblog__slug__1gn4n
 import DocRouteexperience_fpods0 from '$flamme/artifacts/Routeexperience_fpods0'
 import DocRouteindex_1pcgrc from '$flamme/artifacts/Routeindex_1pcgrc'
 import DocRoutelibrary_n8fr6o from '$flamme/artifacts/Routelibrary_n8fr6o'
+import DocRouteskills_rdiloo from '$flamme/artifacts/Routeskills_rdiloo'
+import DocSiteIndex from '$flamme/artifacts/SiteIndex'
+import DocSkills from '$flamme/artifacts/Skills'
 
 /**
  * The route records, flat: `defineFlammeRoutes` nests them from each record’s parent, and the
@@ -38,15 +40,15 @@ export const records: readonly FlammeRoute[] = [
     params: [],
     loaders: [
       {
-        load: (client) => createComposedPageLoader(client, DocRoute_layout_oy84b0, [], ['Chrome']),
+        load: (client) => createComposedPageLoader(client, DocRoute_layout_oy84b0, [], ['SiteIndex']),
       },
     ],
     unattachedLoaders: [
       {
-        load: (client) => createPageLoader(client, DocChrome, []),
+        load: (client) => createPageLoader(client, DocSiteIndex, []),
       },
     ],
-    composedChain: ['Chrome'],
+    composedChain: ['SiteIndex'],
   },
   {
     name: 'blog',
@@ -58,7 +60,7 @@ export const records: readonly FlammeRoute[] = [
     params: [],
     loaders: [
       {
-        load: (client) => createComposedPageLoader(client, DocRouteblog_1j1hl4, [], ['Chrome', 'Blog']),
+        load: (client) => createComposedPageLoader(client, DocRouteblog_1j1hl4, [], ['SiteIndex', 'Blog']),
       },
     ],
     unattachedLoaders: [
@@ -66,7 +68,7 @@ export const records: readonly FlammeRoute[] = [
         load: (client) => createPageLoader(client, DocBlog, []),
       },
     ],
-    composedChain: ['Chrome', 'Blog'],
+    composedChain: ['SiteIndex', 'Blog'],
   },
   {
     name: 'blog.[slug]',
@@ -83,7 +85,7 @@ export const records: readonly FlammeRoute[] = [
             client,
             DocRouteblog__slug__1gn4ng,
             [{ variable: 'slug', param: 'slug', coercion: 'string' }],
-            ['Chrome', 'Post'],
+            ['SiteIndex', 'Post'],
           ),
       },
     ],
@@ -92,7 +94,7 @@ export const records: readonly FlammeRoute[] = [
         load: (client) => createPageLoader(client, DocPost, [{ variable: 'slug', param: 'slug', coercion: 'string' }]),
       },
     ],
-    composedChain: ['Chrome', 'Post'],
+    composedChain: ['SiteIndex', 'Post'],
   },
   {
     name: 'experience',
@@ -104,7 +106,7 @@ export const records: readonly FlammeRoute[] = [
     params: [],
     loaders: [
       {
-        load: (client) => createComposedPageLoader(client, DocRouteexperience_fpods0, [], ['Chrome', 'Experience']),
+        load: (client) => createComposedPageLoader(client, DocRouteexperience_fpods0, [], ['SiteIndex', 'Experience']),
       },
     ],
     unattachedLoaders: [
@@ -112,7 +114,7 @@ export const records: readonly FlammeRoute[] = [
         load: (client) => createPageLoader(client, DocExperience, []),
       },
     ],
-    composedChain: ['Chrome', 'Experience'],
+    composedChain: ['SiteIndex', 'Experience'],
   },
   {
     name: 'index',
@@ -124,7 +126,7 @@ export const records: readonly FlammeRoute[] = [
     params: [],
     loaders: [
       {
-        load: (client) => createComposedPageLoader(client, DocRouteindex_1pcgrc, [], ['Chrome', 'Home']),
+        load: (client) => createComposedPageLoader(client, DocRouteindex_1pcgrc, [], ['SiteIndex', 'Home']),
       },
     ],
     unattachedLoaders: [
@@ -132,7 +134,7 @@ export const records: readonly FlammeRoute[] = [
         load: (client) => createPageLoader(client, DocHome, []),
       },
     ],
-    composedChain: ['Chrome', 'Home'],
+    composedChain: ['SiteIndex', 'Home'],
   },
   {
     name: 'library',
@@ -144,7 +146,7 @@ export const records: readonly FlammeRoute[] = [
     params: [],
     loaders: [
       {
-        load: (client) => createComposedPageLoader(client, DocRoutelibrary_n8fr6o, [], ['Chrome', 'Library']),
+        load: (client) => createComposedPageLoader(client, DocRoutelibrary_n8fr6o, [], ['SiteIndex', 'Library']),
       },
     ],
     unattachedLoaders: [
@@ -152,7 +154,27 @@ export const records: readonly FlammeRoute[] = [
         load: (client) => createPageLoader(client, DocLibrary, []),
       },
     ],
-    composedChain: ['Chrome', 'Library'],
+    composedChain: ['SiteIndex', 'Library'],
+  },
+  {
+    name: 'skills',
+    path: '/skills',
+    parent: '+layout',
+    segment: 'skills',
+    meta: { flamme: 'page' },
+    component: () => import('../src/pages/skills.vue'),
+    params: [],
+    loaders: [
+      {
+        load: (client) => createComposedPageLoader(client, DocRouteskills_rdiloo, [], ['SiteIndex', 'Skills']),
+      },
+    ],
+    unattachedLoaders: [
+      {
+        load: (client) => createPageLoader(client, DocSkills, []),
+      },
+    ],
+    composedChain: ['SiteIndex', 'Skills'],
   },
 ]
 
@@ -161,12 +183,13 @@ export const records: readonly FlammeRoute[] = [
  * its loader runs. Exported for typed links and for tests, never read by the router.
  */
 export const pages = {
-  '+layout': { file: 'src/pages/+layout.vue', path: '/', params: [], documents: ['Chrome'] },
+  '+layout': { file: 'src/pages/+layout.vue', path: '/', params: [], documents: ['SiteIndex'] },
   blog: { file: 'src/pages/blog.vue', path: '/blog', params: [], documents: ['Blog'] },
   'blog.[slug]': { file: 'src/pages/blog/[slug].vue', path: '/blog/:slug', params: ['slug'], documents: ['Post'] },
   experience: { file: 'src/pages/experience.vue', path: '/experience', params: [], documents: ['Experience'] },
   index: { file: 'src/pages/index.vue', path: '/', params: [], documents: ['Home'] },
   library: { file: 'src/pages/library.vue', path: '/library', params: [], documents: ['Library'] },
+  skills: { file: 'src/pages/skills.vue', path: '/skills', params: [], documents: ['Skills'] },
 } as const
 
 /**
@@ -178,12 +201,13 @@ export const pages = {
  * through vue-router’s merged `meta`. `usePageQuery()` reads the real one from the route.
  */
 export const pageQueries = {
-  '+layout': null as unknown as PageData<typeof DocChrome>,
+  '+layout': null as unknown as PageData<typeof DocSiteIndex>,
   blog: null as unknown as PageData<typeof DocBlog>,
   'blog.[slug]': null as unknown as PageData<typeof DocPost>,
   experience: null as unknown as PageData<typeof DocExperience>,
   index: null as unknown as PageData<typeof DocHome>,
   library: null as unknown as PageData<typeof DocLibrary>,
+  skills: null as unknown as PageData<typeof DocSkills>,
 } as const
 
 declare module '@flamme/router/auto' {
@@ -196,12 +220,13 @@ declare module '@flamme/router/auto' {
    * documented) by `@flamme/router/auto`, and this module is what fills it for this app.
    */
   interface FlammeGeneratedRoutes {
-    readonly '+layout': PageData<typeof DocChrome>
+    readonly '+layout': PageData<typeof DocSiteIndex>
     readonly blog: PageData<typeof DocBlog>
     readonly 'blog.[slug]': PageData<typeof DocPost>
     readonly experience: PageData<typeof DocExperience>
     readonly index: PageData<typeof DocHome>
     readonly library: PageData<typeof DocLibrary>
+    readonly skills: PageData<typeof DocSkills>
   }
 }
 

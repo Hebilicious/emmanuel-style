@@ -27,7 +27,9 @@ export interface FrontMatter {
  * Only what the content model reads is required; anything else in the block is
  * carried along untouched so a new key in an article does not break the build.
  */
-export const parseFrontMatter = (source: string): { data: Record<string, unknown>; body: string } => {
+export const parseFrontMatter = (
+	source: string
+): { data: Record<string, unknown>; body: string } => {
 	const match = /^---\r?\n([\s\S]*?)\r?\n---\r?\n?/.exec(source)
 	if (!match) throw new Error("markdown file has no front matter block")
 
@@ -62,10 +64,12 @@ export const slugOf = (file: string) => basename(file).replace(/\.md$/, "")
  * The images a markdown file references, keyed by the relative path it wrote.
  *
  * The article writes `../../assets/images/x.jpg`, which is a path relative to the
- * markdown file and means nothing to a browser. The site serves the same files
- * from `/images`, so the rewrite is a basename lookup, and a file that is not
- * there is a build failure rather than a broken image on a page. `publicDir` is
- * the directory the URL resolves to, so callers pass `public/images`.
+ * markdown file and means nothing to a browser. The site serves the same images
+ * from `/images`, re-encoded as WebP by `scripts/optimize-images.ts`, so the
+ * rewrite is a lookup by name: `x.webp` when it exists, the file as written
+ * otherwise. A file that is not there is a build failure rather than a broken
+ * image on a page. `imagesDir` is the directory the URL resolves to, so callers
+ * pass `public/images`.
  */
 export const resolveImages = (markdown: string, imagesDir: string): Map<string, string> => {
 	const rewrites = new Map<string, string>()
@@ -81,12 +85,13 @@ export const resolveImages = (markdown: string, imagesDir: string): Map<string, 
 		if (rewrites.has(source)) continue
 
 		const name = basename(source)
-		const target = join(imagesDir, name)
-		if (!existsSync(target)) {
-			missing.push(`${source} (looked for ${target})`)
+		const optimised = `${name.replace(/\.[a-z0-9]+$/i, "")}.webp`
+		const served = [optimised, name].find((candidate) => existsSync(join(imagesDir, candidate)))
+		if (served === undefined) {
+			missing.push(`${source} (looked for ${join(imagesDir, optimised)})`)
 			continue
 		}
-		rewrites.set(source, `/images/${name}`)
+		rewrites.set(source, `/images/${served}`)
 	}
 
 	if (missing.length > 0) {

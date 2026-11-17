@@ -4,15 +4,17 @@
 	"private": true,
 	"type": "module",
 	"scripts": {
-		"dev": "wrangler dev",
-		"deploy": "wrangler deploy",
-		"deploy-pr": "wrangler versions upload",
+		"dev": "cf dev",
+		"deploy": "cf deploy",
+		"deploy:check": "cf deploy --dry-run",
+		"deploy-pr": "cf previews deploy",
 		"test": "node --test src/*.test.ts",
 		"typecheck": "tsc --noEmit",
-		"types": "wrangler types"
+		"types": "cf workers types"
 	},
 	"devDependencies": {
 		"@types/node": "catalog:api",
+		"cf": "1.0.0-beta.29",
 		"typescript": "catalog:api",
 		"wrangler": "catalog:api"
 	},

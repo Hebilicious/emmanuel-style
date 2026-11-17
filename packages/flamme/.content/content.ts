@@ -8,203 +8,3741 @@
 export const site = {
 	"name": "Emmanuel",
 	"tagline": "Software engineer. Notes on the tools, the science and the history.",
-	"date": "2026-09-20",
+	"date": "2026-11-12",
 	"sections": [
 		{
-			"slug": "modules",
-			"label": "Nuxt & Vue modules",
-			"repositories": [
+			"slug": "projects",
+			"label": "Projects",
+			"blurb": "Systems built end to end: a forecaster, a market API, a specification and the stacks on top of it.",
+			"projects": [
 				{
-					"name": "form-actions-nuxt",
-					"description": "Nuxt Module that implements Form Actions",
-					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/form-actions-nuxt",
-					"homepage": "https://form-actions-nuxt.pages.dev/",
+					"name": "fr2027-forecaster",
+					"title": "France 2027",
+					"tagline": "A probabilistic forecast of the 2027 French presidential election that runs itself.",
+					"body": [
+						"The polls are the backbone: a Kalman filter aggregates them by political bloc, and a two-round Monte Carlo turns the aggregate into each candidate's chances of reaching and winning the second round. Other signals move the forecast at weights the owner sets: spikes of news and Wikipedia attention widen a candidate's uncertainty, momentum in attention and in support on X tilts the first round, and prediction markets inform who will be on the ballot.",
+						"No person is in the loop. A Cloudflare Worker's cron starts a GitHub Actions pipeline every hour that collects, refits when the polls or the configuration change, commits the data and publishes the site. Grok Bot routines send in new polls, events and measurements; a poll counts only once a second, blind run of the routine agrees on every number."
+					],
+					"points": [
+						"Backtested on the 2017 and 2022 elections, with the error settings fitted from replays of 2002 to 2022",
+						"33 polls from April to October 2026, 32 checked against the pollster's own notice",
+						"Rust for the model, the collectors and the CLI; Vue for the site, in French and thirteen other languages",
+						"Replays any date: `fr2027 forecast --as-of 2026-09-01` uses only the polls published by then"
+					],
+					"kind": "project",
+					"shelf": "projects",
+					"language": "Rust",
+					"stack": [
+						"Rust",
+						"TypeScript",
+						"Vue",
+						"Cloudflare Workers",
+						"GitHub Actions",
+						"moon",
+						"proto"
+					],
+					"url": "https://github.com/Hebilicious/fr2027-forecaster",
+					"homepage": "https://fr2027.hebilicious.workers.dev/",
 					"archived": false,
-					"category": "modules",
-					"stars": null
+					"repo": "fr2027-forecaster",
+					"started": 2026,
+					"ended": null,
+					"featured": 1,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "polls"
 				},
 				{
-					"name": "vue-query-nuxt",
-					"description": "A lightweight, 0 config Nuxt Module for Vue Query.",
+					"name": "acidcat",
+					"title": "AcidCat",
+					"tagline": "One catalog, every surface: describe what an application can do once, serve it everywhere.",
+					"body": [
+						"AcidCat is a language-neutral specification. An application writes one catalog, a JSON document listing its capabilities with their inputs, outputs and failures, and the targets that may use each one. Bindings turn the catalog into each surface: a command line, an MCP server, WebMCP tools for agents in the page, HTTP endpoints, and typed functions in the application's own language.",
+						"The catalog is checked at build time and never read at run time, so the surfaces cannot drift from one another or from the code that implements them."
+					],
+					"points": [
+						"Bindings for TypeScript, Python, Go and Rust, with the schema in JSON Schema 2020-12 and Pkl",
+						"`aircon.temperature.set` becomes a CLI command, an MCP tool, a WebMCP tool and a POST route from one entry",
+						"Published on npm as `@acid-cat/cli`; the specification is a 0.1 draft"
+					],
+					"kind": "project",
+					"shelf": "projects",
 					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/vue-query-nuxt",
+					"stack": [
+						"TypeScript",
+						"Python",
+						"Go",
+						"Rust",
+						"Pkl",
+						"JSON Schema",
+						"MCP"
+					],
+					"url": "https://github.com/Hebilicious/acidcat",
 					"homepage": null,
 					"archived": false,
-					"category": "modules",
-					"stars": null
+					"repo": "acidcat",
+					"started": 2026,
+					"ended": null,
+					"featured": 2,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "catalog"
 				},
 				{
-					"name": "server-block-nuxt",
-					"description": "Use <server> tags in your Nuxt pages components",
+					"name": "agris",
+					"title": "Agris",
+					"tagline": "The Black Desert Online Central Market as a federated GraphQL API you run yourself.",
+					"body": [
+						"Pearl Abyss's trade servers answer with undocumented positional rows, some of them Huffman-compressed, and know items only by number. Agris gives them a typed GraphQL schema: prices, stock, order books, price history, hot items and the registration queue for every market region, joined with item names in twelve languages and a search by name.",
+						"It deploys to your own Cloudflare account with no API key and nobody else's traffic. Each field has its own freshness window at the edge, from seconds for an order book to much longer for an item's name, and many items, regions and histories are batched into one upstream round."
+					],
+					"points": [
+						"GraphQL Federation v2 behind Hive Gateway, on Cloudflare Workers",
+						"`searchItems(query: \"memory frag\")` matches part of a name, ignoring case and accents",
+						"A public demo API and a documentation site"
+					],
+					"kind": "project",
+					"shelf": "projects",
 					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/server-block-nuxt",
-					"homepage": null,
+					"stack": [
+						"TypeScript",
+						"GraphQL Federation",
+						"Hive Gateway",
+						"Effect",
+						"XState",
+						"Cloudflare Workers"
+					],
+					"url": "https://github.com/Hebilicious/agris",
+					"homepage": "https://agris-docs.hebilicious.workers.dev",
 					"archived": false,
-					"category": "modules",
-					"stars": null
+					"repo": "agris",
+					"started": 2026,
+					"ended": null,
+					"featured": 3,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "market"
 				},
 				{
-					"name": "dom-snapshot-nuxt",
-					"description": "DOM Snapshot module for Nuxt",
+					"name": "heb-stack",
+					"title": "heb-stack",
+					"tagline": "One AcidCat catalog served to a Vue Vapor page, WebMCP, a CLI, MCP and capnweb.",
+					"body": [
+						"A starter for an Effect application on Cloudflare. A capability is written once, as an Effect Schema input, output and failure plus one Effect computation, and its owner runs the lifecycle in an XState machine. AcidCat then serves it to every surface: the page over capnweb, an agent in the page through WebMCP, a terminal, an MCP client, and code through a typed RPC API.",
+						"The demo is a prime checker in Rust compiled to WebAssembly, kept as small as the wiring allows, so what is left to read is the wiring."
+					],
+					"points": [
+						"Effect 4, XState 6, Vue 3.6 Vapor, Rust to WebAssembly, moon",
+						"A live preview with `/mcp` and `/rpc` beside the page",
+						"\"A fence that makes the shortcut the wrong path\""
+					],
+					"kind": "project",
+					"shelf": "projects",
 					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/dom-snapshot-nuxt",
-					"homepage": null,
+					"stack": [
+						"Effect",
+						"XState",
+						"Vue Vapor",
+						"capnweb",
+						"Rust",
+						"WebAssembly",
+						"Cloudflare Workers"
+					],
+					"url": "https://github.com/Hebilicious/heb-stack",
+					"homepage": "https://heb-stack-preview.hebilicious.workers.dev",
 					"archived": false,
-					"category": "modules",
-					"stars": null
+					"repo": "heb-stack",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "surfaces"
 				},
 				{
-					"name": "vue-switch-match",
-					"description": "Switch Match components for Vue and Nuxt.",
+					"name": "emmanuel-style",
+					"title": "emmanuel.style",
+					"tagline": "This paper: a terminal folded into a broadsheet, read a spread at a time.",
+					"body": [
+						"The site is built on Flamme, a compiler-first GraphQL client for Vue. Every page is a GraphQL document answered from the bundle, so the paper reads with the network off; the favourites and the star counts come from a Cloudflare Worker and its Durable Objects through the same cache.",
+						"Nothing scrolls. A pager measures every block off screen and packs it into pages, and every move through the paper, a page or a section, is a View Transition that turns a leaf."
+					],
+					"points": [
+						"Vue, Vite and Vize, with the design tokens generated by CSS Forge",
+						"Driven from the keyboard like a pager in a terminal, with a prompt for the rest",
+						"A press drawn on the GPU: three.js, ink simulated on WebGPU, emblems rendered in Blender, HTML-in-canvas where the browser has it",
+						"Offline after the first visit"
+					],
+					"kind": "project",
+					"shelf": "projects",
 					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/vue-switch-match",
-					"homepage": null,
+					"stack": [
+						"Vue",
+						"Flamme",
+						"GraphQL",
+						"Pothos",
+						"Cloudflare Workers",
+						"View Transitions"
+					],
+					"url": "https://github.com/Hebilicious/emmanuel-style",
+					"homepage": "https://emmanuel.style",
 					"archived": false,
-					"category": "modules",
-					"stars": null
+					"repo": "emmanuel-style",
+					"started": 2020,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "paper"
 				},
 				{
-					"name": "nuxtpress",
-					"description": "A nuxt module to use markdown files as pages",
-					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/nuxtpress",
+					"name": "xiaomi-aircon",
+					"title": "xiaomi-aircon",
+					"tagline": "A Xiaomi air conditioner run from the terminal, from an agent, or from the desktop bar.",
+					"body": [
+						"A CLI for every control the Mi Home app has, and the readings it hides: room and outdoor temperature, energy use, compressor speed and fault codes. The same controls are an MCP server, so an agent can run the air conditioner, and a panel in the Omarchy bar with sliders and toggles.",
+						"Control stays on the local network, over miIO on UDP. Xiaomi's cloud is used once, to fetch the device's token."
+					],
+					"points": [
+						"Static binaries for Linux x86_64 and macOS on Apple silicon",
+						"`aircon mcp` exposes the controls to Claude and other agents"
+					],
+					"kind": "project",
+					"shelf": "projects",
+					"language": "Rust",
+					"stack": [
+						"Rust",
+						"miIO",
+						"MCP",
+						"Omarchy"
+					],
+					"url": "https://github.com/Hebilicious/xiaomi-aircon",
 					"homepage": null,
 					"archived": false,
-					"category": "modules",
-					"stars": null
+					"repo": "xiaomi-aircon",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "signal"
 				},
+				{
+					"name": "bot-drop",
+					"title": "bot-drop",
+					"tagline": "A private drop box for the reports bots write, on one Worker and one R2 bucket.",
+					"body": [
+						"Bots upload self-contained HTML reports of up to 25 MB over an API; a person opens a web page to browse and read them. Cloudflare Access guards the whole hostname, and the Worker checks the Access token again before it touches the bucket, so a half-configured deployment fails closed."
+					],
+					"points": [
+						"No database, no build step, no runtime dependencies"
+					],
+					"kind": "project",
+					"shelf": "projects",
+					"language": "JavaScript",
+					"stack": [
+						"Cloudflare Workers",
+						"R2",
+						"Cloudflare Access"
+					],
+					"url": "https://github.com/Hebilicious/bot-drop",
+					"homepage": null,
+					"archived": false,
+					"repo": "bot-drop",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "box"
+				}
+			]
+		},
+		{
+			"slug": "nuxt",
+			"label": "Nuxt & Vue",
+			"blurb": "Modules for Nuxt and components for Vue, several of them listed on nuxt.com.",
+			"projects": [
 				{
 					"name": "authjs-nuxt",
-					"description": "AuthJS edge-compatible authentication Nuxt module.",
+					"title": "Auth.js for Nuxt",
+					"tagline": "Edge-compatible authentication for Nuxt, on the Auth.js core.",
+					"body": [
+						"A Nuxt module over the Auth.js core implementation that runs wherever Nuxt does, edge runtimes such as Cloudflare Workers included.",
+						"It is finished with now, and its readme points to the modules that took its place."
+					],
+					"points": [
+						"The most starred module on the shelf",
+						"Listed on nuxt.com/modules",
+						"A documentation site and a repository of examples"
+					],
+					"kind": "project",
+					"shelf": "nuxt",
 					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"Auth.js",
+						"Nitro",
+						"h3"
+					],
 					"url": "https://github.com/Hebilicious/authjs-nuxt",
 					"homepage": "https://authjs-nuxt.pages.dev/",
 					"archived": true,
-					"category": "modules",
-					"stars": null
-				}
-			]
-		},
-		{
-			"slug": "tooling",
-			"label": "Tooling & templates",
-			"repositories": [
+					"repo": "authjs-nuxt",
+					"started": 2023,
+					"ended": 2025,
+					"featured": 4,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "lock"
+				},
 				{
-					"name": "cssforge",
-					"description": "Generate CSS variables from design tokens.",
+					"name": "form-actions-nuxt",
+					"title": "Form Actions for Nuxt",
+					"tagline": "Form actions and server loaders for Nuxt: forms that work before the JavaScript does.",
+					"body": [
+						"Form actions send data to the server with native HTML forms, and enhance them progressively once the page is interactive. Server loaders load type-safe data from the server into a page or a component without writing an API route to fetch it from."
+					],
+					"points": [
+						"Listed on nuxt.com/modules",
+						"A documentation site and a repository of examples"
+					],
+					"kind": "project",
+					"shelf": "nuxt",
 					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/cssforge",
-					"homepage": "https://jsr.io/@hebilicious/cssforge",
+					"stack": [
+						"Nuxt",
+						"Nitro",
+						"h3",
+						"Vue"
+					],
+					"url": "https://github.com/Hebilicious/form-actions-nuxt",
+					"homepage": "https://form-actions-nuxt.pages.dev/",
 					"archived": false,
-					"category": "tooling",
-					"stars": null
+					"repo": "form-actions-nuxt",
+					"started": 2023,
+					"ended": null,
+					"featured": 5,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "form"
+				},
+				{
+					"name": "server-block-nuxt",
+					"title": "Server Block",
+					"tagline": "`<server>` blocks in Nuxt page components: the API handler next to the page that calls it.",
+					"body": [
+						"A Nuxt module that lets a page component carry its own server code in a `<server>` block, compiled into an API handler. A Volar extension, installed with the module, gives the block types and completion in the editor."
+					],
+					"points": [
+						"Experimental, and listed on nuxt.com/modules"
+					],
+					"kind": "project",
+					"shelf": "nuxt",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"Vite",
+						"Volar"
+					],
+					"url": "https://github.com/Hebilicious/server-block-nuxt",
+					"homepage": null,
+					"archived": false,
+					"repo": "server-block-nuxt",
+					"started": 2023,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "block"
+				},
+				{
+					"name": "vue-query-nuxt",
+					"title": "Vue Query for Nuxt",
+					"tagline": "TanStack Query in Nuxt with no configuration.",
+					"body": [
+						"A light Nuxt module that installs and configures Vue Query and auto-imports its composables. It needs no configuration, and every option of Vue Query is still there for an application that needs one."
+					],
+					"points": [
+						"Listed on nuxt.com/modules",
+						"Installable with `nuxi module add vue-query`"
+					],
+					"kind": "project",
+					"shelf": "nuxt",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"TanStack Query"
+					],
+					"url": "https://github.com/Hebilicious/vue-query-nuxt",
+					"homepage": null,
+					"archived": false,
+					"repo": "vue-query-nuxt",
+					"started": 2023,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "cache"
+				},
+				{
+					"name": "dom-snapshot-nuxt",
+					"title": "DOM Snapshot",
+					"tagline": "Keep what the reader typed when they navigate away and come back.",
+					"body": [
+						"Ephemeral DOM state, the content of a form or the scroll of a sidebar, is lost when a reader follows a link and then presses back. After SvelteKit's snapshots, this module takes a snapshot of that state on the way out and restores it on the way back."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "nuxt",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"Vue Router"
+					],
+					"url": "https://github.com/Hebilicious/dom-snapshot-nuxt",
+					"homepage": null,
+					"archived": false,
+					"repo": "dom-snapshot-nuxt",
+					"started": 2023,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "snapshot"
+				},
+				{
+					"name": "vue-switch-match",
+					"title": "Vue Switch Match",
+					"tagline": "`<Switch>` and `<Match>` components for Vue and Nuxt, after Solid's.",
+					"body": [
+						"Pattern matching in a template: the first `<Match>` whose condition holds renders, and `<Fallback>` renders when none does. Packaged for Vue and as a Nuxt module."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "nuxt",
+					"language": "TypeScript",
+					"stack": [
+						"Vue",
+						"Nuxt"
+					],
+					"url": "https://github.com/Hebilicious/vue-switch-match",
+					"homepage": null,
+					"archived": false,
+					"repo": "vue-switch-match",
+					"started": 2024,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "switch"
+				},
+				{
+					"name": "nuxtpress",
+					"title": "Nuxtpress",
+					"tagline": "Markdown files as Nuxt pages.",
+					"body": [
+						"A Nuxt module over `vite-plugin-vue-markdown`, with all its options, that turns markdown files into pages."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "nuxt",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"Vite",
+						"Markdown"
+					],
+					"url": "https://github.com/Hebilicious/nuxtpress",
+					"homepage": null,
+					"archived": false,
+					"repo": "nuxtpress",
+					"started": 2023,
+					"ended": 2025,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "pages"
 				},
 				{
 					"name": "nuxt-module-template",
-					"description": "A template for Nuxt Modules with Pnpm and Bun",
+					"title": "Nuxt Module Template",
+					"tagline": "The template the modules on this shelf started from.",
+					"body": [
+						"A pnpm monorepo for a Nuxt module with its documentation and its tests: the module built with the Nuxt module builder as valid ESM and CommonJS, documentation in VitePress, tests in Vitest, continuous integration, releases and a changelog from one command."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "nuxt",
 					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"pnpm",
+						"Bun",
+						"VitePress",
+						"Vitest"
+					],
 					"url": "https://github.com/Hebilicious/nuxt-module-template",
 					"homepage": null,
 					"archived": false,
-					"category": "tooling",
-					"stars": null
+					"repo": "nuxt-module-template",
+					"started": 2023,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "template"
 				},
 				{
-					"name": "reproduire",
-					"description": "Github Action that comments on incomplete issues.",
-					"language": "JavaScript",
-					"url": "https://github.com/Hebilicious/reproduire",
+					"name": "vueflare",
+					"title": "Vueflare",
+					"tagline": "A proof of concept: Vue 3 streamed as HTML from Cloudflare Workers, with islands.",
+					"body": [
+						"An edge-rendered Vue micro-framework: the page streams from a Worker with Vue's web stream renderer, and only the components in `islands/` hydrate in the browser."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "nuxt",
+					"language": "TypeScript",
+					"stack": [
+						"Vue",
+						"Vite",
+						"Cloudflare Workers"
+					],
+					"url": "https://github.com/Hebilicious/vueflare",
 					"homepage": null,
 					"archived": false,
-					"category": "tooling",
-					"stars": null
-				},
-				{
-					"name": "rollup-plugin-web-worker",
-					"description": "Rollup plugin that loads web worker in a dedicated chunk.",
-					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/rollup-plugin-web-worker",
-					"homepage": null,
-					"archived": false,
-					"category": "tooling",
-					"stars": null
-				},
-				{
-					"name": "serverless-esbuild-template",
-					"description": "This is a template repository to get you started really quickly with the serverless framework and typescript.",
-					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/serverless-esbuild-template",
-					"homepage": null,
-					"archived": false,
-					"category": "tooling",
-					"stars": null
-				},
-				{
-					"name": "ungraphql-parse-info",
-					"description": "An ESM, JSR published, edge compatible GraphQL info parser based on graphql-parse-resolve-info",
-					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/ungraphql-parse-info",
-					"homepage": "https://jsr.io/@hebilicious/ungraphql-parse-info",
-					"archived": false,
-					"category": "tooling",
-					"stars": null
-				},
-				{
-					"name": "graphql-crawler",
-					"description": "Crawl URLs and generate Sitemaps",
-					"language": "TypeScript",
-					"url": "https://github.com/Hebilicious/graphql-crawler",
-					"homepage": null,
-					"archived": false,
-					"category": "tooling",
-					"stars": null
+					"repo": "vueflare",
+					"started": 2022,
+					"ended": 2022,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "signal"
 				}
 			]
 		},
 		{
-			"slug": "chain",
-			"label": "Chain & cryptography",
-			"repositories": [
+			"slug": "tools",
+			"label": "Tools",
+			"blurb": "Design tokens, release hygiene, build plugins, agent skills and a few libraries.",
+			"projects": [
 				{
-					"name": "mnemonic-to-private-key",
-					"description": "Convert a mnemonic phrase to a private key",
-					"language": "JavaScript",
-					"url": "https://github.com/Hebilicious/mnemonic-to-private-key",
-					"homepage": null,
+					"name": "cssforge",
+					"title": "CSS Forge",
+					"tagline": "Design tokens to CSS custom properties at build time, with nothing at run time.",
+					"body": [
+						"The tokens are one serialisable schema: palettes, gradients and themes converted to OKLCH, fluid typography and spacing in the manner of Utopia, durations and easing curves checked against motion guidelines. CSS Forge writes them out as plain CSS, TypeScript or JSON, so it fits any framework or none.",
+						"Every colour, size and gap on this site is a CSS Forge token."
+					],
+					"points": [
+						"Fluid type and space scales",
+						"Colours in OKLCH",
+						"A documentation site"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"CSS",
+						"OKLCH"
+					],
+					"url": "https://github.com/Hebilicious/cssforge",
+					"homepage": "https://cssforge.hebilicious.workers.dev/",
 					"archived": false,
-					"category": "chain",
-					"stars": null
+					"repo": "cssforge",
+					"started": 2025,
+					"ended": null,
+					"featured": 6,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "palette"
 				},
 				{
-					"name": "plutus-guide",
-					"description": "A guide for Plutus",
-					"language": "Dockerfile",
-					"url": "https://github.com/Hebilicious/plutus-guide",
+					"name": "gommage",
+					"title": "Gommage",
+					"tagline": "Authorship policy for git history: keep AI co-authors out of it, in CI and in hooks.",
+					"body": [
+						"A CLI and a GitHub Action that check commits against a policy in `.gommage.yml`: AI co-author trailers, blocked patterns and domains, the number of authors. It runs where the work already happens, in commit hooks, in CI and in pull request checks, and it can clean up a history that already has them."
+					],
+					"points": [
+						"Published as `@gommage/cli`"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"GitHub Actions"
+					],
+					"url": "https://github.com/Hebilicious/gommage",
 					"homepage": null,
 					"archived": false,
-					"category": "chain",
-					"stars": null
+					"repo": "gommage",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "erase"
+				},
+				{
+					"name": "wrangler-builds",
+					"title": "wrangler-builds",
+					"tagline": "Cloudflare Workers Builds triggers kept in sync with a file in the repository.",
+					"body": [
+						"Each Worker's build triggers are written in a checked-in `workers-build.jsonc`, and the tool syncs them to Cloudflare or shows what Cloudflare has. It never creates or deletes a trigger during a sync: a trigger missing on Cloudflare fails the run, so drift stays visible."
+					],
+					"points": [
+						"Published as `@hebilicious/wrangler-builds`"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"Cloudflare API"
+					],
+					"url": "https://github.com/Hebilicious/wrangler-builds",
+					"homepage": null,
+					"archived": false,
+					"repo": "wrangler-builds",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "sync"
+				},
+				{
+					"name": "proto-plugins",
+					"title": "proto plugins",
+					"tagline": "Plugins for the proto toolchain manager: OCaml, Nushell and hk.",
+					"body": [
+						"A moon monorepo of plugins for proto. Tools that ship prebuilt releases use proto's TOML plugin format; OCaml, which needs a real install, is a Rust plugin compiled to WebAssembly. The plugins are in proto's own registry."
+					],
+					"points": [
+						"OCaml as a Rust WASM plugin",
+						"Nushell and hk as TOML plugins"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "Rust",
+					"stack": [
+						"Rust",
+						"WebAssembly",
+						"proto",
+						"moon"
+					],
+					"url": "https://github.com/Hebilicious/proto-plugins",
+					"homepage": null,
+					"archived": false,
+					"repo": "proto-plugins",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "plug"
 				},
 				{
 					"name": "nats-ml",
-					"description": "OCaml bindings for NATS",
+					"title": "NATS for OCaml",
+					"tagline": "A lean NATS client for OCaml, built on Async.",
+					"body": [
+						"A small protocol core with its codecs and an Async runtime on top: publishing with headers, subscriptions, request and reply, keepalive and reconnection with backoff. Released to opam as `nats-client` and `nats-client-async`."
+					],
+					"points": [
+						"Published on opam"
+					],
+					"kind": "project",
+					"shelf": "tools",
 					"language": "OCaml",
+					"stack": [
+						"OCaml",
+						"Async",
+						"NATS",
+						"dune"
+					],
 					"url": "https://github.com/Hebilicious/nats-ml",
 					"homepage": null,
 					"archived": false,
-					"category": "chain",
-					"stars": null
+					"repo": "nats-ml",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "signal"
+				},
+				{
+					"name": "ungraphql-parse-info",
+					"title": "ungraphql-parse-info",
+					"tagline": "An edge-compatible, ESM GraphQL resolve-info parser.",
+					"body": [
+						"A port of Benjie Gillam's `graphql-parse-resolve-info` that runs on the edge: it parses a resolver's info into the tree of fields being asked for, so a resolver can look ahead and fetch only what the query needs."
+					],
+					"points": [
+						"Published on JSR"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"GraphQL"
+					],
+					"url": "https://github.com/Hebilicious/ungraphql-parse-info",
+					"homepage": "https://jsr.io/@hebilicious/ungraphql-parse-info",
+					"archived": false,
+					"repo": "ungraphql-parse-info",
+					"started": 2024,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "tree"
+				},
+				{
+					"name": "reproduire",
+					"title": "Reproduire",
+					"tagline": "A GitHub Action that asks incomplete issues for a reproduction.",
+					"body": [
+						"When an issue is labelled as needing a reproduction, the action comments with a message the repository writes in markdown. With a stale action beside it, issues that never get one close themselves. Nuxt runs it on its own issue tracker."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "JavaScript",
+					"stack": [
+						"GitHub Actions"
+					],
+					"url": "https://github.com/Hebilicious/reproduire",
+					"homepage": null,
+					"archived": false,
+					"repo": "reproduire",
+					"started": 2023,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "hook"
+				},
+				{
+					"name": "ataski",
+					"title": "Ataski",
+					"tagline": "An agent skill for project work as files: tasks, dependencies, worktrees, sub-agents.",
+					"body": [
+						"Tasks are markdown files with front matter in `todo`, `in-progress` and `done`, with dependencies declared as `blockedBy`. The skill is opinionated: red-green test-driven development, a git worktree and a sub-agent per task by default."
+					],
+					"points": [
+						"Installable with `npx skills add Hebilicious/ataski`"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "Markdown",
+					"stack": [
+						"Agent skills",
+						"git worktrees"
+					],
+					"url": "https://github.com/Hebilicious/ataski",
+					"homepage": null,
+					"archived": false,
+					"repo": "ataski",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "list"
+				},
+				{
+					"name": "skills",
+					"title": "Skills",
+					"tagline": "A curated collection of agent skills, vendored and pinned.",
+					"body": [
+						"Favourite agent skills gathered in one repository, each installable on its own. The upstream ones are tracked with vendir and pinned in a lock file, so an update is a reviewed diff."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "Markdown",
+					"stack": [
+						"Agent skills",
+						"vendir"
+					],
+					"url": "https://github.com/Hebilicious/skills",
+					"homepage": null,
+					"archived": false,
+					"repo": "skills",
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "list"
+				},
+				{
+					"name": "serverless-esbuild-template",
+					"title": "Serverless esbuild",
+					"tagline": "A template for the Serverless framework in TypeScript, bundled with esbuild.",
+					"body": [
+						"A slightly opinionated starting point for AWS Lambda behind API Gateway, with esbuild doing the bundling, tests, and one command to deploy."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"Serverless",
+						"esbuild",
+						"AWS Lambda"
+					],
+					"url": "https://github.com/Hebilicious/serverless-esbuild-template",
+					"homepage": null,
+					"archived": false,
+					"repo": "serverless-esbuild-template",
+					"started": 2020,
+					"ended": 2023,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "template"
+				},
+				{
+					"name": "gatsby-remark-component",
+					"title": "gatsby-remark-component",
+					"tagline": "Custom components in Gatsby markdown.",
+					"body": [
+						"A gatsby-transformer-remark plugin that lets custom components sit in markdown, by giving them a div for a parent. Archived since MDX made it unnecessary."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "JavaScript",
+					"stack": [
+						"Gatsby",
+						"remark"
+					],
+					"url": "https://github.com/Hebilicious/gatsby-remark-component",
+					"homepage": null,
+					"archived": true,
+					"repo": "gatsby-remark-component",
+					"started": 2018,
+					"ended": 2020,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "block"
+				},
+				{
+					"name": "mnemonic-to-private-key",
+					"title": "mnemonic-to-private-key",
+					"tagline": "A seed phrase to a private key and an address, from `npx`.",
+					"body": [
+						"A small package that generates a seed phrase, or converts one, into a master private key, a public address and a keystore."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "JavaScript",
+					"stack": [
+						"Node.js",
+						"Ethereum"
+					],
+					"url": "https://github.com/Hebilicious/mnemonic-to-private-key",
+					"homepage": null,
+					"archived": false,
+					"repo": "mnemonic-to-private-key",
+					"started": 2021,
+					"ended": 2023,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "lock"
+				},
+				{
+					"name": "graphql-crawler",
+					"title": "GraphQL crawler",
+					"tagline": "A crawler for one domain, driven and watched over GraphQL, that builds sitemaps.",
+					"body": [
+						"Start a crawl with a mutation, limit its speed so it never takes the site down, and follow it live through a subscription: the page being crawled and the count so far. The pages run in parallel, and the URLs come back by query to build a sitemap from."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"GraphQL",
+						"Subscriptions"
+					],
+					"url": "https://github.com/Hebilicious/graphql-crawler",
+					"homepage": null,
+					"archived": false,
+					"repo": "graphql-crawler",
+					"started": 2020,
+					"ended": 2020,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "tree"
 				},
 				{
 					"name": "spacebudz-identity",
-					"description": "Identity verification for SpaceBudz",
-					"language": "Haskell",
+					"title": "SpaceBudz Identity",
+					"tagline": "A nickname and an identity for a SpaceBudz NFT, on Cardano.",
+					"body": [
+						"A library to give a SpaceBud an identity, written on chain as identity tokens with Lucid, and to read it back."
+					],
+					"points": [
+						"Published on npm as `@spacebudz/spacebudz-identity`"
+					],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "TypeScript",
+					"stack": [
+						"Cardano",
+						"Lucid",
+						"Plutus"
+					],
 					"url": "https://github.com/Hebilicious/spacebudz-identity",
 					"homepage": null,
 					"archived": false,
-					"category": "chain",
-					"stars": null
+					"repo": "spacebudz-identity",
+					"started": 2022,
+					"ended": 2022,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "lock"
+				},
+				{
+					"name": "plutus-guide",
+					"title": "Plutus guide",
+					"tagline": "Notes and links for writing Plutus smart contracts on Cardano.",
+					"body": [
+						"A working guide to the Plutus toolchain: setting up the environment, the official and developer documentation, and the IOG repositories worth knowing."
+					],
+					"points": [],
+					"kind": "project",
+					"shelf": "tools",
+					"language": "Haskell",
+					"stack": [
+						"Plutus",
+						"Cardano",
+						"Haskell",
+						"Docker"
+					],
+					"url": "https://github.com/Hebilicious/plutus-guide",
+					"homepage": null,
+					"archived": false,
+					"repo": "plutus-guide",
+					"started": 2022,
+					"ended": 2022,
+					"featured": null,
+					"contributions": null,
+					"activity": [],
+					"links": [],
+					"cover": "pages"
+				}
+			]
+		},
+		{
+			"slug": "work",
+			"label": "Work",
+			"blurb": "Public codebases written for clients and employers, read through their pull requests.",
+			"projects": [
+				{
+					"name": "lumina",
+					"title": "Lumina DEX",
+					"tagline": "A decentralised exchange on Mina: its SDK, its CDN of compiled contracts, its signers.",
+					"body": [
+						"Seventy-six pull requests from the first commit of the monorepo onwards. The SDK and its publication to npm; a CDN, then a versioning system, for the compiled zero-knowledge contracts; the pool and token services; the wallet and transaction state machines in XState; contracts compiled once and proved one after another; and the signer service, deployed on Cloudflare containers and then rolled out with NixOS to each network.",
+						"Along the way, the monorepo moved to moon, and the documentation gained an `llms.txt`."
+					],
+					"points": [],
+					"kind": "work",
+					"shelf": "work",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"o1js",
+						"Mina",
+						"XState",
+						"React",
+						"Cloudflare",
+						"NixOS",
+						"moon"
+					],
+					"url": "https://github.com/Lumina-DEX/lumina/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://luminadex.com",
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2026,
+					"featured": null,
+					"contributions": 76,
+					"activity": [
+						"2024-11",
+						"2024-12",
+						"2024-12",
+						"2024-12",
+						"2024-12",
+						"2025-01",
+						"2025-01",
+						"2025-01",
+						"2025-01",
+						"2025-01",
+						"2025-01",
+						"2025-01",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-05",
+						"2025-05",
+						"2025-05",
+						"2025-05",
+						"2025-05",
+						"2025-06",
+						"2025-07",
+						"2025-07",
+						"2025-07",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-12",
+						"2025-12",
+						"2026-01",
+						"2026-01",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03"
+					],
+					"links": [
+						{
+							"label": "fix: preserve versioned CDN uploads",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/186",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix: validate CDN bundles before upload",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/185",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix: signer promote",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/184",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix: use ENVIRONMENT env var for signer network resolution",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/183",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat: per-environment signer server + SDK routing",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/181",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat: mina-mainnet signer setup + runbook improvements (LUM-221)",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/180",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix: signer deploy pipeline — SSH lockout, lightweight CI deploys, NixOS modules",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/179",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat: NixOS signer rollout for zeko-testnet",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/178",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat: add NixOS signer rollout for new hosts",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/176",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix: fetch balance should use post",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/172",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: cdn-cache refactor",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/168",
+							"date": "2026-01"
+						},
+						{
+							"label": "fix: type regressions",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/154",
+							"date": "2025-12"
+						},
+						{
+							"label": "feat: sdk mainnet update",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/152",
+							"date": "2025-12"
+						},
+						{
+							"label": "chore: separate app server and node",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/146",
+							"date": "2025-10"
+						},
+						{
+							"label": "ci: re-deploy signer",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/143",
+							"date": "2025-10"
+						},
+						{
+							"label": "docs: add frontends section",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/138",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: prove sequentially and compile once",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/137",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: pool creation",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/136",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: upgrade to latest nextjs",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/135",
+							"date": "2025-10"
+						},
+						{
+							"label": "refactor: idiomatic xstate and react",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/133",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: batch sql insert",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/134",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: lumina landing",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/129",
+							"date": "2025-10"
+						},
+						{
+							"label": "fix: retry pool creation only 3 times",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/123",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: enable assist",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/122",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: configure formatter and linters correctly",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/121",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: transaction status",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/120",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: add sync workflows",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/119",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: docker errors in ci",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/117",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: migrate to moonrepo",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/115",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: add unsupported states",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/114",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: manual pool deploys",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/106",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: add revision header to signer graphql server",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/104",
+							"date": "2025-08"
+						},
+						{
+							"label": "chore: re-host beta.luminadex.com to cloudflare",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/103",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: add onError handlers to wallet machine",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/101",
+							"date": "2025-08"
+						},
+						{
+							"label": "chore: list o1js as peerDeps",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/98",
+							"date": "2025-08"
+						},
+						{
+							"label": "fix: signer factories should come from sdk",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/96",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: create and deploy signer service",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/90",
+							"date": "2025-07"
+						},
+						{
+							"label": "feat: add cloudflare container",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/92",
+							"date": "2025-07"
+						},
+						{
+							"label": "chore: update service tokens sdk to v0.18.0",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/91",
+							"date": "2025-07"
+						},
+						{
+							"label": "feat: rework contract compilation",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/83",
+							"date": "2025-06"
+						},
+						{
+							"label": "chore: update lumina tokens",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/82",
+							"date": "2025-05"
+						},
+						{
+							"label": "fix: dataclone error while loading contracts",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/74",
+							"date": "2025-05"
+						},
+						{
+							"label": "fix: properly return tokens",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/73",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: pools token service and cdn",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/71",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: implement pool fetching",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/69",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: add hash and url",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/66",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: add llms.txt to luminadocs",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/65",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: multiple token fetches",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/63",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: add sdk disclaimer",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/62",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: add bsl license",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/58",
+							"date": "2025-04"
+						},
+						{
+							"label": "fix: cdn zip url and cache",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/54",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: add cdn versioning system",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/49",
+							"date": "2025-03"
+						},
+						{
+							"label": "docs(sdk): add docs website",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/50",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat(sdk): update fees",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/47",
+							"date": "2025-03"
+						},
+						{
+							"label": "Revert \"Feat/fees\"",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/46",
+							"date": "2025-03"
+						},
+						{
+							"label": "ci: fix contracts docs build",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/44",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: create signer api",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/40",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: expose cache and network from sdk",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/38",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(sdk): swap settings",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/36",
+							"date": "2025-02"
+						},
+						{
+							"label": "chore: release sdk fix",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/32",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(sdk): mina devnet token balances",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/31",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat(sdk): updated chain information",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/29",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(cdn): token sync resets db",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/28",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix(sdk): update signer and user0 for mina:testnet",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/26",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: contract o1js 2.2.0",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/24",
+							"date": "2025-01"
+						},
+						{
+							"label": "Revert \"Contract audited\"",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/23",
+							"date": "2025-01"
+						},
+						{
+							"label": "feat: add logs and debug features",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/21",
+							"date": "2025-01"
+						},
+						{
+							"label": "chore(sdk): add examples",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/18",
+							"date": "2025-01"
+						},
+						{
+							"label": "fix(sdk): replace SharedWorker with Worker",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/16",
+							"date": "2025-01"
+						},
+						{
+							"label": "fix(sdk): fetch balance",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/14",
+							"date": "2025-01"
+						},
+						{
+							"label": "fix(sdk): devnet support",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/12",
+							"date": "2025-01"
+						},
+						{
+							"label": "feat(sdk): track pool deploys",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/10",
+							"date": "2024-12"
+						},
+						{
+							"label": "feat: add cdn",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/7",
+							"date": "2024-12"
+						},
+						{
+							"label": "chore: export constant and wallet actors",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/5",
+							"date": "2024-12"
+						},
+						{
+							"label": "feat: publish to npm",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/3",
+							"date": "2024-12"
+						},
+						{
+							"label": "feat: prepare monorepo",
+							"url": "https://github.com/Lumina-DEX/lumina/pull/1",
+							"date": "2024-11"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "zeko",
+					"title": "Zeko",
+					"tagline": "A zero-knowledge rollup: its bridge, its faucet, its indexers and its documentation, with the SDKs and CLIs around them.",
+					"body": [
+						"The rollup's whole web platform, in one monorepo, from its first commit. The bridge between the two layers as an SDK, a web app and a command line written for agents first. The faucet, with its own CLI, rate limiting and automatic bans. The documentation site. The leaderboard with its indexer, its API and its admin. And the actions indexer and API the bridge reads its history from, with a diagnostics CLI and a status dashboard.",
+						"Around it: the monorepo on moon, previews and deploys on Cloudflare with the build configuration kept in the repository, Sentry triage tied to the Linear board, and a published agent skill for building on Zeko. In the protocol, the JetStream publish contract; beside it, a zkVerify proof of concept and a range query for zkApp commands in Mina's archive API."
+					],
+					"points": [],
+					"kind": "work",
+					"shelf": "work",
+					"language": "TypeScript",
+					"stack": [
+						"TypeScript",
+						"Nuxt",
+						"Cloudflare Workers",
+						"o1js",
+						"Mina",
+						"moon",
+						"OCaml",
+						"NATS JetStream"
+					],
+					"url": "https://github.com/search?q=org%3Azeko-labs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
+					"homepage": "https://zeko.io",
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": null,
+					"featured": null,
+					"contributions": 165,
+					"activity": [
+						"2024-11",
+						"2025-01",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-02",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-03",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-04",
+						"2025-05",
+						"2025-05",
+						"2025-05",
+						"2025-06",
+						"2025-06",
+						"2025-06",
+						"2025-06",
+						"2025-06",
+						"2025-07",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-08",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-09",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-10",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-11",
+						"2025-12",
+						"2025-12",
+						"2026-01",
+						"2026-01",
+						"2026-01",
+						"2026-01",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-02",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-03",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-05",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-06",
+						"2026-09"
+					],
+					"links": [
+						{
+							"label": "Add zkApp command range query",
+							"url": "https://github.com/o1-labs/Archive-Node-API/pull/162",
+							"date": "2026-09"
+						},
+						{
+							"label": "fix(bridge-ui): surface bridge errors and fees",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/226",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge): restore pending bridge finalization",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/220",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(bridge-ui): add mock backend debug mode",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/219",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge): surface finality degradation",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/218",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge-validator): use sandbox process api",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/217",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge): report and fix withdrawal finality stalls",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/215",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge-ui): refresh stale clients and clarify network labels",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/214",
+							"date": "2026-06"
+						},
+						{
+							"label": "ci(changesets): ignore actions dashboard",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/213",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(actions-dashboard): add unified status dashboard",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/196",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(faucet): pin container build toolchain",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/212",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix: filter orphaned archive blocks in actions-indexer and bridge-sdk",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/210",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(networks): update Zeko network nomenclature",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/208",
+							"date": "2026-06"
+						},
+						{
+							"label": "docs(bridge-cli): clarify agent bridge command default",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/209",
+							"date": "2026-06"
+						},
+						{
+							"label": "ci: record Linear mainnet promotions",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/203",
+							"date": "2026-06"
+						},
+						{
+							"label": "test(cloudflare-build-config): guard workflow moon run usage",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/202",
+							"date": "2026-06"
+						},
+						{
+							"label": "docs(agents): document linear pr closing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/200",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(bridge-validator): run both scheduled routes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/199",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(endpoints): use zeko mina gateways",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/198",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(cloudflare-build-config): automate Workers Build config sync",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/195",
+							"date": "2026-06"
+						},
+						{
+							"label": "ci(bridge-validator): add workers build trigger",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/193",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat(bridge-validator): add cloudflare e2e worker",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/150",
+							"date": "2026-06"
+						},
+						{
+							"label": "fix(actions-indexer): self-heal sparse action indexes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/191",
+							"date": "2026-06"
+						},
+						{
+							"label": "docs: clean up mainnet WIP pages",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/187",
+							"date": "2026-06"
+						},
+						{
+							"label": "release(bridge): add missing changeset",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/189",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(actions-api): target testnet workers builds",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/188",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat(bridge): prepare mainnet deployment",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/183",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(bridge): harden CLI signing and deposit queue handling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/184",
+							"date": "2026-05"
+						},
+						{
+							"label": "refactor(bridge-sdk): split Bridge into functional modules",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/171",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(bridge): filter legacy bridge operations",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/176",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat(bridge-ui): separate cancellation queue from main recovery",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/159",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: implement Zeko JetStream publish contract",
+							"url": "https://github.com/zeko-labs/zeko/pull/407",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(bridge): harden resume flow and status handling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/163",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(bridge-sdk): fallback when live action cursor is missing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/174",
+							"date": "2026-05"
+						},
+						{
+							"label": "refactor(bridge-cli): restore bridge state machine",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/173",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(actions-indexer): batch canonical promotion updates",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/172",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: use zeko proxy devnet endpoints",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/170",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: integrate bridge UI and CLI with SDK signing changes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/169",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix: docs format and zeko-skills",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/168",
+							"date": "2026-05"
+						},
+						{
+							"label": "fix(faucet-ui): tighten faucet rpc type generation",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/162",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-ui): harden operation timestamps and root capture",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/160",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(zeko-skills): publish Zeko skill on skills.sh",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/158",
+							"date": "2026-03"
+						},
+						{
+							"label": "ci(release): separate bridge-cli mirror flow",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/156",
+							"date": "2026-03"
+						},
+						{
+							"label": "ci(workflows): move ubuntu jobs to warpbuild runners",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/155",
+							"date": "2026-03"
+						},
+						{
+							"label": "ci(release): standardize simple package workflows",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/154",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-sdk): expose per-deposit cancellability",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/153",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(use-zeko): add public use-zeko skill",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/144",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(bridge): fee withdrawl errors and sdk improvements",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/152",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-ui): package observability tooling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/149",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(bridge-cli): add agent-first bridge cli",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/139",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(bridge-ui): reconcile Sentry triage with Linear board",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/148",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(bridge-ui): optimize Sentry sampling and triage errors",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/147",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): restore bridge history progression",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/145",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): improve operational cli and control reliability",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/143",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(ataski): upgrade skill and reconcile board",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/142",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): remove worker timeout regression",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/141",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): harden live diagnostics and long-running worker processing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/137",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(actions-indexer): add diagnostics cli and responsive health",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/136",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(bridge-sdk): open-source sdk publishing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/129",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(faucet): fix healthcheck endpoint returning 500",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/135",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-api): stabilize hyperdrive db client initialization",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/134",
+							"date": "2026-03"
+						},
+						{
+							"label": "fix(actions-indexer): promote debug logs to info and add handleFork visibility",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/133",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(cloudflare): extend build config tooling",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/131",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(faucet): finalize cloudflare build recovery",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/130",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore(ci): move changesets + releases to monorepo",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/127",
+							"date": "2026-03"
+						},
+						{
+							"label": "chore: migrate moon v1 to v2",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/126",
+							"date": "2026-03"
+						},
+						{
+							"label": "feat(faucet): add public claim api and cli",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/124",
+							"date": "2026-03"
+						},
+						{
+							"label": "test(docs): harden link check retries",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/125",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: docs update",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/123",
+							"date": "2026-02"
+						},
+						{
+							"label": "ci(faucet-cli): add sync and publish workflows",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/122",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(faucet-ui): adapt faucet turnstile proxy",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/121",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(faucet-cli): add public faucet cli package",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/120",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(faucet): refactor worker claim api",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/119",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat(ui): add Nuxt SPA proof explorer for PoC",
+							"url": "https://github.com/zeko-labs/zk-verify-poc/pull/2",
+							"date": "2026-02"
+						},
+						{
+							"label": "chore(biome): update to 2.4.2 and enable vue linting",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/118",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: zkVerify PoC end-to-end pipeline",
+							"url": "https://github.com/zeko-labs/zk-verify-poc/pull/1",
+							"date": "2026-02"
+						},
+						{
+							"label": "fix(bridge-ui): correct cancellation progress and final status",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/113",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: add metrics tracking to bridge",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/109",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: publish to bridge.zeko.io",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/112",
+							"date": "2026-02"
+						},
+						{
+							"label": "fix: qa issues",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/108",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: allow all origins for mina proxies",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/111",
+							"date": "2026-02"
+						},
+						{
+							"label": "ci: actions indexer migrations",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/110",
+							"date": "2026-02"
+						},
+						{
+							"label": "feat: add monitoring endpoints",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/107",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: cancel deposits and bridge messages updates",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/101",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: add end of contest popup",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/106",
+							"date": "2026-01"
+						},
+						{
+							"label": "feat: bridge fee retries",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/103",
+							"date": "2026-01"
+						},
+						{
+							"label": "fix: leaderboard indexer block overfetch",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/100",
+							"date": "2025-12"
+						},
+						{
+							"label": "fix: filtering issue",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/96",
+							"date": "2025-12"
+						},
+						{
+							"label": "fix: off-by-one leaderboard bug",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/94",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: actions url",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/93",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: disable staketab proxy",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/92",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: optimise queries and add db tests",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/91",
+							"date": "2025-11"
+						},
+						{
+							"label": "ci: build actions indexer",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/90",
+							"date": "2025-11"
+						},
+						{
+							"label": "ci: deploy actions api",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/89",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: implement actions",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/88",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: actions services",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/85",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: implement automatic faucet ip bans",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/84",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: faucet ip-rate limiting",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/81",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: bridge mina proxies",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/80",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: add cors header to zeko mina proxies",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/79",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: indexer should batch insert actions",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/78",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: enter faucet page content on widescreen displays",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/77",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: improve faucet ui error messages",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/76",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: leaderboard query errors",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/75",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: improve faucet-ui error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/74",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: update bridge confirmation text to reflect longer wait times",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/73",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: add turnstile to faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/72",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: indexer startBlocks",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/71",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: number animations",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/69",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: total points",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/68",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: manual adjustements",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/67",
+							"date": "2025-11"
+						},
+						{
+							"label": "chore: remove old landing page",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/66",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: search results ordering",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/65",
+							"date": "2025-11"
+						},
+						{
+							"label": "fix: parse lumina events",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/64",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: new faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/63",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: search and paginate",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/62",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: leaderboard points breakdown",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/61",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: leaderboard ui update",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/60",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: withdrawal parsing",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/59",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: transaction count",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/58",
+							"date": "2025-11"
+						},
+						{
+							"label": "feat: leaderboard ui desktop",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/54",
+							"date": "2025-11"
+						},
+						{
+							"label": "ci: deploy lb-admin",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/53",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: leadearboard admin ui",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/52",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: deploy leaderboard backend",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/51",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: leaderboard api & indexer",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/24",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: improve bridge messages",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/49",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: desktop bridge-ui alpha v2",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/47",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: update bridge descriptive texts",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/45",
+							"date": "2025-10"
+						},
+						{
+							"label": "feat: enable flag for mobile version",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/43",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: wallet connection errors",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/42",
+							"date": "2025-09"
+						},
+						{
+							"label": "chore: update cssforge",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/41",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat(bridge): disable mobile page",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/40",
+							"date": "2025-09"
+						},
+						{
+							"label": "fix: fetchTransactionStatus should use transaction zkAppId",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/39",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: restructure monorepo and ci with moonrepo",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/38",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: enable sentry features",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/37",
+							"date": "2025-09"
+						},
+						{
+							"label": "feat: working bridge ui",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/31",
+							"date": "2025-09"
+						},
+						{
+							"label": "docs: update developer getting-started",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/30",
+							"date": "2025-08"
+						},
+						{
+							"label": "refactor: bridge-sdk",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/29",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: setup bridge ui",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/28",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: integrate bridge sdk to monorepo",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/26",
+							"date": "2025-08"
+						},
+						{
+							"label": "feat: simplify monitoring",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/23",
+							"date": "2025-07"
+						},
+						{
+							"label": "fix: faucet double claim error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/21",
+							"date": "2025-06"
+						},
+						{
+							"label": "feat: add zk faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/20",
+							"date": "2025-06"
+						},
+						{
+							"label": "fix: faucet transaction fee error",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/19",
+							"date": "2025-06"
+						},
+						{
+							"label": "docs: publish to zeko.io",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/18",
+							"date": "2025-06"
+						},
+						{
+							"label": "feat: implement zeko docs",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/14",
+							"date": "2025-06"
+						},
+						{
+							"label": "chore: update telegram link",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/17",
+							"date": "2025-05"
+						},
+						{
+							"label": "fix: faucet page link is too wide",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/16",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: faucet design changes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/15",
+							"date": "2025-05"
+						},
+						{
+							"label": "feat: add better succesful transaction feedback to the faucet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/13",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: faucet copy changes",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/12",
+							"date": "2025-04"
+						},
+						{
+							"label": "chore: clean-up error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/11",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: use secret store and improve faucet error message",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/10",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: change text to Get Wallet",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/9",
+							"date": "2025-04"
+						},
+						{
+							"label": "feat: change button text size",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/8",
+							"date": "2025-03"
+						},
+						{
+							"label": "fix: env variables are not properly selected with useRuntimeConfig",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/7",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: update og-image size",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/6",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: website text updates",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/5",
+							"date": "2025-03"
+						},
+						{
+							"label": "ci: add preview and deploy workflows",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/4",
+							"date": "2025-03"
+						},
+						{
+							"label": "feat: mobile layout",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/3",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: website refresh",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/2",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: remove send page, add 404, remove litepaper link",
+							"url": "https://github.com/zeko-labs/zeko-landing-new/pull/3",
+							"date": "2025-02"
+						},
+						{
+							"label": "feat: change favicon, telegram link and meta description",
+							"url": "https://github.com/zeko-labs/zeko-landing-new/pull/2",
+							"date": "2025-02"
+						},
+						{
+							"label": "fix: darwin dependencies",
+							"url": "https://github.com/zeko-labs/zeko/pull/245",
+							"date": "2025-01"
+						},
+						{
+							"label": "feat: implement sdk",
+							"url": "https://github.com/zeko-labs/zeko-ui/pull/1",
+							"date": "2024-11"
+						}
+					],
+					"cover": "timeline"
+				}
+			]
+		},
+		{
+			"slug": "upstream",
+			"label": "Upstream",
+			"blurb": "Every pull request merged into somebody else's project, from a framework's internals to a typo in a readme.",
+			"projects": [
+				{
+					"name": "nitro",
+					"title": "Nitro",
+					"tagline": "The server engine under Nuxt: deploy presets, prerendering, cookies and runtime config.",
+					"body": [
+						"Nineteen pull requests from May to October 2023, mostly where Nitro meets the platforms it deploys to: the static Cloudflare Pages preset and its detection, export conditions for workers, binary bodies and cookies on AWS and Netlify Lambda, cookies split correctly, retries and redirects in the prerenderer, and the documentation and tests for runtime config and environment variables."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Nitro",
+						"Cloudflare",
+						"AWS Lambda",
+						"Netlify"
+					],
+					"url": "https://github.com/nitrojs/nitro/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://nitro.build",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 19,
+					"activity": [
+						"2023-05",
+						"2023-06",
+						"2023-06",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-09",
+						"2023-09",
+						"2023-10"
+					],
+					"links": [
+						{
+							"label": "feat(prerender): support `retry` and `retryDelay`",
+							"url": "https://github.com/nitrojs/nitro/pull/1534",
+							"date": "2023-10"
+						},
+						{
+							"label": "fix(aws-lambda,netlify-lambda): binary body v2 and cookies v1",
+							"url": "https://github.com/nitrojs/nitro/pull/1683",
+							"date": "2023-09"
+						},
+						{
+							"label": "test: update test for bun headers",
+							"url": "https://github.com/nitrojs/nitro/pull/1684",
+							"date": "2023-09"
+						},
+						{
+							"label": "fix(cloudflare-pages): autodetect static preset",
+							"url": "https://github.com/nitrojs/nitro/pull/1659",
+							"date": "2023-08"
+						},
+						{
+							"label": "test: add tests for environment variables and runtime config overrides",
+							"url": "https://github.com/nitrojs/nitro/pull/1549",
+							"date": "2023-08"
+						},
+						{
+							"label": "docs(cloudflare): add environment variables instructions",
+							"url": "https://github.com/nitrojs/nitro/pull/1547",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore(firebase): fix typos in warning message",
+							"url": "https://github.com/nitrojs/nitro/pull/1561",
+							"date": "2023-08"
+						},
+						{
+							"label": "docs(config): add runtime config and environment variables section",
+							"url": "https://github.com/nitrojs/nitro/pull/1550",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: typo in bug report template",
+							"url": "https://github.com/nitrojs/nitro/pull/1507",
+							"date": "2023-07"
+						},
+						{
+							"label": "chore: update starter with readme and `nitro.config`",
+							"url": "https://github.com/nitrojs/nitro/pull/1506",
+							"date": "2023-07"
+						},
+						{
+							"label": "chore: update github templates",
+							"url": "https://github.com/nitrojs/nitro/pull/1502",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix(prerender): skip redirects",
+							"url": "https://github.com/nitrojs/nitro/pull/1448",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix: split cookie headers",
+							"url": "https://github.com/nitrojs/nitro/pull/1452",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: add custom preset instructions",
+							"url": "https://github.com/nitrojs/nitro/pull/1409",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: add nitro plugins examples",
+							"url": "https://github.com/nitrojs/nitro/pull/1403",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: support `exportConditions` and add worker default conditions",
+							"url": "https://github.com/nitrojs/nitro/pull/1401",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix(rollup): replace `globalThis.process.` with `process.`",
+							"url": "https://github.com/nitrojs/nitro/pull/1360",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add cloudflare-pages-static",
+							"url": "https://github.com/nitrojs/nitro/pull/1310",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs(deploy): add deno-deploy docs",
+							"url": "https://github.com/nitrojs/nitro/pull/1193",
+							"date": "2023-05"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "nuxt",
+					"title": "Nuxt",
+					"tagline": "The framework itself: a kit helper, the reproduction bot, documentation, and the modules list.",
+					"body": [
+						"`addTypeTemplate` in Nuxt Kit, for modules to register type templates; less reliance on `event.node`; the bot that asks issues for a reproduction; and a run of documentation, from the experimental features to styling. In the modules list, the entries for the modules on the Nuxt shelf."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt",
+						"Nuxt Kit"
+					],
+					"url": "https://github.com/nuxt/nuxt/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://nuxt.com",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 21,
+					"activity": [
+						"2023-05",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-06",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-08",
+						"2023-09",
+						"2024-09"
+					],
+					"links": [
+						{
+							"label": "docs: fix postcss codeblock typo",
+							"url": "https://github.com/nuxt/nuxt/pull/28801",
+							"date": "2024-09"
+						},
+						{
+							"label": "feat: add website to form actions module",
+							"url": "https://github.com/nuxt/modules/pull/753",
+							"date": "2023-09"
+						},
+						{
+							"label": "docs: add info about dynamic nested routes",
+							"url": "https://github.com/nuxt/nuxt/pull/22862",
+							"date": "2023-08"
+						},
+						{
+							"label": "refactor: reduce usage of `event.node`",
+							"url": "https://github.com/nuxt/nuxt/pull/22539",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: increase stale bot limit to 300",
+							"url": "https://github.com/nuxt/nuxt/pull/22538",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: increase stale operations per run",
+							"url": "https://github.com/nuxt/nuxt/pull/22501",
+							"date": "2023-08"
+						},
+						{
+							"label": "chore: add issue reproduction bot",
+							"url": "https://github.com/nuxt/nuxt/pull/22495",
+							"date": "2023-08"
+						},
+						{
+							"label": "fix: vue-query is a monorepo",
+							"url": "https://github.com/nuxt/modules/pull/704",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add server-block-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/703",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: prefix internal links with `/`",
+							"url": "https://github.com/nuxt/nuxt/pull/22118",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: add experimental features page",
+							"url": "https://github.com/nuxt/nuxt/pull/21617",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: add info on extending the HTML template",
+							"url": "https://github.com/nuxt/nuxt/pull/21615",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: add full stop",
+							"url": "https://github.com/nuxt/nuxt/pull/21614",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: add styling section",
+							"url": "https://github.com/nuxt/nuxt/pull/21525",
+							"date": "2023-06"
+						},
+						{
+							"label": "fix: npm package link",
+							"url": "https://github.com/nuxt/modules/pull/669",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add authjs-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/668",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add vue-query-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/667",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat: add form-actions-nuxt",
+							"url": "https://github.com/nuxt/modules/pull/666",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: fix `addTypeTemplate` typos",
+							"url": "https://github.com/nuxt/nuxt/pull/21520",
+							"date": "2023-06"
+						},
+						{
+							"label": "feat(kit): `addTypeTemplate` helper with auto-registration",
+							"url": "https://github.com/nuxt/nuxt/pull/21331",
+							"date": "2023-06"
+						},
+						{
+							"label": "docs: distinguish between `$fetch` and fetch composables",
+							"url": "https://github.com/nuxt/nuxt/pull/21228",
+							"date": "2023-05"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "h3",
+					"title": "h3",
+					"tagline": "The HTTP framework under Nitro: form data, headers and cookies on web responses.",
+					"body": [
+						"Seven pull requests in July 2023: `readFormData`, `event.method` and `event.headers`, utilities to remove and clear response headers, `set-cookie` values split and appended correctly on web responses, and the readme split into sections with the missing helpers documented."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"h3"
+					],
+					"url": "https://github.com/h3js/h3/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://h3.dev",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 7,
+					"activity": [
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07"
+					],
+					"links": [
+						{
+							"label": "docs: improve nightly release usage section",
+							"url": "https://github.com/h3js/h3/pull/468",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add `removeResponseHeader` and `clearResponseHeaders` utils",
+							"url": "https://github.com/h3js/h3/pull/427",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix: append `set-cookie` headers in web reponse",
+							"url": "https://github.com/h3js/h3/pull/453",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add `readFormData` util",
+							"url": "https://github.com/h3js/h3/pull/421",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix: split `set-cookie` value when handling web responses",
+							"url": "https://github.com/h3js/h3/pull/445",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: add `event.method` and `event.headers`",
+							"url": "https://github.com/h3js/h3/pull/429",
+							"date": "2023-07"
+						},
+						{
+							"label": "docs: split readme into subsection and document missing helpers",
+							"url": "https://github.com/h3js/h3/pull/428",
+							"date": "2023-07"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "unjs",
+					"title": "UnJS",
+					"tagline": "unstorage, db0, ofetch and unenv: batching, libSQL, retries and headers.",
+					"body": [
+						"Experimental operation batching, a fix for R2's metadata and a test for the GitHub driver in unstorage, libSQL support in db0, `retryDelay` in ofetch, numeric headers preserved in unenv, and the organisation's pull request template."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"unstorage",
+						"db0",
+						"ofetch",
+						"unenv"
+					],
+					"url": "https://github.com/search?q=org%3Aunjs+author%3AHebilicious+is%3Apr+is%3Amerged&type=pullrequests",
+					"homepage": "https://unjs.io",
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 7,
+					"activity": [
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-07",
+						"2023-08",
+						"2023-08"
+					],
+					"links": [
+						{
+							"label": "feat: support `retryDelay`",
+							"url": "https://github.com/unjs/ofetch/pull/262",
+							"date": "2023-08"
+						},
+						{
+							"label": "fix(node): preserve http number header type with `setHeader`",
+							"url": "https://github.com/unjs/unenv/pull/119",
+							"date": "2023-08"
+						},
+						{
+							"label": "feat: add libsql support",
+							"url": "https://github.com/unjs/db0/pull/25",
+							"date": "2023-07"
+						},
+						{
+							"label": "fix(cloudflare-r2-binding): get binding for r2 `getMeta`",
+							"url": "https://github.com/unjs/unstorage/pull/272",
+							"date": "2023-07"
+						},
+						{
+							"label": "test: add test for `github` driver",
+							"url": "https://github.com/unjs/unstorage/pull/259",
+							"date": "2023-07"
+						},
+						{
+							"label": "feat: experimental operation batching",
+							"url": "https://github.com/unjs/unstorage/pull/240",
+							"date": "2023-07"
+						},
+						{
+							"label": "add pull request template",
+							"url": "https://github.com/unjs/.github/pull/1",
+							"date": "2023-07"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "simulationcraft",
+					"title": "SimulationCraft",
+					"tagline": "The World of Warcraft simulator: Rogue profiles and action lists for the Nighthold raid.",
+					"body": [
+						"Five pull requests in January 2017, the oldest run of work on this shelf: Subtlety, Assassination and Outlaw gear profiles for the heroic and mythic Nighthold raid, a generator for them, and tweaks to the Rogue action priority lists."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "C++",
+					"stack": [
+						"SimulationCraft"
+					],
+					"url": "https://github.com/simulationcraft/simc/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://www.simulationcraft.org",
+					"archived": false,
+					"repo": null,
+					"started": 2017,
+					"ended": 2017,
+					"featured": null,
+					"contributions": 5,
+					"activity": [
+						"2017-01",
+						"2017-01",
+						"2017-01",
+						"2017-01",
+						"2017-01"
+					],
+					"links": [
+						{
+							"label": "[Rogue] Removing boots condition",
+							"url": "https://github.com/simulationcraft/simc/pull/3478",
+							"date": "2017-01"
+						},
+						{
+							"label": "Rogue APL tweaks",
+							"url": "https://github.com/simulationcraft/simc/pull/3471",
+							"date": "2017-01"
+						},
+						{
+							"label": "[Rogue] Updating Assasination and Outlaw gear in M and H Nighthold profiles",
+							"url": "https://github.com/simulationcraft/simc/pull/3411",
+							"date": "2017-01"
+						},
+						{
+							"label": "[Rogue] Adding a generate file for heroic nighthold profiles.",
+							"url": "https://github.com/simulationcraft/simc/pull/3389",
+							"date": "2017-01"
+						},
+						{
+							"label": "[Rogue] SubT19MNH improvements.",
+							"url": "https://github.com/simulationcraft/simc/pull/3388",
+							"date": "2017-01"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "proto",
+					"title": "proto",
+					"tagline": "The toolchain manager: the OCaml and Nushell plugins in its registry.",
+					"body": [
+						"The plugins on the Tools shelf, entered in proto's registry so that `proto install ocaml` works out of the box, and their locators kept current as they moved to the TOML format."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Rust",
+					"stack": [
+						"proto",
+						"moon"
+					],
+					"url": "https://github.com/moonrepo/proto/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": "https://moonrepo.dev/proto",
+					"archived": false,
+					"repo": null,
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": 4,
+					"activity": [
+						"2026-04",
+						"2026-05",
+						"2026-06",
+						"2026-10"
+					],
+					"links": [
+						{
+							"label": "Update hk and nu plugin locators to TOML plugins",
+							"url": "https://github.com/moonrepo/proto/pull/1142",
+							"date": "2026-10"
+						},
+						{
+							"label": "Update proto plugin registry URLs",
+							"url": "https://github.com/moonrepo/proto/pull/1022",
+							"date": "2026-06"
+						},
+						{
+							"label": "feat: add nu plugin to registry",
+							"url": "https://github.com/moonrepo/proto/pull/1013",
+							"date": "2026-05"
+						},
+						{
+							"label": "feat: add ocaml plugin to registry",
+							"url": "https://github.com/moonrepo/proto/pull/976",
+							"date": "2026-04"
+						}
+					],
+					"cover": "timeline"
+				},
+				{
+					"name": "lucia",
+					"title": "Lucia",
+					"tagline": "The authentication library: an unstorage adapter, then expiry for it.",
+					"body": [
+						"An adapter that stores Lucia's sessions in any unstorage driver, and time-to-live support for it."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Lucia",
+						"unstorage"
+					],
+					"url": "https://github.com/lucia-auth/lucia/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2023-07",
+						"2023-09"
+					],
+					"links": [
+						{
+							"label": "feat(unstorage): add ttl support",
+							"url": "https://github.com/lucia-auth/lucia/pull/970",
+							"date": "2023-09"
+						},
+						{
+							"label": "feat: add unstorage adapter",
+							"url": "https://github.com/lucia-auth/lucia/pull/662",
+							"date": "2023-07"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vize",
+					"title": "Vize",
+					"tagline": "The Rust toolchain for Vue that compiles this site: two fixes.",
+					"body": [
+						"The Vite plugin finds optimised Vue under Vite's configured cache directory, and the type checker emits the instantiation of a generic component as valid TSX. Both were found building this paper."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Rust",
+					"stack": [
+						"Vize",
+						"Vite",
+						"Vue"
+					],
+					"url": "https://github.com/ubugeeei-prod/vize/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2026-10",
+						"2026-10"
+					],
+					"links": [
+						{
+							"label": "fix(canon): emit @vue-generic instantiation as valid TSX",
+							"url": "https://github.com/ubugeeei-prod/vize/pull/11052",
+							"date": "2026-10"
+						},
+						{
+							"label": "fix(vite-plugin): recognize optimized Vue under Vite's configured cacheDir",
+							"url": "https://github.com/ubugeeei-prod/vize/pull/8618",
+							"date": "2026-10"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "use-wagmi",
+					"title": "use-wagmi",
+					"tagline": "Vue composables for Ethereum: its Nuxt module.",
+					"body": [
+						"The Nuxt module rebuilt on the Nuxt module builder, and an option to leave chosen composables out of the auto-imports."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Vue",
+						"Nuxt",
+						"wagmi"
+					],
+					"url": "https://github.com/unicape/use-wagmi/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2023-08",
+						"2023-08"
+					],
+					"links": [
+						{
+							"label": "feat(nuxt): add excludeImports",
+							"url": "https://github.com/unicape/use-wagmi/pull/51",
+							"date": "2023-08"
+						},
+						{
+							"label": "refactor: use @nuxt/module-builder",
+							"url": "https://github.com/unicape/use-wagmi/pull/44",
+							"date": "2023-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "opam",
+					"title": "opam repository",
+					"tagline": "OCaml's package index: the releases of the NATS client.",
+					"body": [
+						"`nats-client` and `nats-client-async`, the NATS client on the Tools shelf, released to OCaml's package repository."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "OCaml",
+					"stack": [
+						"OCaml",
+						"opam"
+					],
+					"url": "https://github.com/ocaml/opam-repository/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2026,
+					"ended": null,
+					"featured": null,
+					"contributions": 2,
+					"activity": [
+						"2026-04",
+						"2026-04"
+					],
+					"links": [
+						{
+							"label": "[new release] nats-client (2 packages) (0.0.10)",
+							"url": "https://github.com/ocaml/opam-repository/pull/29816",
+							"date": "2026-04"
+						},
+						{
+							"label": "[new release] nats-client (2 packages) (0.0.7)",
+							"url": "https://github.com/ocaml/opam-repository/pull/29720",
+							"date": "2026-04"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "houdini",
+					"title": "Houdini",
+					"tagline": "The GraphQL client: support for the `using` keyword.",
+					"body": [
+						"Houdini's compiler understands `using` declarations, TypeScript's explicit resource management."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Houdini",
+						"GraphQL"
+					],
+					"url": "https://github.com/HoudiniGraphql/houdini/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-03"
+					],
+					"links": [
+						{
+							"label": "feat: add using keyword support",
+							"url": "https://github.com/HoudiniGraphql/houdini/pull/1286",
+							"date": "2024-03"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vike",
+					"title": "Vike",
+					"tagline": "The Vite framework: a `defineVikeConfig` helper.",
+					"body": [
+						"A helper that types a Vike configuration file, the way `defineConfig` does for Vite."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Vike",
+						"Vite"
+					],
+					"url": "https://github.com/vikejs/vike/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-10"
+					],
+					"links": [
+						{
+							"label": "feat: add defineVikeConfig helper",
+							"url": "https://github.com/vikejs/vike/pull/1157",
+							"date": "2023-10"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vercel-ai",
+					"title": "Vercel AI SDK",
+					"tagline": "The SDK's Nuxt example, streaming as it should.",
+					"body": [
+						"The Nuxt example updated so that a response reaches the page as it is generated, rather than all at once."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Vercel AI",
+						"Nuxt"
+					],
+					"url": "https://github.com/vercel/ai/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-08"
+					],
+					"links": [
+						{
+							"label": "feat: update nuxt example for proper streaming support",
+							"url": "https://github.com/vercel/ai/pull/295",
+							"date": "2023-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vueuse",
+					"title": "VueUse",
+					"tagline": "`useElementBounding` measures when the component mounts.",
+					"body": [
+						"`useElementBounding` calls `update` on mount, so the first read is the element's real box rather than zeros."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"VueUse",
+						"Vue"
+					],
+					"url": "https://github.com/vueuse/vueuse/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2022,
+					"ended": 2022,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2022-05"
+					],
+					"links": [
+						{
+							"label": "fix(useElementBounding): call `update` on mounted (#626)",
+							"url": "https://github.com/vueuse/vueuse/pull/1541",
+							"date": "2022-05"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "postgres-js",
+					"title": "Postgres.js",
+					"tagline": "The Postgres client for JavaScript: its export conditions.",
+					"body": [
+						"An update to the package's export conditions, which decide the build a runtime is given."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "JavaScript",
+					"stack": [
+						"Postgres.js"
+					],
+					"url": "https://github.com/porsager/postgres/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-04"
+					],
+					"links": [
+						{
+							"label": "chore: update export conditions",
+							"url": "https://github.com/porsager/postgres/pull/819",
+							"date": "2024-04"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "graphql-hive",
+					"title": "GraphQL Hive",
+					"tagline": "The schema registry's console: `crypto` by its `node:` specifier.",
+					"body": [
+						"`crypto` imported as `node:crypto`, which runtimes other than Node need in order to resolve it."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"GraphQL Hive"
+					],
+					"url": "https://github.com/graphql-hive/console/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-03"
+					],
+					"links": [
+						{
+							"label": "chore: use node import specifier for crypto",
+							"url": "https://github.com/graphql-hive/console/pull/4328",
+							"date": "2024-03"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "drizzle-docs",
+					"title": "Drizzle ORM docs",
+					"tagline": "Upserts with composite indexes, documented.",
+					"body": [
+						"A section of the documentation on upserting into a table whose conflict target is a composite index."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "MDX",
+					"stack": [
+						"Drizzle ORM"
+					],
+					"url": "https://github.com/drizzle-team/drizzle-orm-docs/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-01"
+					],
+					"links": [
+						{
+							"label": "docs: document upsert with composite indexes",
+							"url": "https://github.com/drizzle-team/drizzle-orm-docs/pull/194",
+							"date": "2024-01"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "nuxtr",
+					"title": "Nuxtr",
+					"tagline": "The Nuxt extension for VS Code: PostCSS as a style language.",
+					"body": [
+						"PostCSS added to the style languages the extension offers when it scaffolds a component."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"VS Code",
+						"Nuxt"
+					],
+					"url": "https://github.com/nuxtrdev/nuxtr-vscode/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-07"
+					],
+					"links": [
+						{
+							"label": "feat: add postcss to default style language enum",
+							"url": "https://github.com/nuxtrdev/nuxtr-vscode/pull/24",
+							"date": "2023-07"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "cardano-index",
+					"title": "Cardano open source index",
+					"tagline": "A list of Cardano's open source projects: formatting and readability.",
+					"body": [
+						"The index reformatted so that it reads as a list."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Cardano"
+					],
+					"url": "https://github.com/micahkendall/cardano-opensource-index/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-12"
+					],
+					"links": [
+						{
+							"label": "chore: formatting and readability",
+							"url": "https://github.com/micahkendall/cardano-opensource-index/pull/3",
+							"date": "2023-12"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "edge-logger",
+					"title": "Baselime edge logger",
+					"tagline": "A logger for edge runtimes: typos in the readme.",
+					"body": [
+						"Typos in the readme, fixed."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Baselime"
+					],
+					"url": "https://github.com/baselime/edge-logger/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2024,
+					"ended": 2024,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2024-04"
+					],
+					"links": [
+						{
+							"label": "chore: fix some typos in the readme",
+							"url": "https://github.com/baselime/edge-logger/pull/5",
+							"date": "2024-04"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "firstcommit",
+					"title": "firstcommit.is",
+					"tagline": "Daniel Roe's first-commit finder: a typo in its description.",
+					"body": [
+						"A typo in the description the page gives to search engines and link previews, fixed."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "TypeScript",
+					"stack": [
+						"Nuxt"
+					],
+					"url": "https://github.com/danielroe/firstcommit.is/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2023,
+					"ended": 2023,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2023-09"
+					],
+					"links": [
+						{
+							"label": "fix: typo in server seo meta description/og description",
+							"url": "https://github.com/danielroe/firstcommit.is/pull/17",
+							"date": "2023-09"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "eslint-plugin-replyguy",
+					"title": "eslint-plugin-replyguy",
+					"tagline": "A joke ESLint plugin: a rule against classes.",
+					"body": [
+						"A `no-class` rule, for the reply guy who tells you not to use classes."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "JavaScript",
+					"stack": [
+						"ESLint"
+					],
+					"url": "https://github.com/jlengstorf/eslint-plugin-replyguy/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2020,
+					"ended": 2020,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2020-08"
+					],
+					"links": [
+						{
+							"label": "feat: add no class rule",
+							"url": "https://github.com/jlengstorf/eslint-plugin-replyguy/pull/6",
+							"date": "2020-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "ream",
+					"title": "Ream",
+					"tagline": "A Vue framework from 2020: typos in the readme.",
+					"body": [
+						"Typos in the readme, fixed."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Vue"
+					],
+					"url": "https://github.com/ream/ream/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2020,
+					"ended": 2020,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2020-08"
+					],
+					"links": [
+						{
+							"label": "hotfix: Typos in Readme",
+							"url": "https://github.com/ream/ream/pull/83",
+							"date": "2020-08"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "prisma",
+					"title": "Prisma 1",
+					"tagline": "The first Prisma: a correction to the introspection guide.",
+					"body": [
+						"A correction to the documentation of `prisma introspect`."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "MDX",
+					"stack": [
+						"Prisma"
+					],
+					"url": "https://github.com/prisma/prisma1/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2019,
+					"ended": 2019,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2019-05"
+					],
+					"links": [
+						{
+							"label": "Update prisma-introspect-xcv3.mdx",
+							"url": "https://github.com/prisma/prisma1/pull/4512",
+							"date": "2019-05"
+						}
+					],
+					"cover": "merge"
+				},
+				{
+					"name": "vue-docs",
+					"title": "Vue.js documentation",
+					"tagline": "The first pull request here: an example in the Vue 1 guide, corrected in 2015.",
+					"body": [
+						"`this` for `self` in an example of the guide, in October 2015. The oldest merged pull request on the account."
+					],
+					"points": [],
+					"kind": "upstream",
+					"shelf": "upstream",
+					"language": "Markdown",
+					"stack": [
+						"Vue"
+					],
+					"url": "https://github.com/vuejs/v2.vuejs.org/pulls?q=is%3Apr+author%3AHebilicious+is%3Amerged",
+					"homepage": null,
+					"archived": false,
+					"repo": null,
+					"started": 2015,
+					"ended": 2015,
+					"featured": null,
+					"contributions": 1,
+					"activity": [
+						"2015-10"
+					],
+					"links": [
+						{
+							"label": "Changing this with self",
+							"url": "https://github.com/vuejs/v2.vuejs.org/pull/137",
+							"date": "2015-10"
+						}
+					],
+					"cover": "merge"
 				}
 			]
 		}
@@ -228,111 +3766,111 @@ export const posts = [
 		],
 		"notes": [
 			{
-				"id": "fn-1",
+				"id": "hyper-anabasis-fn-1",
 				"number": 1,
-				"html": "<p>While the inscription is widely cited, its historical accuracy is debated. The earliest mentions appear centuries after Plato’s death. <a href=\"https://mathshistory.st-andrews.ac.uk/Biographies/Plato/\">University of St Andrews, School of Mathematics and Statistics</a></p>",
+				"html": "<p>While the inscription is widely cited, its historical accuracy is debated. The earliest mentions appear centuries after Plato’s death. <a href=\"https://mathshistory.st-andrews.ac.uk/Biographies/Plato/\" target=\"_blank\" rel=\"noopener noreferrer\">University of St Andrews, School of Mathematics and Statistics</a></p>",
 				"text": "While the inscription is widely cited, its historical accuracy is debated. The earliest mentions appear centuries after Plato’s death. University of St Andrews, School of Mathematics and Statistics"
 			},
 			{
-				"id": "fn-2",
+				"id": "hyper-anabasis-fn-2",
 				"number": 2,
-				"html": "<p>See Aristotle’s collected works, available online through <a href=\"http://classics.mit.edu/Aristotle/physics.html\">The Internet Classics Archive by MIT</a>.</p>",
+				"html": "<p>See Aristotle’s collected works, available online through <a href=\"http://classics.mit.edu/Aristotle/physics.html\" target=\"_blank\" rel=\"noopener noreferrer\">The Internet Classics Archive by MIT</a>.</p>",
 				"text": "See Aristotle’s collected works, available online through The Internet Classics Archive by MIT."
 			},
 			{
-				"id": "fn-3",
+				"id": "hyper-anabasis-fn-3",
 				"number": 3,
-				"html": "<p>The closing of the Academy is a significant marker. See <a href=\"https://www.oxfordhandbooks.com/view/10.1093/oxfordhb/9780199935321.001.0001/oxfordhb-9780199935321-e-56\">Struck, P. T. (2014). <em>The Closing of the Neoplatonic Academy at Athens</em>. Oxford Handbooks Online.</a></p>",
+				"html": "<p>The closing of the Academy is a significant marker. See <a href=\"https://www.oxfordhandbooks.com/view/10.1093/oxfordhb/9780199935321.001.0001/oxfordhb-9780199935321-e-56\" target=\"_blank\" rel=\"noopener noreferrer\">Struck, P. T. (2014). <em>The Closing of the Neoplatonic Academy at Athens</em>. Oxford Handbooks Online.</a></p>",
 				"text": "The closing of the Academy is a significant marker. See Struck, P. T. (2014). The Closing of the Neoplatonic Academy at Athens. Oxford Handbooks Online."
 			},
 			{
-				"id": "fn-4",
+				"id": "hyper-anabasis-fn-4",
 				"number": 4,
-				"html": "<p>The concept of philosophy as the \"handmaiden of theology\" (ancilla theologiae) was a guiding principle for many medieval thinkers, most famously Thomas Aquinas. <a href=\"https://faculty.fordham.edu/klima/ancilla.htm\">Boston University, \"Ancilla Theologiae\"</a></p>",
-				"text": "The concept of philosophy as the \"handmaiden of theology\" (ancilla theologiae) was a guiding principle for many medieval thinkers, most famously Thomas Aquinas. Boston University, \"Ancilla Theologiae\""
+				"html": "<p>The concept of philosophy as the “handmaiden of theology” (ancilla theologiae) was a guiding principle for many medieval thinkers, most famously Thomas Aquinas. <a href=\"https://faculty.fordham.edu/klima/ancilla.htm\" target=\"_blank\" rel=\"noopener noreferrer\">Boston University, “Ancilla Theologiae”</a></p>",
+				"text": "The concept of philosophy as the “handmaiden of theology” (ancilla theologiae) was a guiding principle for many medieval thinkers, most famously Thomas Aquinas. Boston University, “Ancilla Theologiae”"
 			},
 			{
-				"id": "fn-5",
+				"id": "hyper-anabasis-fn-5",
 				"number": 5,
-				"html": "<p>Leonardo’s anatomical studies were extensive and often conducted in secret due to societal and religious proscriptions. <a href=\"https://www.rct.uk/collection/publications/leonardo-da-vinci-the-mechanics-of-man\">\"Leonardo da Vinci: the mechanics of man\", Royal Collection Trust</a>.</p>",
-				"text": "Leonardo’s anatomical studies were extensive and often conducted in secret due to societal and religious proscriptions. \"Leonardo da Vinci: the mechanics of man\", Royal Collection Trust."
+				"html": "<p>Leonardo’s anatomical studies were extensive and often conducted in secret due to societal and religious proscriptions. <a href=\"https://www.rct.uk/collection/publications/leonardo-da-vinci-the-mechanics-of-man\" target=\"_blank\" rel=\"noopener noreferrer\">“Leonardo da Vinci: the mechanics of man”, Royal Collection Trust</a>.</p>",
+				"text": "Leonardo’s anatomical studies were extensive and often conducted in secret due to societal and religious proscriptions. “Leonardo da Vinci: the mechanics of man”, Royal Collection Trust."
 			},
 			{
-				"id": "fn-6",
+				"id": "hyper-anabasis-fn-6",
 				"number": 6,
-				"html": "<p>This interpretation was famously proposed by Dr. Frank Lynn Meshberger in the Journal of the American Medical Association. <a href=\"https://www.semanticscholar.org/paper/An-interpretation-of-Michelangelo%27s-Creation-of-on-Meshberger/4200f3a2c8b63940469bd5a408911bc9178afdf5\">Meshberger, F. L. (1990). \"An interpretation of Michelangelo’s Creation of Adam based on neuroanatomy\". JAMA, 264(14), 1837-1841.</a></p>",
-				"text": "This interpretation was famously proposed by Dr. Frank Lynn Meshberger in the Journal of the American Medical Association. Meshberger, F. L. (1990). \"An interpretation of Michelangelo’s Creation of Adam based on neuroanatomy\". JAMA, 264(14), 1837-1841."
+				"html": "<p>This interpretation was famously proposed by Dr. Frank Lynn Meshberger in the Journal of the American Medical Association. <a href=\"https://www.semanticscholar.org/paper/An-interpretation-of-Michelangelo%27s-Creation-of-on-Meshberger/4200f3a2c8b63940469bd5a408911bc9178afdf5\" target=\"_blank\" rel=\"noopener noreferrer\">Meshberger, F. L. (1990). “An interpretation of Michelangelo’s Creation of Adam based on neuroanatomy”. JAMA, 264(14), 1837-1841.</a></p>",
+				"text": "This interpretation was famously proposed by Dr. Frank Lynn Meshberger in the Journal of the American Medical Association. Meshberger, F. L. (1990). “An interpretation of Michelangelo’s Creation of Adam based on neuroanatomy”. JAMA, 264(14), 1837-1841."
 			},
 			{
-				"id": "fn-7",
+				"id": "hyper-anabasis-fn-7",
 				"number": 7,
-				"html": "<p>The \"Galileo Affair\" is a well-documented historical event. For a summary of primary sources, see <a href=\"https://famous-trials.com/galileotrial/1014-home\">\"Famous Trials\" by Professor Douglas O. Linder</a>.</p>",
-				"text": "The \"Galileo Affair\" is a well-documented historical event. For a summary of primary sources, see \"Famous Trials\" by Professor Douglas O. Linder."
+				"html": "<p>The “Galileo Affair” is a well-documented historical event. For a summary of primary sources, see <a href=\"https://famous-trials.com/galileotrial/1014-home\" target=\"_blank\" rel=\"noopener noreferrer\">“Famous Trials” by Professor Douglas O. Linder</a>.</p>",
+				"text": "The “Galileo Affair” is a well-documented historical event. For a summary of primary sources, see “Famous Trials” by Professor Douglas O. Linder."
 			},
 			{
-				"id": "fn-8",
+				"id": "hyper-anabasis-fn-8",
 				"number": 8,
-				"html": "<p>Isaac Newton’s <strong>Philosophiæ Naturalis Principia Mathematica</strong> (1687) is a cornerstone of modern science. A digitized version is available at the <a href=\"https://cudl.lib.cam.ac.uk/view/PR-ADV-B-00039-00001/1\">Cambridge University Library</a>.</p>",
+				"html": "<p>Isaac Newton’s <strong>Philosophiæ Naturalis Principia Mathematica</strong> (1687) is a cornerstone of modern science. A digitized version is available at the <a href=\"https://cudl.lib.cam.ac.uk/view/PR-ADV-B-00039-00001/1\" target=\"_blank\" rel=\"noopener noreferrer\">Cambridge University Library</a>.</p>",
 				"text": "Isaac Newton’s Philosophiæ Naturalis Principia Mathematica (1687) is a cornerstone of modern science. A digitized version is available at the Cambridge University Library."
 			},
 			{
-				"id": "fn-9",
+				"id": "hyper-anabasis-fn-9",
 				"number": 9,
-				"html": "<p>Diderot’s <strong>Encyclopédie, ou dictionnaire raisonné des sciences, des arts et des métiers</strong> (1751-1772) was a seminal work of the Enlightenment. See the online version hosted by the <a href=\"https://gallica.bnf.fr/ark:/12148/bpt6k50534p/f2.item.r=encyclopedie.langEN\">Bibliothèque Nationale de France</a>.</p>",
+				"html": "<p>Diderot’s <strong>Encyclopédie, ou dictionnaire raisonné des sciences, des arts et des métiers</strong> (1751-1772) was a seminal work of the Enlightenment. See the online version hosted by the <a href=\"https://gallica.bnf.fr/ark:/12148/bpt6k50534p/f2.item.r=encyclopedie.langEN\" target=\"_blank\" rel=\"noopener noreferrer\">Bibliothèque Nationale de France</a>.</p>",
 				"text": "Diderot’s Encyclopédie, ou dictionnaire raisonné des sciences, des arts et des métiers (1751-1772) was a seminal work of the Enlightenment. See the online version hosted by the Bibliothèque Nationale de France."
 			},
 			{
-				"id": "fn-10",
+				"id": "hyper-anabasis-fn-10",
 				"number": 10,
-				"html": "<p>Adam Smith’s <strong>An Inquiry into the Nature and Causes of the Wealth of Nations</strong> (1776) is a foundational text in classical economics. See the version at the <a href=\"https://www.econlib.org/library/Smith/smWN.html\">Online Library of Liberty</a>.</p>",
+				"html": "<p>Adam Smith’s <strong>An Inquiry into the Nature and Causes of the Wealth of Nations</strong> (1776) is a foundational text in classical economics. See the version at the <a href=\"https://www.econlib.org/library/Smith/smWN.html\" target=\"_blank\" rel=\"noopener noreferrer\">Online Library of Liberty</a>.</p>",
 				"text": "Adam Smith’s An Inquiry into the Nature and Causes of the Wealth of Nations (1776) is a foundational text in classical economics. See the version at the Online Library of Liberty."
 			},
 			{
-				"id": "fn-11",
+				"id": "hyper-anabasis-fn-11",
 				"number": 11,
-				"html": "<p>The phrase \"Sapere aude\" (\"Dare to know\") was used by Immanuel Kant in his 1784 essay <a href=\"https://en.wikipedia.org/wiki/What_Is_Enlightenment%3F\">\"Answering the Question: What Is Enlightenment?\"</a>.</p>",
-				"text": "The phrase \"Sapere aude\" (\"Dare to know\") was used by Immanuel Kant in his 1784 essay \"Answering the Question: What Is Enlightenment?\"."
+				"html": "<p>The phrase “Sapere aude” (“Dare to know”) was used by Immanuel Kant in his 1784 essay <a href=\"https://en.wikipedia.org/wiki/What_Is_Enlightenment%3F\" target=\"_blank\" rel=\"noopener noreferrer\">“Answering the Question: What Is Enlightenment?”</a>.</p>",
+				"text": "The phrase “Sapere aude” (“Dare to know”) was used by Immanuel Kant in his 1784 essay “Answering the Question: What Is Enlightenment?”."
 			},
 			{
-				"id": "fn-12",
+				"id": "hyper-anabasis-fn-12",
 				"number": 12,
-				"html": "<p>The EU’s policy on GMOs is guided by the precautionary principle. See the <a href=\"https://www.efsa.europa.eu/en/topics/topic/gmo\">EU’s official page on the topic</a>.</p>",
+				"html": "<p>The EU’s policy on GMOs is guided by the precautionary principle. See the <a href=\"https://www.efsa.europa.eu/en/topics/topic/gmo\" target=\"_blank\" rel=\"noopener noreferrer\">EU’s official page on the topic</a>.</p>",
 				"text": "The EU’s policy on GMOs is guided by the precautionary principle. See the EU’s official page on the topic."
 			},
 			{
-				"id": "fn-13",
+				"id": "hyper-anabasis-fn-13",
 				"number": 13,
-				"html": "<p>For a deeper dive into the topic: <a href=\"https://www.youtube.com/watch?v=7TmcXYp8xu4\">Are GMOs Good or Bad? Genetic Engineering &#x26; Our Food, Kurzgesagt – In a Nutshell</a></p>",
+				"html": "<p>For a deeper dive into the topic: <a href=\"https://www.youtube.com/watch?v=7TmcXYp8xu4\" target=\"_blank\" rel=\"noopener noreferrer\">Are GMOs Good or Bad? Genetic Engineering &#x26; Our Food, Kurzgesagt – In a Nutshell</a></p>",
 				"text": "For a deeper dive into the topic: Are GMOs Good or Bad? Genetic Engineering & Our Food, Kurzgesagt – In a Nutshell"
 			},
 			{
-				"id": "fn-14",
+				"id": "hyper-anabasis-fn-14",
 				"number": 14,
-				"html": "<p><a href=\"https://news.stanford.edu/stories/2015/05/stanford-study-on-brain-waves-shows-how-different-teaching-methods-affect-reading-development\">Stanford study on brain waves shows how different teaching methods affect reading development</a>; <a href=\"https://www.sciencedirect.com/science/article/pii/S0093934X15000772\">Hemispheric specialization for visual words is shaped by attention to sublexical units during initial learning</a>.</p>",
+				"html": "<p><a href=\"https://news.stanford.edu/stories/2015/05/stanford-study-on-brain-waves-shows-how-different-teaching-methods-affect-reading-development\" target=\"_blank\" rel=\"noopener noreferrer\">Stanford study on brain waves shows how different teaching methods affect reading development</a>; <a href=\"https://www.sciencedirect.com/science/article/pii/S0093934X15000772\" target=\"_blank\" rel=\"noopener noreferrer\">Hemispheric specialization for visual words is shaped by attention to sublexical units during initial learning</a>.</p>",
 				"text": "Stanford study on brain waves shows how different teaching methods affect reading development; Hemispheric specialization for visual words is shaped by attention to sublexical units during initial learning."
 			},
 			{
-				"id": "fn-15",
+				"id": "hyper-anabasis-fn-15",
 				"number": 15,
-				"html": "<p>Adult skills in literacy and numeracy declining or stagnating in most OECD countries <a href=\"https://www.oecd.org/en/about/news/press-releases/2024/12/adult-skills-in-literacy-and-numeracy-declining-or-stagnating-in-most-oecd-countries.html\">OECD</a></p>",
+				"html": "<p>Adult skills in literacy and numeracy declining or stagnating in most OECD countries <a href=\"https://www.oecd.org/en/about/news/press-releases/2024/12/adult-skills-in-literacy-and-numeracy-declining-or-stagnating-in-most-oecd-countries.html\" target=\"_blank\" rel=\"noopener noreferrer\">OECD</a></p>",
 				"text": "Adult skills in literacy and numeracy declining or stagnating in most OECD countries OECD"
 			},
 			{
-				"id": "fn-16",
+				"id": "hyper-anabasis-fn-16",
 				"number": 16,
-				"html": "<p>Germany’s <strong>Energiewende</strong> has led to a paradoxical increase in coal use. For a comparison of CO2 intensity, looking at 5y historical data, Germany has emitted 14.9x more CO₂ than France. <a href=\"https://app.electricitymaps.com/map/zone/FR/5y/monthly\">Germany (283g CO₂eq/kWh)</a>, <a href=\"https://app.electricitymaps.com/map/zone/FR/5y/monthly\">France (19g CO₂eq/kWh)</a>.</p>",
+				"html": "<p>Germany’s <strong>Energiewende</strong> has led to a paradoxical increase in coal use. For a comparison of CO2 intensity, looking at 5y historical data, Germany has emitted 14.9x more CO₂ than France. <a href=\"https://app.electricitymaps.com/map/zone/FR/5y/monthly\" target=\"_blank\" rel=\"noopener noreferrer\">Germany (283g CO₂eq/kWh)</a>, <a href=\"https://app.electricitymaps.com/map/zone/FR/5y/monthly\" target=\"_blank\" rel=\"noopener noreferrer\">France (19g CO₂eq/kWh)</a>.</p>",
 				"text": "Germany’s Energiewende has led to a paradoxical increase in coal use. For a comparison of CO2 intensity, looking at 5y historical data, Germany has emitted 14.9x more CO₂ than France. Germany (283g CO₂eq/kWh), France (19g CO₂eq/kWh)."
 			},
 			{
-				"id": "fn-17",
+				"id": "hyper-anabasis-fn-17",
 				"number": 17,
-				"html": "<p>\"Anabasis\" is a Greek term meaning \"a journey upward.\" \"Hyper Anabasis\" suggests a great ascent beyond current limitations.</p>",
-				"text": "\"Anabasis\" is a Greek term meaning \"a journey upward.\" \"Hyper Anabasis\" suggests a great ascent beyond current limitations."
+				"html": "<p>“Anabasis” is a Greek term meaning “a journey upward.” “Hyper Anabasis” suggests a great ascent beyond current limitations.</p>",
+				"text": "“Anabasis” is a Greek term meaning “a journey upward.” “Hyper Anabasis” suggests a great ascent beyond current limitations."
 			}
 		],
 		"blocks": [
 			{
-				"id": "b1",
+				"id": "hyper-anabasis-b1",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>European civilization’s intellectual, political, and material progress has always depended on the integration of its philosophical thought with its fundamental science; its mathematical, physical, and biological understanding of reality. When these two domains are unified, Europe thrives. When they are in schism, with philosophy detached from its empirical anchor, Europe falters and declines.</p>",
@@ -342,7 +3880,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b2",
+				"id": "hyper-anabasis-b2",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>This recurring pattern of synthesis and divergence can be traced through four distinct phases of Western history.</p>",
@@ -352,7 +3890,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b3",
+				"id": "hyper-anabasis-b3",
 				"kind": "heading",
 				"depth": 2,
 				"html": "<h2>I. The Classical Integration</h2>",
@@ -362,7 +3900,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b4",
+				"id": "hyper-anabasis-b4",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p><em>c. 600 BC – c. 529 AD</em></p>",
@@ -372,17 +3910,17 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b5",
+				"id": "hyper-anabasis-b5",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>In the classical world, no meaningful distinction existed between the philosopher and the scientist. They were unified in the pursuit of <em>logos</em> (reason) and <em>kosmos</em> (order). To be a \"thinker\" was, by definition, to be an investigator of reality at its most fundamental level. This synergy created a civilization that produced foundational insights in mathematics, politics, and ethics.</p>",
-				"text": "In the classical world, no meaningful distinction existed between the philosopher and the scientist. They were unified in the pursuit of logos (reason) and kosmos (order). To be a \"thinker\" was, by definition, to be an investigator of reality at its most fundamental level. This synergy created a civilization that produced foundational insights in mathematics, politics, and ethics.",
+				"html": "<p>In the classical world, no meaningful distinction existed between the philosopher and the scientist. They were unified in the pursuit of <em>logos</em> (reason) and <em>kosmos</em> (order). To be a “thinker” was, by definition, to be an investigator of reality at its most fundamental level. This synergy created a civilization that produced foundational insights in mathematics, politics, and ethics.</p>",
+				"text": "In the classical world, no meaningful distinction existed between the philosopher and the scientist. They were unified in the pursuit of logos (reason) and kosmos (order). To be a “thinker” was, by definition, to be an investigator of reality at its most fundamental level. This synergy created a civilization that produced foundational insights in mathematics, politics, and ethics.",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b6",
+				"id": "hyper-anabasis-b6",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>Plato and the Academy (c. 428–348 BC)</h3>",
@@ -392,49 +3930,49 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b7",
+				"id": "hyper-anabasis-b7",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The philosopher Plato provides a key example. His Academy in Athens, the model for all future European universities, was built on this integration. The inscription at its entrance, though possibly legendary, captures this spirit perfectly:<sup><a href=\"#user-content-fn-1\" id=\"user-content-fnref-1\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
+				"html": "<p>The philosopher Plato provides a key example. His Academy in Athens, the model for all future European universities, was built on this integration. The inscription at its entrance, though possibly legendary, captures this spirit perfectly:<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-1\" data-footnote-ref=\"hyper-anabasis-fn-1\" data-footnote-back=\"1\" aria-label=\"Note 1\">1</a></sup></p>",
 				"text": "The philosopher Plato provides a key example. His Academy in Athens, the model for all future European universities, was built on this integration. The inscription at its entrance, though possibly legendary, captures this spirit perfectly:",
 				"noteIds": [
-					"fn-1"
+					"hyper-anabasis-fn-1"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b8",
+				"id": "hyper-anabasis-b8",
 				"kind": "quote",
 				"depth": 0,
-				"html": "<blockquote>\n<p>\"Let no one ignorant of geometry enter here.\"</p>\n</blockquote>",
-				"text": "\"Let no one ignorant of geometry enter here.\"",
+				"html": "<blockquote>\n<p>“Let no one ignorant of geometry enter here.”</p>\n</blockquote>",
+				"text": "“Let no one ignorant of geometry enter here.”",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b9",
+				"id": "hyper-anabasis-b9",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>Plato’s \"Theory of Forms\" argues that the physical world is a mere shadow of a perfect, eternal world of \"Forms.\" The only way to perceive this true reality was through pure reason, and the highest, most rigorous form of this reason was <strong>mathematics</strong>. For Plato, geometry was the key to unlocking a higher understanding of existence itself.</p>",
-				"text": "Plato’s \"Theory of Forms\" argues that the physical world is a mere shadow of a perfect, eternal world of \"Forms.\" The only way to perceive this true reality was through pure reason, and the highest, most rigorous form of this reason was mathematics. For Plato, geometry was the key to unlocking a higher understanding of existence itself.",
+				"html": "<p>Plato’s “Theory of Forms” argues that the physical world is a mere shadow of a perfect, eternal world of “Forms.” The only way to perceive this true reality was through pure reason, and the highest, most rigorous form of this reason was <strong>mathematics</strong>. For Plato, geometry was the key to unlocking a higher understanding of existence itself.</p>",
+				"text": "Plato’s “Theory of Forms” argues that the physical world is a mere shadow of a perfect, eternal world of “Forms.” The only way to perceive this true reality was through pure reason, and the highest, most rigorous form of this reason was mathematics. For Plato, geometry was the key to unlocking a higher understanding of existence itself.",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b10",
+				"id": "hyper-anabasis-b10",
 				"kind": "figure",
 				"depth": 0,
-				"html": "<p><img src=\"/images/the-school-of-athens.jpg\" alt=\"The School of Athens; Raphael (~1510)\"></p>",
+				"html": "<figure class=\"Plate\"><img src=\"/images/the-school-of-athens.webp\" alt=\"The School of Athens; Raphael (~1510)\" width=\"2000\" height=\"1552\" style=\"--w: 2000; --h: 1552\" decoding=\"async\" loading=\"eager\"><figcaption>The School of Athens; Raphael (~1510)</figcaption></figure>",
 				"text": "The School of Athens; Raphael (~1510)",
 				"noteIds": [],
-				"image": "/images/the-school-of-athens.jpg",
+				"image": "/images/the-school-of-athens.webp",
 				"caption": "The School of Athens; Raphael (~1510)"
 			},
 			{
-				"id": "b11",
+				"id": "hyper-anabasis-b11",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>Aristotle, the Philosopher-Scientist (c. 384–322 BC)</h3>",
@@ -444,19 +3982,19 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b12",
+				"id": "hyper-anabasis-b12",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>Aristotle was the ultimate philosopher-scientist. His works were not just \"philosophy\" as we know it; they were the foundational texts for:<sup><a href=\"#user-content-fn-2\" id=\"user-content-fnref-2\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "Aristotle was the ultimate philosopher-scientist. His works were not just \"philosophy\" as we know it; they were the foundational texts for:",
+				"html": "<p>Aristotle was the ultimate philosopher-scientist. His works were not just “philosophy” as we know it; they were the foundational texts for:<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-2\" data-footnote-ref=\"hyper-anabasis-fn-2\" data-footnote-back=\"2\" aria-label=\"Note 2\">2</a></sup></p>",
+				"text": "Aristotle was the ultimate philosopher-scientist. His works were not just “philosophy” as we know it; they were the foundational texts for:",
 				"noteIds": [
-					"fn-2"
+					"hyper-anabasis-fn-2"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b13",
+				"id": "hyper-anabasis-b13",
 				"kind": "list",
 				"depth": 0,
 				"html": "<ul>\n<li>Physics (<em>Physics</em>)</li>\n<li>Biology (<em>History of Animals</em>)</li>\n<li>Formal Logic (<em>Prior Analytics</em>)</li>\n<li>Metaphysics (<em>Metaphysics</em>)</li>\n</ul>",
@@ -466,7 +4004,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b14",
+				"id": "hyper-anabasis-b14",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>For Aristotle, one could not understand ethics or politics without first understanding the <em>nature</em> of the world (physics) and the <em>nature</em> of man (biology, logic). He famously said:</p>",
@@ -476,17 +4014,17 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b15",
+				"id": "hyper-anabasis-b15",
 				"kind": "quote",
 				"depth": 0,
-				"html": "<blockquote>\n<p>\"In all things of nature there is something of the marvelous.\"</p>\n</blockquote>",
-				"text": "\"In all things of nature there is something of the marvelous.\"",
+				"html": "<blockquote>\n<p>“In all things of nature there is something of the marvelous.”</p>\n</blockquote>",
+				"text": "“In all things of nature there is something of the marvelous.”",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b16",
+				"id": "hyper-anabasis-b16",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>This holistic approach, where science informed philosophy and vice versa, was the engine of classical progress.</p>",
@@ -496,7 +4034,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b17",
+				"id": "hyper-anabasis-b17",
 				"kind": "heading",
 				"depth": 2,
 				"html": "<h2>II. The First Schism: Theological Subordination</h2>",
@@ -506,7 +4044,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b18",
+				"id": "hyper-anabasis-b18",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p><em>c. 529 AD – c. 1500 AD</em></p>",
@@ -516,19 +4054,19 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b19",
+				"id": "hyper-anabasis-b19",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The classical integration was deliberately fractured. The primary goal of European thought shifted from <strong>understanding the world</strong> to <strong>justifying God’s plan</strong>. This period began symbolically with the closing of Plato's Academy in 529 AD by Emperor Justinian I, an act that formally subjugated classical inquiry to Christian doctrine.<sup><a href=\"#user-content-fn-3\" id=\"user-content-fnref-3\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "The classical integration was deliberately fractured. The primary goal of European thought shifted from understanding the world to justifying God’s plan. This period began symbolically with the closing of Plato's Academy in 529 AD by Emperor Justinian I, an act that formally subjugated classical inquiry to Christian doctrine.",
+				"html": "<p>The classical integration was deliberately fractured. The primary goal of European thought shifted from <strong>understanding the world</strong> to <strong>justifying God’s plan</strong>. This period began symbolically with the closing of Plato’s Academy in 529 AD by Emperor Justinian I, an act that formally subjugated classical inquiry to Christian doctrine.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-3\" data-footnote-ref=\"hyper-anabasis-fn-3\" data-footnote-back=\"3\" aria-label=\"Note 3\">3</a></sup></p>",
+				"text": "The classical integration was deliberately fractured. The primary goal of European thought shifted from understanding the world to justifying God’s plan. This period began symbolically with the closing of Plato’s Academy in 529 AD by Emperor Justinian I, an act that formally subjugated classical inquiry to Christian doctrine.",
 				"noteIds": [
-					"fn-3"
+					"hyper-anabasis-fn-3"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b20",
+				"id": "hyper-anabasis-b20",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>The Rise of Theocentrism</h3>",
@@ -538,7 +4076,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b21",
+				"id": "hyper-anabasis-b21",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>With the fall of the Western Roman Empire, the Church became the singular, unifying political and intellectual power in Europe. This power was maintained by replacing the classical focus on <em>logos</em> (rational inquiry) with a focus on <em>theos</em> (God).</p>",
@@ -548,19 +4086,19 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b22",
+				"id": "hyper-anabasis-b22",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>Truth was no longer discovered; it was <strong>revealed</strong> through scripture and interpreted by the Church hierarchy. Philosophy's new role, as articulated by thinkers like Thomas Aquinas, was to be the \"handmaiden of theology.\" Its purpose was solely to explain and defend religious doctrine.<sup><a href=\"#user-content-fn-4\" id=\"user-content-fnref-4\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "Truth was no longer discovered; it was revealed through scripture and interpreted by the Church hierarchy. Philosophy's new role, as articulated by thinkers like Thomas Aquinas, was to be the \"handmaiden of theology.\" Its purpose was solely to explain and defend religious doctrine.",
+				"html": "<p>Truth was no longer discovered; it was <strong>revealed</strong> through scripture and interpreted by the Church hierarchy. Philosophy’s new role, as articulated by thinkers like Thomas Aquinas, was to be the “handmaiden of theology.” Its purpose was solely to explain and defend religious doctrine.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-4\" data-footnote-ref=\"hyper-anabasis-fn-4\" data-footnote-back=\"4\" aria-label=\"Note 4\">4</a></sup></p>",
+				"text": "Truth was no longer discovered; it was revealed through scripture and interpreted by the Church hierarchy. Philosophy’s new role, as articulated by thinkers like Thomas Aquinas, was to be the “handmaiden of theology.” Its purpose was solely to explain and defend religious doctrine.",
 				"noteIds": [
-					"fn-4"
+					"hyper-anabasis-fn-4"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b23",
+				"id": "hyper-anabasis-b23",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>The Suppression of Scientific Inquiry</h3>",
@@ -570,7 +4108,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b24",
+				"id": "hyper-anabasis-b24",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>The schism did not just halt progress; it actively suppressed it. Science was forced underground, often associated with heresy.</p>",
@@ -580,73 +4118,73 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b25",
+				"id": "hyper-anabasis-b25",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>Leonardo da Vinci (1452-1519) had to conduct his revolutionary anatomical studies by dissecting human corpses in secret, directly defying Church law, to advance modern medicine. His work was, by necessity, hidden.<sup><a href=\"#user-content-fn-5\" id=\"user-content-fnref-5\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
+				"html": "<p>Leonardo da Vinci (1452-1519) had to conduct his revolutionary anatomical studies by dissecting human corpses in secret, directly defying Church law, to advance modern medicine. His work was, by necessity, hidden.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-5\" data-footnote-ref=\"hyper-anabasis-fn-5\" data-footnote-back=\"5\" aria-label=\"Note 5\">5</a></sup></p>",
 				"text": "Leonardo da Vinci (1452-1519) had to conduct his revolutionary anatomical studies by dissecting human corpses in secret, directly defying Church law, to advance modern medicine. His work was, by necessity, hidden.",
 				"noteIds": [
-					"fn-5"
+					"hyper-anabasis-fn-5"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b26",
+				"id": "hyper-anabasis-b26",
 				"kind": "quote",
 				"depth": 0,
-				"html": "<blockquote>\n<p>\"Nature is the source of all true knowledge. She has her own logic, her own laws, she has no effect without cause nor invention without necessity.\" - Leonardo da Vinci</p>\n</blockquote>",
-				"text": "\"Nature is the source of all true knowledge. She has her own logic, her own laws, she has no effect without cause nor invention without necessity.\" - Leonardo da Vinci",
+				"html": "<blockquote>\n<p>“Nature is the source of all true knowledge. She has her own logic, her own laws, she has no effect without cause nor invention without necessity.” - Leonardo da Vinci</p>\n</blockquote>",
+				"text": "“Nature is the source of all true knowledge. She has her own logic, her own laws, she has no effect without cause nor invention without necessity.” - Leonardo da Vinci",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b27",
+				"id": "hyper-anabasis-b27",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>Decades later, it is widely theorized that Michelangelo (1475-1564) embedded a subversively scientific message in his most famous work. In \"The Creation of Adam\" on the Sistine Chapel ceiling, the shroud surrounding God forms a perfect, anatomically correct diagram of the human brain. This is interpreted as a hidden assertion that divine power is a product of <strong>human intellect</strong>—a dangerous, heretical idea that placed reason on par with God, hidden in plain sight from the Pope.<sup><a href=\"#user-content-fn-6\" id=\"user-content-fnref-6\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "Decades later, it is widely theorized that Michelangelo (1475-1564) embedded a subversively scientific message in his most famous work. In \"The Creation of Adam\" on the Sistine Chapel ceiling, the shroud surrounding God forms a perfect, anatomically correct diagram of the human brain. This is interpreted as a hidden assertion that divine power is a product of human intellect—a dangerous, heretical idea that placed reason on par with God, hidden in plain sight from the Pope.",
+				"html": "<p>Decades later, it is widely theorized that Michelangelo (1475-1564) embedded a subversively scientific message in his most famous work. In “The Creation of Adam” on the Sistine Chapel ceiling, the shroud surrounding God forms a perfect, anatomically correct diagram of the human brain. This is interpreted as a hidden assertion that divine power is a product of <strong>human intellect</strong>—a dangerous, heretical idea that placed reason on par with God, hidden in plain sight from the Pope.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-6\" data-footnote-ref=\"hyper-anabasis-fn-6\" data-footnote-back=\"6\" aria-label=\"Note 6\">6</a></sup></p>",
+				"text": "Decades later, it is widely theorized that Michelangelo (1475-1564) embedded a subversively scientific message in his most famous work. In “The Creation of Adam” on the Sistine Chapel ceiling, the shroud surrounding God forms a perfect, anatomically correct diagram of the human brain. This is interpreted as a hidden assertion that divine power is a product of human intellect—a dangerous, heretical idea that placed reason on par with God, hidden in plain sight from the Pope.",
 				"noteIds": [
-					"fn-6"
+					"hyper-anabasis-fn-6"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b28",
+				"id": "hyper-anabasis-b28",
 				"kind": "figure",
 				"depth": 0,
-				"html": "<p><img src=\"/images/the-creation-of-adam.webp\" alt=\"The Creation of Adam; Michelangelo (~1510), (Composite View, credit F. L. Meshberger)\"></p>",
+				"html": "<figure class=\"Plate\"><img src=\"/images/the-creation-of-adam.webp\" alt=\"The Creation of Adam; Michelangelo (~1510), (Composite View, credit F. L. Meshberger)\" width=\"600\" height=\"694\" style=\"--w: 600; --h: 694\" decoding=\"async\" loading=\"eager\"><figcaption>The Creation of Adam; Michelangelo (~1510), (Composite View, credit F. L. Meshberger)</figcaption></figure>",
 				"text": "The Creation of Adam; Michelangelo (~1510), (Composite View, credit F. L. Meshberger)",
 				"noteIds": [],
 				"image": "/images/the-creation-of-adam.webp",
 				"caption": "The Creation of Adam; Michelangelo (~1510), (Composite View, credit F. L. Meshberger)"
 			},
 			{
-				"id": "b29",
+				"id": "hyper-anabasis-b29",
 				"kind": "heading",
 				"depth": 3,
-				"html": "<h3>The Punishment of Truth: Galileo's Trial</h3>",
-				"text": "The Punishment of Truth: Galileo's Trial",
+				"html": "<h3>The Punishment of Truth: Galileo’s Trial</h3>",
+				"text": "The Punishment of Truth: Galileo’s Trial",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b30",
+				"id": "hyper-anabasis-b30",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>When this hidden science finally became too bold to ignore, suppression turned to punishment. The Trial of Galileo in 1633 is the definitive example.<sup><a href=\"#user-content-fn-7\" id=\"user-content-fnref-7\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
+				"html": "<p>When this hidden science finally became too bold to ignore, suppression turned to punishment. The Trial of Galileo in 1633 is the definitive example.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-7\" data-footnote-ref=\"hyper-anabasis-fn-7\" data-footnote-back=\"7\" aria-label=\"Note 7\">7</a></sup></p>",
 				"text": "When this hidden science finally became too bold to ignore, suppression turned to punishment. The Trial of Galileo in 1633 is the definitive example.",
 				"noteIds": [
-					"fn-7"
+					"hyper-anabasis-fn-7"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b31",
+				"id": "hyper-anabasis-b31",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>Galileo used a telescope to gather empirical data, such as the phases of Venus and the moons of Jupiter, which proved the Heliocentric (sun-centered) model. The Church establishment, whose political and philosophical authority was tied to the Geocentric (Earth-centered) model, declared this a heresy. Galileo was forced to recant.</p>",
@@ -656,7 +4194,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b32",
+				"id": "hyper-anabasis-b32",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>Theologians, in their role as thinkers, used their power to suppress the fundamental scientist. This act demonstrates the schism perfectly: critical thought based on evidence was subordinated to power based on dogma.</p>",
@@ -666,17 +4204,17 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b33",
+				"id": "hyper-anabasis-b33",
 				"kind": "figure",
 				"depth": 0,
-				"html": "<p><img src=\"/images/galileo-facing-the-roman-inquisition.jpg\" alt=\"Galileo facing the Roman Inquisition; Cristiano Banti (1857)\"></p>",
+				"html": "<figure class=\"Plate\"><img src=\"/images/galileo-facing-the-roman-inquisition.webp\" alt=\"Galileo facing the Roman Inquisition; Cristiano Banti (1857)\" width=\"2000\" height=\"1530\" style=\"--w: 2000; --h: 1530\" decoding=\"async\" loading=\"eager\"><figcaption>Galileo facing the Roman Inquisition; Cristiano Banti (1857)</figcaption></figure>",
 				"text": "Galileo facing the Roman Inquisition; Cristiano Banti (1857)",
 				"noteIds": [],
-				"image": "/images/galileo-facing-the-roman-inquisition.jpg",
+				"image": "/images/galileo-facing-the-roman-inquisition.webp",
 				"caption": "Galileo facing the Roman Inquisition; Cristiano Banti (1857)"
 			},
 			{
-				"id": "b34",
+				"id": "hyper-anabasis-b34",
 				"kind": "heading",
 				"depth": 2,
 				"html": "<h2>III. The Reunion: The Enlightenment</h2>",
@@ -686,7 +4224,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b35",
+				"id": "hyper-anabasis-b35",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p><em>c. 1687 – c. 1800</em></p>",
@@ -696,7 +4234,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b36",
+				"id": "hyper-anabasis-b36",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>The first schism was dismantled by a powerful reintegration, with fundamental science providing the very tools philosophers needed to break free from dogma.</p>",
@@ -706,49 +4244,49 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b37",
+				"id": "hyper-anabasis-b37",
 				"kind": "heading",
 				"depth": 3,
-				"html": "<h3>Newton's \"Clockwork Universe\"</h3>",
-				"text": "Newton's \"Clockwork Universe\"",
+				"html": "<h3>Newton’s “Clockwork Universe”</h3>",
+				"text": "Newton’s “Clockwork Universe”",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b38",
+				"id": "hyper-anabasis-b38",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The catalyst for this reunion was Isaac Newton’s <em>Philosophiæ Naturalis Principia Mathematica</em> (1687). In this work, Newton proved that the entire cosmos, from a falling apple to the orbits of planets, was governed by <strong>discoverable, rational, mathematical laws</strong>.<sup><a href=\"#user-content-fn-8\" id=\"user-content-fnref-8\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup> This effectively \"killed\" the medieval God of daily miracles and replaced him with a \"Clockmaker God\" who created the system and let it run. This opened the door for human reason to become the primary authority.</p>",
-				"text": "The catalyst for this reunion was Isaac Newton’s Philosophiæ Naturalis Principia Mathematica (1687). In this work, Newton proved that the entire cosmos, from a falling apple to the orbits of planets, was governed by discoverable, rational, mathematical laws. This effectively \"killed\" the medieval God of daily miracles and replaced him with a \"Clockmaker God\" who created the system and let it run. This opened the door for human reason to become the primary authority.",
+				"html": "<p>The catalyst for this reunion was Isaac Newton’s <em>Philosophiæ Naturalis Principia Mathematica</em> (1687). In this work, Newton proved that the entire cosmos, from a falling apple to the orbits of planets, was governed by <strong>discoverable, rational, mathematical laws</strong>.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-8\" data-footnote-ref=\"hyper-anabasis-fn-8\" data-footnote-back=\"8\" aria-label=\"Note 8\">8</a></sup> This effectively “killed” the medieval God of daily miracles and replaced him with a “Clockmaker God” who created the system and let it run. This opened the door for human reason to become the primary authority.</p>",
+				"text": "The catalyst for this reunion was Isaac Newton’s Philosophiæ Naturalis Principia Mathematica (1687). In this work, Newton proved that the entire cosmos, from a falling apple to the orbits of planets, was governed by discoverable, rational, mathematical laws. This effectively “killed” the medieval God of daily miracles and replaced him with a “Clockmaker God” who created the system and let it run. This opened the door for human reason to become the primary authority.",
 				"noteIds": [
-					"fn-8"
+					"hyper-anabasis-fn-8"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b39",
+				"id": "hyper-anabasis-b39",
 				"kind": "quote",
 				"depth": 0,
-				"html": "<blockquote>\n<p>\"I frame no hypotheses; for whatever is not deduced from the phenomena is to be called an hypothesis; and hypotheses, whether metaphysical or physical, whether of occult qualities or mechanical, have no place in experimental philosophy.\" - Isaac Newton</p>\n</blockquote>",
-				"text": "\"I frame no hypotheses; for whatever is not deduced from the phenomena is to be called an hypothesis; and hypotheses, whether metaphysical or physical, whether of occult qualities or mechanical, have no place in experimental philosophy.\" - Isaac Newton",
+				"html": "<blockquote>\n<p>“I frame no hypotheses; for whatever is not deduced from the phenomena is to be called an hypothesis; and hypotheses, whether metaphysical or physical, whether of occult qualities or mechanical, have no place in experimental philosophy.” - Isaac Newton</p>\n</blockquote>",
+				"text": "“I frame no hypotheses; for whatever is not deduced from the phenomena is to be called an hypothesis; and hypotheses, whether metaphysical or physical, whether of occult qualities or mechanical, have no place in experimental philosophy.” - Isaac Newton",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b40",
+				"id": "hyper-anabasis-b40",
 				"kind": "figure",
 				"depth": 0,
-				"html": "<p><img src=\"/images/principia-mathematica.png\" alt=\"Philosophiæ Naturalis Principia Mathematica; Isaac Newton (1687)\"></p>",
+				"html": "<figure class=\"Plate\"><img src=\"/images/principia-mathematica.webp\" alt=\"Philosophiæ Naturalis Principia Mathematica; Isaac Newton (1687)\" width=\"1444\" height=\"2000\" style=\"--w: 1444; --h: 2000\" decoding=\"async\" loading=\"eager\"><figcaption>Philosophiæ Naturalis Principia Mathematica; Isaac Newton (1687)</figcaption></figure>",
 				"text": "Philosophiæ Naturalis Principia Mathematica; Isaac Newton (1687)",
 				"noteIds": [],
-				"image": "/images/principia-mathematica.png",
+				"image": "/images/principia-mathematica.webp",
 				"caption": "Philosophiæ Naturalis Principia Mathematica; Isaac Newton (1687)"
 			},
 			{
-				"id": "b41",
+				"id": "hyper-anabasis-b41",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>The Enthronement of Reason</h3>",
@@ -758,52 +4296,52 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b42",
+				"id": "hyper-anabasis-b42",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>Enlightenment Philosophers used Newton's scientific certainty as a weapon against the \"superstition\" and \"irrationality\" of the Church and monarchy. In France, Diderot’s <em>Encyclopédie</em> (1751–1772) was the practical application: an attempt to catalog all human knowledge based on <strong>reason and science</strong>.<sup><a href=\"#user-content-fn-9\" id=\"user-content-fnref-9\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup> This movement led directly to the <strong>French Revolution</strong> and the concept of <em>laïcité</em> (secularism).</p>",
-				"text": "Enlightenment Philosophers used Newton's scientific certainty as a weapon against the \"superstition\" and \"irrationality\" of the Church and monarchy. In France, Diderot’s Encyclopédie (1751–1772) was the practical application: an attempt to catalog all human knowledge based on reason and science. This movement led directly to the French Revolution and the concept of laïcité (secularism).",
+				"html": "<p>Enlightenment Philosophers used Newton’s scientific certainty as a weapon against the “superstition” and “irrationality” of the Church and monarchy. In France, Diderot’s <em>Encyclopédie</em> (1751–1772) was the practical application: an attempt to catalog all human knowledge based on <strong>reason and science</strong>.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-9\" data-footnote-ref=\"hyper-anabasis-fn-9\" data-footnote-back=\"9\" aria-label=\"Note 9\">9</a></sup> This movement led directly to the <strong>French Revolution</strong> and the concept of <em>laïcité</em> (secularism).</p>",
+				"text": "Enlightenment Philosophers used Newton’s scientific certainty as a weapon against the “superstition” and “irrationality” of the Church and monarchy. In France, Diderot’s Encyclopédie (1751–1772) was the practical application: an attempt to catalog all human knowledge based on reason and science. This movement led directly to the French Revolution and the concept of laïcité (secularism).",
 				"noteIds": [
-					"fn-9"
+					"hyper-anabasis-fn-9"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b43",
+				"id": "hyper-anabasis-b43",
 				"kind": "figure",
 				"depth": 0,
-				"html": "<p><img src=\"/images/encyclopedie.jpg\" alt=\"L’Encyclopédie ou Dictionnaire raisonné des sciences, des arts et des métiers; Denis Diderot (1751–1772)\"></p>",
+				"html": "<figure class=\"Plate\"><img src=\"/images/encyclopedie.webp\" alt=\"L’Encyclopédie ou Dictionnaire raisonné des sciences, des arts et des métiers; Denis Diderot (1751–1772)\" width=\"1224\" height=\"2000\" style=\"--w: 1224; --h: 2000\" decoding=\"async\" loading=\"eager\"><figcaption>L’Encyclopédie ou Dictionnaire raisonné des sciences, des arts et des métiers; Denis Diderot (1751–1772)</figcaption></figure>",
 				"text": "L’Encyclopédie ou Dictionnaire raisonné des sciences, des arts et des métiers; Denis Diderot (1751–1772)",
 				"noteIds": [],
-				"image": "/images/encyclopedie.jpg",
+				"image": "/images/encyclopedie.webp",
 				"caption": "L’Encyclopédie ou Dictionnaire raisonné des sciences, des arts et des métiers; Denis Diderot (1751–1772)"
 			},
 			{
-				"id": "b44",
+				"id": "hyper-anabasis-b44",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>This was not an isolated French phenomenon. In the <strong>Scottish Enlightenment</strong>, thinkers like Adam Smith (<em>The Wealth of Nations</em>) attempted to create a \"science\" of economics based on natural laws.<sup><a href=\"#user-content-fn-10\" id=\"user-content-fnref-10\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup> In <strong>Prussia</strong>, Immanuel Kant defined the movement with the motto <em>Sapere aude</em> (\"Dare to know\"), casting the use of one's own reason as a moral imperative.<sup><a href=\"#user-content-fn-11\" id=\"user-content-fnref-11\" data-footnote-ref aria-describedby=\"footnote-label\">2</a></sup></p>",
-				"text": "This was not an isolated French phenomenon. In the Scottish Enlightenment, thinkers like Adam Smith (The Wealth of Nations) attempted to create a \"science\" of economics based on natural laws. In Prussia, Immanuel Kant defined the movement with the motto Sapere aude (\"Dare to know\"), casting the use of one's own reason as a moral imperative.",
+				"html": "<p>This was not an isolated French phenomenon. In the <strong>Scottish Enlightenment</strong>, thinkers like Adam Smith (<em>The Wealth of Nations</em>) attempted to create a “science” of economics based on natural laws.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-10\" data-footnote-ref=\"hyper-anabasis-fn-10\" data-footnote-back=\"10\" aria-label=\"Note 10\">10</a></sup> In <strong>Prussia</strong>, Immanuel Kant defined the movement with the motto <em>Sapere aude</em> (“Dare to know”), casting the use of one’s own reason as a moral imperative.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-11\" data-footnote-ref=\"hyper-anabasis-fn-11\" data-footnote-back=\"11\" aria-label=\"Note 11\">11</a></sup></p>",
+				"text": "This was not an isolated French phenomenon. In the Scottish Enlightenment, thinkers like Adam Smith (The Wealth of Nations) attempted to create a “science” of economics based on natural laws. In Prussia, Immanuel Kant defined the movement with the motto Sapere aude (“Dare to know”), casting the use of one’s own reason as a moral imperative.",
 				"noteIds": [
-					"fn-10",
-					"fn-11"
+					"hyper-anabasis-fn-10",
+					"hyper-anabasis-fn-11"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b45",
+				"id": "hyper-anabasis-b45",
 				"kind": "quote",
 				"depth": 0,
-				"html": "<blockquote>\n<p>\"The death of dogma is the birth of morality.\" – Immanuel Kant</p>\n</blockquote>",
-				"text": "\"The death of dogma is the birth of morality.\" – Immanuel Kant",
+				"html": "<blockquote>\n<p>“The death of dogma is the birth of morality.” – Immanuel Kant</p>\n</blockquote>",
+				"text": "“The death of dogma is the birth of morality.” – Immanuel Kant",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b46",
+				"id": "hyper-anabasis-b46",
 				"kind": "heading",
 				"depth": 2,
 				"html": "<h2>IV. The Second Schism: Ideological Subordination</h2>",
@@ -813,7 +4351,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b47",
+				"id": "hyper-anabasis-b47",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p><em>c. 1900 – Present</em></p>",
@@ -823,7 +4361,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b48",
+				"id": "hyper-anabasis-b48",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>The 20th and 21st centuries are defined by a new schism. The complexity of fields like quantum physics and molecular biology has been used to justify a detachment of social and political philosophy from fundamental science.</p>",
@@ -833,7 +4371,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b49",
+				"id": "hyper-anabasis-b49",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>This schism subordinates empirical reality not to theology, but to <strong>political and social ideologies</strong>, leading to nonsensical positions, performative governance, and a loss of strategic autonomy.</p>",
@@ -843,7 +4381,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b50",
+				"id": "hyper-anabasis-b50",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>Case Study 1: Agriculture and GMOs</h3>",
@@ -853,41 +4391,41 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b51",
+				"id": "hyper-anabasis-b51",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The first example is found in agriculture, specifically the EU's policy on GMOs. The ideological position is a widespread European ideology, formalized in the \"precautionary principle,\" that views \"naturalness\" as an intrinsic good. This philosophy, promoted by powerful political and NGO groups, casts genetic modification (GMO) as an \"unnatural\" and hubristic act, regardless of scientific data.<sup><a href=\"#user-content-fn-12\" id=\"user-content-fnref-12\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "The first example is found in agriculture, specifically the EU's policy on GMOs. The ideological position is a widespread European ideology, formalized in the \"precautionary principle,\" that views \"naturalness\" as an intrinsic good. This philosophy, promoted by powerful political and NGO groups, casts genetic modification (GMO) as an \"unnatural\" and hubristic act, regardless of scientific data.",
+				"html": "<p>The first example is found in agriculture, specifically the EU’s policy on GMOs. The ideological position is a widespread European ideology, formalized in the “precautionary principle,” that views “naturalness” as an intrinsic good. This philosophy, promoted by powerful political and NGO groups, casts genetic modification (GMO) as an “unnatural” and hubristic act, regardless of scientific data.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-12\" data-footnote-ref=\"hyper-anabasis-fn-12\" data-footnote-back=\"12\" aria-label=\"Note 12\">12</a></sup></p>",
+				"text": "The first example is found in agriculture, specifically the EU’s policy on GMOs. The ideological position is a widespread European ideology, formalized in the “precautionary principle,” that views “naturalness” as an intrinsic good. This philosophy, promoted by powerful political and NGO groups, casts genetic modification (GMO) as an “unnatural” and hubristic act, regardless of scientific data.",
 				"noteIds": [
-					"fn-12"
+					"hyper-anabasis-fn-12"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b52",
+				"id": "hyper-anabasis-b52",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>On the other hand, the fundamental science of biology and environmental science shows that genetic modification (e.g., CRISPR) is a precise tool for achieving a result, like pest resistance, that humans have been doing clumsily for millennia via \"natural\" cross-breeding. Genetically modified crops are a proven tool for achieving stated European goals. They can be engineered to drastically reduce the need for pesticides, resist drought, and increase yields.</p>",
-				"text": "On the other hand, the fundamental science of biology and environmental science shows that genetic modification (e.g., CRISPR) is a precise tool for achieving a result, like pest resistance, that humans have been doing clumsily for millennia via \"natural\" cross-breeding. Genetically modified crops are a proven tool for achieving stated European goals. They can be engineered to drastically reduce the need for pesticides, resist drought, and increase yields.",
+				"html": "<p>On the other hand, the fundamental science of biology and environmental science shows that genetic modification (e.g., CRISPR) is a precise tool for achieving a result, like pest resistance, that humans have been doing clumsily for millennia via “natural” cross-breeding. Genetically modified crops are a proven tool for achieving stated European goals. They can be engineered to drastically reduce the need for pesticides, resist drought, and increase yields.</p>",
+				"text": "On the other hand, the fundamental science of biology and environmental science shows that genetic modification (e.g., CRISPR) is a precise tool for achieving a result, like pest resistance, that humans have been doing clumsily for millennia via “natural” cross-breeding. Genetically modified crops are a proven tool for achieving stated European goals. They can be engineered to drastically reduce the need for pesticides, resist drought, and increase yields.",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b53",
+				"id": "hyper-anabasis-b53",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The irrational outcome of this ideological stance is the EU’s de facto ban on the cultivation of most GM crops. This political decision has stifled innovation, caused brain drain, and prevented pesticide reductions. It is a clear case of a social philosophy (\"naturalness\") winning out over the fundamental science of biology, to the detriment of the environment and economy.<sup><a href=\"#user-content-fn-13\" id=\"user-content-fnref-13\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "The irrational outcome of this ideological stance is the EU’s de facto ban on the cultivation of most GM crops. This political decision has stifled innovation, caused brain drain, and prevented pesticide reductions. It is a clear case of a social philosophy (\"naturalness\") winning out over the fundamental science of biology, to the detriment of the environment and economy.",
+				"html": "<p>The irrational outcome of this ideological stance is the EU’s de facto ban on the cultivation of most GM crops. This political decision has stifled innovation, caused brain drain, and prevented pesticide reductions. It is a clear case of a social philosophy (“naturalness”) winning out over the fundamental science of biology, to the detriment of the environment and economy.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-13\" data-footnote-ref=\"hyper-anabasis-fn-13\" data-footnote-back=\"13\" aria-label=\"Note 13\">13</a></sup></p>",
+				"text": "The irrational outcome of this ideological stance is the EU’s de facto ban on the cultivation of most GM crops. This political decision has stifled innovation, caused brain drain, and prevented pesticide reductions. It is a clear case of a social philosophy (“naturalness”) winning out over the fundamental science of biology, to the detriment of the environment and economy.",
 				"noteIds": [
-					"fn-13"
+					"hyper-anabasis-fn-13"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b54",
+				"id": "hyper-anabasis-b54",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>Case Study 2: Education and the Reading Wars</h3>",
@@ -897,51 +4435,51 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b55",
+				"id": "hyper-anabasis-b55",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>A second example can be seen in education, with the \"whole language\" debate. The ideological position was a dominant 20th-century educational philosophy, especially strong in France (<em>la méthode globale</em>) and the UK. It argued that learning to read is a \"natural\" process, like learning to speak. It claimed that explicit <strong>phonics</strong> (sounding out letters) was \"authoritarian\" and would kill a child's \"love of reading.\" This was a social-political theory about child liberation.</p>",
-				"text": "A second example can be seen in education, with the \"whole language\" debate. The ideological position was a dominant 20th-century educational philosophy, especially strong in France (la méthode globale) and the UK. It argued that learning to read is a \"natural\" process, like learning to speak. It claimed that explicit phonics (sounding out letters) was \"authoritarian\" and would kill a child's \"love of reading.\" This was a social-political theory about child liberation.",
+				"html": "<p>A second example can be seen in education, with the “whole language” debate. The ideological position was a dominant 20th-century educational philosophy, especially strong in France (<em>la méthode globale</em>) and the UK. It argued that learning to read is a “natural” process, like learning to speak. It claimed that explicit <strong>phonics</strong> (sounding out letters) was “authoritarian” and would kill a child’s “love of reading.” This was a social-political theory about child liberation.</p>",
+				"text": "A second example can be seen in education, with the “whole language” debate. The ideological position was a dominant 20th-century educational philosophy, especially strong in France (la méthode globale) and the UK. It argued that learning to read is a “natural” process, like learning to speak. It claimed that explicit phonics (sounding out letters) was “authoritarian” and would kill a child’s “love of reading.” This was a social-political theory about child liberation.",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b56",
+				"id": "hyper-anabasis-b56",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>However, the fundamental science of cognitive neuroscience and fMRI scanning shows that the human brain is <strong>not</strong> wired to read. Speaking is innate; reading is a learned skill that requires retraining parts of the brain. Brain imaging proves that reading requires the brain to build a new pathway to decode letters into sounds. \"Whole language\" (guessing from pictures) activates the wrong part of the brain. <strong>Explicit phonics</strong> is the only method that reliably builds the correct neural architecture.<sup><a href=\"#user-content-fn-14\" id=\"user-content-fnref-14\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
-				"text": "However, the fundamental science of cognitive neuroscience and fMRI scanning shows that the human brain is not wired to read. Speaking is innate; reading is a learned skill that requires retraining parts of the brain. Brain imaging proves that reading requires the brain to build a new pathway to decode letters into sounds. \"Whole language\" (guessing from pictures) activates the wrong part of the brain. Explicit phonics is the only method that reliably builds the correct neural architecture.",
+				"html": "<p>However, the fundamental science of cognitive neuroscience and fMRI scanning shows that the human brain is <strong>not</strong> wired to read. Speaking is innate; reading is a learned skill that requires retraining parts of the brain. Brain imaging proves that reading requires the brain to build a new pathway to decode letters into sounds. “Whole language” (guessing from pictures) activates the wrong part of the brain. <strong>Explicit phonics</strong> is the only method that reliably builds the correct neural architecture.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-14\" data-footnote-ref=\"hyper-anabasis-fn-14\" data-footnote-back=\"14\" aria-label=\"Note 14\">14</a></sup></p>",
+				"text": "However, the fundamental science of cognitive neuroscience and fMRI scanning shows that the human brain is not wired to read. Speaking is innate; reading is a learned skill that requires retraining parts of the brain. Brain imaging proves that reading requires the brain to build a new pathway to decode letters into sounds. “Whole language” (guessing from pictures) activates the wrong part of the brain. Explicit phonics is the only method that reliably builds the correct neural architecture.",
 				"noteIds": [
-					"fn-14"
+					"hyper-anabasis-fn-14"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b57",
+				"id": "hyper-anabasis-b57",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The irrational outcome was that generations of children were passed through school without being given the fundamental tools to read, contributing to a literacy crisis where <strong>one in five Europeans is functionally illiterate</strong>.<sup><a href=\"#user-content-fn-15\" id=\"user-content-fnref-15\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup> This was a direct result of educational \"thinkers\" allowing their social ideology to overrule the hard evidence from neuroscience.</p>",
-				"text": "The irrational outcome was that generations of children were passed through school without being given the fundamental tools to read, contributing to a literacy crisis where one in five Europeans is functionally illiterate. This was a direct result of educational \"thinkers\" allowing their social ideology to overrule the hard evidence from neuroscience.",
+				"html": "<p>The irrational outcome was that generations of children were passed through school without being given the fundamental tools to read, contributing to a literacy crisis where <strong>one in five Europeans is functionally illiterate</strong>.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-15\" data-footnote-ref=\"hyper-anabasis-fn-15\" data-footnote-back=\"15\" aria-label=\"Note 15\">15</a></sup> This was a direct result of educational “thinkers” allowing their social ideology to overrule the hard evidence from neuroscience.</p>",
+				"text": "The irrational outcome was that generations of children were passed through school without being given the fundamental tools to read, contributing to a literacy crisis where one in five Europeans is functionally illiterate. This was a direct result of educational “thinkers” allowing their social ideology to overrule the hard evidence from neuroscience.",
 				"noteIds": [
-					"fn-15"
+					"hyper-anabasis-fn-15"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b58",
+				"id": "hyper-anabasis-b58",
 				"kind": "figure",
 				"depth": 0,
-				"html": "<p><img src=\"/images/fmri.png\" alt=\"fMRI scans for different tasks - Feasibility, Contrast Sensitivity and Network Specificity of Language fMRI in Presurgical Evaluation for Epilepsy and Brain Tumor Surgery\"></p>",
+				"html": "<figure class=\"Plate\"><img src=\"/images/fmri.webp\" alt=\"fMRI scans for different tasks - Feasibility, Contrast Sensitivity and Network Specificity of Language fMRI in Presurgical Evaluation for Epilepsy and Brain Tumor Surgery\" width=\"850\" height=\"300\" style=\"--w: 850; --h: 300\" decoding=\"async\" loading=\"eager\"><figcaption>fMRI scans for different tasks - Feasibility, Contrast Sensitivity and Network Specificity of Language fMRI in Presurgical Evaluation for Epilepsy and Brain Tumor Surgery</figcaption></figure>",
 				"text": "fMRI scans for different tasks - Feasibility, Contrast Sensitivity and Network Specificity of Language fMRI in Presurgical Evaluation for Epilepsy and Brain Tumor Surgery",
 				"noteIds": [],
-				"image": "/images/fmri.png",
+				"image": "/images/fmri.webp",
 				"caption": "fMRI scans for different tasks - Feasibility, Contrast Sensitivity and Network Specificity of Language fMRI in Presurgical Evaluation for Epilepsy and Brain Tumor Surgery"
 			},
 			{
-				"id": "b59",
+				"id": "hyper-anabasis-b59",
 				"kind": "heading",
 				"depth": 3,
 				"html": "<h3>Case Study 3: Energy and the <em>Energiewende</em></h3>",
@@ -951,27 +4489,27 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b60",
+				"id": "hyper-anabasis-b60",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The third example is Germany's energy policy, the <em>Energiewende</em>. The ideological position, core to the German Green Party, holds that nuclear power is categorically evil and an unacceptable risk. This position of social values predates the climate change debate.</p>",
-				"text": "The third example is Germany's energy policy, the Energiewende. The ideological position, core to the German Green Party, holds that nuclear power is categorically evil and an unacceptable risk. This position of social values predates the climate change debate.",
+				"html": "<p>The third example is Germany’s energy policy, the <em>Energiewende</em>. The ideological position, core to the German Green Party, holds that nuclear power is categorically evil and an unacceptable risk. This position of social values predates the climate change debate.</p>",
+				"text": "The third example is Germany’s energy policy, the Energiewende. The ideological position, core to the German Green Party, holds that nuclear power is categorically evil and an unacceptable risk. This position of social values predates the climate change debate.",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b61",
+				"id": "hyper-anabasis-b61",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>This ideology clashes with the fundamental science of physics and engineering. Physics shows that the primary driver of climate change is <strong>CO2</strong>, and the most efficient, reliable, and high-density way to produce zero-carbon electricity is <strong>nuclear fission</strong>. Furthermore, engineering and grid science show that a modern grid requires a stable, 24/7 \"baseload\" power source. Wind and solar are intermittent and, without mass-scale battery technology, cannot provide this baseload.</p>",
-				"text": "This ideology clashes with the fundamental science of physics and engineering. Physics shows that the primary driver of climate change is CO2, and the most efficient, reliable, and high-density way to produce zero-carbon electricity is nuclear fission. Furthermore, engineering and grid science show that a modern grid requires a stable, 24/7 \"baseload\" power source. Wind and solar are intermittent and, without mass-scale battery technology, cannot provide this baseload.",
+				"html": "<p>This ideology clashes with the fundamental science of physics and engineering. Physics shows that the primary driver of climate change is <strong>CO2</strong>, and the most efficient, reliable, and high-density way to produce zero-carbon electricity is <strong>nuclear fission</strong>. Furthermore, engineering and grid science show that a modern grid requires a stable, 24/7 “baseload” power source. Wind and solar are intermittent and, without mass-scale battery technology, cannot provide this baseload.</p>",
+				"text": "This ideology clashes with the fundamental science of physics and engineering. Physics shows that the primary driver of climate change is CO2, and the most efficient, reliable, and high-density way to produce zero-carbon electricity is nuclear fission. Furthermore, engineering and grid science show that a modern grid requires a stable, 24/7 “baseload” power source. Wind and solar are intermittent and, without mass-scale battery technology, cannot provide this baseload.",
 				"noteIds": [],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b62",
+				"id": "hyper-anabasis-b62",
 				"kind": "table",
 				"depth": 0,
 				"html": "<table>\n<thead>\n<tr>\n<th align=\"left\"></th>\n<th align=\"left\">Fuel Energy Density (GJ/kg)</th>\n<th align=\"left\">Lifetime CO₂ Emissions (g CO₂eq/kWh)</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td align=\"left\"><strong>Nuclear</strong></td>\n<td align=\"left\">~3,500</td>\n<td align=\"left\">~12</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>Natural Gas</strong></td>\n<td align=\"left\">~0.05</td>\n<td align=\"left\">~490</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>Oil</strong></td>\n<td align=\"left\">~0.042</td>\n<td align=\"left\">~733</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>Coal</strong></td>\n<td align=\"left\">~0.03</td>\n<td align=\"left\">~820</td>\n</tr>\n<tr>\n<td align=\"left\"><strong>Hydropower</strong></td>\n<td align=\"left\">N/A (Flow)</td>\n<td align=\"left\">~24</td>\n</tr>\n</tbody>\n</table>",
@@ -981,19 +4519,19 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b63",
+				"id": "hyper-anabasis-b63",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>The irrational outcome of this ideology was the decision to shut down Germany’s zero-carbon nuclear plants before a renewable replacement was scientifically viable. This forced a return to the only available baseload alternative: <strong>lignite coal</strong>, the single most CO2-polluting fossil fuel. The thinkers, in pursuit of their social goal, directly contradicted their stated goal of saving the climate by ignoring the fundamental science of physics.<sup><a href=\"#user-content-fn-16\" id=\"user-content-fnref-16\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup></p>",
+				"html": "<p>The irrational outcome of this ideology was the decision to shut down Germany’s zero-carbon nuclear plants before a renewable replacement was scientifically viable. This forced a return to the only available baseload alternative: <strong>lignite coal</strong>, the single most CO2-polluting fossil fuel. The thinkers, in pursuit of their social goal, directly contradicted their stated goal of saving the climate by ignoring the fundamental science of physics.<sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-16\" data-footnote-ref=\"hyper-anabasis-fn-16\" data-footnote-back=\"16\" aria-label=\"Note 16\">16</a></sup></p>",
 				"text": "The irrational outcome of this ideology was the decision to shut down Germany’s zero-carbon nuclear plants before a renewable replacement was scientifically viable. This forced a return to the only available baseload alternative: lignite coal, the single most CO2-polluting fossil fuel. The thinkers, in pursuit of their social goal, directly contradicted their stated goal of saving the climate by ignoring the fundamental science of physics.",
 				"noteIds": [
-					"fn-16"
+					"hyper-anabasis-fn-16"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b64",
+				"id": "hyper-anabasis-b64",
 				"kind": "heading",
 				"depth": 2,
 				"html": "<h2>V. A New Synthesis : Hyper Anabasis</h2>",
@@ -1003,7 +4541,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b65",
+				"id": "hyper-anabasis-b65",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>The evidence suggests a recurring pattern in European intellectual history: a flourishing of progress during periods of synthesis between the philosophical and the scientific, and a subsequent decline when they diverge. The parallels between the First Schism of the medieval era and the Second Schism of the modern age are worthy of serious consideration.</p>",
@@ -1013,7 +4551,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b66",
+				"id": "hyper-anabasis-b66",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>This historical framework compels us to ask a critical question: are our current crises, be they environmental, political, or educational, the inevitable result of a philosophy detached from empiricism?</p>",
@@ -1023,19 +4561,19 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b67",
+				"id": "hyper-anabasis-b67",
 				"kind": "paragraph",
 				"depth": 0,
-				"html": "<p>If so, the path forward is not to repeat the past, but to begin a philosophical successor to the Enlightenment. I call this movement <strong>Hyper Anabasis</strong><sup><a href=\"#user-content-fn-17\" id=\"user-content-fnref-17\" data-footnote-ref aria-describedby=\"footnote-label\">1</a></sup>: a \"great ascent\" beyond our present limitations, dedicated to permanently reuniting our governing philosophies with the sciences.</p>",
-				"text": "If so, the path forward is not to repeat the past, but to begin a philosophical successor to the Enlightenment. I call this movement Hyper Anabasis: a \"great ascent\" beyond our present limitations, dedicated to permanently reuniting our governing philosophies with the sciences.",
+				"html": "<p>If so, the path forward is not to repeat the past, but to begin a philosophical successor to the Enlightenment. I call this movement <strong>Hyper Anabasis</strong><sup class=\"Ref\"><a href=\"#hyper-anabasis-fn-17\" data-footnote-ref=\"hyper-anabasis-fn-17\" data-footnote-back=\"17\" aria-label=\"Note 17\">17</a></sup>: a “great ascent” beyond our present limitations, dedicated to permanently reuniting our governing philosophies with the sciences.</p>",
+				"text": "If so, the path forward is not to repeat the past, but to begin a philosophical successor to the Enlightenment. I call this movement Hyper Anabasis: a “great ascent” beyond our present limitations, dedicated to permanently reuniting our governing philosophies with the sciences.",
 				"noteIds": [
-					"fn-17"
+					"hyper-anabasis-fn-17"
 				],
 				"image": null,
 				"caption": null
 			},
 			{
-				"id": "b68",
+				"id": "hyper-anabasis-b68",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p>The most practical step towards this new era is a profound and sustained investment in scientific literacy at every level of society. From primary school curricula to the continuing education of public servants, we must cultivate a culture of critical thinking and empirical curiosity. Only a population that values evidence can produce policy that does the same.</p>",
@@ -1045,7 +4583,7 @@ export const posts = [
 				"caption": null
 			},
 			{
-				"id": "b69",
+				"id": "hyper-anabasis-b69",
 				"kind": "paragraph",
 				"depth": 0,
 				"html": "<p><strong>We must place fundamental science back to its rightful position: the foundation upon which our philosophies, policies, and societies are built.</strong></p>",
@@ -1060,92 +4598,772 @@ export const posts = [
 
 export const roles = [
 	{
-		"id": "lorem-ipsum-2022-03",
-		"title": "Senior Software Engineer",
-		"company": "Lorem Ipsum",
-		"location": "Earth",
-		"start": "2022-03",
+		"id": "self-employed-2026-06",
+		"title": "Independent Engineer",
+		"company": "Self-employed",
+		"location": "Remote",
+		"start": "2026-06",
 		"end": null,
-		"summary": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+		"summary": "Building agentic systems, mostly closed source: home automation, trading bots, a personal finance manager, data pipelines and forecasting, all designed, built and operated with coding agents.",
 		"highlights": [
-			"Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-			"Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.",
-			"Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia."
+			"Developing a lean, token-efficient agentic delivery process for small teams.",
+			"Agent-driven pipelines for video and 3D, where a brief goes in and finished work comes out: films generated entirely in code, and real-time 3D for the web on three.js and WebGPU.",
+			"Agents working in Blender, DaVinci Resolve and FreeCAD like an editor or a designer would. Some of it ends up on my 3D printer.",
+			"Open source on GitHub, and in the Library of this paper."
 		],
 		"stack": [
 			"TypeScript",
-			"Vue",
-			"Cloudflare Workers"
+			"Rust",
+			"Coding agents",
+			"MCP",
+			"three.js",
+			"WebGPU",
+			"Blender",
+			"Cloudflare"
+		],
+		"library": [
+			"fr2027-forecaster",
+			"acidcat",
+			"agris",
+			"heb-stack",
+			"xiaomi-aircon",
+			"bot-drop"
 		]
 	},
 	{
-		"id": "dolor-sit-2020-01",
-		"title": "Full Stack Engineer",
-		"company": "Dolor Sit",
-		"location": "Earth",
-		"start": "2020-01",
-		"end": "2022-02",
-		"summary": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.",
+		"id": "zeko-2024-11",
+		"title": "Principal Engineer",
+		"company": "Zeko",
+		"location": "Remote",
+		"start": "2024-11",
+		"end": "2026-06",
+		"summary": "Zero-knowledge rollup settling on Ethereum. A team of three engineers, each owning a large part of the stack. I designed, wrote and ran the entire web platform.",
 		"highlights": [
-			"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit.",
-			"Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet."
+			"Built the web apps, backends and APIs end to end.",
+			"Wrote and published the SDKs and CLIs developers use to bridge to and build on Zeko.",
+			"Designed the infrastructure and migrated it to Cloudflare.",
+			"Led the team's move to agentic development: Linear-based workflows from issue to merged PR, shared agent context, verification and review.",
+			"Set up Sentry error reporting and the bug triage loop.",
+			"Worked on OCaml protocol code, smart contracts and ZK circuits."
 		],
 		"stack": [
-			"Node.js",
+			"TypeScript",
+			"Nuxt",
+			"Cloudflare",
+			"OCaml",
+			"ZK circuits",
+			"Sentry",
+			"Linear"
+		],
+		"library": [
+			"zeko"
+		]
+	},
+	{
+		"id": "dcspark-2024-08",
+		"title": "Senior Software Engineer",
+		"company": "dcSpark",
+		"location": "Remote · Contract",
+		"start": "2024-08",
+		"end": "2025-01",
+		"summary": "Joined as a contractor. My main mission was Zeko, where I then moved full time.",
+		"highlights": [],
+		"stack": [],
+		"library": []
+	},
+	{
+		"id": "zeno-2023-11",
+		"title": "Head of Engineering",
+		"company": "Zeno",
+		"location": "Dubai · Remote",
+		"start": "2023-11",
+		"end": "2024-08",
+		"summary": "Head of engineering at an early-stage startup building a gamified, interactive video learning platform. Hands-on: I designed the architecture and wrote most of the core codebase.",
+		"highlights": [
+			"SvelteKit and GraphQL on Cloudflare (Pages, Workers, Durable Objects), with Postgres, Redis and KV.",
+			"Video delivery through Bunny Stream, and a custom CI on GitHub Actions and Fly.io.",
+			"Led the team, ran code and performance reviews, mentored junior developers and hired."
+		],
+		"stack": [
+			"SvelteKit",
 			"GraphQL",
-			"PostgreSQL"
+			"Cloudflare",
+			"Postgres",
+			"Redis",
+			"Bunny Stream",
+			"Fly.io"
+		],
+		"library": []
+	},
+	{
+		"id": "nuxt-2023-03",
+		"title": "Core Team",
+		"company": "Nuxt",
+		"location": "Remote · Part-time",
+		"start": "2023-03",
+		"end": null,
+		"summary": "Nuxt core team. Most of my work is on Nitro, the server engine that Nuxt and several other frameworks run on, and its integration with AWS, Azure, Cloudflare, Vercel and Netlify.",
+		"highlights": [
+			"Work at framework level reaches millions of developers and users.",
+			"I also author and maintain community modules for Auth.js, Vue Query, form actions and server blocks."
+		],
+		"stack": [
+			"Nuxt",
+			"Nitro",
+			"Vue",
+			"TypeScript"
+		],
+		"library": [
+			"nitro",
+			"nuxt",
+			"h3",
+			"unjs",
+			"authjs-nuxt",
+			"form-actions-nuxt",
+			"server-block-nuxt",
+			"vue-query-nuxt"
 		]
 	},
 	{
-		"id": "amet-consectetur-2018-06",
-		"title": "Frontend Engineer",
-		"company": "Amet Consectetur",
-		"location": "Earth",
-		"start": "2018-06",
-		"end": "2019-12",
-		"summary": "At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque.",
+		"id": "obelisk-auditing-2021-03",
+		"title": "Founder, Lead Engineer",
+		"company": "Obelisk Auditing",
+		"location": "Worldwide",
+		"start": "2021-03",
+		"end": "2024-08",
+		"summary": "I started Obelisk to protect people from the security risks in crypto. I taught myself Solidity and began auditing EVM smart contracts on my own, and others soon joined. It grew into a remote team of 12 that audited more than 50 Web3 projects.",
 		"highlights": [
-			"Et harum quidem rerum facilis est et expedita distinctio.",
-			"Temporibus autem quibusdam et aut officiis debitis aut rerum."
+			"Led the audits and the team, with new clients every month.",
+			"Built the company's web platform myself: website, blog and a monitoring tool that detects blockchain state changes.",
+			"Alongside the audits, built trading bots, Discord bots, DeFi applications and smart contracts for clients."
 		],
 		"stack": [
-			"JavaScript",
+			"Solidity",
+			"Foundry",
+			"Hardhat",
+			"Viem",
+			"Rust",
 			"React",
-			"Webpack"
-		]
+			"Vue",
+			"Cloudflare Workers",
+			"GraphQL",
+			"Postgres"
+		],
+		"library": []
 	},
 	{
-		"id": "adipiscing-elit-2016-09",
-		"title": "Software Engineer",
-		"company": "Adipiscing Elit",
-		"location": "Earth",
-		"start": "2016-09",
-		"end": "2018-05",
-		"summary": "Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat.",
+		"id": "deepcrawl-2020-08",
+		"title": "Senior Software Engineer",
+		"company": "DeepCrawl",
+		"location": "London",
+		"start": "2020-08",
+		"end": "2021-04",
+		"summary": "Technical SEO platform. Senior engineer across a TypeScript and GraphQL stack, working across several frontend teams.",
 		"highlights": [
-			"Omnis voluptas assumenda est, omnis dolor repellendus.",
-			"Itaque earum rerum hic tenetur a sapiente delectus."
+			"A React application replacing a legacy AngularJS one.",
+			"A Node.js backend on AWS, managed with the AWS CDK.",
+			"A strong testing culture: Testing Library, Cypress, and Cucumber for BDD."
 		],
 		"stack": [
-			"PHP",
-			"MySQL",
-			"jQuery"
-		]
+			"TypeScript",
+			"GraphQL",
+			"React",
+			"Node.js",
+			"AWS CDK",
+			"Cypress"
+		],
+		"library": []
+	},
+	{
+		"id": "powster-2019-11",
+		"title": "Full Stack Engineer",
+		"company": "POWSTER",
+		"location": "London · Contract",
+		"start": "2019-11",
+		"end": "2019-12",
+		"summary": "Agency work for well-known brands.",
+		"highlights": [
+			"The main project was a React application with an embedded WebAR game, backed by Node.js and Firebase, with queueing and email microservices, deployed to AWS with Terraform.",
+			"I also built a REST layer on AWS API Gateway over an internal API, Twilio automations and production web work."
+		],
+		"stack": [
+			"React",
+			"WebAR",
+			"Node.js",
+			"Firebase",
+			"AWS",
+			"Terraform",
+			"Twilio"
+		],
+		"library": []
+	},
+	{
+		"id": "tigerspike-2019-03",
+		"title": "Full Stack Engineer",
+		"company": "Tigerspike",
+		"location": "London",
+		"start": "2019-03",
+		"end": "2019-11",
+		"summary": "Digital consultancy. Two projects, both serverless on AWS.",
+		"highlights": [
+			"An IoT platform for one of the UK's main energy providers: device data over MQTT through AWS IoT Core, a fault-tolerant pipeline on SQS and Kinesis, a GraphQL API on Lambda and Apollo, a React frontend, and analytics in QuickSight.",
+			"A Vue PWA with Lambda and Fargate microservices on DynamoDB, and a phone IVR built on Amazon Connect and Lex.",
+			"Infrastructure in the AWS CDK, with a throwaway environment for every pull request."
+		],
+		"stack": [
+			"AWS Lambda",
+			"AWS IoT Core",
+			"Kinesis",
+			"GraphQL",
+			"React",
+			"Vue",
+			"DynamoDB",
+			"AWS CDK"
+		],
+		"library": []
+	},
+	{
+		"id": "yo-da-your-data-2019-02",
+		"title": "Full Stack Engineer",
+		"company": "Yo-Da (your data)",
+		"location": "London",
+		"start": "2019-02",
+		"end": "2019-04",
+		"summary": "Startup building a service that sends GDPR requests on a user's behalf. I led an overhaul of the whole architecture.",
+		"highlights": [
+			"A TypeScript and Express API built test-first, with Postgres through Prisma.",
+			"A React frontend, and Cognito for auth.",
+			"Everything on AWS (ECS Fargate, Aurora, CloudFront), defined as code with Terraform and CloudFormation."
+		],
+		"stack": [
+			"TypeScript",
+			"Express",
+			"Postgres",
+			"Prisma",
+			"React",
+			"AWS",
+			"Terraform"
+		],
+		"library": []
+	},
+	{
+		"id": "the-m-industries-2018-11",
+		"title": "Full Stack Engineer",
+		"company": "The M Industries",
+		"location": "London",
+		"start": "2018-11",
+		"end": "2022-03",
+		"summary": "My contracting company in London. Through it I delivered full-stack and cloud work for startups, agencies and consultancies, including Tigerspike, Powster and Yo-Da, each listed separately.",
+		"highlights": [],
+		"stack": [],
+		"library": []
+	},
+	{
+		"id": "cognitive-credit-2018-06",
+		"title": "Front-End Engineer",
+		"company": "Cognitive Credit",
+		"location": "London",
+		"start": "2018-06",
+		"end": "2018-12",
+		"summary": "Fintech startup using machine learning to read financial documents and turn them into structured data.",
+		"highlights": [
+			"I built the main web app, a Vue PWA on a GraphQL and Postgres API.",
+			"And a React back-office, inside a containerised AWS pipeline."
+		],
+		"stack": [
+			"Vue",
+			"React",
+			"GraphQL",
+			"Postgres",
+			"AWS"
+		],
+		"library": []
+	},
+	{
+		"id": "stack-industries-2015-12",
+		"title": "Full Stack Engineer",
+		"company": "Stack Industries",
+		"location": "Bordeaux",
+		"start": "2015-12",
+		"end": "2018-12",
+		"summary": "My contracting company in France. Through it I delivered full-stack web work for clients in and around Bordeaux, including Cohda, listed separately.",
+		"highlights": [],
+		"stack": [],
+		"library": []
+	},
+	{
+		"id": "cohda-2015-07",
+		"title": "Full Stack Developer",
+		"company": "Cohda",
+		"location": "Bordeaux",
+		"start": "2015-07",
+		"end": "2018-05",
+		"summary": "Built the company's intranet from nothing and ran it for three years, from renting and setting up the servers to the user experience. Used every day across the company.",
+		"highlights": [
+			"Laravel REST APIs behind Vue and React frontends.",
+			"Node.js realtime services over WebSockets.",
+			"Integrations with Google APIs."
+		],
+		"stack": [
+			"Laravel",
+			"Vue",
+			"React",
+			"Node.js",
+			"WebSockets",
+			"Linux"
+		],
+		"library": []
+	},
+	{
+		"id": "ityka-2013-06",
+		"title": "System Administrator",
+		"company": "Ityka",
+		"location": "France",
+		"start": "2013-06",
+		"end": "2015-06",
+		"summary": "Started as an internship during my studies. Ran the infrastructure of a small call centre end to end.",
+		"highlights": [
+			"Cabling, switches, routers and servers.",
+			"Linux, nginx and iptables configuration.",
+			"The Asterisk phone system, with PHP."
+		],
+		"stack": [
+			"Linux",
+			"nginx",
+			"iptables",
+			"Asterisk",
+			"PHP"
+		],
+		"library": []
 	}
 ]
 
 export const schools = [
 	{
-		"id": "supinfo-2011-09",
-		"qualification": "Master of Engineering, Computer Science",
+		"id": "supinfo-2013-09",
+		"qualification": "Computer science",
 		"school": "Supinfo",
-		"location": "Earth",
-		"start": "2011-09",
-		"end": "2016-06",
-		"summary": "Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur."
+		"location": "France",
+		"start": "2013-09",
+		"end": "2015-06",
+		"summary": "Computer science. My first job in the trade, at Ityka, started as an internship during these two years."
 	}
 ]
 
-export const content = { site, shelves, posts, roles, schools }
+export const skills = [
+	{
+		"name": "agentic-delivery",
+		"title": "Delivering with agents",
+		"description": "Load when the team wants coding agents to ship work it can trust, on a budget it can afford.",
+		"summary": "Software engineering has moved from writing correct code to designing the systems that produce it. I build those systems: the specs, context, architecture, tests, verification and review that let coding agents ship work a company can trust, on a token budget a small team can afford. I can tell when an agent's work is right because I spent a decade writing, reviewing and fixing production code by hand.",
+		"offer": [
+			"A delivery process from issue to merged pull request, with agents working in parallel and people reviewing where it matters",
+			"Codebases agents can work in safely: one source of truth, typed boundaries and guardrails enforced in CI",
+			"Agentic systems that do real work for a business: automation, data pipelines, trading, finance and forecasting",
+			"A team taken from its first workflow to agents across everything it ships",
+			"Costs kept in check: the right model for each task, and context that is not paid for twice"
+		],
+		"principles": [
+			"Verification is the bottleneck, not writing. An agent has to prove its work on the real product, with evidence I can check.",
+			"Depth before parallelism. One agent I can trust comes first; ten I cannot trust only write slop faster.",
+			"Prototyping is planning, with code. I would rather throw away two working attempts than argue over a spec.",
+			"Every rule and skill I give an agent comes from a failure I watched. The fix goes into the system, so the mistake is not made twice.",
+			"Less code is the goal. I count impact per line, not lines."
+		],
+		"tools": [
+			"Coding agents",
+			"MCP",
+			"WebMCP",
+			"Agent skills",
+			"Linear",
+			"GitHub Actions"
+		],
+		"roles": [
+			"Self-employed",
+			"Zeko"
+		],
+		"evidence": [
+			"fr2027-forecaster",
+			"acidcat",
+			"heb-stack",
+			"ataski",
+			"skills",
+			"xiaomi-aircon"
+		]
+	},
+	{
+		"name": "software-architecture",
+		"title": "Architecture, and owning a product end to end",
+		"description": "Load when one person has to hold the whole system in their head, or design it so that nobody needs to.",
+		"summary": "I can own a product across the whole stack: the web app, the API and data layer, the infrastructure it runs on, and the SDKs other developers build with. I have done it as a principal engineer, as a head of engineering and as a founder. I design systems that stay simple as they grow, so that the next engineer, or the next agent, can change them without fear.",
+		"offer": [
+			"A product taken from an empty repository to production, and run once it is there",
+			"An architecture sized to the team that has to live with it",
+			"Legacy systems replaced piece by piece while they keep serving their users",
+			"Technical decisions explained in terms the business can weigh",
+			"SDKs and developer tools that other teams build on"
+		],
+		"principles": [
+			"I see how the pieces fit before I write them: what owns the state, what talks to what, and where it will hurt in a year.",
+			"Patterns are a vocabulary, not a goal. I know the catalogue, from Design Patterns to Game Programming Patterns, and reach for one when the problem has its shape.",
+			"Functions over objects, composition over inheritance. Small parts that combine outlive a deep hierarchy.",
+			"State is the hard part. I make it explicit, give it one owner, and keep the rest pure."
+		],
+		"tools": [
+			"TypeScript",
+			"Rust",
+			"Go",
+			"Python",
+			"OCaml",
+			"GraphQL",
+			"XState",
+			"moon"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"Obelisk Auditing",
+			"Yo-Da (your data)",
+			"Cohda"
+		],
+		"evidence": [
+			"acidcat",
+			"heb-stack",
+			"zeko",
+			"lumina",
+			"emmanuel-style"
+		]
+	},
+	{
+		"name": "frontend-engineering",
+		"title": "Frontend, from the pixel to the framework",
+		"description": "Load when the interface has to feel right on a phone, on a laptop and from the keyboard, and stay fast when the data grows.",
+		"summary": "I have built interfaces for a living since 2015, for startups, agencies, fintech and Web3, in Vue, React and Svelte. I have also worked on a framework from the inside, on the Nuxt core team, so I know what happens under the components. I care about how a product feels: fast on a bad connection, usable from the keyboard, clear when something goes wrong.",
+		"offer": [
+			"Interfaces designed and built end to end, for desktop and mobile, with or without a designer",
+			"Complex, data-heavy applications that stay fast as the data grows",
+			"Design systems and component libraries a team can build on",
+			"Performance, accessibility and offline behaviour treated as features",
+			"Whichever framework the product is in, and a migration path when it needs another"
+		],
+		"principles": [
+			"Perceived performance is the performance that counts: how fast it feels in the hand, not a score.",
+			"Build for the people who will use it. A feature the audience does not need is weight they pay for.",
+			"Use the platform properly. Workers, service workers, offline storage and 60 fps animation were all there in 2015, and most of the web spent a decade not using them.",
+			"That lost decade is over. Time is no longer the excuse: we can now build the web the way we always knew it could be built."
+		],
+		"tools": [
+			"Vue",
+			"Nuxt",
+			"React",
+			"Svelte",
+			"TypeScript",
+			"CSS",
+			"Vite",
+			"Cypress"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"DeepCrawl",
+			"Cognitive Credit",
+			"Cohda"
+		],
+		"evidence": [
+			"emmanuel-style",
+			"zeko",
+			"cssforge",
+			"form-actions-nuxt",
+			"dom-snapshot-nuxt",
+			"vue-switch-match"
+		]
+	},
+	{
+		"name": "backend-engineering",
+		"title": "Backends, APIs and data",
+		"description": "Load when the API has to stay correct under load, cost little when idle, and make sense to the next person who opens it.",
+		"summary": "I design and run the server side: APIs, data models, queues, pipelines and the services between them. I have built them for fintech, IoT, e-learning and blockchains, on serverless platforms and at the edge. I build backends that are correct under load, cheap when idle, and readable by the next person who opens them.",
+		"offer": [
+			"APIs designed for the clients that use them, in GraphQL or REST",
+			"Data models that survive the product changing its mind",
+			"Event-driven pipelines that tolerate failure and can be replayed",
+			"Real-time systems, caching, and the trade-offs of freshness",
+			"Serverless and edge architectures that scale down to zero as well as up"
+		],
+		"principles": [
+			"It starts with the data model. Get it right and the code is easy; get it wrong and no code saves you.",
+			"Security, performance and cost are designed together, from the first schema. They are not three later projects.",
+			"Cloudflare is the new AWS. The edge is where I start, and most products never need to leave it.",
+			"Sometimes you have to get your hands dirty. When the work needs raw compute, I rent the dedicated server and run it myself."
+		],
+		"tools": [
+			"Node.js",
+			"GraphQL",
+			"Postgres",
+			"Redis",
+			"Cloudflare Workers",
+			"Durable Objects",
+			"AWS Lambda",
+			"Rust"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"DeepCrawl",
+			"Tigerspike",
+			"Yo-Da (your data)"
+		],
+		"evidence": [
+			"agris",
+			"zeko",
+			"ungraphql-parse-info",
+			"graphql-crawler",
+			"bot-drop",
+			"unjs"
+		]
+	},
+	{
+		"name": "security",
+		"title": "Security: contracts, infrastructure, agents",
+		"description": "Load when something of value is exposed: money in a contract, a network, or an agent holding the keys.",
+		"summary": "I founded a smart contract auditing firm and led it through more than 50 audits, and I started my career running networks and servers. I bring the same habits to agents: MCP servers, tool permissions, sandboxing, prompt injection and secrets. I think like the attacker, so that the system does not meet one unprepared.",
+		"offer": [
+			"Smart contract audits, and contracts written to pass one",
+			"Agent security: what an agent may touch, what it may run, and what it must never see",
+			"Infrastructure and network hardening, from the firewall to the access policy",
+			"Threat modelling early, while changing the design is still cheap",
+			"Secrets, authentication and authorisation done properly"
+		],
+		"principles": [
+			"Assume the environment is hostile. Someone out there will do anything to break the application, and has all the time to try.",
+			"Attack it first. I use every tool an attacker would, so that I find what they would find before they do.",
+			"LLMs have changed the craft, not the principle. Attackers and defenders both have agents now; the approach is the same, at another speed."
+		],
+		"tools": [
+			"Solidity",
+			"Foundry",
+			"Hardhat",
+			"EVM",
+			"Linux",
+			"iptables",
+			"Cloudflare Access",
+			"MCP"
+		],
+		"roles": [
+			"Obelisk Auditing",
+			"Ityka",
+			"Self-employed"
+		],
+		"evidence": [
+			"bot-drop",
+			"gommage",
+			"authjs-nuxt",
+			"lucia",
+			"mnemonic-to-private-key"
+		]
+	},
+	{
+		"name": "cloud-infrastructure",
+		"title": "Cloud and infrastructure",
+		"description": "Load when it has to run somewhere, stay up, and not send a surprising invoice.",
+		"summary": "I have run products on AWS and on Cloudflare for ten years, with the infrastructure written as code and an environment for every change. I started as a system administrator, so I know what is under the abstraction, down to the cabling. I build platforms that stay up, scale without drama and do not send surprising invoices.",
+		"offer": [
+			"Infrastructure as code, reviewed and versioned like the application",
+			"Serverless and edge platforms, and migrations from one cloud to another",
+			"Delivery pipelines with a preview environment for every pull request",
+			"Observability: errors reported, triaged and tied to the work",
+			"A bill that stays in proportion to the usage"
+		],
+		"principles": [
+			"Infrastructure is code. If it is not in the repository, it cannot be reviewed, repeated or trusted.",
+			"Breadth matters here. Half the job is knowing what exists; the other half is knowing which of it to use, and when.",
+			"Measure first. I do not tune, scale or migrate what I have not observed.",
+			"Observing is part of the system, from the first deploy."
+		],
+		"tools": [
+			"Cloudflare",
+			"AWS",
+			"AWS CDK",
+			"Terraform",
+			"NixOS",
+			"GitHub Actions",
+			"Sentry",
+			"Linux"
+		],
+		"roles": [
+			"Zeko",
+			"Zeno",
+			"Tigerspike",
+			"Yo-Da (your data)",
+			"Ityka"
+		],
+		"evidence": [
+			"nitro",
+			"wrangler-builds",
+			"lumina",
+			"zeko",
+			"proto-plugins"
+		]
+	},
+	{
+		"name": "open-source",
+		"title": "Open source, at framework level",
+		"description": "Load when the bug is three dependencies down, in code that belongs to somebody else.",
+		"summary": "I am on the Nuxt core team, where most of my work is on Nitro, the server engine that Nuxt and several other frameworks run on. Work at that level reaches millions of developers and users. I have had more than 300 pull requests merged into other people's projects, and I author and maintain modules of my own.",
+		"offer": [
+			"Bugs fixed where they live, in the dependency, instead of patched around",
+			"Framework-level knowledge of the tools your product is built on",
+			"Libraries and modules designed, documented, released and maintained",
+			"Work with maintainers and communities, in public and across timezones",
+			"An open source practice for a company: what to publish, how, and how to keep it alive"
+		],
+		"principles": [
+			"For me open source is a philosophy, not a strategy.",
+			"I build on other people's work every day, so I give back to it.",
+			"A bug is fixed where it lives, so that everyone gets the fix."
+		],
+		"tools": [
+			"Nuxt",
+			"Nitro",
+			"h3",
+			"Vue",
+			"Vite",
+			"TypeScript",
+			"Rust",
+			"OCaml"
+		],
+		"roles": [
+			"Nuxt"
+		],
+		"evidence": [
+			"nitro",
+			"nuxt",
+			"h3",
+			"unjs",
+			"authjs-nuxt",
+			"form-actions-nuxt",
+			"server-block-nuxt",
+			"vue-query-nuxt",
+			"vize"
+		]
+	},
+	{
+		"name": "smart-contracts-and-zero-knowledge",
+		"title": "Smart contracts and zero knowledge",
+		"description": "Load when the application proves things on a chain, and the proof takes a minute nobody wants to wait.",
+		"summary": "I have worked in Web3 since 2021: auditing and writing smart contracts, then building what a zero-knowledge rollup needs around its protocol. That means the SDKs, the bridges, the indexers and the signers, and some of the protocol itself. I make cryptography usable, by the developers who build on it and by the people who never want to hear about it.",
+		"offer": [
+			"Smart contracts written, tested and audited",
+			"SDKs and CLIs that developers use to build on a chain",
+			"Bridges, indexers and the web applications around a protocol",
+			"Zero-knowledge applications where the proof is slow and the experience is not",
+			"DeFi applications and trading systems"
+		],
+		"principles": [
+			"Web3 teaches game theory. You design for people who act in their own interest, and that lesson holds well beyond a blockchain: in teams, and in politics.",
+			"Incentives are part of the system. A protocol is safe when attacking it costs more than it pays.",
+			"Code that holds money gets no second chance, so it is written as if it were already under attack."
+		],
+		"tools": [
+			"Solidity",
+			"Foundry",
+			"Viem",
+			"o1js",
+			"OCaml",
+			"ZK circuits",
+			"XState",
+			"NATS"
+		],
+		"roles": [
+			"Zeko",
+			"dcSpark",
+			"Obelisk Auditing"
+		],
+		"evidence": [
+			"lumina",
+			"zeko",
+			"nats-ml",
+			"spacebudz-identity",
+			"plutus-guide",
+			"mnemonic-to-private-key"
+		]
+	},
+	{
+		"name": "leading-teams",
+		"title": "Leading a team, hands-on",
+		"description": "Load when the team needs someone who runs the room and still writes the core of the system.",
+		"summary": "I have led as a founder, as a head of engineering and as the senior engineer of a small team. Always hands-on: I write the core of the system, and I run the reviews, the hiring and the process around it. I grew a company from myself alone to a remote team of twelve.",
+		"offer": [
+			"Technical leadership that still ships code",
+			"Hiring, mentoring and performance reviews",
+			"A delivery process sized to the team, from the issue to production",
+			"Remote teams run across timezones, mostly in writing",
+			"A bridge between engineering and the rest of the business"
+		],
+		"principles": [
+			"Business and engineering are different skills. Being good at one says nothing about the other, and running a company taught me that.",
+			"A great product does not sell itself. Selling is hard, and engineers should respect it.",
+			"I lead from the code: I write the core of the system myself."
+		],
+		"tools": [
+			"Code review",
+			"Hiring",
+			"Mentoring",
+			"Linear",
+			"Sentry",
+			"GitHub"
+		],
+		"roles": [
+			"Obelisk Auditing",
+			"Zeno",
+			"Zeko",
+			"The M Industries",
+			"Stack Industries"
+		],
+		"evidence": [
+			"ataski",
+			"reproduire",
+			"gommage",
+			"nuxt-module-template"
+		]
+	},
+	{
+		"name": "video-and-3d",
+		"title": "Video and 3D, made with agents",
+		"description": "Load when a brief should go in and finished visual work should come out.",
+		"summary": "I build pipelines where agents take a brief to finished visual work: films made entirely in code, and real-time 3D on the web. Agents operate the tools a professional uses, Blender, DaVinci Resolve, FFmpeg and FreeCAD, the way an editor or a designer would. Some of it ends up on my 3D printer.",
+		"offer": [
+			"Video produced from a brief, generated and edited in code",
+			"Real-time 3D and shaders for the web, on three.js and WebGPU",
+			"3D assets modelled and rendered by script, repeatable on demand",
+			"Creative tooling automated end to end, from the brief to the export",
+			"A visual identity for a product that cannot afford a studio"
+		],
+		"principles": [
+			"The bar is higher now. An engineer who only writes code is a specialist in a time that asks for more.",
+			"Engineers know how to learn. That is the real skill, and it carries to a film, a 3D model or a printed part.",
+			"Using these tools is part of the general skillset now, not a hobby on the side."
+		],
+		"tools": [
+			"three.js",
+			"WebGPU",
+			"Blender",
+			"DaVinci Resolve",
+			"FFmpeg",
+			"FreeCAD"
+		],
+		"roles": [
+			"Self-employed"
+		],
+		"evidence": [
+			"emmanuel-style"
+		]
+	}
+]
+
+/** A hash of everything above, so a cache written from older content can be told apart. */
+export const version = "028bb9c98dbc"
+
+export const content = { site, shelves, posts, roles, schools, skills, version }
 
 export default content
